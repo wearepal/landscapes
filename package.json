@@ -1,5 +1,5 @@
 {
-  "name": "ssrp_web_application",
+  "name": "landscapes",
   "private": true,
   "dependencies": {
     "@babel/preset-react": "^7.14.5",
