@@ -1,0 +1,40 @@
+<%=
+  form_with(
+    model: @user,
+    url: user_path,
+    html: {
+      data: {
+        controller: "form",
+        action: "ajax:error->form#onError",
+      },
+      style: "max-width: 500px; margin: 0px auto",
+      class: "pl-2 pr-2",
+    }
+  ) do |form|
+%>
+  <h1 class="text-center mt-4 mb-4">Sign Up</h1>
+
+  <div class="form-group">
+    <%= form.label :name %>
+    <span data-form-target="error" data-field="name"></span>
+    <%= form.text_field :name, class: "form-control", data: { "form-target": "field", field: "name" } %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :email %>
+    <span data-form-target="error" data-field="email"></span>
+    <%= form.email_field :email, class: "form-control", data: { "form-target": "field", field: "email" } %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :password %>
+    <span data-form-target="error" data-field="password"></span>
+    <%= form.password_field :password, class: "form-control", data: { "form-target": "field", field: "password" } %>
+  </div>
+
+  <%= form.submit class: "btn btn-primary btn-lg btn-block" %>
+
+  <small class="form-text text-muted text-center mt-2">
+    Already have an account? <%= link_to "Click here to sign in", new_session_path %>.
+  </small>
+<% end %>

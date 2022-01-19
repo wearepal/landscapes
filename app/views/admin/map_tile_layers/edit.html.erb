@@ -1,0 +1,38 @@
+<div class="card">
+  <div class="card-header">Edit map base layer</div>
+  <div class="card-body">
+    <%=
+      form_with(
+        model: [:admin, @layer],
+        html: {
+          data: {
+            controller: "form",
+            action: "ajax:error->form#onError",
+          }
+        }
+      ) do |f|
+    %>
+      <div class="alert alert-warning">
+        <p>
+          <i class="fas fa-info-circle"></i>
+          <strong>Renaming an existing layer might have unexpected side-effects.</strong>
+        </p>
+        <p>Map tiles contain their layer name as part of their filename, <code>{x}-{y}-{zoom}-{layer name}.jpeg</code>.</p>
+        <p>If you rename this layer:</p>
+        <ul>
+          <li><strong>Map tile uploads</strong> and <strong>labellings</strong> that you upload in the future must reference this layer by its new name.</li>
+          <li><strong>Map tile downloads</strong> and <strong>training data archives</strong> that you create in the future will be tagged with the new name.</li>
+        </ul>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :name %>
+        <span data-form-target="error" data-field="name"></span>
+        <%= f.text_field :name, class: 'form-control', data: { "form-target": "field", field: "name" } %>
+      </div>
+
+      <%= f.submit "Save", class: "btn btn-primary" %>
+      <%= link_to "Cancel", [:admin, @region, :map_tile_layers], class: "btn btn-secondary" %>
+    <% end %>
+  </div>
+</div>

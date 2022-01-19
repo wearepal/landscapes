@@ -1,0 +1,8 @@
+#!/bin/bash
+set -euxo pipefail
+
+docker build --pull \
+  --platform "linux/amd64" \
+  -f "Dockerfile" \
+  -t "wearepal/landscapes:1" \
+  .

@@ -1,0 +1,8 @@
+#!/bin/bash
+set -euo pipefail
+
+source bin/setup-environment
+
+bin/wait-for-migrations
+
+exec bin/resque-pool

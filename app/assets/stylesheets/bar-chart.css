@@ -1,0 +1,30 @@
+.bar-chart {
+  display: table;
+  padding: .5em;
+}
+
+.bar-chart__row {
+  display: table-row;
+}
+
+.bar-chart__label {
+  display: table-cell;
+  text-align: right;
+  padding-right: .5em;
+}
+
+.bar-chart__negative-axis {
+  display: table-cell;
+  text-align: right;
+}
+
+.bar-chart__positive-axis {
+  display: table-cell;
+  border-left: solid 1px #ddd;
+}
+
+.bar-chart__bar {
+  display: inline-block;
+  height: .5em;
+  vertical-align: middle; 
+}

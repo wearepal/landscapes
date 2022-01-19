@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>AI Landscape Modelling Tool</title>
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
+    <%= stylesheet_pack_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+  </head>
+
+  <body>
+    <nav class="navbar navbar-expand-sm navbar-light bg-light">
+      <%= link_to "AI Landscape Modelling Tool", root_path, class: "navbar-brand" %>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-content" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbar-content">
+        <% if content_for? :nav %>
+          <ul class="navbar-nav">
+            <%= yield :nav %>
+          </ul>
+        <% end %>
+
+        <ul class="navbar-nav ml-auto">
+          <% if current_user %>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown">
+                <%= current_user.name %>
+              </a>
+              <div class="dropdown-menu dropdown-menu-right">
+                <% if current_user.admin? %>
+                  <%= link_to "Admin tools", admin_root_path, class: "dropdown-item" %>
+                <% end %>
+                <%= link_to "Sign Out", session_path, method: :delete, class: "dropdown-item" %>
+              </div>
+            </li>
+          <% else %>
+            <li class="nav-item">
+              <%= link_to "Sign In/Register", new_session_path(return_to: request.path), class: "nav-link" %>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+    </nav>
+    <div class="container">
+      <% if flash.alert %>
+        <div class="alert alert-danger alert-dismissible fade show my-4">
+          <%= flash.alert %>
+          <button type="button" class="close" data-dismiss="alert">
+            &times;
+          </button>
+        </div>
+      <% end %>
+      <% if flash.notice %>
+        <div class="alert alert-info alert-dismissible fade show my-4">
+          <%= flash.notice %>
+          <button type="button" class="close" data-dismiss="alert">
+            &times;
+          </button>
+        </div>
+      <% end %>
+    </div>
+    <%= yield %>
+  </body>
+</html>

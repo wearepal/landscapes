@@ -1,0 +1,13 @@
+<% @region.map_tile_uploads.order(created_at: :desc).each do |upload| %>
+  <div class="list-group-item">
+    <div class="d-flex align-items-center justify-content-between">
+      <div>
+        <%= link_to upload.archive do %><code><%= upload.archive.filename %></code><% end %>
+        <small class="text-muted">
+          (<%= number_to_human_size upload.archive.byte_size %>)
+        </small>
+      </div>
+      <div class="text-muted"><%= upload.message || tag.em("Pending") %></div>
+    </div>
+  </div>
+<% end %>

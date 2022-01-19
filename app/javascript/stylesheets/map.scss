@@ -1,0 +1,42 @@
+.map {
+  &__container {
+    @extend .bg-dark;
+
+    position: absolute;
+    top: 3.5rem;
+    bottom: 0px;
+    left: 0px;
+    right: 250px;
+  }
+
+  &__sidebar {
+    @extend .bg-light, .px-3;
+
+    position: absolute;
+    top: 3.5rem;
+    bottom: 0px;
+    right: 0px;
+    min-width: 250px;
+    white-space: nowrap;
+    overflow-y: auto;
+  }
+
+  &__sidebar-section:not(:last-child) {
+    @extend .border-bottom;
+  }
+
+  &__sidebar-section {
+    @extend .py-3;
+  }
+
+  &__sidebar-section-heading {
+    @extend .lead, .accordion-toggle, .text-dark;
+
+    display: block;
+    text-decoration: none !important;
+  }
+
+  &__sidebar-section-content {
+    @extend .pl-4, .pt-2;
+  }
+}

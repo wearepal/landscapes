@@ -1,0 +1,24 @@
+en:
+  activerecord:
+    attributes:
+      user:
+        email: "Email address"
+    models:
+      labelling_group: "Labelling"
+    errors:
+      models:
+        label:
+          attributes:
+            name:
+              invalid: "can only contain letters and underscores"
+        user:
+          attributes:
+            email:
+              invalid: "doesn't look valid"
+              taken: "is already registered"
+  helpers:
+    submit:
+      user:
+        create: "Create Account"
+      session:
+        create: "Sign In"

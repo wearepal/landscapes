@@ -1,0 +1,6 @@
+#!/bin/bash
+set -euo pipefail
+
+export SECRET_KEY_BASE="$(cat /run/secrets/secret_key_base)"
+export DATABASE_URL="$(cat /run/secrets/database_url)"
+export REDIS_URL="$(cat /run/secrets/redis_url)"

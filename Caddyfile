@@ -1,0 +1,8 @@
+$ADDRESS
+
+reverse_proxy web:3000 {
+  lb_try_duration 30s
+}
+
+encode gzip
+log

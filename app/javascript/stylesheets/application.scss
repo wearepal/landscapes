@@ -1,0 +1,21 @@
+$breadcrumb-divider: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4IiBoZWlnaHQ9IjgiPjxwYXRoIGQ9Ik0yLjUgMEwxIDEuNSAzLjUgNCAxIDYuNSAyLjUgOGw0LTQtNC00eiIgZmlsbD0iY3VycmVudENvbG9yIi8+PC9zdmc+);
+
+@import "~bootstrap/scss/bootstrap.scss";
+@import "~ol/ol";
+
+$fa-font-path: '~@fortawesome/fontawesome-free/webfonts';
+@import "~@fortawesome/fontawesome-free/scss/fontawesome";
+@import "~@fortawesome/fontawesome-free/scss/solid";
+
+.breadcrumb .dropdown-toggle::after {
+  vertical-align: middle;
+}
+
+// Workaround for Bootstrap issue/PR #28814
+// TODO: Check if fixed when Bootstrap v4.4.0 is released
+.form-control.is-invalid, .form-control.is-valid {
+  background-position: right $input-height-inner-quarter center;
+}
+
+@import "accordion";
+@import "map";

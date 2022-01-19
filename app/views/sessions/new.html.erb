@@ -1,0 +1,35 @@
+<%=
+  form_with(
+    url: session_url,
+    html: {
+      data: {
+        controller: "signin-form",
+        action: "submit->signin-form#onSubmit ajax:error->signin-form#onError"
+      },
+      style: "max-width: 500px; margin: 0px auto",
+      class: "pl-2 pr-2"
+    }
+  ) do |form|
+%>
+  <%= form.hidden_field :return_to, value: params[:return_to] %>
+
+  <h1 class="text-center mt-4 mb-4">Sign In</h1>
+
+  <div data-signin-form-target="error"></div>
+
+  <div class="form-group">
+    <%= form.label :email, User.human_attribute_name(:email) %>
+    <%= form.email_field :email, class: "form-control" %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :password, User.human_attribute_name(:password) %>
+    <%= form.password_field :password, class: "form-control" %>
+  </div>
+
+  <%= form.submit t(:"helpers.submit.session.create"), class: "btn btn-primary btn-lg btn-block" %>
+
+  <small class="form-text text-muted text-center mt-2">
+    Don't have an account? <%= link_to "Click here to sign up", new_user_path %>.
+  </small>
+<% end %>

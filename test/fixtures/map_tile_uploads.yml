@@ -1,0 +1,7 @@
+one:
+  region: one
+  message: MyString
+
+two:
+  region: two
+  message: MyString

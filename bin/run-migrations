@@ -1,0 +1,6 @@
+#!/bin/bash
+set -euo pipefail
+
+source bin/setup-environment
+
+exec bin/rails db:prepare

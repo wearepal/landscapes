@@ -1,0 +1,4 @@
+one:
+  labelling_group: one
+  map_tile_layer: two
+  data: "\x00"

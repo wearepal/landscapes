@@ -1,0 +1,17 @@
+# Please fill in your S3 credentials and bucket details below.
+# This file will be stored as a Docker secret (https://docs.docker.com/engine/swarm/secrets/).
+s3:
+  service: S3
+  # endpoint: (optional, e.g. https://nyc3.digitaloceanspaces.com)
+  access_key_id: ""
+  secret_access_key: ""
+  region: ""
+  bucket: ""
+
+test:
+  service: Disk
+  root: <%= Rails.root.join("tmp/storage") %>
+
+local:
+  service: Disk
+  root: <%= Rails.root.join("storage") %>

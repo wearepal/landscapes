@@ -1,0 +1,21 @@
+<div class="card">
+  <div class="card-header d-flex align-items-center justify-content-between">
+    Models
+    <%= button_to admin_models_path, method: :post, class: "btn btn-sm btn-outline-primary", title: "Create new model" do %>
+      <i class="fas fa-plus"></i>
+    <% end %>
+  </div>
+  <div class="list-group list-group-flush" data-controller="filter">
+    <div class="list-group-item list-group-item-light">
+      <input placeholder="Search" class="form-control" data-action="input->filter#update" autofocus>
+    </div>
+    <% Model.order(:name).each do |model| %>
+      <%= link_to edit_admin_model_path(model), class: "list-group-item list-group-item-action", data: { "filter-target": "item" } do %>
+        <div class="d-flex align-items-center justify-content-between">
+          <%= model.name %>
+          <i class="fas fa-chevron-right"></i>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+</div>

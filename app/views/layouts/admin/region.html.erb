@@ -1,0 +1,41 @@
+<%= extends :admin do %>
+  <% content_for :sidebar_breadcrumb do %>
+    <%= link_to [:admin, :regions], class: "list-group-item list-group-item-action" do %>
+      <i class="fas fa-arrow-up fa-fw"></i>
+      Regions
+    <% end %>
+  <% end %>
+
+  <% content_for :sidebar_header do %>
+    <%= @region.name %>
+  <% end %>
+  
+  <% content_for :sidebar_content do %>
+    <%= render "sidebar_link", path: [:admin, @region, :labelling_groups] do %>
+      <i class="fas fa-tag fa-fw"></i>
+      Labellings
+    <% end %>
+    <%= render "sidebar_link", path: [:admin, @region, :map_tile_layers] do %>
+      <i class="fas fa-layer-group fa-fw"></i>
+      Map base layers
+    <% end %>
+    <%= render "sidebar_link", path: [:admin, @region, :overlays] do %>
+      <i class="fas fa-layer-group fa-fw"></i>
+      Map overlays
+    <% end %>
+    <%= render "sidebar_link", path: [:admin, @region, :map_tile_uploads] do %>
+      <i class="fas fa-upload fa-fw"></i>
+      Map tile uploads
+    <% end %>
+    <%= render "sidebar_link", path: [:admin, @region, :map_tile_downloads] do %>
+      <i class="fas fa-download fa-fw"></i>
+      Map tile downloads
+    <% end %>
+    <%= render "sidebar_link", path: [:admin, @region, :training_data_downloads] do %>
+      <i class="fas fa-download fa-fw"></i>
+      Training data downloads
+    <% end %>
+  <% end %>
+
+  <%= yield %>
+<% end %>

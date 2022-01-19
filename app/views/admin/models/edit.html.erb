@@ -1,0 +1,106 @@
+<div
+  data-controller="modelling"
+  data-action="turbolinks:before-visit@document->modelling#warnIfUnsaved"
+  data-modelling-url="<%= admin_model_path(@model) %>"
+  <% unless @model.source.nil? %>
+    data-modelling-model="<%= @model.source %>"
+  <% end %>
+  data-modelling-defs="<%= render "defs.json" %>"
+  data-modelling-lock-version="<%= @model.lock_version %>"
+>
+  <div class="btn-toolbar bg-light p-2 border-top">
+    <%= link_to admin_models_path, class: "btn btn-sm btn-outline-secondary" do %>
+      <i class="fas fa-angle-left"></i>
+      Back
+    <% end %>
+
+    <div class="input-group ml-2">
+      <input
+        type="text"
+        class="form-control form-control-sm"
+        placeholder="Model name"
+        value="<%= @model.name %>"
+        data-modelling-target="modelNameField"
+        data-action="input->modelling#setDirtyFlag"
+      >
+    </div>
+
+    <div class="btn-group btn-group-sm ml-2">
+      <button
+        type="button"
+        class="btn btn-sm btn-outline-primary"
+        data-action="modelling#save"
+        data-modelling-target="saveButton"
+        disabled
+      >
+        <i class="fas fa-save"></i>
+        <span data-modelling-target="saveButtonLabel">Save</span>
+      </button>
+
+      <%=
+        link_to(
+          admin_model_duplicates_path(@model),
+          method: :post,
+          class: "btn btn-sm btn-outline-primary",
+          data: {
+            action: "modelling#warnIfUnsaved"
+          },
+        ) do
+      %>
+        <i class="fas fa-clone"></i>
+        Duplicate
+      <% end %>
+
+      <%=
+        link_to(
+          admin_model_path(@model),
+          method: :delete,
+          class: "btn btn-sm btn-outline-danger",
+          data: { confirm: "Are you sure you want to delete this model?" }
+        ) do
+      %>
+        <i class="fas fa-trash-alt"></i>
+        Delete
+      <% end %>
+    </div>
+
+    <div class="btn-group btn-group-sm ml-2">
+      <button type="button" class="btn btn-outline-primary" data-action="modelling#undo">
+        <i class="fas fa-undo"></i>
+        Undo
+      </button>
+
+      <button type="button" class="btn btn-outline-primary" data-action="modelling#redo">
+        <i class="fas fa-redo"></i>
+        Redo
+      </button>
+    </div>
+
+    <div class="btn-group btn-group-sm ml-2">
+      <button type="button" class="btn btn-outline-primary" data-action="modelling#run">
+        <i class="fas fa-play"></i>
+        Run
+      </button>
+      <button type="button" class="btn btn-outline-primary" data-modelling-target="stopButton" data-action="modelling#stop" disabled>
+        <i class="fas fa-stop"></i>
+        Stop
+      </button>
+    </div>
+
+    <button type="button" class="btn btn-sm btn-outline-primary ml-2" data-modelling-target="inspectButton" data-action="modelling#inspect" disabled>
+      <i class="fas fa-search"></i>
+      Inspect
+    </button>
+
+    <div class="small ml-2" style="line-height: 1.9375rem" data-modelling-target="saveStatus">
+      Last edited <%= time_ago_in_words @model.updated_at %> ago
+    </div>
+  </div>
+
+  <div
+    class="bg-dark"
+    style="height: calc(100vh - 6.5rem);"
+  >
+    <div data-modelling-target="editor" class="model-editor"></div>
+  </div>
+</div>

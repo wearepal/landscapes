@@ -1,0 +1,59 @@
+.model-editor {
+  height: 100%;
+  
+  .context-menu {
+    width: auto !important;
+
+    .item {
+      white-space: nowrap;
+      padding-right: 40px !important;
+    }
+
+    .subitems {
+      width: auto !important;
+    }
+  }
+
+  .node {
+    .socket--layer {
+      background: #b4a246;
+    }
+
+    .socket--map {
+      background: #b44646;
+    }
+
+    .socket--set {
+      background: steelblue;
+    }
+
+    .socket--number {
+      background: #46b44c;
+    }
+  }
+
+  .connection .main-path {
+    stroke: white;
+
+    &:hover {
+      stroke-width: 7px;
+      stroke: white !important;
+    }
+  }
+
+  .connection.socket-input-layer .main-path {
+    stroke: #b4a246;
+  }
+
+  .connection.socket-input-set .main-path {
+    stroke: steelblue;
+  }
+
+  .connection.socket-input-map .main-path {
+    stroke: #b44646;
+  }
+
+  .connection.socket-input-number .main-path {
+    stroke: #46b44c;
+  }
+}

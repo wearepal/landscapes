@@ -1,0 +1,24 @@
+<% @region.map_tile_downloads.order(created_at: :desc).each do |download| %>
+  <div class="list-group-item">
+    <div class="d-flex align-items-center justify-content-between">
+      <div>
+        <code><%= download.year %></code> @ zoom level <code><%= download.zoom %></code>
+        <% if download.archive.attached? %>
+          <small class="text-muted">
+            (<%= number_to_human_size download.archive.byte_size %>)
+          </small>
+        <% end %>
+        <br>
+        <div class="text-muted">Created <%= time_ago_in_words download.created_at %> ago</div>
+      </div>
+      <div>
+        <%= link_to download.archive.present? ? rails_storage_redirect_url(download.archive) : '#', class: "btn btn-sm btn-primary #{"disabled" unless download.archive.present?}", title: "Download" do %>
+          <i class="fas fa-download"></i>
+        <% end %>
+      </div>
+    </div>
+    <div class="progress">
+      <div class="progress-bar progress-bar-striped <%= { true => "bg-success", false => "bg-danger", nil => "progress-bar-animated" }[download.status] %> <%= "progress-bar-animated" if download.status.nil? %>" style="width: <%= download.progress * 100 %>%"></div>
+    </div>
+  </div>
+<% end %>

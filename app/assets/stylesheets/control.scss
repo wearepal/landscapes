@@ -1,0 +1,16 @@
+.control {
+  .control-body {
+    display: none;
+    margin-top: .5rem;
+    max-height: 60vh;
+    overflow-y: auto;
+  }
+
+  &:hover .control-body {
+    display: block;
+  }
+}
+
+.ol-attribution {
+  box-sizing: content-box;
+}

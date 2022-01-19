@@ -1,0 +1,10 @@
+.accordion-toggle {
+  &__indicator {
+    transform: rotate(90deg);
+    transition: transform 200ms;
+  }
+
+  &.collapsed &__indicator {
+    transform: rotate(0deg);
+  }
+}

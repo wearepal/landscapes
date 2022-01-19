@@ -1,0 +1,7 @@
+one:
+  labelling_group: one
+  message: MyString
+
+two:
+  labelling_group: two
+  message: MyString

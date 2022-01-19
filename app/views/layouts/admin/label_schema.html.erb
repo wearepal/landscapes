@@ -1,0 +1,25 @@
+<%= extends :admin do %>
+  <% content_for :sidebar_breadcrumb do %>
+    <%= link_to [:admin, :label_schemas], class: "list-group-item list-group-item-action" do %>
+      <i class="fas fa-arrow-up fa-fw"></i>
+      Label Schemas
+    <% end %>
+  <% end %>
+
+  <% content_for :sidebar_header do %>
+    <%= @label_schema.name %>
+  <% end %>
+  
+  <% content_for :sidebar_content do %>
+    <%= render "sidebar_link", path: [:admin, @label_schema, :labels] do %>
+      <i class="fas fa-tags fa-fw"></i>
+      Labels
+    <% end %>
+    <%= render "sidebar_link", path: [:admin, @label_schema, action: :edit] do %>
+      <i class="fas fa-sliders-h fa-fw"></i>
+      Settings
+    <% end %>
+  <% end %>
+
+  <%= yield %>
+<% end %>

@@ -1,0 +1,38 @@
+.reclassification {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 134px);
+  grid-gap: 20px;
+  justify-content: center;
+
+  img {
+    background-color: rgb(200, 200, 200);
+    width: 100%;
+    height: auto;
+    cursor: pointer;
+    border: solid 3px var(--label-colour);
+    border-radius: 4px;
+    box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.5);
+    position: relative;
+    z-index: 0;
+
+    &:hover {
+      animation: zoom 1s forwards;
+      animation-timing-function: ease-in-out;
+      z-index: 2000;
+    }
+
+    &:active {
+      animation: none !important;
+      transform: scale(0.9);
+    }
+
+    @keyframes zoom {
+      0%       { transform: scale(1.0); }
+      10%, 90% { transform: scale(1.1); }
+      100%     { transform: scale(2.5); }
+
+      0%, 90%  { box-shadow: 0px 0px 0px black; }
+      100%     { box-shadow: 0px 0px 8px black; }
+    }
+  }
+}

@@ -1,0 +1,36 @@
+<div class="card mb-3">
+  <div class="card-header d-flex align-items-center justify-content-between">
+    Labellings
+    <div class="btn-toolbar">
+      <div class="btn-group btn-group-sm">
+        <%= link_to [:admin, @region, :labelling_group, action: :new], class: "btn btn-outline-primary", title: "Create a blank labelling" do %>
+          <i class="fas fa-fw fa-plus"></i>
+        <% end %>
+        <%= link_to [:admin, @region, :labelling_group_upload, action: :new], class: "btn btn-outline-primary", title: "Upload a labelling" do %>
+          <i class="fas fa-fw fa-upload"></i>
+        <% end %>
+      </div>
+    </div>
+  </div>
+  <div class="list-group list-group-flush" data-controller="filter">
+    <div class="list-group-item list-group-item-light">
+      <input placeholder="Search" class="form-control" data-action="input->filter#update" autofocus>
+    </div>
+    <% @region.labelling_groups.order(:name).each_with_index do |group, i| %>
+      <%= link_to [:admin, group], class: "list-group-item list-group-item-action", data: { "filter-target": "item" } do %>
+        <div class="d-flex align-items-center">
+          <div class="flex-grow-1"><%= group.name %></div>
+          <span class="badge badge-primary mx-1">
+            <i class="fas fa-search"></i>
+            <%= group.zoom %>
+          </span>
+          <span class="badge badge-primary mr-2">
+            <i class="fas fa-tags"></i>
+            <%= group.label_schema.name %>
+          </span>
+          <i class="fas fa-chevron-right"></i>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+</div>

@@ -1,0 +1,11 @@
+#!/bin/bash
+set -euo pipefail
+
+printf "Waiting for migrations to run..."
+
+until bin/rails db:abort_if_pending_migrations &>/dev/null
+do
+  sleep 1
+done
+
+echo " Done"

@@ -1,0 +1,56 @@
+<%=
+  form_with(
+    model: @label.persisted? ? [:admin, @label] : [:admin, @label_schema, @label],
+    html: {
+      data: {
+        controller: "file-uploader form",
+        action: "ajax:error->form#onError",
+      }
+    }
+  ) do |f|
+%>
+  <div class="form-group">
+    <%= f.label :index %>
+    <small class="text-muted">(the id number for this label)</small>
+    <span data-form-target="error" data-field="index"></span>
+    <%= f.number_field :index, class: 'form-control', data: { "form-target": "field", field: "index" } %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :label %>
+    <small class="text-muted">(the label to be displayed in the map legend)</small>
+    <span data-form-target="error" data-field="label"></span>
+    <%= f.text_field :label, class: 'form-control', data: { "form-target": "field", field: "label" } %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :name %>
+    <small class="text-muted">(the variable name to be used in formulae for SDG impact model metrics)</small>
+    <span data-form-target="error" data-field="name"></span>
+    <%= f.text_field :name, class: 'form-control', data: { "form-target": "field", field: "name" } %>
+  </div>
+
+  <div class="form-group" data-controller="colour-picker">
+    <%= f.label :colour %>
+    <span data-form-target="error" data-field="colour"></span>
+    <div class="input-group">
+      <div class="input-group-prepend">
+        <div class="input-group-text">#</div>
+      </div>
+      <%= f.text_field :colour, class: 'form-control', data: { "form-target": "field", "colour-picker-target": "field", field: "colour", action: "colour-picker#change" } %>
+      <div class="input-group-append">
+        <div class="input-group-text">
+          <div class="swatch" style="background-color: #<%= @label.colour || "fff" %>" data-colour-picker-target="swatch"></div>
+        </div>
+      </div>
+    </div>
+    <div class="text-center">
+      <% %w(df2020 df8020 dfdf20 80df20 20df20 20df80 20dfdf 2080df 2020df 8020df df20df df2080).each do |preset| %>
+        <div class="swatch" style="background-color: #<%= preset %>; cursor: pointer" data-action="click->colour-picker#choosePreset" data-colour="<%= preset %>"></div>
+      <% end %>
+    </div>
+  </div>
+
+  <%= f.submit "Save", class: "btn btn-primary" %>
+  <%= link_to "Cancel", [:admin, @label_schema, :labels], class: "btn btn-secondary" %>
+<% end %>

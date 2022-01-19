@@ -1,0 +1,13 @@
+one:
+  label_schema: one
+  index: 0
+  name: one
+  label: Label One
+  colour: ff0000
+
+two:
+  label_schema: one
+  index: 1
+  name: two
+  label: Label Two
+  colour: 00ff00

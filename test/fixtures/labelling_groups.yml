@@ -1,0 +1,19 @@
+one:
+  region: one
+  label_schema: one
+  name: Test Labelling Group
+  zoom: 0
+  x: 0
+  y: 0
+  width: 1
+  height: 1
+
+two:
+  region: one
+  label_schema: one
+  name: Empty Labelling Group
+  zoom: 0
+  x: 0
+  y: 0
+  width: 1
+  height: 1

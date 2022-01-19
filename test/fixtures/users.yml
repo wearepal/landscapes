@@ -1,0 +1,11 @@
+one:
+  name: User One
+  email: one@example.com
+  password_digest: <%= BCrypt::Password.create('password') %>
+  token: <%= User.generate_unique_secure_token %>
+
+two:
+  name: User Two
+  email: two@example.com
+  password_digest: <%= BCrypt::Password.create('password') %>
+  token: <%= User.generate_unique_secure_token %>

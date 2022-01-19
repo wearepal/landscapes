@@ -1,0 +1,3 @@
+<%= link_to path, class: "list-group-item list-group-item-action #{"active" if current_page?(path)}" do %>
+  <%= yield %>
+<% end %>

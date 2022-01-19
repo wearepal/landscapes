@@ -1,0 +1,22 @@
+<%=
+  form_with(
+    model: [:admin, @label_schema],
+    html: {
+      data: {
+        controller: "form",
+        action: "ajax:error->form#onError",
+      }
+    }
+  ) do |form|
+%>
+  <div class="form-group">
+    <%= form.label :name %>
+    <span data-form-target="error" data-field="name"></span>
+    <%= form.text_field :name, class: 'form-control', data: { "form-target": "field", field: "name" } %>
+  </div>
+
+  <%= form.submit "Save", class: "btn btn-primary" %>
+  <% unless @label_schema.persisted? %>
+    <%= link_to "Cancel", [:admin, :label_schemas], class: "btn btn-secondary" %>
+  <% end %>
+<% end %>

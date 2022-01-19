@@ -1,0 +1,22 @@
+<%= extends :application do %>
+  <div class="container my-4">
+    <div class="row">
+      <div class="col-md-3 mb-3">
+        <% if content_for? :sidebar_breadcrumb %>
+          <div class="list-group mb-3">
+            <%= yield :sidebar_breadcrumb %>
+          </div>
+        <% end %>
+        <div class="card">
+          <div class="card-header"><%= yield :sidebar_header %></div>
+          <div class="list-group list-group-flush">
+            <%= yield :sidebar_content %>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-9">
+        <%= yield %>
+      </div>
+    </div>
+  </div>
+<% end %>

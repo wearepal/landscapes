@@ -1,0 +1,1067 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<osm version="0.6" generator="Overpass API 0.7.56.2 b688b00f">
+<note>The data included in this document is from www.openstreetmap.org. The data is made available under ODbL.</note>
+<meta osm_base="2020-03-27T16:32:02Z"/>
+
+  <node id="244080459" lat="30.5566655" lon="114.2131725" version="9" timestamp="2020-01-22T06:55:19Z" changeset="79896384" uid="274857" user="Supaplex">
+    <tag k="gns:ADM1" v="12"/>
+    <tag k="gns:DSG" v="ADM3"/>
+    <tag k="gns:UFI" v="-1908438"/>
+    <tag k="gns:UNI" v="10069664"/>
+    <tag k="name" v="汉阳区"/>
+    <tag k="name:ceb" v="Hanyang District"/>
+    <tag k="name:de" v="Hanyang"/>
+    <tag k="name:en" v="Hanyang District"/>
+    <tag k="name:es" v="Hanyang"/>
+    <tag k="name:eu" v="Hanyang Barrutia"/>
+    <tag k="name:fr" v="District de Hanyang"/>
+    <tag k="name:it" v="Hanyang"/>
+    <tag k="name:ja" v="漢陽区"/>
+    <tag k="name:ko" v="한양구"/>
+    <tag k="name:nan" v="Hàn-iông-khu"/>
+    <tag k="name:no" v="Hanyang"/>
+    <tag k="name:pl" v="Hanyang"/>
+    <tag k="name:ru" v="Ханьян"/>
+    <tag k="name:sv" v="Hanyang"/>
+    <tag k="name:vi" v="Hán Dương"/>
+    <tag k="name:yue" v="漢陽"/>
+    <tag k="name:zh" v="汉阳区"/>
+    <tag k="name:zh_pinyin" v="Hànyáng Qū"/>
+    <tag k="place" v="city"/>
+  </node>
+  <node id="244082219" lat="30.5951051" lon="114.2999353" version="46" timestamp="2020-03-19T18:22:30Z" changeset="82402425" uid="274857" user="Supaplex">
+    <tag k="capital" v="4"/>
+    <tag k="gns:ADM1" v="12"/>
+    <tag k="gns:DSG" v="ADM2"/>
+    <tag k="gns:UFI" v="-1930780"/>
+    <tag k="gns:UNI" v="10069726"/>
+    <tag k="int_name" v="Wuhan"/>
+    <tag k="name" v="武汉市"/>
+    <tag k="name:ace" v="Wuhan"/>
+    <tag k="name:af" v="Wuhan"/>
+    <tag k="name:als" v="Wuhan"/>
+    <tag k="name:am" v="ዉሃን"/>
+    <tag k="name:ar" v="ووهان"/>
+    <tag k="name:arc" v="ܘܘܗܐܢ"/>
+    <tag k="name:ast" v="Wuhan"/>
+    <tag k="name:az" v="Uhan"/>
+    <tag k="name:ba" v="Ухань"/>
+    <tag k="name:be" v="Ухань"/>
+    <tag k="name:bg" v="Ухан"/>
+    <tag k="name:bm" v="Wuhan"/>
+    <tag k="name:bn" v="উহান"/>
+    <tag k="name:bo" v="ཝུའུ་ཧན་གྲོང་ཁྱེར།"/>
+    <tag k="name:br" v="Wuhan"/>
+    <tag k="name:bxr" v="Ухань"/>
+    <tag k="name:ca" v="Wuhan"/>
+    <tag k="name:cdo" v="Ū-háng"/>
+    <tag k="name:ce" v="Ухань"/>
+    <tag k="name:ceb" v="Wuhan"/>
+    <tag k="name:chy" v="Wuhan"/>
+    <tag k="name:ckb" v="ووھان"/>
+    <tag k="name:cs" v="Wu-chan"/>
+    <tag k="name:cy" v="Wuhan"/>
+    <tag k="name:da" v="Wuhan"/>
+    <tag k="name:de" v="Wuhan"/>
+    <tag k="name:el" v="Ουχάν"/>
+    <tag k="name:en" v="Wuhan"/>
+    <tag k="name:eo" v="Vuhano"/>
+    <tag k="name:es" v="Wuhan"/>
+    <tag k="name:et" v="Wuhan"/>
+    <tag k="name:eu" v="Wuhan"/>
+    <tag k="name:ext" v="Wuhan"/>
+    <tag k="name:fa" v="ووهان"/>
+    <tag k="name:fi" v="Wuhan"/>
+    <tag k="name:fj" v="Wuhan"/>
+    <tag k="name:fo" v="Wuhan"/>
+    <tag k="name:fr" v="Wuhan"/>
+    <tag k="name:ga" v="Wuhan"/>
+    <tag k="name:gan" v="武汉"/>
+    <tag k="name:gl" v="Wuhan"/>
+    <tag k="name:got" v="𐍅𐌿𐌷𐌰𐌽"/>
+    <tag k="name:gv" v="Wuhan"/>
+    <tag k="name:ha" v="Wuhan"/>
+    <tag k="name:hak" v="Vú-hon-sṳ"/>
+    <tag k="name:he" v="ווהאן"/>
+    <tag k="name:hi" v="वूहान"/>
+    <tag k="name:hr" v="Wuhan"/>
+    <tag k="name:hu" v="Vuhan"/>
+    <tag k="name:hy" v="Ուհան"/>
+    <tag k="name:id" v="Wuhan"/>
+    <tag k="name:is" v="Wuhan"/>
+    <tag k="name:it" v="Wuhan"/>
+    <tag k="name:ja" v="武漢市"/>
+    <tag k="name:jbo" v="uuxan"/>
+    <tag k="name:ka" v="უხანი"/>
+    <tag k="name:kg" v="Wuhan"/>
+    <tag k="name:ki" v="Wuhan"/>
+    <tag k="name:kk" v="Ухань"/>
+    <tag k="name:kl" v="Wuhan"/>
+    <tag k="name:kn" v="ವುಹಾನ್"/>
+    <tag k="name:ko" v="우한시"/>
+    <tag k="name:ksh" v="Wuhan"/>
+    <tag k="name:ku" v="Wuhan"/>
+    <tag k="name:kw" v="Wuhan"/>
+    <tag k="name:ky" v="Ухань"/>
+    <tag k="name:la" v="Wuhan"/>
+    <tag k="name:lad" v="Wuhan"/>
+    <tag k="name:lb" v="Wuhan"/>
+    <tag k="name:lt" v="Uhanas"/>
+    <tag k="name:lv" v="Uhaņa"/>
+    <tag k="name:mdf" v="Ухань"/>
+    <tag k="name:mg" v="Wuhan"/>
+    <tag k="name:mhr" v="Ухань"/>
+    <tag k="name:mi" v="Wuhan"/>
+    <tag k="name:mk" v="Вухан"/>
+    <tag k="name:ml" v="വൂഹാൻ"/>
+    <tag k="name:mn" v="Үхань"/>
+    <tag k="name:mr" v="वूहान"/>
+    <tag k="name:ms" v="Wuhan"/>
+    <tag k="name:mwl" v="Wuhan"/>
+    <tag k="name:my" v="ဝူဟန့်မြို့"/>
+    <tag k="name:mzn" v="ووهان"/>
+    <tag k="name:nah" v="Wuhan"/>
+    <tag k="name:nan" v="Bú-hàn-chhī"/>
+    <tag k="name:nl" v="Wuhan"/>
+    <tag k="name:nn" v="Wuhan"/>
+    <tag k="name:no" v="Wuhan"/>
+    <tag k="name:ny" v="Wuhan"/>
+    <tag k="name:oc" v="Wuhan"/>
+    <tag k="name:os" v="Ухань"/>
+    <tag k="name:pa" v="ਵੂਖ਼ਨ"/>
+    <tag k="name:pam" v="Wuhan"/>
+    <tag k="name:pl" v="Wuhan"/>
+    <tag k="name:pnb" v="ووہان"/>
+    <tag k="name:pt" v="Wuhan"/>
+    <tag k="name:qu" v="Wuhan"/>
+    <tag k="name:ro" v="Wuhan"/>
+    <tag k="name:ru" v="Ухань"/>
+    <tag k="name:sco" v="Wuhan"/>
+    <tag k="name:sh" v="Wuhan"/>
+    <tag k="name:sk" v="Wu-chan"/>
+    <tag k="name:sq" v="Vuhani"/>
+    <tag k="name:sr" v="Вухан"/>
+    <tag k="name:stq" v="Wuhan"/>
+    <tag k="name:sv" v="Wuhan"/>
+    <tag k="name:sw" v="Wuhan"/>
+    <tag k="name:szl" v="Wuhan"/>
+    <tag k="name:ta" v="வுகான்"/>
+    <tag k="name:th" v="อู่ฮั่น"/>
+    <tag k="name:tl" v="Wuhan"/>
+    <tag k="name:tn" v="Wuhan"/>
+    <tag k="name:tr" v="Vuhan"/>
+    <tag k="name:tt" v="Үһән"/>
+    <tag k="name:ug" v="ۋۇخەن شەھىرى"/>
+    <tag k="name:uk" v="Ухань"/>
+    <tag k="name:ur" v="ووہان"/>
+    <tag k="name:uz" v="Uxan"/>
+    <tag k="name:vi" v="Vũ Hán"/>
+    <tag k="name:war" v="Wuhan"/>
+    <tag k="name:wo" v="Wuhan"/>
+    <tag k="name:wuu" v="武汉"/>
+    <tag k="name:xal" v="Вухан балһсн"/>
+    <tag k="name:yue" v="武漢"/>
+    <tag k="name:za" v="Vujhan"/>
+    <tag k="name:zh" v="武汉市"/>
+    <tag k="name:zh-Hans" v="武汉"/>
+    <tag k="name:zh-Hant" v="武漢"/>
+    <tag k="name:zh_pinyin" v="Wǔhàn shì"/>
+    <tag k="place" v="city"/>
+    <tag k="population" v="10670000"/>
+    <tag k="source:name:oc" v="Lo Congrès"/>
+    <tag k="wikidata" v="Q11746"/>
+    <tag k="wikipedia" v="en:Wuhan"/>
+  </node>
+  <node id="244082233" lat="30.5566998" lon="114.3109847" version="10" timestamp="2020-01-22T06:55:19Z" changeset="79896384" uid="274857" user="Supaplex">
+    <tag k="gns:ADM1" v="12"/>
+    <tag k="gns:DSG" v="ADM3"/>
+    <tag k="gns:UFI" v="-1930651"/>
+    <tag k="gns:UNI" v="10069728"/>
+    <tag k="name" v="武昌区"/>
+    <tag k="name:ceb" v="Wuchang Qu"/>
+    <tag k="name:cs" v="Wu-čchang"/>
+    <tag k="name:de" v="Wuchang"/>
+    <tag k="name:en" v="Wuchang District"/>
+    <tag k="name:es" v="Wuchang"/>
+    <tag k="name:eu" v="Wuchang Barrutia"/>
+    <tag k="name:fr" v="District de Wuchang"/>
+    <tag k="name:id" v="Distrik Wuchang"/>
+    <tag k="name:it" v="Distretto di Wuchang"/>
+    <tag k="name:ja" v="武昌区"/>
+    <tag k="name:ko" v="우창구"/>
+    <tag k="name:nan" v="Bú-chhiong-khu"/>
+    <tag k="name:no" v="Wuchang"/>
+    <tag k="name:pl" v="Wuchang"/>
+    <tag k="name:ru" v="Учан"/>
+    <tag k="name:sv" v="Wuchang"/>
+    <tag k="name:ur" v="ووچانگ ضلع"/>
+    <tag k="name:vi" v="Vũ Xương"/>
+    <tag k="name:yue" v="武昌"/>
+    <tag k="name:zh" v="武昌区"/>
+    <tag k="name:zh_pinyin" v="Wǔchāng Qū"/>
+    <tag k="place" v="city"/>
+  </node>
+  <node id="244082556" lat="30.6424069" lon="114.3796282" version="11" timestamp="2020-01-23T08:18:24Z" changeset="79961300" uid="274857" user="Supaplex">
+    <tag k="gns:ADM1" v="12"/>
+    <tag k="gns:DSG" v="ADM3"/>
+    <tag k="gns:UFI" v="10005703"/>
+    <tag k="gns:UNI" v="10070471"/>
+    <tag k="name" v="青山区"/>
+    <tag k="name:de" v="Qingshan"/>
+    <tag k="name:en" v="Qingshan District"/>
+    <tag k="name:es" v="Qingshan"/>
+    <tag k="name:eu" v="Qingshan Barrutia"/>
+    <tag k="name:fr" v="District de Qingshan"/>
+    <tag k="name:it" v="Distretto di Qingshan"/>
+    <tag k="name:ja" v="青山区"/>
+    <tag k="name:ko" v="칭산구"/>
+    <tag k="name:nan" v="Chheng-san-khu"/>
+    <tag k="name:no" v="Qingshan"/>
+    <tag k="name:ru" v="Циншань"/>
+    <tag k="name:sv" v="Qingshan, Wuhan"/>
+    <tag k="name:ur" v="چینگشان ضلع، ووہان"/>
+    <tag k="name:vi" v="Thanh Sơn"/>
+    <tag k="name:yue" v="青山區"/>
+    <tag k="name:zh" v="青山区"/>
+    <tag k="name:zh-Hans" v="青山区"/>
+    <tag k="name:zh-Hant" v="青山區"/>
+    <tag k="name:zh_pinyin" v="Qingshan Qu"/>
+    <tag k="place" v="city"/>
+    <tag k="wikidata" v="Q1117408"/>
+    <tag k="wikipedia" v="zh:青山区 (武汉市)"/>
+  </node>
+  <node id="244082647" lat="30.6023098" lon="114.3037857" version="9" timestamp="2020-01-22T06:55:19Z" changeset="79896384" uid="274857" user="Supaplex">
+    <tag k="gns:ADM1" v="12"/>
+    <tag k="gns:DSG" v="ADM3"/>
+    <tag k="gns:UFI" v="10005869"/>
+    <tag k="gns:UNI" v="10070459"/>
+    <tag k="name" v="江岸区"/>
+    <tag k="name:ceb" v="Jiang'an District"/>
+    <tag k="name:de" v="Jiang’an"/>
+    <tag k="name:en" v="Jiang'an District"/>
+    <tag k="name:es" v="Jiang'an"/>
+    <tag k="name:eu" v="Jiang'an Barrutia"/>
+    <tag k="name:fr" v="District de Jiang'an"/>
+    <tag k="name:it" v="Distretto di Jiang'an"/>
+    <tag k="name:ja" v="江岸区"/>
+    <tag k="name:ko" v="장안구"/>
+    <tag k="name:nan" v="Kang-gān-khu"/>
+    <tag k="name:no" v="Jiang'an"/>
+    <tag k="name:ru" v="Цзянъань"/>
+    <tag k="name:sv" v="Jiang'an, Wuhan"/>
+    <tag k="name:vi" v="Giang Ngạn"/>
+    <tag k="name:yue" v="江岸區"/>
+    <tag k="name:zh" v="江岸区"/>
+    <tag k="name:zh_pinyin" v="Jiāng'àn Qū"/>
+    <tag k="place" v="city"/>
+  </node>
+  <node id="244082650" lat="30.3132512" lon="114.0804717" version="4" timestamp="2012-05-21T09:12:32Z" changeset="11659660" uid="33757" user="Minh Nguyen">
+    <tag k="gns:ADM1" v="12"/>
+    <tag k="gns:DSG" v="ADM3"/>
+    <tag k="gns:UFI" v="10005871"/>
+    <tag k="gns:UNI" v="10070635"/>
+    <tag k="name" v="汉南区"/>
+    <tag k="name:vi" v="Hán Nam"/>
+    <tag k="name:zh" v="汉南区"/>
+    <tag k="name:zh_pinyin" v="Hannan Qu"/>
+    <tag k="place" v="suburb"/>
+  </node>
+  <node id="244082653" lat="30.3780494" lon="114.3161693" version="9" timestamp="2020-01-23T08:18:24Z" changeset="79961300" uid="274857" user="Supaplex">
+    <tag k="gns:ADM1" v="12"/>
+    <tag k="gns:DSG" v="ADM3"/>
+    <tag k="gns:UFI" v="10005867"/>
+    <tag k="gns:UNI" v="10070461"/>
+    <tag k="name" v="江夏区"/>
+    <tag k="name:de" v="Jiangxia"/>
+    <tag k="name:en" v="Jiangxia District"/>
+    <tag k="name:es" v="Jiangxia"/>
+    <tag k="name:eu" v="Jiangxia Barrutia"/>
+    <tag k="name:fr" v="District de Jiangxia"/>
+    <tag k="name:it" v="Distretto di Jiangxia"/>
+    <tag k="name:ja" v="江夏区"/>
+    <tag k="name:ko" v="장샤구"/>
+    <tag k="name:nan" v="Kang-hā-khu"/>
+    <tag k="name:no" v="Jiangxia"/>
+    <tag k="name:ru" v="Цзянся"/>
+    <tag k="name:sv" v="Jiangxia"/>
+    <tag k="name:vi" v="Giang Hạ"/>
+    <tag k="name:yue" v="江夏區"/>
+    <tag k="name:zh" v="江夏区"/>
+    <tag k="name:zh_pinyin" v="Jiangxia Qu"/>
+    <tag k="place" v="city"/>
+    <tag k="wikidata" v="Q1337329"/>
+    <tag k="wikipedia" v="zh:江夏区"/>
+  </node>
+  <node id="244082656" lat="30.5028043" lon="114.3378431" version="11" timestamp="2020-01-29T01:52:56Z" changeset="80224882" uid="255936" user="StenSoft">
+    <tag k="gns:ADM1" v="12"/>
+    <tag k="gns:DSG" v="ADM3"/>
+    <tag k="gns:UFI" v="10005868"/>
+    <tag k="gns:UNI" v="10070460"/>
+    <tag k="name" v="洪山区"/>
+    <tag k="name:ceb" v="Hongshan Qu"/>
+    <tag k="name:cs" v="Chung-šan"/>
+    <tag k="name:de" v="Hongshan"/>
+    <tag k="name:en" v="Hongshan"/>
+    <tag k="name:es" v="Hongshan"/>
+    <tag k="name:eu" v="Hongshan"/>
+    <tag k="name:fr" v="Hongshan"/>
+    <tag k="name:it" v="Hongshan"/>
+    <tag k="name:ja" v="洪山区"/>
+    <tag k="name:ko" v="훙산구"/>
+    <tag k="name:nan" v="Hông-san-khu"/>
+    <tag k="name:no" v="Hongshan"/>
+    <tag k="name:ru" v="Хуншань"/>
+    <tag k="name:sv" v="Hongshan"/>
+    <tag k="name:vi" v="Hồng Sơn"/>
+    <tag k="name:yue" v="洪山區"/>
+    <tag k="name:zh" v="洪山区"/>
+    <tag k="name:zh_pinyin" v="Hongshan Qu"/>
+    <tag k="place" v="city"/>
+    <tag k="wikidata" v="Q1337284"/>
+    <tag k="wikipedia" v="zh:洪山区"/>
+  </node>
+  <node id="244082661" lat="30.5389289" lon="114.0821056" version="8" timestamp="2020-01-23T08:18:24Z" changeset="79961300" uid="274857" user="Supaplex">
+    <tag k="gns:ADM1" v="12"/>
+    <tag k="gns:DSG" v="ADM3"/>
+    <tag k="gns:UFI" v="10005865"/>
+    <tag k="gns:UNI" v="10070462"/>
+    <tag k="name" v="蔡甸区"/>
+    <tag k="name:ceb" v="Caidian"/>
+    <tag k="name:de" v="Caidian"/>
+    <tag k="name:en" v="Caidian District"/>
+    <tag k="name:es" v="Caidian"/>
+    <tag k="name:eu" v="Caidian Barrutia"/>
+    <tag k="name:fr" v="District de Caidian"/>
+    <tag k="name:it" v="Distretto di Caidian"/>
+    <tag k="name:ja" v="蔡甸区"/>
+    <tag k="name:ko" v="차이뎬구"/>
+    <tag k="name:nan" v="Chhài-tiān-khu"/>
+    <tag k="name:no" v="Caidian"/>
+    <tag k="name:ru" v="Цайдянь"/>
+    <tag k="name:sv" v="Caidian"/>
+    <tag k="name:vi" v="Thái Điện"/>
+    <tag k="name:yue" v="蔡甸區"/>
+    <tag k="name:zh" v="蔡甸区"/>
+    <tag k="name:zh_pinyin" v="Càidiān Qū"/>
+    <tag k="place" v="city"/>
+    <tag k="wikidata" v="Q1025837"/>
+    <tag k="wikipedia" v="zh:蔡甸区"/>
+  </node>
+  <node id="244082668" lat="30.6041382" lon="114.2653871" version="8" timestamp="2020-01-22T06:55:19Z" changeset="79896384" uid="274857" user="Supaplex">
+    <tag k="gns:ADM1" v="12"/>
+    <tag k="gns:DSG" v="ADM3"/>
+    <tag k="gns:UFI" v="10005859"/>
+    <tag k="gns:UNI" v="10070465"/>
+    <tag k="name" v="江汉区"/>
+    <tag k="name:ceb" v="Jianghan Qu"/>
+    <tag k="name:de" v="Jianghan"/>
+    <tag k="name:en" v="Jianghan District"/>
+    <tag k="name:es" v="Jianghan"/>
+    <tag k="name:eu" v="Jianghan Barrutia"/>
+    <tag k="name:fr" v="District de Jianghan"/>
+    <tag k="name:it" v="Distretto di Jianghan"/>
+    <tag k="name:ja" v="江漢区"/>
+    <tag k="name:ko" v="장한구"/>
+    <tag k="name:nan" v="Kang-hàn-khu"/>
+    <tag k="name:no" v="Jianghan"/>
+    <tag k="name:ru" v="Цзянхань"/>
+    <tag k="name:sv" v="Jianghan"/>
+    <tag k="name:vi" v="Giang Hán"/>
+    <tag k="name:yue" v="江漢區"/>
+    <tag k="name:zh" v="江汉区"/>
+    <tag k="name:zh_pinyin" v="Jiānghàn Qū"/>
+    <tag k="place" v="city"/>
+  </node>
+  <node id="244082670" lat="30.5848089" lon="114.2093718" version="9" timestamp="2020-01-22T06:55:19Z" changeset="79896384" uid="274857" user="Supaplex">
+    <tag k="gns:ADM1" v="12"/>
+    <tag k="gns:DSG" v="ADM3"/>
+    <tag k="gns:UFI" v="10005861"/>
+    <tag k="gns:UNI" v="10070464"/>
+    <tag k="name" v="硚口区"/>
+    <tag k="name:ceb" v="Qiaokou Qu"/>
+    <tag k="name:de" v="Qiaokou"/>
+    <tag k="name:en" v="Qiaokou District"/>
+    <tag k="name:es" v="Qiaokou"/>
+    <tag k="name:eu" v="Qiaokou Barrutia"/>
+    <tag k="name:fr" v="District de Qiaokou"/>
+    <tag k="name:it" v="Distretto di Qiaokou"/>
+    <tag k="name:ja" v="キョウ口区"/>
+    <tag k="name:ko" v="차오커우구"/>
+    <tag k="name:nan" v="Kiâu-kháu-khu"/>
+    <tag k="name:no" v="Qiaokou"/>
+    <tag k="name:ru" v="Цяокоу"/>
+    <tag k="name:sv" v="Qiaokou"/>
+    <tag k="name:vi" v="Kiều Khẩu"/>
+    <tag k="name:yue" v="礄口區"/>
+    <tag k="name:zh" v="硚口区"/>
+    <tag k="name:zh_pinyin" v="Qiáokǒu Qū"/>
+    <tag k="place" v="city"/>
+  </node>
+  <node id="1188922886" lat="30.4982206" lon="114.4783020" version="6" timestamp="2019-10-09T13:30:13Z" changeset="75464199" uid="5532815" user="李小明">
+    <tag k="name" v="九峰街道"/>
+    <tag k="name:en" v="Jiufeng"/>
+    <tag k="name:vi" v="Cửu Phong"/>
+    <tag k="name:zh" v="九峰街道"/>
+    <tag k="place" v="town"/>
+  </node>
+  <node id="1188922892" lat="30.5294316" lon="114.6015318" version="6" timestamp="2012-04-08T06:43:44Z" changeset="11221258" uid="33757" user="Minh Nguyen">
+    <tag k="name" v="左岭街"/>
+    <tag k="name:vi" v="Tả Lĩnh"/>
+    <tag k="name:zh" v="左岭街"/>
+    <tag k="place" v="town"/>
+  </node>
+  <node id="1188922899" lat="30.5456485" lon="114.5163191" version="3" timestamp="2012-04-08T06:43:49Z" changeset="11221258" uid="33757" user="Minh Nguyen">
+    <tag k="name" v="花山街"/>
+    <tag k="name:vi" v="Hoa Sơn"/>
+    <tag k="name:zh" v="花山街"/>
+    <tag k="place" v="town"/>
+  </node>
+  <node id="1188922910" lat="30.4580672" lon="114.5445445" version="4" timestamp="2013-08-15T05:53:28Z" changeset="17354851" uid="414582" user="GeoSUN">
+    <tag k="name" v="豹澥街"/>
+    <tag k="name:en" v="Baoxie"/>
+    <tag k="name:vi" v="Báo Hải"/>
+    <tag k="name:zh" v="豹澥街"/>
+    <tag k="place" v="town"/>
+  </node>
+  <node id="1192374692" lat="30.3546232" lon="114.3095281" version="3" timestamp="2013-07-17T15:39:03Z" changeset="16988761" uid="414582" user="GeoSUN">
+    <tag k="name" v="纸坊街"/>
+    <tag k="name:en" v="Zhifang"/>
+    <tag k="name:vi" v="Chỉ Phường"/>
+    <tag k="name:zh" v="纸坊街"/>
+    <tag k="place" v="town"/>
+  </node>
+  <node id="1194994849" lat="30.5168065" lon="114.3799064" version="5" timestamp="2012-05-21T08:58:23Z" changeset="11659660" uid="33757" user="Minh Nguyen">
+    <tag k="alt_name:vi" v="Khu công nghệ mới Đông Hồ"/>
+    <tag k="name" v="东湖新技术开发区"/>
+    <tag k="name:vi" v="Đông Hồ"/>
+    <tag k="name:zh" v="东湖新技术产业开发区"/>
+    <tag k="place" v="suburb"/>
+  </node>
+  <node id="1206954870" lat="30.2690082" lon="114.3288760" version="3" timestamp="2013-07-17T15:39:02Z" changeset="16988761" uid="414582" user="GeoSUN">
+    <tag k="name" v="乌龙泉街"/>
+    <tag k="name:en" v="Wulongquan"/>
+    <tag k="name:vi" v="Ô Long Tuyền"/>
+    <tag k="name:zh" v="乌龙泉街"/>
+    <tag k="place" v="town"/>
+  </node>
+  <node id="1206954887" lat="30.3436243" lon="114.2890548" version="3" timestamp="2013-07-17T15:39:03Z" changeset="16988761" uid="414582" user="GeoSUN">
+    <tag k="name" v="石洞街"/>
+    <tag k="name:en" v="Shidong"/>
+    <tag k="name:vi" v="Thạch Động"/>
+    <tag k="name:zh" v="石洞街"/>
+    <tag k="place" v="town"/>
+  </node>
+  <node id="1206954901" lat="30.3362945" lon="114.3860392" version="3" timestamp="2013-07-17T15:39:03Z" changeset="16988761" uid="414582" user="GeoSUN">
+    <tag k="alt_name:vi" v="Ngũ Lí Giới"/>
+    <tag k="name" v="五里界街"/>
+    <tag k="name:en" v="Wulijie"/>
+    <tag k="name:vi" v="Ngũ Lý Giới"/>
+    <tag k="name:zh" v="五里界街"/>
+    <tag k="place" v="town"/>
+  </node>
+  <node id="1206954902" lat="30.3367019" lon="114.1293797" version="3" timestamp="2013-07-17T15:39:04Z" changeset="16988761" uid="414582" user="GeoSUN">
+    <tag k="name" v="金口街"/>
+    <tag k="name:en" v="Jinkou"/>
+    <tag k="name:vi" v="Kim Khẩu"/>
+    <tag k="name:zh" v="金口街"/>
+    <tag k="place" v="town"/>
+  </node>
+  <node id="1206954921" lat="30.3318127" lon="114.2522892" version="3" timestamp="2013-07-17T15:39:04Z" changeset="16988761" uid="414582" user="GeoSUN">
+    <tag k="name" v="郑店街"/>
+    <tag k="name:en" v="Zhengdian"/>
+    <tag k="name:vi" v="Trịnh Điếm"/>
+    <tag k="name:zh" v="郑店街"/>
+    <tag k="place" v="town"/>
+  </node>
+  <node id="1234360309" lat="30.5229086" lon="114.5888296" version="1" timestamp="2011-04-06T06:15:26Z" changeset="7781464" uid="414582" user="GeoSUN">
+    <tag k="name" v="花园村"/>
+    <tag k="place" v="village"/>
+  </node>
+  <node id="1234360328" lat="30.5332666" lon="114.5995906" version="1" timestamp="2011-04-06T06:15:26Z" changeset="7781464" uid="414582" user="GeoSUN">
+    <tag k="name" v="吕墩村"/>
+    <tag k="place" v="village"/>
+  </node>
+  <node id="1234360489" lat="30.5282485" lon="114.6016071" version="2" timestamp="2011-04-06T08:13:16Z" changeset="7782106" uid="414582" user="GeoSUN">
+    <tag k="name" v="左岭村"/>
+    <tag k="place" v="village"/>
+  </node>
+  <node id="1234360671" lat="30.5512223" lon="114.6072188" version="1" timestamp="2011-04-06T06:15:35Z" changeset="7781464" uid="414582" user="GeoSUN">
+    <tag k="name" v="金王村"/>
+    <tag k="place" v="village"/>
+  </node>
+  <node id="1234371926" lat="30.4903229" lon="114.6248678" version="1" timestamp="2011-04-06T06:24:26Z" changeset="7781464" uid="414582" user="GeoSUN">
+    <tag k="name" v="黄陂岭村"/>
+    <tag k="place" v="village"/>
+  </node>
+  <node id="1234371927" lat="30.5385265" lon="114.6216169" version="1" timestamp="2011-04-06T06:24:26Z" changeset="7781464" uid="414582" user="GeoSUN">
+    <tag k="name" v="上街村"/>
+    <tag k="place" v="village"/>
+  </node>
+  <node id="1234371928" lat="30.5183429" lon="114.6280542" version="1" timestamp="2011-04-06T06:24:26Z" changeset="7781464" uid="414582" user="GeoSUN">
+    <tag k="name" v="彭李村"/>
+    <tag k="place" v="village"/>
+  </node>
+  <node id="1234371929" lat="30.4861736" lon="114.5982924" version="1" timestamp="2011-04-06T06:24:26Z" changeset="7781464" uid="414582" user="GeoSUN">
+    <tag k="name" v="泉井村"/>
+    <tag k="place" v="village"/>
+  </node>
+  <node id="1234371930" lat="30.4990519" lon="114.6051267" version="1" timestamp="2011-04-06T06:24:26Z" changeset="7781464" uid="414582" user="GeoSUN">
+    <tag k="name" v="卸甲村"/>
+    <tag k="place" v="village"/>
+  </node>
+  <node id="1234371931" lat="30.4729700" lon="114.5933572" version="1" timestamp="2011-04-06T06:24:26Z" changeset="7781464" uid="414582" user="GeoSUN">
+    <tag k="name" v="周庄村"/>
+    <tag k="place" v="village"/>
+  </node>
+  <node id="1234371932" lat="30.5014184" lon="114.5860723" version="2" timestamp="2011-04-06T06:26:00Z" changeset="7781464" uid="414582" user="GeoSUN">
+    <tag k="name" v="大罗村"/>
+    <tag k="place" v="village"/>
+  </node>
+  <node id="1234371933" lat="30.4643959" lon="114.5869735" version="1" timestamp="2011-04-06T06:24:26Z" changeset="7781464" uid="414582" user="GeoSUN">
+    <tag k="name" v="朝阳村"/>
+    <tag k="place" v="village"/>
+  </node>
+  <node id="1234371934" lat="30.5289232" lon="114.6275714" version="1" timestamp="2011-04-06T06:24:26Z" changeset="7781464" uid="414582" user="GeoSUN">
+    <tag k="name" v="程墩村"/>
+    <tag k="place" v="village"/>
+  </node>
+  <node id="1234371935" lat="30.4673108" lon="114.6114245" version="1" timestamp="2011-04-06T06:24:26Z" changeset="7781464" uid="414582" user="GeoSUN">
+    <tag k="name" v="快岭村"/>
+    <tag k="place" v="village"/>
+  </node>
+  <node id="1234373762" lat="30.4958255" lon="114.6026698" version="1" timestamp="2011-04-06T06:25:59Z" changeset="7781464" uid="414582" user="GeoSUN">
+    <tag k="name" v="甲铺岭村"/>
+    <tag k="place" v="village"/>
+  </node>
+  <node id="1234373763" lat="30.5031100" lon="114.5846024" version="1" timestamp="2011-04-06T06:25:59Z" changeset="7781464" uid="414582" user="GeoSUN">
+    <tag k="name" v="园林村"/>
+    <tag k="place" v="village"/>
+  </node>
+  <node id="1234393369" lat="30.5366784" lon="114.6355430" version="2" timestamp="2012-04-08T06:46:33Z" changeset="11221258" uid="33757" user="Minh Nguyen">
+    <tag k="name" v="葛店镇"/>
+    <tag k="name:vi" v="Cát Điếm"/>
+    <tag k="name:zh" v="葛店镇"/>
+    <tag k="place" v="town"/>
+  </node>
+  <node id="1234508658" lat="30.4456068" lon="114.6151546" version="2" timestamp="2012-04-08T06:48:03Z" changeset="11221258" uid="33757" user="Minh Nguyen">
+    <tag k="name" v="庙岭镇"/>
+    <tag k="name:vi" v="Miếu Lĩnh"/>
+    <tag k="name:zh" v="庙岭镇"/>
+    <tag k="place" v="town"/>
+  </node>
+  <node id="1236955531" lat="30.4569272" lon="114.5104756" version="1" timestamp="2011-04-08T06:31:22Z" changeset="7801155" uid="414582" user="GeoSUN">
+    <tag k="name" v="庙岭村"/>
+    <tag k="place" v="village"/>
+  </node>
+  <node id="1236955541" lat="30.5087782" lon="114.5346798" version="1" timestamp="2011-04-08T06:31:23Z" changeset="7801155" uid="414582" user="GeoSUN">
+    <tag k="name" v="上刘村"/>
+    <tag k="place" v="village"/>
+  </node>
+  <node id="1236955554" lat="30.4399087" lon="114.5121922" version="1" timestamp="2011-04-08T06:31:23Z" changeset="7801155" uid="414582" user="GeoSUN">
+    <tag k="name" v="新力村"/>
+    <tag k="place" v="village"/>
+  </node>
+  <node id="1236955556" lat="30.4591468" lon="114.5318474" version="1" timestamp="2011-04-08T06:31:23Z" changeset="7801155" uid="414582" user="GeoSUN">
+    <tag k="name" v="虎山村"/>
+    <tag k="place" v="village"/>
+  </node>
+  <node id="1236955587" lat="30.4548555" lon="114.5716728" version="1" timestamp="2011-04-08T06:31:25Z" changeset="7801155" uid="414582" user="GeoSUN">
+    <tag k="name" v="马桥村"/>
+    <tag k="place" v="village"/>
+  </node>
+  <node id="1236955621" lat="30.5185370" lon="114.5789491" version="1" timestamp="2011-04-08T06:31:27Z" changeset="7801155" uid="414582" user="GeoSUN">
+    <tag k="name" v="新店村"/>
+    <tag k="place" v="village"/>
+  </node>
+  <node id="1236955626" lat="30.4650069" lon="114.5441289" version="2" timestamp="2013-08-15T05:53:28Z" changeset="17354851" uid="414582" user="GeoSUN">
+    <tag k="name" v="花园村"/>
+    <tag k="place" v="village"/>
+  </node>
+  <node id="1236955676" lat="30.5183170" lon="114.5493569" version="1" timestamp="2011-04-08T06:31:30Z" changeset="7801155" uid="414582" user="GeoSUN">
+    <tag k="name" v="许店村"/>
+    <tag k="place" v="village"/>
+  </node>
+  <node id="1236955713" lat="30.4368747" lon="114.5617165" version="1" timestamp="2011-04-08T06:31:31Z" changeset="7801155" uid="414582" user="GeoSUN">
+    <tag k="name" v="新光村"/>
+    <tag k="place" v="village"/>
+  </node>
+  <node id="1236955719" lat="30.5066522" lon="114.5563091" version="1" timestamp="2011-04-08T06:31:32Z" changeset="7801155" uid="414582" user="GeoSUN">
+    <tag k="name" v="潜力村"/>
+    <tag k="place" v="village"/>
+  </node>
+  <node id="1236955748" lat="30.4450146" lon="114.5214619" version="1" timestamp="2011-04-08T06:31:33Z" changeset="7801155" uid="414582" user="GeoSUN">
+    <tag k="name" v="新生村"/>
+    <tag k="place" v="village"/>
+  </node>
+  <node id="1239658108" lat="30.6597875" lon="114.4555905" version="2" timestamp="2012-04-08T06:45:13Z" changeset="11221258" uid="33757" user="Minh Nguyen">
+    <tag k="name" v="八吉府街"/>
+    <tag k="name:vi" v="Bát Cát Phủ"/>
+    <tag k="name:zh" v="八吉府街"/>
+    <tag k="place" v="town"/>
+  </node>
+  <node id="1239713711" lat="30.6766937" lon="114.4108169" version="3" timestamp="2018-01-19T05:02:50Z" changeset="55568103" uid="1236135" user="FreedSky">
+    <tag k="name" v="天兴乡"/>
+    <tag k="name:vi" v="Thiên Hưng"/>
+    <tag k="name:zh" v="天兴乡"/>
+    <tag k="place" v="town"/>
+  </node>
+  <node id="1239713712" lat="30.6754277" lon="114.4059889" version="2" timestamp="2018-01-19T05:02:50Z" changeset="55568103" uid="1236135" user="FreedSky">
+    <tag k="name" v="复兴村"/>
+    <tag k="place" v="village"/>
+  </node>
+  <node id="1239713713" lat="30.6827098" lon="114.4345191" version="1" timestamp="2011-04-10T11:50:29Z" changeset="7821865" uid="414582" user="GeoSUN">
+    <tag k="name" v="江心村"/>
+    <tag k="place" v="village"/>
+  </node>
+  <node id="1239713714" lat="30.6677242" lon="114.3933310" version="2" timestamp="2018-01-19T05:02:50Z" changeset="55568103" uid="1236135" user="FreedSky">
+    <tag k="name" v="天兴村"/>
+    <tag k="place" v="village"/>
+  </node>
+  <node id="1444217928" lat="30.6961393" lon="114.2583196" version="1" timestamp="2011-09-24T08:08:38Z" changeset="9382216" uid="38120" user="qianxinlin">
+    <tag k="name" v="楼子湾"/>
+    <tag k="place" v="hamlet"/>
+  </node>
+  <node id="1875555719" lat="30.6520976" lon="114.0197033" version="2" timestamp="2018-09-17T17:52:45Z" changeset="62672934" uid="17497" user="katpatuka">
+    <tag k="china_class" v="jiedao"/>
+    <tag k="name" v="走马岭街道"/>
+    <tag k="name:en" v="Zoumaling"/>
+    <tag k="name:zh" v="走马岭"/>
+    <tag k="official_name" v="走马岭街道"/>
+    <tag k="place" v="town"/>
+    <tag k="source:name" v="GNS"/>
+    <tag k="wikidata" v="Q14017915"/>
+    <tag k="wikipedia" v="zh:走马岭街道"/>
+  </node>
+  <node id="1875555816" lat="30.5989120" lon="114.1168637" version="1" timestamp="2012-08-21T06:26:45Z" changeset="12804041" uid="414582" user="GeoSUN">
+    <tag k="name" v="慈惠街"/>
+    <tag k="place" v="town"/>
+  </node>
+  <node id="1875556090" lat="30.7254577" lon="114.1213269" version="2" timestamp="2012-09-21T19:35:19Z" changeset="13199948" uid="414582" user="GeoSUN">
+    <tag k="name" v="柏泉办事处"/>
+    <tag k="place" v="town"/>
+  </node>
+  <node id="1875556171" lat="30.6984496" lon="113.9424471" version="3" timestamp="2018-09-17T17:39:12Z" changeset="62672575" uid="17497" user="katpatuka">
+    <tag k="china_class" v="jiedao"/>
+    <tag k="name" v="新沟镇街道"/>
+    <tag k="name:en" v="Xingouzhen"/>
+    <tag k="name:zh" v="新沟镇"/>
+    <tag k="official_name" v="新沟镇街道"/>
+    <tag k="old_name" v="Sinkow;Hsin-kou;Xingou"/>
+    <tag k="place" v="town"/>
+    <tag k="wikidata" v="Q11083125"/>
+    <tag k="wikipedia" v="zh:新沟镇街道"/>
+  </node>
+  <node id="1875556243" lat="30.6512388" lon="114.2171673" version="2" timestamp="2012-09-21T19:35:19Z" changeset="13199948" uid="414582" user="GeoSUN">
+    <tag k="name" v="金银湖街"/>
+    <tag k="place" v="town"/>
+  </node>
+  <node id="1875556355" lat="30.6816211" lon="114.1592640" version="1" timestamp="2012-08-21T06:26:55Z" changeset="12804041" uid="414582" user="GeoSUN">
+    <tag k="name" v="径河街"/>
+    <tag k="place" v="town"/>
+  </node>
+  <node id="1925801182" lat="30.6529600" lon="114.2519280" version="1" timestamp="2012-09-21T19:34:17Z" changeset="13199948" uid="414582" user="GeoSUN">
+    <tag k="name" v="将军路街"/>
+    <tag k="place" v="town"/>
+  </node>
+  <node id="1925801187" lat="30.6007485" lon="114.0237205" version="1" timestamp="2012-09-21T19:34:17Z" changeset="13199948" uid="414582" user="GeoSUN">
+    <tag k="name" v="石榴红村"/>
+    <tag k="place" v="village"/>
+  </node>
+  <node id="1925802909" lat="30.6187741" lon="114.1291905" version="1" timestamp="2012-09-21T19:35:04Z" changeset="13199948" uid="414582" user="GeoSUN">
+    <tag k="name" v="长青街"/>
+    <tag k="place" v="town"/>
+  </node>
+  <node id="2387584959" lat="30.2834903" lon="114.6596693" version="1" timestamp="2013-07-17T15:10:45Z" changeset="16988461" uid="414582" user="GeoSUN">
+    <tag k="name" v="东沟镇"/>
+    <tag k="place" v="town"/>
+  </node>
+  <node id="2387584987" lat="30.2479700" lon="114.6473372" version="1" timestamp="2013-07-17T15:10:45Z" changeset="16988461" uid="414582" user="GeoSUN">
+    <tag k="name" v="梁子生态管理区"/>
+    <tag k="place" v="town"/>
+  </node>
+  <node id="2387585023" lat="30.3366629" lon="114.6873182" version="1" timestamp="2013-07-17T15:10:46Z" changeset="16988461" uid="414582" user="GeoSUN">
+    <tag k="name" v="长港镇"/>
+    <tag k="place" v="town"/>
+  </node>
+  <node id="2387608769" lat="30.4162016" lon="114.3035032" version="1" timestamp="2013-07-17T15:39:02Z" changeset="16988761" uid="414582" user="GeoSUN">
+    <tag k="name" v="大桥新区"/>
+    <tag k="place" v="town"/>
+  </node>
+  <node id="2387608771" lat="30.2446531" lon="114.4529986" version="1" timestamp="2013-07-17T15:39:02Z" changeset="16988761" uid="414582" user="GeoSUN">
+    <tag k="name" v="梁子湖风景区"/>
+    <tag k="place" v="town"/>
+  </node>
+  <node id="2387608772" lat="30.3045806" lon="114.4576031" version="1" timestamp="2013-07-17T15:39:02Z" changeset="16988761" uid="414582" user="GeoSUN">
+    <tag k="name" v="滨湖街"/>
+    <tag k="name:en" v="Binhu"/>
+    <tag k="place" v="town"/>
+  </node>
+  <node id="2387608774" lat="30.3007888" lon="114.1166581" version="1" timestamp="2013-07-17T15:39:02Z" changeset="16988761" uid="414582" user="GeoSUN">
+    <tag k="name" v="金水办事处"/>
+    <tag k="name:en" v="Jinshui"/>
+    <tag k="place" v="town"/>
+  </node>
+  <node id="2387608775" lat="30.3636100" lon="114.1401859" version="1" timestamp="2013-07-17T15:39:02Z" changeset="16988761" uid="414582" user="GeoSUN">
+    <tag k="name" v="金港新区"/>
+    <tag k="place" v="town"/>
+  </node>
+  <node id="2387624232" lat="30.4079751" lon="114.0794844" version="1" timestamp="2013-07-17T16:01:36Z" changeset="16988995" uid="414582" user="GeoSUN">
+    <tag k="name" v="军山街"/>
+    <tag k="place" v="town"/>
+  </node>
+  <node id="2387624233" lat="30.5716273" lon="114.0570745" version="1" timestamp="2013-07-17T16:01:36Z" changeset="16988995" uid="414582" user="GeoSUN">
+    <tag k="name" v="凤凰山办事处"/>
+    <tag k="place" v="town"/>
+  </node>
+  <node id="2387624234" lat="30.5090904" lon="114.0444228" version="1" timestamp="2013-07-17T16:01:36Z" changeset="16988995" uid="414582" user="GeoSUN">
+    <tag k="name" v="大集街"/>
+    <tag k="name:en" v="Daji"/>
+    <tag k="place" v="town"/>
+  </node>
+  <node id="2387624235" lat="30.4501050" lon="114.0051281" version="1" timestamp="2013-07-17T16:01:36Z" changeset="16988995" uid="414582" user="GeoSUN">
+    <tag k="name" v="奓山街"/>
+    <tag k="name:en" v="Zhashan"/>
+    <tag k="place" v="town"/>
+  </node>
+  <node id="2387624236" lat="30.4465947" lon="114.0403990" version="1" timestamp="2013-07-17T16:01:36Z" changeset="16988995" uid="414582" user="GeoSUN">
+    <tag k="name" v="常福新城"/>
+    <tag k="place" v="town"/>
+  </node>
+  <node id="2387624237" lat="30.5850812" lon="113.9765509" version="1" timestamp="2013-07-17T16:01:36Z" changeset="16988995" uid="414582" user="GeoSUN">
+    <tag k="name" v="张湾街"/>
+    <tag k="name:en" v="Zhangwan"/>
+    <tag k="place" v="town"/>
+  </node>
+  <node id="2387624238" lat="30.5103632" lon="114.0765191" version="1" timestamp="2013-07-17T16:01:36Z" changeset="16988995" uid="414582" user="GeoSUN">
+    <tag k="name" v="文岭办事处"/>
+    <tag k="place" v="town"/>
+  </node>
+  <node id="2387624239" lat="30.3743092" lon="113.9439252" version="1" timestamp="2013-07-17T16:01:36Z" changeset="16988995" uid="414582" user="GeoSUN">
+    <tag k="name" v="桐湖办事处"/>
+    <tag k="place" v="town"/>
+  </node>
+  <node id="2387624241" lat="30.4974227" lon="114.1454999" version="1" timestamp="2013-07-17T16:01:36Z" changeset="16988995" uid="414582" user="GeoSUN">
+    <tag k="name" v="沌口街"/>
+    <tag k="place" v="town"/>
+  </node>
+  <node id="2387624244" lat="30.5251562" lon="113.9801669" version="1" timestamp="2013-07-17T16:01:37Z" changeset="16988995" uid="414582" user="GeoSUN">
+    <tag k="name" v="玉贤镇"/>
+    <tag k="place" v="town"/>
+  </node>
+  <node id="2387624246" lat="30.5890001" lon="114.0339363" version="3" timestamp="2017-12-30T13:25:48Z" changeset="55034366" uid="7139444" user="sionstar">
+    <tag k="name" v="蔡甸街"/>
+    <tag k="name:en" v="Caidian"/>
+    <tag k="place" v="town"/>
+  </node>
+  <node id="2389165329" lat="30.3117909" lon="114.0769914" version="1" timestamp="2013-07-19T07:22:50Z" changeset="17008266" uid="414582" user="GeoSUN">
+    <tag k="name" v="纱帽街"/>
+    <tag k="name:en" v="Shamao"/>
+    <tag k="place" v="town"/>
+  </node>
+  <node id="2389165339" lat="30.3032530" lon="113.9775026" version="1" timestamp="2013-07-19T07:22:50Z" changeset="17008266" uid="414582" user="GeoSUN">
+    <tag k="name" v="邓南街"/>
+    <tag k="name:en" v="Dengnan"/>
+    <tag k="place" v="town"/>
+  </node>
+  <node id="2389185005" lat="30.7048517" lon="114.4199218" version="2" timestamp="2018-09-01T12:38:38Z" changeset="62196654" uid="17497" user="katpatuka">
+    <tag k="china_class" v="jiedao"/>
+    <tag k="name" v="武湖街道"/>
+    <tag k="name:en" v="Wuhu"/>
+    <tag k="name:zh" v="武湖"/>
+    <tag k="official_name" v="武湖街道"/>
+    <tag k="place" v="town"/>
+    <tag k="wikipedia" v="zh:武湖街道"/>
+  </node>
+  <node id="2389185009" lat="30.7153040" lon="114.3484482" version="3" timestamp="2020-02-20T17:46:44Z" changeset="81284701" uid="4814295" user="Алекс Мок">
+    <tag k="china_class" v="jiedao"/>
+    <tag k="name" v="滠口街道"/>
+    <tag k="name:en" v="Shekou"/>
+    <tag k="name:zh" v="滠口"/>
+    <tag k="official_name" v="滠口街道"/>
+    <tag k="place" v="town"/>
+    <tag k="wikipedia" v="zh:滠口街道"/>
+  </node>
+  <node id="2389202507" lat="30.5909230" lon="114.6444570" version="1" timestamp="2013-07-19T08:10:50Z" changeset="17008702" uid="414582" user="GeoSUN">
+    <tag k="name" v="双柳街"/>
+    <tag k="name:en" v="Shuangliu"/>
+    <tag k="place" v="town"/>
+  </node>
+  <node id="2389202516" lat="30.6136231" lon="114.6083113" version="1" timestamp="2013-07-19T08:10:50Z" changeset="17008702" uid="414582" user="GeoSUN">
+    <tag k="name" v="新洲原种场"/>
+    <tag k="place" v="town"/>
+  </node>
+  <node id="2389202548" lat="30.6601187" lon="114.5560290" version="1" timestamp="2013-07-19T08:10:50Z" changeset="17008702" uid="414582" user="GeoSUN">
+    <tag k="name" v="阳逻街"/>
+    <tag k="name:en" v="Yangluo"/>
+    <tag k="place" v="town"/>
+  </node>
+  <node id="2398309606" lat="30.5738858" lon="114.5369873" version="1" timestamp="2013-07-27T13:15:52Z" changeset="17113731" uid="414582" user="GeoSUN">
+    <tag k="name" v="清谭湖街"/>
+    <tag k="place" v="town"/>
+  </node>
+  <node id="2430028486" lat="30.4007677" lon="114.4769753" version="1" timestamp="2013-08-24T12:36:59Z" changeset="17483497" uid="414582" user="GeoSUN">
+    <tag k="name" v="二龙村"/>
+    <tag k="place" v="village"/>
+  </node>
+  <node id="2430028487" lat="30.3875408" lon="114.4736509" version="1" timestamp="2013-08-24T12:36:59Z" changeset="17483497" uid="414582" user="GeoSUN">
+    <tag k="name" v="何桥村"/>
+    <tag k="place" v="village"/>
+  </node>
+  <node id="2430028488" lat="30.3410413" lon="114.5806559" version="1" timestamp="2013-08-24T12:36:59Z" changeset="17483497" uid="414582" user="GeoSUN">
+    <tag k="name" v="升华村"/>
+    <tag k="place" v="village"/>
+  </node>
+  <node id="2430028489" lat="30.3810228" lon="114.5513058" version="1" timestamp="2013-08-24T12:36:59Z" changeset="17483497" uid="414582" user="GeoSUN">
+    <tag k="name" v="新胡村"/>
+    <tag k="place" v="village"/>
+  </node>
+  <node id="2430028490" lat="30.3844192" lon="114.4928912" version="1" timestamp="2013-08-24T12:36:59Z" changeset="17483497" uid="414582" user="GeoSUN">
+    <tag k="name" v="江王村"/>
+    <tag k="place" v="village"/>
+  </node>
+  <node id="2430028491" lat="30.3899168" lon="114.5359157" version="1" timestamp="2013-08-24T12:36:59Z" changeset="17483497" uid="414582" user="GeoSUN">
+    <tag k="name" v="玉屏村"/>
+    <tag k="place" v="village"/>
+  </node>
+  <node id="2430028492" lat="30.3688453" lon="114.4831846" version="1" timestamp="2013-08-24T12:36:59Z" changeset="17483497" uid="414582" user="GeoSUN">
+    <tag k="name" v="王店村"/>
+    <tag k="place" v="village"/>
+  </node>
+  <node id="2430028493" lat="30.3929166" lon="114.5221647" version="1" timestamp="2013-08-24T12:36:59Z" changeset="17483497" uid="414582" user="GeoSUN">
+    <tag k="name" v="福利村"/>
+    <tag k="place" v="village"/>
+  </node>
+  <node id="2430028494" lat="30.3795060" lon="114.4730889" version="1" timestamp="2013-08-24T12:36:59Z" changeset="17483497" uid="414582" user="GeoSUN">
+    <tag k="name" v="红旗村"/>
+    <tag k="place" v="village"/>
+  </node>
+  <node id="2430030619" lat="30.4074981" lon="114.5036594" version="1" timestamp="2013-08-24T12:37:44Z" changeset="17483497" uid="414582" user="GeoSUN">
+    <tag k="name" v="营泉村"/>
+    <tag k="place" v="village"/>
+  </node>
+  <node id="2430030620" lat="30.3851245" lon="114.5365414" version="1" timestamp="2013-08-24T12:37:44Z" changeset="17483497" uid="414582" user="GeoSUN">
+    <tag k="name" v="覃庙村"/>
+    <tag k="place" v="village"/>
+  </node>
+  <node id="2430030621" lat="30.3570854" lon="114.5620382" version="1" timestamp="2013-08-24T12:37:44Z" changeset="17483497" uid="414582" user="GeoSUN">
+    <tag k="name" v="高峰村"/>
+    <tag k="place" v="village"/>
+  </node>
+  <node id="2430030622" lat="30.3980259" lon="114.5070971" version="1" timestamp="2013-08-24T12:37:45Z" changeset="17483497" uid="414582" user="GeoSUN">
+    <tag k="name" v="魏集村"/>
+    <tag k="place" v="village"/>
+  </node>
+  <node id="2430030623" lat="30.3875953" lon="114.5345750" version="2" timestamp="2013-08-24T12:39:45Z" changeset="17483544" uid="414582" user="GeoSUN">
+    <tag k="name" v="龙泉社区"/>
+    <tag k="place" v="village"/>
+  </node>
+  <node id="2439221981" lat="30.2875920" lon="114.5276427" version="1" timestamp="2013-08-30T14:47:17Z" changeset="17590541" uid="414582" user="GeoSUN">
+    <tag k="name" v="何头咀村"/>
+    <tag k="place" v="village"/>
+  </node>
+  <node id="2439221985" lat="30.3671671" lon="114.4540410" version="1" timestamp="2013-08-30T14:47:17Z" changeset="17590541" uid="414582" user="GeoSUN">
+    <tag k="name" v="吴泗村"/>
+    <tag k="place" v="village"/>
+  </node>
+  <node id="2439221988" lat="30.3021735" lon="114.4588551" version="1" timestamp="2013-08-30T14:47:17Z" changeset="17590541" uid="414582" user="GeoSUN">
+    <tag k="name" v="大屋陈村"/>
+    <tag k="place" v="village"/>
+  </node>
+  <node id="2439221991" lat="30.3040252" lon="114.4566592" version="1" timestamp="2013-08-30T14:47:17Z" changeset="17590541" uid="414582" user="GeoSUN">
+    <tag k="name" v="大屋陈社区"/>
+    <tag k="place" v="village"/>
+  </node>
+  <node id="2439221993" lat="30.2969573" lon="114.4665579" version="1" timestamp="2013-08-30T14:47:17Z" changeset="17590541" uid="414582" user="GeoSUN">
+    <tag k="name" v="张家湾村"/>
+    <tag k="place" v="village"/>
+  </node>
+  <node id="2439221994" lat="30.3617263" lon="114.4645380" version="1" timestamp="2013-08-30T14:47:17Z" changeset="17590541" uid="414582" user="GeoSUN">
+    <tag k="name" v="方家咀村"/>
+    <tag k="place" v="village"/>
+  </node>
+  <node id="2439221995" lat="30.3137065" lon="114.4782443" version="1" timestamp="2013-08-30T14:47:17Z" changeset="17590541" uid="414582" user="GeoSUN">
+    <tag k="name" v="星火村"/>
+    <tag k="place" v="village"/>
+  </node>
+  <node id="2439221996" lat="30.3319754" lon="114.4258351" version="1" timestamp="2013-08-30T14:47:17Z" changeset="17590541" uid="414582" user="GeoSUN">
+    <tag k="name" v="檀树岭村"/>
+    <tag k="place" v="village"/>
+  </node>
+  <node id="2439221997" lat="30.3083918" lon="114.5179764" version="1" timestamp="2013-08-30T14:47:17Z" changeset="17590541" uid="414582" user="GeoSUN">
+    <tag k="name" v="牛山村"/>
+    <tag k="place" v="village"/>
+  </node>
+  <node id="2439221998" lat="30.2948314" lon="114.5176269" version="1" timestamp="2013-08-30T14:47:17Z" changeset="17590541" uid="414582" user="GeoSUN">
+    <tag k="name" v="白湖村"/>
+    <tag k="place" v="village"/>
+  </node>
+  <node id="2439221999" lat="30.3031122" lon="114.5049021" version="1" timestamp="2013-08-30T14:47:17Z" changeset="17590541" uid="414582" user="GeoSUN">
+    <tag k="name" v="罗立村"/>
+    <tag k="place" v="village"/>
+  </node>
+  <node id="2439222000" lat="30.3022441" lon="114.4555921" version="1" timestamp="2013-08-30T14:47:17Z" changeset="17590541" uid="414582" user="GeoSUN">
+    <tag k="name" v="联益村"/>
+    <tag k="place" v="village"/>
+  </node>
+  <node id="2439222002" lat="30.3927379" lon="114.4448656" version="1" timestamp="2013-08-30T14:47:17Z" changeset="17590541" uid="414582" user="GeoSUN">
+    <tag k="name" v="蔡王村"/>
+    <tag k="place" v="village"/>
+  </node>
+  <node id="2439222003" lat="30.2965133" lon="114.5516138" version="1" timestamp="2013-08-30T14:47:18Z" changeset="17590541" uid="414582" user="GeoSUN">
+    <tag k="name" v="青山村"/>
+    <tag k="place" v="village"/>
+  </node>
+  <node id="2477288345" lat="30.5590331" lon="114.5789610" version="1" timestamp="2013-09-30T06:16:59Z" changeset="18104391" uid="414582" user="GeoSUN">
+    <tag k="name" v="东港村"/>
+    <tag k="place" v="village"/>
+  </node>
+  <node id="2477288346" lat="30.5546355" lon="114.5469259" version="1" timestamp="2013-09-30T06:16:59Z" changeset="18104391" uid="414582" user="GeoSUN">
+    <tag k="name" v="山湖村"/>
+    <tag k="place" v="village"/>
+  </node>
+  <node id="2477288347" lat="30.5636405" lon="114.5727756" version="1" timestamp="2013-09-30T06:16:59Z" changeset="18104391" uid="414582" user="GeoSUN">
+    <tag k="name" v="沿江村"/>
+    <tag k="place" v="village"/>
+  </node>
+  <node id="2477288348" lat="30.5529528" lon="114.5845532" version="1" timestamp="2013-09-30T06:16:59Z" changeset="18104391" uid="414582" user="GeoSUN">
+    <tag k="name" v="清丰村"/>
+    <tag k="place" v="village"/>
+  </node>
+  <node id="2477288349" lat="30.5494690" lon="114.5902837" version="1" timestamp="2013-09-30T06:16:59Z" changeset="18104391" uid="414582" user="GeoSUN">
+    <tag k="name" v="白浒村"/>
+    <tag k="place" v="village"/>
+  </node>
+  <node id="2477288350" lat="30.5477975" lon="114.5340751" version="1" timestamp="2013-09-30T06:16:59Z" changeset="18104391" uid="414582" user="GeoSUN">
+    <tag k="name" v="红光村"/>
+    <tag k="place" v="village"/>
+  </node>
+  <node id="2689320039" lat="30.5100406" lon="114.6386223" version="2" timestamp="2015-03-07T09:27:17Z" changeset="29304686" uid="2092629" user="SimpleLuke">
+    <tag k="name" v="渣程村"/>
+    <tag k="place" v="hamlet"/>
+  </node>
+  <node id="2689320040" lat="30.5069890" lon="114.6363288" version="2" timestamp="2015-03-07T09:27:17Z" changeset="29304686" uid="2092629" user="SimpleLuke">
+    <tag k="name" v="爵华村"/>
+    <tag k="place" v="hamlet"/>
+  </node>
+  <node id="2703828835" lat="30.3533670" lon="114.3153900" version="4" timestamp="2015-07-13T12:35:52Z" changeset="32601725" uid="499500" user="hanchao">
+    <tag k="name" v="江夏区"/>
+    <tag k="name:en" v="Jiangxia"/>
+    <tag k="name:vi" v="Giang Hạ"/>
+    <tag k="name:zh" v="江夏区"/>
+    <tag k="place" v="suburb"/>
+  </node>
+  <node id="3762167533" lat="30.4517830" lon="114.3520162" version="1" timestamp="2015-09-28T06:03:41Z" changeset="34296583" uid="499500" user="hanchao">
+    <tag k="name" v="汤逊湖村"/>
+    <tag k="place" v="village"/>
+  </node>
+  <node id="3813759755" lat="30.2924568" lon="114.6213885" version="1" timestamp="2015-11-02T12:39:45Z" changeset="35031671" uid="2500" user="jamesks">
+    <tag k="place" v="village"/>
+  </node>
+  <node id="4711955586" lat="30.4709263" lon="114.4863427" version="1" timestamp="2017-03-01T16:24:02Z" changeset="46498308" uid="5403119" user="FlyingCatZou">
+    <tag k="name" v="光谷理想城"/>
+    <tag k="place" v="suburb"/>
+  </node>
+  <node id="5200121033" lat="30.5539218" lon="114.2157093" version="2" timestamp="2017-10-30T14:43:59Z" changeset="53369639" uid="3450290" user="ff5722">
+    <tag k="name" v="中兴社区"/>
+    <tag k="place" v="neighbourhood"/>
+  </node>
+  <node id="5575026071" lat="30.3108196" lon="114.0794027" version="2" timestamp="2020-01-23T08:18:24Z" changeset="79961300" uid="274857" user="Supaplex">
+    <tag k="name" v="汉南区"/>
+    <tag k="name:ceb" v="Hannan Qu"/>
+    <tag k="name:de" v="Hannan"/>
+    <tag k="name:en" v="Hannan District"/>
+    <tag k="name:es" v="Hannan"/>
+    <tag k="name:eu" v="Hannan Barrutia"/>
+    <tag k="name:fr" v="District de Hannan"/>
+    <tag k="name:it" v="Distretto di Hannan"/>
+    <tag k="name:ja" v="漢南区"/>
+    <tag k="name:ko" v="한난구"/>
+    <tag k="name:nan" v="Hàn-lâm-khu"/>
+    <tag k="name:no" v="Hannan"/>
+    <tag k="name:ru" v="Ханьнань"/>
+    <tag k="name:sv" v="Hannan, Wuhan"/>
+    <tag k="name:vi" v="Hán Nam"/>
+    <tag k="name:yue" v="漢南區"/>
+    <tag k="name:zh" v="汉南区"/>
+    <tag k="name:zh_pinyin" v="Hànnán Qū"/>
+    <tag k="place" v="city"/>
+    <tag k="wikidata" v="Q630681"/>
+    <tag k="wikipedia" v="en:Hannan District"/>
+  </node>
+  <node id="5575026073" lat="30.6208329" lon="114.1307616" version="3" timestamp="2020-01-24T22:53:50Z" changeset="80054645" uid="255936" user="StenSoft">
+    <tag k="name" v="东西湖区"/>
+    <tag k="name:cs" v="Tung-si-chu"/>
+    <tag k="name:de" v="Dongxihu"/>
+    <tag k="name:en" v="Dongxihu District"/>
+    <tag k="name:es" v="Dongxihu"/>
+    <tag k="name:eu" v="Dongxihu Barrutia"/>
+    <tag k="name:fr" v="District de Dongxihu"/>
+    <tag k="name:it" v="Distretto di Dongxihu"/>
+    <tag k="name:ja" v="東西湖区"/>
+    <tag k="name:ko" v="둥시후구"/>
+    <tag k="name:nan" v="Tang-sai-ô͘-khu"/>
+    <tag k="name:no" v="Dongxihu"/>
+    <tag k="name:ru" v="Дунсиху"/>
+    <tag k="name:sv" v="Dongxihu"/>
+    <tag k="name:vi" v="Đông Tây Hồ"/>
+    <tag k="name:yue" v="東西湖區"/>
+    <tag k="name:zh" v="东西湖区"/>
+    <tag k="name:zh_pinyin" v="Dōngxīhú Qū"/>
+    <tag k="place" v="city"/>
+    <tag k="wikidata" v="Q936443"/>
+    <tag k="wikipedia" v="en:Dongxihu District"/>
+  </node>
+  <node id="5893229197" lat="30.4888316" lon="114.2760186" version="1" timestamp="2018-09-08T17:54:51Z" changeset="62408109" uid="17497" user="katpatuka">
+    <tag k="alt_name" v="Zhangjiawan Subdistrict"/>
+    <tag k="china_class" v="jiedao"/>
+    <tag k="name" v="张家湾街道"/>
+    <tag k="name:en" v="Zhangjiawan"/>
+    <tag k="name:zh" v="张家湾"/>
+    <tag k="official_name" v="张家湾街道"/>
+    <tag k="place" v="town"/>
+    <tag k="source:name" v="GNS"/>
+    <tag k="wikidata" v="Q11066889"/>
+    <tag k="wikipedia" v="zh:张家湾街道"/>
+  </node>
+  <node id="5996469392" lat="30.5069032" lon="114.3459145" version="4" timestamp="2018-10-19T01:30:14Z" changeset="63663548" uid="542604" user="wlh_171">
+    <tag k="name" v="幸福佳苑"/>
+    <tag k="place" v="neighbourhood"/>
+  </node>
+  <node id="5996524712" lat="30.5051613" lon="114.3462956" version="3" timestamp="2018-10-19T01:30:35Z" changeset="63663551" uid="542604" user="wlh_171">
+    <tag k="name" v="梦里水乡"/>
+    <tag k="place" v="neighbourhood"/>
+  </node>
+  <node id="5996542529" lat="30.5090601" lon="114.3462937" version="3" timestamp="2018-10-19T01:29:54Z" changeset="63663544" uid="542604" user="wlh_171">
+    <tag k="name" v="鸿福花园"/>
+    <tag k="place" v="neighbourhood"/>
+  </node>
+  <node id="5996565506" lat="30.5050149" lon="114.3441386" version="3" timestamp="2018-10-19T01:30:53Z" changeset="63663554" uid="542604" user="wlh_171">
+    <tag k="name" v="中建南湖壹号"/>
+    <tag k="place" v="neighbourhood"/>
+  </node>
+  <node id="5996829659" lat="30.5137709" lon="114.3468848" version="4" timestamp="2020-02-25T14:48:32Z" changeset="81460766" uid="542604" user="wlh_171">
+    <tag k="name" v="圆梦美丽家园"/>
+    <tag k="place" v="neighbourhood"/>
+  </node>
+  <node id="5996834161" lat="30.5152407" lon="114.3501587" version="1" timestamp="2018-10-19T01:00:00Z" changeset="63663307" uid="542604" user="wlh_171">
+    <tag k="name" v="玉兰苑南区"/>
+    <tag k="place" v="neighbourhood"/>
+  </node>
+  <node id="5996835740" lat="30.5167816" lon="114.3508733" version="1" timestamp="2018-10-19T01:00:40Z" changeset="63663310" uid="542604" user="wlh_171">
+    <tag k="name" v="玉兰苑北区"/>
+    <tag k="place" v="neighbourhood"/>
+  </node>
+  <node id="6467588638" lat="30.5094892" lon="114.3400708" version="1" timestamp="2019-05-12T08:12:16Z" changeset="70153880" uid="542604" user="wlh_171">
+    <tag k="name" v="中建 福地星城"/>
+    <tag k="place" v="neighbourhood"/>
+  </node>
+  <node id="6467588639" lat="30.5103167" lon="114.3442317" version="1" timestamp="2019-05-12T08:12:16Z" changeset="70153880" uid="542604" user="wlh_171">
+    <tag k="name" v="狮城瀚园"/>
+    <tag k="place" v="neighbourhood"/>
+  </node>
+  <node id="6863681294" lat="30.4759083" lon="114.4871340" version="2" timestamp="2019-10-09T13:30:13Z" changeset="75464199" uid="5532815" user="李小明">
+    <tag k="name" v="光谷满庭春"/>
+    <tag k="place" v="neighbourhood"/>
+  </node>
+
+</osm>
