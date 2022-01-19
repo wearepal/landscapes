@@ -32,4 +32,4 @@ then
   docker secret create landscapes_storage "tmp/storage.yml" &>/dev/null
 fi
 
-#docker stack deploy "landscapes" -c "docker/docker-compose.yml"
+docker stack deploy "landscapes" -c "docker/docker-compose.yml"
