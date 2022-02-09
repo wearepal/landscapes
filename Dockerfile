@@ -17,5 +17,4 @@ RUN SECRET_KEY_BASE="0" bin/rails assets:precompile
 RUN rm -rf node_modules
 
 FROM base
-COPY --from=builder /usr/local/bundle/config /usr/local/bundle/config
 COPY --from=builder /app /app

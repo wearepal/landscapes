@@ -5,8 +5,8 @@ class ExtractMapTileArchiveJobTest < ActiveJob::TestCase
   test "perform" do
     upload = regions(:one).map_tile_uploads.create!(
       archive: ActiveStorage::Blob.create_and_upload!(
-        io: file_fixture("tiles.tar").open,
-        filename: "tiles.tar"
+        io: file_fixture("map_tile_upload.tar").open,
+        filename: "map_tile_upload.tar"
       )
     )
 
@@ -19,12 +19,21 @@ class ExtractMapTileArchiveJobTest < ActiveJob::TestCase
     end
 
     upload.reload
-    assert_equal "Extracted 1 tiles", upload.message
-    MapTileLayer.find_by!(region: regions(:one), name: "2020").map_tiles.find_by!(x: 0, y: 0, zoom: 0).source.open do |file|
-      assert_equal(
-        file_fixture("tiles/0-0-0.jpeg").binread,
-        file.read
-      )
+    assert_equal "Extracted 5 tiles", upload.message
+    uploaded_map_tiles = MapTileLayer.find_by!(region: regions(:one), name: "Test layer").map_tiles
+    [
+      [0, 0, 0],
+      [1, 0, 0],
+      [1, 0, 1],
+      [1, 1, 0],
+      [1, 1, 1]
+    ].each do |z, x, y|
+      uploaded_map_tiles.find_by!(x: x, y: y, zoom: z).source.open do |file|
+        assert_equal(
+          file_fixture("tiles/#{x}-#{y}-#{z}.jpeg").binread,
+          file.read
+        )
+      end
     end
   end
 end

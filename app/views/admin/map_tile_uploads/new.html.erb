@@ -18,7 +18,7 @@
     %>
       <div class="alert alert-info">
         <p>Use this form to upload map tiles produced by the <a href="https://github.com/predictive-analytics-lab/ssrp-tile-converter" target="_blank">tile conversion tool</a>.</p>
-        <p class="mb-0">The archive should be in <code>.tar</code> format, and should contain map tiles with filenames in the following format: <code>{x}-{y}-{z}-{year}.{extension}</code>.</p>
+        <p class="mb-0">The archive should be in <code>.tar</code> format, and should contain map tiles with the following directory structure: <code>{layer}/{z}/{x}/{y}.{extension}</code>.</p>
       </div>
       <div class="alert alert-danger">
         <p class="mb-0"><i class="fas fa-exclamation-triangle"></i> <strong>Archives up to 5GB in size are supported</strong>. If you need to upload more than 5GB of map tiles, please split them into multiple archives of up to 5GB each.</p>

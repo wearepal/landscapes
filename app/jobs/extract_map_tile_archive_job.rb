@@ -10,8 +10,8 @@ class ExtractMapTileArchiveJob < ApplicationJob
     job.report_error "Not a valid tar archive"
   end
 
-  FILENAME_REGEX = /\A([0-9]+)-([0-9]+)-([0-9]+)-([^.]+)\.[^.]+\z/
-
+  # {layer}/{z}/{x}/{y}.{extension}
+  FILENAME_REGEX = /\A([^\/]+)\/([0-9]+)\/([0-9]+)\/([0-9]+)\.[^.]+\z/
 
   def perform(upload)
     num_extracted = 0
@@ -33,16 +33,16 @@ class ExtractMapTileArchiveJob < ApplicationJob
               begin
                 n = 0
                 paths.each do |path|
-                  filename = File.basename(path)
+                  filename = Pathname.new(path).relative_path_from(dir).to_s
                   FILENAME_REGEX.match(filename) do |m|
                     n += 1
 
-                    layer = upload.region.map_tile_layers.find_or_create_by!(name: m[4])
+                    layer = upload.region.map_tile_layers.find_or_create_by!(name: m[1])
                     
                     tile = layer.map_tiles.create_or_find_by!(
-                      x: m[1].to_i,
-                      y: m[2].to_i,
-                      zoom: m[3].to_i
+                      x: m[3].to_i,
+                      y: m[4].to_i,
+                      zoom: m[2].to_i
                     )
 
                     unless tile.source.attached? && tile.source.checksum == Digest::MD5.file(path).base64digest
