@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_01_18_142217) do
+ActiveRecord::Schema.define(version: 2022_02_10_180911) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -47,6 +47,8 @@ ActiveRecord::Schema.define(version: 2022_01_18_142217) do
     t.string "name", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.bigint "team_id", null: false
+    t.index ["team_id"], name: "index_label_schemas_on_team_id"
   end
 
   create_table "labelling_function_applications", force: :cascade do |t|
@@ -188,6 +190,15 @@ ActiveRecord::Schema.define(version: 2022_01_18_142217) do
     t.index ["map_tile_layer_id"], name: "index_map_tiles_on_map_tile_layer_id"
   end
 
+  create_table "memberships", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "team_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["team_id"], name: "index_memberships_on_team_id"
+    t.index ["user_id"], name: "index_memberships_on_user_id"
+  end
+
   create_table "metric_sets", force: :cascade do |t|
     t.bigint "label_schema_id", null: false
     t.string "name"
@@ -212,6 +223,8 @@ ActiveRecord::Schema.define(version: 2022_01_18_142217) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.integer "lock_version", default: 0, null: false
+    t.bigint "team_id", null: false
+    t.index ["team_id"], name: "index_models_on_team_id"
   end
 
   create_table "overlays", force: :cascade do |t|
@@ -225,6 +238,14 @@ ActiveRecord::Schema.define(version: 2022_01_18_142217) do
 
   create_table "regions", force: :cascade do |t|
     t.string "name", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.bigint "team_id", null: false
+    t.index ["team_id"], name: "index_regions_on_team_id"
+  end
+
+  create_table "teams", force: :cascade do |t|
+    t.string "name"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
@@ -251,6 +272,7 @@ ActiveRecord::Schema.define(version: 2022_01_18_142217) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "label_schemas", "teams"
   add_foreign_key "labelling_function_applications", "labelling_functions"
   add_foreign_key "labelling_function_applications", "labelling_groups"
   add_foreign_key "labelling_function_applications", "regions"
@@ -271,8 +293,12 @@ ActiveRecord::Schema.define(version: 2022_01_18_142217) do
   add_foreign_key "map_tile_layers", "regions"
   add_foreign_key "map_tile_uploads", "regions"
   add_foreign_key "map_tiles", "map_tile_layers"
+  add_foreign_key "memberships", "teams"
+  add_foreign_key "memberships", "users"
   add_foreign_key "metric_sets", "label_schemas"
   add_foreign_key "metrics", "metric_sets"
+  add_foreign_key "models", "teams"
   add_foreign_key "overlays", "regions"
+  add_foreign_key "regions", "teams"
   add_foreign_key "training_data_downloads", "labelling_groups"
 end

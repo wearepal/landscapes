@@ -2,6 +2,9 @@ class User < ApplicationRecord
   has_secure_password
   has_secure_token
 
+  has_many :memberships
+  has_many :teams, through: :memberships
+
   before_validation { email.downcase! }
 
   validates :name, presence: true

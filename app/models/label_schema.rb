@@ -1,4 +1,6 @@
 class LabelSchema < ApplicationRecord
+  belongs_to :team
+  
   has_many :labelling_groups
   has_many :labellings, through: :labelling_groups
   
