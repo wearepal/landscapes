@@ -113,7 +113,7 @@ export class InputLabellingComponent extends Component {
   }
 
   async worker(node, inputs, outputs) {
-    const response = await fetch(`/admin/labellings/${node.data.labellingId}.json`)
+    const response = await fetch(`/labellings/${node.data.labellingId}.json`)
     const labelling = await response.json()
     labelling.data = Array.from(Uint8Array.from(atob(labelling.data), c => c.charCodeAt(0)))
 

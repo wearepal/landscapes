@@ -30,12 +30,15 @@
           <% if current_user %>
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown">
-                <%= current_user.name %>
+                <%= @team.try(&:persisted?) ? @team.name : current_user.name %>
               </a>
               <div class="dropdown-menu dropdown-menu-right">
-                <% if current_user.admin? %>
-                  <%= link_to "Admin tools", admin_root_path, class: "dropdown-item" %>
+                <h6 class="dropdown-header">My teams</h6>
+                <% current_user.teams.each do |team| %>
+                  <%= link_to team.name, team_regions_path(team), class: "dropdown-item" %>
                 <% end %>
+                <div class="dropdown-divider"></div>
+                <%= link_to "Create team...", new_team_path, class: "dropdown-item" %>
                 <%= link_to "Sign Out", session_path, method: :delete, class: "dropdown-item" %>
               </div>
             </li>

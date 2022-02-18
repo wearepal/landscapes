@@ -1,12 +1,13 @@
 class UsersController < ApplicationController
-  skip_before_action :require_authentication, only: [:new, :create]
-  before_action :forbid_authentication, only: [:new, :create]
+  skip_before_action :ensure_authenticated, only: [:new, :create]
   
   def new
+    authorize!
     @user = User.new
   end
 
   def create
+    authorize!
     @user = User.new(params.require(:user).permit(:name, :email, :password))
 
     if @user.save

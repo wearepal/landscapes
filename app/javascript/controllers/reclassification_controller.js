@@ -17,7 +17,6 @@ export default class extends Controller {
     const label = this.labelTargets.find(target => target.checked)
 
     const formData = new FormData()
-    formData.set("labelling_id", this.data.get("labelling-id"))
     formData.set("tile_index", event.target.dataset.tileIndex)
     formData.set("label_index", label.value)
 
@@ -26,7 +25,7 @@ export default class extends Controller {
     this.numPendingPromises++
     this.navigationButtonTargets.forEach(target => target.disabled = true)
     this.fetchWithRetry(
-      "/admin/labelling_corrections",
+      `/labellings/${this.data.get("labelling-id")}/labelling_corrections`,
       {
         method: "POST",
         headers: {

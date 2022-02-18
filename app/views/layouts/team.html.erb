@@ -1,0 +1,34 @@
+<%= extends :with_sidebar do %>
+  <% content_for :sidebar_header do %>
+    <%= @team.name %>
+  <% end %>
+  
+  <% content_for :sidebar_content do %>
+    <%= render "sidebar_link", path: [@team, :regions] do %>
+      <i class="fas fa-map-marked fa-fw"></i>
+      Regions
+    <% end %>
+    <%= render "sidebar_link", path: [@team, :label_schemas] do %>
+      <i class="fas fa-tags fa-fw"></i>
+      Label schemas
+    <% end %>
+    <%= render "sidebar_link", path: [@team, :models] do %>
+      <div class="d-flex align-items-center">
+        <div class="flex-grow-1">
+          <i class="fas fa-code fa-fw"></i>
+          Models
+        </div>
+      </div>
+    <% end %>
+    <%= render "sidebar_link", path: [@team, :memberships] do %>
+      <i class="fas fa-users fa-fw"></i>
+      People
+    <% end %>
+    <%= render "sidebar_link", path: edit_team_path(@team) do %>
+      <i class="fas fa-sliders-h fa-fw"></i>
+      Settings
+    <% end %>
+  <% end %>
+
+  <%= yield %>
+<% end %>

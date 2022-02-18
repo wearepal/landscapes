@@ -1,0 +1,25 @@
+<%= extends :with_sidebar do %>
+  <% content_for :sidebar_breadcrumb do %>
+    <%= link_to team_label_schemas_path(@team), class: "list-group-item list-group-item-action" do %>
+      <i class="fas fa-arrow-up fa-fw"></i>
+      <%= @team.name %>
+    <% end %>
+  <% end %>
+
+  <% content_for :sidebar_header do %>
+    <%= @label_schema.name %>
+  <% end %>
+  
+  <% content_for :sidebar_content do %>
+    <%= render "sidebar_link", path: label_schema_labels_path(@label_schema) do %>
+      <i class="fas fa-tags fa-fw"></i>
+      Labels
+    <% end %>
+    <%= render "sidebar_link", path: edit_label_schema_path(@label_schema) do %>
+      <i class="fas fa-sliders-h fa-fw"></i>
+      Settings
+    <% end %>
+  <% end %>
+
+  <%= yield %>
+<% end %>

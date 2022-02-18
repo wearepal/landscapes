@@ -1,0 +1,75 @@
+<div class="card mb-3">
+  <div class="card-header">
+    Upload labelling
+  </div>
+  <div class="card-body">
+    <div class="alert alert-info">
+      <p>Use this form to upload a labelling produced by the image classifier.</p>
+      <p>The labelling should be in CSV format, with the following columns: <code>filename</code>, <code>prediction</code>.</p>
+      <ul>
+        <li>
+          <code>filename</code> should be in the following format: <code>{x}-{y}-{zoom}-{imagery layer|year}</code>
+        </li>
+        <li><code>prediction</code> should be an integer, matching a label in the selected schema</li>
+        <li>n.b. please ensure that only one zoom level is present in the labelling</li>
+      </ul>
+      <p>Example:</p>
+<pre>
+filename,prediction
+0-0-1-2020.jpeg,1
+1-0-1-2020.jpeg,2
+0-1-1-2020.jpeg,3
+...
+</pre>
+    </div>
+
+    <%=
+      form_with(
+        model: [@region, @upload],
+        html: {
+          data: {
+            controller: "file-uploader form",
+            action: [
+              "ajax:error->form#onError",
+              "direct-uploads:start->file-uploader#start",
+              "direct-upload:progress->file-uploader#progress",
+              "direct-upload:error->file-uploader#error",
+            ].join(" "),
+          },
+        },
+      ) do |f|
+    %>
+      <div class="form-group">
+        <%= f.label :name %>
+        <span data-form-target="error" data-field="name"></span>
+        <%= f.text_field :name, placeholder: "e.g. Classifier Output", class: "form-control", data: { "form-target": "field", field: "name" } %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :label_schema_id %>
+        <span data-form-target="error" data-field="label_schema_id"></span>
+        <%= f.collection_select :label_schema_id, @team.label_schemas.order(:name), :id, :name, {}, class: "custom-select", data: { "form-target": "field", field: "label_schema_id" } %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :source, "CSV" %>
+        <span data-form-target="error" data-field="source"></span>
+        <div class="custom-file">
+          <%= f.file_field :source, direct_upload: true, accept: "text/csv", class: "custom-file-input", style: "cursor: pointer" %>
+          <%= f.label :source, class: "custom-file-label form-control", data: { "form-target": "field", field: "source" } do %>Choose file<% end %>
+        </div>
+      </div>
+      
+      <%= f.submit "Upload", class: "btn btn-primary" %>
+      <%= link_to "Cancel", [@region, :labelling_groups], class: "btn btn-secondary" %>
+
+      <div class="d-none" data-file-uploader-target="progress">
+        <h2 class="h5 mt-3 mb-0">Uploading...</h2>
+        <div data-file-uploader-target="status"></div>
+        <div class="progress">
+          <div class="progress-bar progress-bar-striped progress-bar-animated" data-file-uploader-target="progressBar"></div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

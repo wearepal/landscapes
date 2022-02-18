@@ -1,0 +1,27 @@
+<div class="card">
+  <div class="card-header d-flex align-items-center justify-content-between">
+    Add a user
+  </div>
+  <div class="card-body">
+    <%=
+      form_with(
+        model: [@team, @membership],
+        html: {
+          data: {
+            controller: "form",
+            action: "ajax:error->form#onError",
+          }
+        }
+      ) do |form|
+    %>
+      <div class="form-group">
+        <%= form.label :email, "Email address" %>
+        <div data-form-target="error" data-field="email"></div>
+        <%= form.email_field :email, class: 'form-control', data: { "form-target": "field", field: "email" } %>
+      </div>
+
+      <%= form.submit "Add user", class: "btn btn-primary" %>
+      <%= link_to "Cancel", [@team, :memberships], class: "btn btn-secondary" %>
+    <% end %>
+  </div>
+</div>

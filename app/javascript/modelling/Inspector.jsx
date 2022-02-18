@@ -123,15 +123,15 @@ function useFetchedArray(url) {
   return data
 }
 
-export default function({ nodeLabel, nodeOutput, close }) {
+export default function({ teamId, nodeLabel, nodeOutput, close }) {
   const mapRef = useRef()
 
   const [map, setMap] = useState(null)
   const [osmVisible, setOsmVisible] = useState(true)
   const [opacity, setOpacity] = useState(0.5)
-  const regions = useFetchedArray('/admin/regions.json')
-  const mapTileLayers = useFetchedArray('/admin/map_tile_layers.json')
-  const overlays = useFetchedArray('/admin/overlays.json')
+  const regions = useFetchedArray(`/teams/${teamId}/regions.json`)
+  const mapTileLayers = useFetchedArray(`/teams/${teamId}/map_tile_layers.json`)
+  const overlays = useFetchedArray(`/teams/${teamId}/overlays.json`)
   const [visibleOverlayIds, setVisibleOverlayIds] = useState(new Set())
   const [selectedLayerId, setSelectedLayerId] = useState(null)
   const [labelVisibility, setLabelVisibility] = useState(nodeOutput instanceof LabelledTileGrid ? new Map(nodeOutput.labelSchema.labels.map(l => [l.index, true])) : new Map())

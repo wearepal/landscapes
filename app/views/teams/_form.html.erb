@@ -1,0 +1,22 @@
+<%=
+  form_with(
+    model: @team,
+    html: {
+      data: {
+        controller: "form",
+        action: "ajax:error->form#onError",
+      }
+    }
+  ) do |f|
+%>
+  <div class="form-group">
+    <%= f.label :name %>
+    <span data-form-target="error" data-field="name"></span>
+    <%= f.text_field :name, class: 'form-control', data: { "form-target": "field", field: "name" } %>
+  </div>
+
+  <%= f.submit class: "btn btn-primary" %>
+  <% unless @team.persisted? %>
+    <%= link_to "Cancel", root_url, class: "btn btn-secondary" %>
+  <% end %>
+<% end %>
