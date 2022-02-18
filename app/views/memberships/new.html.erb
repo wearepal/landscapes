@@ -1,6 +1,6 @@
 <div class="card">
   <div class="card-header d-flex align-items-center justify-content-between">
-    Add a user
+    Invite a user
   </div>
   <div class="card-body">
     <%=
@@ -16,11 +16,11 @@
     %>
       <div class="form-group">
         <%= form.label :email, "Email address" %>
-        <div data-form-target="error" data-field="email"></div>
-        <%= form.email_field :email, class: 'form-control', data: { "form-target": "field", field: "email" } %>
+        <span data-form-target="error" data-field="email"></span>
+        <%= form.email_field :email, class: 'form-control', data: { "form-target": "field", field: "email" }, required: true %>
       </div>
 
-      <%= form.submit "Add user", class: "btn btn-primary" %>
+      <%= form.submit "Invite", class: "btn btn-primary" %>
       <%= link_to "Cancel", [@team, :memberships], class: "btn btn-secondary" %>
     <% end %>
   </div>
