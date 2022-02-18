@@ -11,6 +11,11 @@ class ModelsController < ApplicationController
     redirect_to edit_model_url(@team.models.create!(name: "Untitled model"))
   end
 
+  def show
+    authorize!
+    redirect_to edit_model_url(params[:id])
+  end
+
   def update
     if @model.update(model_params)
       render json: @model

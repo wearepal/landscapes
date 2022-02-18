@@ -6,6 +6,11 @@ class LabelSchemasController < ApplicationController
     render layout: "team"
   end
 
+  def show
+    authorize!
+    redirect_to label_schema_labels_url(params[:id])
+  end
+
   def new
     @label_schema = @team.label_schemas.new
     render layout: "team"
