@@ -1,11 +1,13 @@
 Rails.application.routes.draw do
   resources :teams, shallow: true do
+    resources :map_tile_layers, only: [:index]
+    resources :memberships
+    resources :overlays, only: [:index]
+
     resources :label_schemas do
       resources :duplicates, model_name: "LabelSchema"
       resources :labels
     end
-
-    resources :memberships
 
     resources :models do
       resources :duplicates, model_name: "Model"
@@ -13,6 +15,9 @@ Rails.application.routes.draw do
 
     resources :regions do
       resources :labelling_group_uploads
+      resources :map_tile_downloads
+      resources :overlays
+      resources :training_data_downloads
       
       resources :labelling_groups do
         resources :labellings do
@@ -28,15 +33,9 @@ Rails.application.routes.draw do
         get "map_tile" => "map_tiles#show"
       end
 
-      resources :map_tile_downloads
-
       resources :map_tile_uploads do
         get :index_table, on: :collection
       end
-
-      resources :overlays
-
-      resources :training_data_downloads
     end
   end
 

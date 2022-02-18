@@ -2,9 +2,10 @@ class MapTileLayersController < ApplicationController
   layout 'region'
 
   def index
-    @region = Region.find(params[:region_id])
-    @team = @region.team
-    authorize_for! @team
+    respond_to do |format|
+      format.html { set_region }
+      format.json { set_team }
+    end
   end
 
   def edit
@@ -31,4 +32,12 @@ class MapTileLayersController < ApplicationController
     flash.notice = "Enqueued '#{@layer.name}' for deletion (this may take some time)"
     redirect_to [@layer.region, :map_tile_layers]
   end
+
+  private
+
+    def set_region
+      @region = Region.find(params[:region_id])
+      @team = @region.team
+      authorize_for! @team
+    end
 end

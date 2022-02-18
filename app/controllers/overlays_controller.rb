@@ -1,8 +1,15 @@
 class OverlaysController < ApplicationController
   skip_before_action :ensure_authenticated, only: [:show]
-  before_action :set_region, only: [:index, :new, :create]
+  before_action :set_region, only: [:new, :create]
   before_action :set_overlay, only: [:edit, :update, :destroy]
   layout 'region'
+
+  def index
+    respond_to do |format|
+      format.html { set_region }
+      format.json { set_team }
+    end
+  end
   
   def show
     authorize!

@@ -5,5 +5,8 @@ class Team < ApplicationRecord
   has_many :label_schemas, dependent: :destroy
   has_many :models, dependent: :destroy
 
+  has_many :map_tile_layers, through: :regions
+  has_many :overlays, through: :regions
+
   validates :name, presence: true
 end
