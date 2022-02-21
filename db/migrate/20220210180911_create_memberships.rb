@@ -8,9 +8,10 @@ class CreateMemberships < ActiveRecord::Migration[6.1]
     end
 
     up_only do
-      default_team = Team.first!
       User.where(admin: true).find_each do |user|
-        Membership.create! user_id: user.id, team_id: default_team.id
+        Team.find_each do |team|
+          team.memberships.create! user_id: user.id
+        end
       end
     end
   end
