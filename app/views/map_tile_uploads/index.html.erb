@@ -1,0 +1,13 @@
+<div class="card">
+  <div class="card-header d-flex align-items-center justify-content-between">
+    Map tile uploads
+    <%= link_to new_region_map_tile_upload_path(@region), class: "btn btn-sm btn-outline-primary", title: "Upload" do %>
+      <i class="fas fa-upload"></i>
+    <% end %>
+  </div>
+  <div data-controller="content-loader" data-content-loader-url="<%= index_table_region_map_tile_uploads_path(@region) %>" data-content-loader-interval="5000">
+    <div data-content-loader-target="container" class="list-group list-group-flush">
+      <%= render "table" %>
+    </div>
+  </div>
+</div>

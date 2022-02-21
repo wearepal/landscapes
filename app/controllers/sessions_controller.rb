@@ -1,11 +1,12 @@
 class SessionsController < ApplicationController
-  skip_before_action :require_authentication, only: [:new, :create]
-  before_action :forbid_authentication, only: [:new, :create]
+  skip_before_action :ensure_authenticated, only: [:new, :create]
   
   def new
+    authorize!
   end
 
   def create
+    authorize!
     user = User.find_by(params.permit(:email))
     
     if user.try(:authenticate, params[:password])
@@ -17,6 +18,7 @@ class SessionsController < ApplicationController
   end
 
   def destroy
+    authorize!
     cookies.delete :token
     session.delete :token
     redirect_to root_url

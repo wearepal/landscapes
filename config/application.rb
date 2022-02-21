@@ -22,5 +22,8 @@ module Landscapes
     config.active_storage.resolve_model_to_route = :rails_storage_proxy
     config.active_storage.variant_processor = :vips
     config.action_view.form_with_generates_remote_forms = true
+    config.action_dispatch.rescue_responses.merge!(
+      'ApplicationController::Forbidden' => :forbidden
+    )
   end
 end

@@ -1,0 +1,69 @@
+<%=
+  form_with(
+    model: [(@region unless @overlay.persisted?), @overlay].compact,
+    html: {
+      data: {
+        controller: "file-uploader form",
+        action: [
+          "ajax:error->form#onError",
+          "direct-uploads:start->file-uploader#start",
+          "direct-upload:progress->file-uploader#progress",
+          "direct-upload:error->file-uploader#error",
+        ].join(" "),
+      }
+    }
+  ) do |f|
+%>
+  <div class="form-group">
+    <%= f.label :name %>
+    <span data-form-target="error" data-field="name"></span>
+    <%= f.text_field :name, class: 'form-control', data: { "form-target": "field", field: "name" } %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :source, "GeoJSON file" %>
+    <span data-form-target="error" data-field="source"></span>
+    <div class="custom-file">
+      <%= f.file_field :source, direct_upload: true, accept: "application/json", class: "custom-file-input", style: "cursor: pointer", data: { "form-target": "field", field: "source" } %>
+      <%= f.label :source, class: "custom-file-label" do %>
+        <% if @overlay.source.present? %>
+          <%= @overlay.source.filename %>
+        <% else %>
+          Choose file
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="form-group" data-controller="colour-picker">
+    <%= f.label :colour %>
+    <span data-form-target="error" data-field="colour"></span>
+    <div class="input-group">
+      <div class="input-group-prepend">
+        <div class="input-group-text">#</div>
+      </div>
+      <%= f.text_field :colour, class: 'form-control', data: { "form-target": "field", "colour-picker-target": "field", field: "colour", action: "colour-picker#change" } %>
+      <div class="input-group-append">
+        <div class="input-group-text">
+          <div class="swatch" style="background-color: #<%= @overlay.colour || "fff" %>" data-colour-picker-target="swatch"></div>
+        </div>
+      </div>
+    </div>
+    <div class="text-center">
+      <% %w(df9f9f dfbf9f dfdf9f bfdf9f 9fdf9f 9fdfbf 9fdfdf 9fbfdf 9f9fdf bf9fdf df9fdf df9fbf).each do |preset| %>
+        <div class="swatch" style="background-color: #<%= preset %>; cursor: pointer" data-action="click->colour-picker#choosePreset" data-colour="<%= preset %>"></div>
+      <% end %>
+    </div>
+  </div>
+
+  <%= f.submit "Save", class: "btn btn-primary" %>
+  <%= link_to "Cancel", [@overlay.region, :overlays], class: "btn btn-secondary" %>
+
+  <div class="d-none" data-file-uploader-target="progress">
+    <h2 class="h5 mt-3 mb-0">Uploading...</h2>
+    <div data-file-uploader-target="status"></div>
+    <div class="progress">
+      <div class="progress-bar progress-bar-striped progress-bar-animated" data-file-uploader-target="progressBar"></div>
+    </div>
+  </div>
+<% end %>

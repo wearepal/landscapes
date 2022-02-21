@@ -47,7 +47,7 @@ export class LoadLabellingComponent extends Component {
     const labellingGroup = this.getSelectedLabellingGroup(node)
     await Promise.all(
       labellingGroup.labellings.map(async labelling => {
-        const response = await fetch(`/admin/labellings/${labelling.id}.json`)
+        const response = await fetch(`/labellings/${labelling.id}.json`)
         const labellingData = await response.json()
 
         const out = outputs[labelling.id.toString()] = new LabelledTileGrid(

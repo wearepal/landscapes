@@ -1,0 +1,41 @@
+<%= extends :with_sidebar do %>
+  <% content_for :sidebar_breadcrumb do %>
+    <%= link_to team_regions_path(@team), class: "list-group-item list-group-item-action" do %>
+      <i class="fas fa-arrow-up fa-fw"></i>
+      <%= @team.name %>
+    <% end %>
+  <% end %>
+
+  <% content_for :sidebar_header do %>
+    <%= @region.name %>
+  <% end %>
+  
+  <% content_for :sidebar_content do %>
+    <%= render "sidebar_link", path: region_labelling_groups_path(@region) do %>
+      <i class="fas fa-tag fa-fw"></i>
+      Labellings
+    <% end %>
+    <%= render "sidebar_link", path: region_map_tile_layers_path(@region) do %>
+      <i class="fas fa-layer-group fa-fw"></i>
+      Map base layers
+    <% end %>
+    <%= render "sidebar_link", path: region_overlays_path(@region) do %>
+      <i class="fas fa-layer-group fa-fw"></i>
+      Map overlays
+    <% end %>
+    <%= render "sidebar_link", path: region_map_tile_uploads_path(@region) do %>
+      <i class="fas fa-upload fa-fw"></i>
+      Map tile uploads
+    <% end %>
+    <%= render "sidebar_link", path: region_map_tile_downloads_path(@region) do %>
+      <i class="fas fa-download fa-fw"></i>
+      Map tile downloads
+    <% end %>
+    <%= render "sidebar_link", path: region_training_data_downloads_path(@region) do %>
+      <i class="fas fa-download fa-fw"></i>
+      Training data downloads
+    <% end %>
+  <% end %>
+
+  <%= yield %>
+<% end %>

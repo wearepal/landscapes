@@ -1,0 +1,32 @@
+<div class="card">
+  <div class="card-header d-flex align-items-center justify-content-between">
+    People
+    <%= link_to new_team_membership_path(@team), class: "btn btn-sm btn-outline-primary", title: "Invite a user" do %>
+      <i class="fas fa-plus"></i>
+    <% end %>
+  </div>
+  <div class="list-group list-group-flush" data-controller="filter">
+    <div class="list-group-item list-group-item-light">
+      <input placeholder="Search" class="form-control" data-action="input->filter#update" autofocus>
+    </div>
+    <% @team.memberships.includes(:user).order('users.name').each do |membership| %>
+      <div class="list-group-item" data-filter-target="item">
+        <div class="d-flex align-items-center justify-content-between">
+          <div>
+            <strong><%= membership.user.name %></strong>
+            <% if membership.user == current_user %>
+              <div class="badge badge-secondary">You</div>
+            <% end %>
+            <br>
+            <%= membership.user.email %>
+          </div>
+          <% if membership.user != current_user %>
+            <div class="btn-group btn-group-sm">
+              <%= link_to "Remove from team", membership, method: :delete, data: { confirm: "Are you sure you want to remove '#{membership.user.name}' from team '#{@team.name}'?" }, class: "btn btn-outline-danger" %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

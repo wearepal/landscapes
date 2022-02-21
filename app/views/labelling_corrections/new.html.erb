@@ -1,0 +1,163 @@
+<div class="container my-4">
+  <div
+    class="card mb-3"
+    data-controller="reclassification keyboard-shortcuts"
+    data-action="keydown@document->keyboard-shortcuts#handleKey"
+    data-reclassification-labelling-id="<%= @labelling.id %>"
+    data-reclassification-current-label-index="<%= @label.try(&:index) || 255 %>"
+  >
+    <div class="card-header d-flex flex-wrap align-items-center">
+      <%= link_to "Labellings", [@group.region, :labelling_groups] %>
+      &nbsp;/&nbsp;
+      <%= link_to @group.name, @group %>
+      &nbsp;/&nbsp;
+      <div class="dropdown">
+        <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+          <%= @labelling.map_tile_layer.name %>
+        </button>
+        <div class="dropdown-menu" style="z-index: 2000">
+          <% @group.labellings.ordered_by_layer.each do |labelling| %>
+            <%= link_to(
+              labelling.map_tile_layer.name,
+              { labelling_id: labelling.id, label_id: @label.try(&:id) },
+              class: "dropdown-item #{"active" if labelling == @labelling}"
+            ) %>
+          <% end %>
+        </div>
+      </div>
+      &nbsp;/ Reclassify&nbsp;
+      <div class="dropdown">
+        <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+          <%= @label.nil? ? "Unlabeled" : @label.label %>
+        </button>
+        <div class="dropdown-menu" style="z-index: 2000">
+          <%= link_to(
+            { labelling_id: @labelling.id },
+            class: "dropdown-item #{"active" if @label.nil?}"
+          ) do %>
+            <em>Unlabeled</em>
+          <% end %>
+          <% @group.label_schema.labels.order(:index).each do |label| %>
+            <%= link_to(
+              label.label,
+              { labelling_id: @labelling.id, label_id: label.id },
+              class: "dropdown-item #{"active" if label == @label}"
+            ) %>
+          <% end %>
+        </div>
+      </div>
+      &nbsp;tiles
+    </div>
+
+    <div class="card-body sticky-top border-bottom bg-white">
+      <div class="d-flex flex-wrap justify-content-center btn-group-toggle" data-toggle="buttons">
+        <% @group.label_schema.labels.order(:index).each.with_index(1) do |label, i| %>
+          <label
+            class="btn btn-outline-dark m-1 <%= "active" if i == 1 %>"
+            data-keyboard-shortcuts-target="button"
+            data-keyboard-shortcut="<%= i.to_s(36) if i < 36 %>"
+          >
+            <input
+              type="radio"
+              name="labels"
+              data-reclassification-target="label"
+              data-colour="#<%= label.colour %>"
+              autocomplete="off"
+              value="<%= label.index %>"
+              <%= "checked" if i == 1 %>
+            >
+            <% if i < 36 %>
+              <kbd style="background-color: #<%= label.colour %>"><%= i.to_s(36).upcase %></kbd>
+            <% end %>
+            <%= label.label %>
+          </label>
+        <% end %>
+        <label
+          class="btn btn-outline-dark m-1"
+          data-keyboard-shortcuts-target="button"
+          data-keyboard-shortcut="0"
+        >
+          <input
+            type="radio"
+            name="labels"
+            data-reclassification-target="label"
+            data-colour="black"
+            autocomplete="off"
+            value="255"
+          >
+          <kbd>0</kbd>
+          No label
+        </label>
+      </div>
+    </div>
+
+    <div class="card-body">
+      <% if @tiles.empty? %>
+        <div class="text-center"><em>No more tiles of this class to display</em></div>
+      <% else %>
+        <div class="reclassification">
+          <% @tiles.each do |tile, index| %>
+            <%= image_tag(
+              tile.source,
+              width: 256,
+              height: 256,
+              style: "--label-colour: \##{@label.nil? ? "000" : @label.colour};",
+              loading: "lazy",
+              draggable: false,
+              data: {
+                action: 'click->reclassification#reclassify',
+                'tile-index': index
+              }
+            ) %>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+
+    <% unless @cursor == 0 && @last_page %>
+      <div class="card-footer d-flex align-items-center">
+        <% unless @prev_cursors.empty? %>
+          <%= button_to(
+            "Previous page",
+            nil,
+            params: {
+              labelling_id: @labelling.id,
+              label_id: @label.try(&:id),
+              prev_cursors: JSON.generate(@prev_cursors[0...-1]),
+              cursor: @prev_cursors.last
+            },
+            method: :get,
+            class: "mr-3 btn btn-primary",
+            data: { "reclassification-target": "navigationButton" }
+          ) %>
+        <% end %>
+        <div class="flex-grow-1">
+          <div class="progress border">
+            <% (
+              @last_page ? 100 : @tiles.last[1] * 100 / (@group.width * @group.height)
+            ).tap do |percentage| %>
+              <div class="progress-bar" style="width: <%= percentage %>%">
+                <%= percentage %>%
+              </div>
+            <% end %>
+          </div>
+        </div>
+        <% unless @last_page %>
+          <%= button_to(
+            "Next page",
+            nil,
+            params: {
+              labelling_id: @labelling.id,
+              label_id: @label.try(&:id),
+              prev_cursors: JSON.generate(@prev_cursors + [@cursor]),
+              cursor: @tiles.last[1] + 1
+            },
+            method: :get,
+            class: "ml-3 btn btn-primary",
+            data: { "reclassification-target": "navigationButton" }
+          ) %>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+</div>

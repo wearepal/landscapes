@@ -1,0 +1,21 @@
+<div class="card">
+  <div class="card-header d-flex align-items-center justify-content-between">
+    Regions
+    <%= link_to new_team_region_path(@team), class: "btn btn-sm btn-outline-primary", title: "Create new region" do %>
+      <i class="fas fa-plus"></i>
+    <% end %>
+  </div>
+  <div class="list-group list-group-flush" data-controller="filter">
+    <div class="list-group-item list-group-item-light">
+      <input placeholder="Search" class="form-control" data-action="input->filter#update" autofocus>
+    </div>
+    <% @team.regions.order(:name).each do |region| %>
+      <%= link_to region_labelling_groups_path(region), class: "list-group-item list-group-item-action", data: { "filter-target": "item" } do %>
+        <div class="d-flex align-items-center justify-content-between">
+          <%= region.name %>
+          <i class="fas fa-chevron-right"></i>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+</div>

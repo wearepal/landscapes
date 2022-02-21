@@ -104,7 +104,7 @@ export class SaveLabellingComponent extends Component {
     labellingGroupParams.set('labelling_group[width]', x1 - x0)
     labellingGroupParams.set('labelling_group[height]', y1 - y0)
 
-    const createLabellingGroupResponse = await fetch(`/admin/regions/${this.getSelectedRegion(node).id}/labelling_groups`, {
+    const createLabellingGroupResponse = await fetch(`/regions/${this.getSelectedRegion(node).id}/labelling_groups`, {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -122,7 +122,7 @@ export class SaveLabellingComponent extends Component {
       labellingParams.set('labelling[map_tile_layer_id]', layer.mapTileLayerId)
       labellingParams.set('labelling[data]', btoa(new TextDecoder('ascii').decode(layer.labelling.data)))
 
-      const response = await fetch(`/admin/labelling_groups/${labellingGroup.id}/labellings`, {
+      const response = await fetch(`/labelling_groups/${labellingGroup.id}/labellings`, {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
@@ -136,7 +136,7 @@ export class SaveLabellingComponent extends Component {
   }
 
   async deleteSaved(node) {
-    await fetch(`/admin/labelling_groups/${node.data.labellingGroupId}`, {
+    await fetch(`/labelling_groups/${node.data.labellingGroupId}`, {
       method: 'DELETE',
       headers: {
         'Accept': 'application/json',

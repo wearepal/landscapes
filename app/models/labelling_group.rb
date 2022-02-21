@@ -1,6 +1,7 @@
 class LabellingGroup < ApplicationRecord
   belongs_to :region
   belongs_to :label_schema
+  delegate :team, to: :region
   has_many :labellings, dependent: :destroy
   has_many :labelling_group_uploads, dependent: :destroy
   has_many :training_data_downloads, dependent: :destroy

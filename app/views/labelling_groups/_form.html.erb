@@ -1,0 +1,34 @@
+<%=
+  form_with(
+    model: @labelling_group.persisted? ? @labelling_group : [@region, @labelling_group],
+    html: {
+      data: {
+        controller: "form",
+        action: "ajax:error->form#onError",
+      },
+    },
+  ) do |f|
+%>
+  <div class="form-group">
+    <%= f.label :name %>
+    <span data-form-target="error" data-field="name"></span>
+    <%= f.text_field :name, class: "form-control", data: { "form-target": "field", field: "name" } %>
+  </div>
+
+  <% unless @labelling_group.persisted? %>
+    <div class="form-group">
+      <%= f.label :label_schema_id %>
+      <span data-form-target="error" data-field="label_schema_id"></span>
+      <%= f.select :label_schema_id, @team.label_schemas.order(:name).map { |s| [s.name, s.id] }, {}, class: "form-control", data: { "form-target": "field", field: "label_schema_id" } %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :zoom %>
+      <span data-form-target="error" data-field="zoom"></span>
+      <%= f.number_field :zoom, class: "form-control", data: { "form-target": "field", field: "zoom" } %>
+    </div>
+  <% end %>
+
+  <%= f.submit "Save", class: "btn btn-primary", data: { 'disable-with': "Please wait (this may take several seconds)..." } %>
+  <%= link_to "Cancel", @labelling_group.persisted? ? @labelling_group : [@region, :labelling_groups], class: "btn btn-secondary" %>
+<% end %>

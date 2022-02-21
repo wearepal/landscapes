@@ -1,0 +1,62 @@
+<div
+  data-controller="labelling"
+  data-action="turbolinks:before-visit@document->labelling#warnIfUnsaved keydown@document->labelling#handleShortcutKey"
+  data-labelling-region-id="<%= @labelling_group.region.id %>"
+  data-labelling-map-tile-layer-id="<%= @labelling.map_tile_layer.id %>"
+  data-labelling-south-west-lat="<%= @bounds[1][0] %>"
+  data-labelling-south-west-lng="<%= @bounds[0][1] %>"
+  data-labelling-north-east-lat="<%= @bounds[0][0] %>"
+  data-labelling-north-east-lng="<%= @bounds[1][1] %>"
+  data-labelling-zoom-min="<%= @labelling.map_tile_layer.min_zoom %>"
+  data-labelling-zoom-max="<%= @labelling.map_tile_layer.max_zoom %>"
+  data-labelling-labels="<%= Base64.strict_encode64(@labelling.data) %>"
+  data-labelling-zoom="<%= @labelling_group.zoom %>"
+  data-labelling-x="<%= @labelling_group.x %>"
+  data-labelling-y="<%= @labelling_group.y %>"
+  data-labelling-width="<%= @labelling_group.width %>"
+  data-labelling-height="<%= @labelling_group.height %>"
+  data-labelling-colours="<%= @labelling_group.label_schema.labels.map { |label| [label.index, label.colour] }.to_h.to_json %>"
+  data-labelling-url="<%= labelling_path(@labelling) %>"
+  class="map"
+>
+  <div class="map__container" data-labelling-target="container"></div>
+
+  <div class="map__sidebar">
+    <div class="lead">
+      Brush
+    </div>
+    <div class="custom-control custom-radio">
+      <input type="radio" class="custom-control-input" name="brush" id="brush-0" checked value="255">
+      <label class="custom-control-label" for="brush-0">
+        <kbd>0</kbd>
+        <span class="swatch" style="border: solid 1px #ccc; margin-top: -2px;"></span>
+        Eraser
+      </label>
+    </div>
+    <% @labelling.labelling_group.label_schema.labels.order(:index).each.with_index(1) do |label, i| %>
+      <div class="custom-control custom-radio">
+        <input type="radio" class="custom-control-input" name="brush" id="brush-<%= i %>" value="<%= label.index %>">
+        <label class="custom-control-label" for="brush-<%= i %>">
+          <% if i < 36 %>
+            <kbd><%= i.to_s(36).upcase %></kbd>
+          <% end %>
+          <span class="swatch" style="background-color: #<%= label.colour %>"></span>
+          <%= label.label %>
+        </label>
+      </div>
+    <% end %>
+    <em>Ctrl-drag/⌘-drag to pan</em>
+
+    <div class="lead mt-4">
+      Brush radius
+      <small><kbd>[</kbd> / <kbd>]</kbd></small>
+      <small class="text-muted"><span data-labelling-target="brushSizeLabel"></span> metres</small>
+    </div>
+    <input id="brush-radius" type="range" min="0" max="1" step="0.01" value="0.5" class="custom-range" data-action="labelling#setBrushSize" data-labelling-target="brushSize">
+
+    <div class="mt-4">
+      <button class="btn btn-primary" data-action="labelling#save" data-labelling-target="saveButton">Save changes</button>
+      <button class="btn btn-secondary" data-action="labelling#closeWindow">Close window</button>
+    </div>
+  </div>
+</div>

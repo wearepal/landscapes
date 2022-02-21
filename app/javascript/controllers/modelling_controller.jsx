@@ -194,6 +194,7 @@ export default class extends Controller {
     this.inspectorElement = this.element.appendChild(document.createElement("div"))
     ReactDOM.render(
       <Inspector
+        teamId={this.data.get('team-id')}
         nodeLabel={nodeLabel ? `${nodeLabel} (${nodeName})` : nodeName}
         nodeOutput={selectedNode.meta.output}
         close={this.closeInspector.bind(this)}

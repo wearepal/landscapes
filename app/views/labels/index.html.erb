@@ -1,0 +1,29 @@
+<div class="card">
+  <div class="card-header d-flex align-items-center justify-content-between">
+    Labels
+    <%= link_to new_label_schema_label_path(@label_schema), class: "btn btn-sm btn-outline-primary", title: "Create new label" do %>
+      <i class="fas fa-plus"></i>
+    <% end %>
+  </div>
+  <div class="list-group list-group-flush" data-controller="filter">
+    <div class="list-group-item list-group-item-light">
+      <input placeholder="Search" class="form-control" data-action="input->filter#update" autofocus>
+    </div>
+    <% @label_schema.labels.order(:index).each do |label| %>
+      <div class="list-group-item" data-filter-target="item">
+        <div class="d-flex align-items-center">
+          <div class="swatch" style="background-color: #<%= label.colour %>"></div>
+          <strong class="mx-3"><%= label.index %></strong>
+          <span class="flex-grow-1">
+            <%= label.label %>
+          </span>
+          <code class="mx-3"><%= label.name %></code>
+          <div class="btn-group btn-group-sm">
+            <%= link_to "Edit", edit_label_path(label), class: "btn btn-outline-primary" %>
+            <%= link_to "Delete", label_path(label), method: :delete, data: { confirm: "Are you sure you want to delete '#{label.label}'?" }, class: "btn btn-outline-danger" %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

@@ -23,7 +23,6 @@ You will need a server with:
   * The first time you deploy the app, you will be prompted for configuration details
 * After a minute or two, the app should come online
 * Visit the web app at its configured address, and create a user account from the menu in the top-right of the page
-  * The first account you create will automatically be promoted to administrator
 * To shut down the app, run `docker stack rm landscapes`
 
 ### Customisation points

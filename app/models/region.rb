@@ -1,4 +1,6 @@
 class Region < ApplicationRecord
+  belongs_to :team
+  
   has_many :labelling_group_uploads, dependent: :destroy
   has_many :labelling_groups, dependent: :destroy
   has_many :labellings, through: :labelling_groups
