@@ -26,10 +26,10 @@ class CreatePlaceNameOverlayJob < ApplicationJob
   private
 
   def places_in(region)
-    left = region.south_west_lng
-    bottom = region.south_west_lat
-    right = region.north_east_lng
-    top = region.north_east_lat
+    left = region.south_west_extent[1]
+    bottom = region.south_west_extent[0]
+    right = region.north_east_extent[1]
+    top = region.north_east_extent[0]
     url = "https://overpass-api.de/api/xapi_meta?node[place=#{PLACE_TYPES.join("|")}][bbox=#{left},#{bottom},#{right},#{top}]"
     Nokogiri::XML(URI.open(url)).xpath("//node").map do |node|
       {

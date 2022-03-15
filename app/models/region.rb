@@ -29,38 +29,6 @@ class Region < ApplicationRecord
     [south_west_extent, north_east_extent].flatten
   end
 
-  # :nocov:
-    def south_west_lat
-      ActiveSupport::Deprecation.warn
-      south_west_extent[0]
-    end
-
-    def south_west_lng
-      ActiveSupport::Deprecation.warn
-      south_west_extent[1]
-    end
-
-    def north_east_lat
-      ActiveSupport::Deprecation.warn
-      north_east_extent[0]
-    end
-
-    def north_east_lng
-      ActiveSupport::Deprecation.warn
-      north_east_extent[1]
-    end
-
-    def min_zoom
-      ActiveSupport::Deprecation.warn
-      map_tile_layers.map(&:min_zoom).max
-    end
-
-    def max_zoom
-      ActiveSupport::Deprecation.warn
-      map_tile_layers.map(&:max_zoom).min
-    end
-  # :nocov:
-
   def default_map_tile_layer
     map_tile_layers.order(:name).last
   end
