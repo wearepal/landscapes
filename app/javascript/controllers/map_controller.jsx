@@ -146,7 +146,7 @@ const MapView = ({ labels, labellingGroups, labellings, labelSchemas, mapTileLay
           mapTileLayerId: labellings.find(l => l.id === action.value).mapTileLayerId
         }
       case 'SET_MAP_TILE_LAYER_ID':
-        return { ...state, mapTileLayerId: action.value, imageryVisible: true, osmVisible: false }
+        return { ...state, mapTileLayerId: action.value, imageryVisible: true }
       case 'SET_LABELLING_OPACITY':
         return { ...state, labellingOpacity: action.value }
       case 'SET_OVERLAY_LINE_WIDTH':
@@ -154,9 +154,9 @@ const MapView = ({ labels, labellingGroups, labellings, labelSchemas, mapTileLay
       case 'SET_OVERLAY_OPACITY':
         return { ...state, overlayOpacity: action.value }
       case 'TOGGLE_IMAGERY_VISIBILITY':
-        return { ...state, imageryVisible: !state.imageryVisible, osmVisible: state.osmVisible && state.imageryVisible }
+        return { ...state, imageryVisible: !state.imageryVisible }
       case 'TOGGLE_OSM_VISIBILITY':
-        return { ...state, osmVisible: !state.osmVisible, imageryVisible: state.imageryVisible && state.osmVisible }
+        return { ...state, osmVisible: !state.osmVisible }
       case 'TOGGLE_LABEL_VISIBILITY':
         return { ...state, visibleLabels: toggle(state.visibleLabels, action.value) }
       case 'TOGGLE_ALL_LABELS_VISIBILITY':
@@ -200,11 +200,12 @@ const MapView = ({ labels, labellingGroups, labellings, labelSchemas, mapTileLay
     <div className="d-flex align-items-stretch" style={{ height: "calc(100vh - 3.5rem)" }}>
       <div className="flex-grow-1 bg-dark" style={{ height: "100%" }}>
         <Map extent={extent}>
+          <OSMLayer visible={osmVisible}/>
           <TileLayer
             mapTileLayer={mapTileLayers.find(l => l.id === mapTileLayerId)}
             visible={imageryVisible}
+            opacity={osmVisible ? 0.6 : 1.0}
           />
-          <OSMLayer visible={osmVisible}/>
           <ImageLayer
             visible={labellingId !== null}
             url={labellingId && `/labellings/${labellingId}.png?${

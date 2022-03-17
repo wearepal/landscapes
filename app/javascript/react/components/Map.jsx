@@ -121,12 +121,12 @@ export const OverlayLayer = ({ visible, id, colour, strokeWidth, backgroundOpaci
   return null
 }
 
-export const TileLayer = ({ visible, mapTileLayer }) => {
+export const TileLayer = ({ opacity, visible, mapTileLayer }) => {
   const map = useContext(MapContext)
   const [layer, setLayer] = useState(null)
 
   useEffect(() => {
-    setLayer(new olTileLayer({ visible }))
+    setLayer(new olTileLayer({ opacity, visible }))
     return () => setLayer(null)
   }, [])
 
@@ -152,6 +152,10 @@ export const TileLayer = ({ visible, mapTileLayer }) => {
   useEffect(() => {
     layer?.setVisible(visible)
   }, [layer, visible])
+
+  useEffect(() => {
+    layer?.setOpacity(opacity)
+  }, [layer, opacity])
 
   useMapLayerBinding(map, layer)
 
