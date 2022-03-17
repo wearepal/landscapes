@@ -4,5 +4,5 @@ set -euxo pipefail
 docker build --pull \
   --platform "linux/amd64" \
   -f "Dockerfile" \
-  -t "wearepal/landscapes:3.0.0" \
+  -t "wearepal/landscapes:3.1.0" \
   .
