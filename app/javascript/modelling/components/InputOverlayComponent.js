@@ -42,7 +42,7 @@ export class InputOverlayComponent extends Component {
       node.data.zoom = 18
     }
 
-    node.addOutput(new Output('out', 'Areas within overlay', setSocket))
+    node.addOutput(new Output('out', 'Tiles intersecting overlay', setSocket))
 
     node.addControl(
       new SelectControl(

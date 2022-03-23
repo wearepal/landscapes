@@ -1,6 +1,7 @@
 import { createEmpty as createEmptyExtent, extend as extendExtent } from 'ol/extent'
 import GeoJSON from 'ol/format/GeoJSON'
 import GeometryType from 'ol/geom/GeometryType'
+import Polygon from 'ol/geom/Polygon'
 import { createXYZ } from 'ol/tilegrid'
 import { BooleanTileGrid } from '../TileGrid'
 
@@ -35,8 +36,8 @@ export async function rasteriseOverlay(overlayId, zoom) {
       const featureTileRange = tileGrid.getTileRangeForExtentAndZ(geom.getExtent(), zoom)
       for (let x = featureTileRange.minX; x <= featureTileRange.maxX; ++x) {
         for (let y = featureTileRange.minY; y <= featureTileRange.maxY; ++y) {
-          const point = tileGrid.getTileCoordCenter([zoom, x, y])
-          if (geom.containsXY(point[0], point[1])) {
+          const tileExtent = tileGrid.getTileCoordExtent([zoom, x, y])
+          if (geom.intersectsExtent(tileExtent)) {
             result.set(x, y, true)
           }
         }
