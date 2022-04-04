@@ -112,7 +112,7 @@ class ProcessLabellingGroupUploadJob < ApplicationJob
 
   private
 
-    IMAGE_NAME_REGEX = /([0-9]+)-([0-9]+)-([0-9]+)-([^.]+).?[a-zA-Z0-9]*/
+    IMAGE_NAME_REGEX = /([0-9]+)-([0-9]+)-([0-9]+)-(.+)\.[^\.]+/
 
     def open_csv(file)
       CSV.open(file, headers: :first_row).tap do |csv|
