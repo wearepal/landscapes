@@ -18,7 +18,7 @@ services:
     - caddy:/data
 
   migration:
-    image: wearepal/landscapes:3.1.1
+    image: wearepal/landscapes:4.0.0
     command: bin/run-migrations
     secrets:
     - secret_key_base
@@ -29,7 +29,7 @@ services:
         condition: none
 
   web:
-    image: wearepal/landscapes:3.1.1
+    image: wearepal/landscapes:4.0.0
     command: bin/run-server
     secrets:
     - secret_key_base
@@ -39,7 +39,7 @@ services:
       target: /app/config/storage.yml
 
   worker:
-    image: wearepal/landscapes:3.1.1
+    image: wearepal/landscapes:4.0.0
     command: bin/run-worker
     stop_signal: SIGQUIT
     secrets:
