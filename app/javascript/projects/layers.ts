@@ -4,6 +4,12 @@ import OSM from 'ol/source/OSM'
 import XYZ from 'ol/source/XYZ'
 import { fromLonLat } from 'ol/proj'
 import { DBModels } from './db_models'
+import olVectorLayer from 'ol/layer/Vector'
+import VectorSource from 'ol/source/Vector'
+import GeoJSON from 'ol/format/GeoJSON'
+import { asArray } from 'ol/color'
+import { Circle, Fill, Stroke, Style, Text } from 'ol/style'
+import { Point } from 'ol/geom'
 
 interface BaseLayer {
   name: string
@@ -11,22 +17,31 @@ interface BaseLayer {
   opacity: number
 }
 
-interface OsmLayer extends BaseLayer {
+export interface OsmLayer extends BaseLayer {
   type: "OsmLayer"
 }
 
-interface MapTileLayer extends BaseLayer {
+export interface MapTileLayer extends BaseLayer {
   type: "MapTileLayer"
-  mapTileLayerId: number
+  mapTileLayerId: number // TODO: rename to simply "id"
 }
 
-export type Layer = OsmLayer | MapTileLayer
+export interface OverlayLayer extends BaseLayer {
+  type: "OverlayLayer"
+  id: number
+  strokeWidth: number
+  fillOpacity: number
+}
+
+export type Layer = OsmLayer | MapTileLayer | OverlayLayer
 
 export function iconForLayerType(type: Layer['type']) {
   switch (type) {
     case "OsmLayer":
     case "MapTileLayer":
       return "fa-image"
+    case "OverlayLayer":
+      return "fa-draw-polygon"
     default:
       return "fa-layer-group"
   }
@@ -40,7 +55,7 @@ export function layerToOpenLayers(layer: Layer, dbModels: DBModels): olBaseLayer
         visible: layer.visible,
         opacity: layer.opacity
       })
-    case "MapTileLayer":
+    case "MapTileLayer": {
       const dbLayer = dbModels.mapTileLayers.find(mapTileLayer => mapTileLayer.id === layer.mapTileLayerId)
       if (dbLayer === undefined) {
         // TODO: return an empty layer or one that renders an error message
@@ -59,5 +74,43 @@ export function layerToOpenLayers(layer: Layer, dbModels: DBModels): olBaseLayer
         visible: layer.visible,
         opacity: layer.opacity
       })
+    }
+    case "OverlayLayer": {
+      const dbLayer = dbModels.overlays.find(overlay => overlay.id === layer.id)
+      if (dbLayer === undefined) {
+        // TODO: return an empty layer or one that renders an error message
+        throw ""
+      }
+      const colourWithOpacity = asArray(`#${dbLayer.colour}`)
+      colourWithOpacity[3] = layer.fillOpacity
+      return new olVectorLayer({
+        source: new VectorSource({ url: `/overlays/${dbLayer.id}`, format: new GeoJSON() }),
+        style: (feature) => {
+          if (feature.getGeometry() instanceof Point && !feature.get('name')) {
+            return new Style({
+              image: new Circle({
+                radius: 2,
+                fill: new Fill({ color: `#${dbLayer.colour}` }),
+              })
+            })
+          }
+          else {
+            return new Style({
+              stroke: new Stroke({ color: `#${dbLayer.colour}`, width: layer.strokeWidth }),
+              fill: new Fill({ color: colourWithOpacity }),
+              text: new Text({
+                font: `300 14px ${getComputedStyle(document.documentElement).getPropertyValue('--font-family-sans-serif')}`,
+                text: feature.get('name'),
+                fill: new Fill({
+                  color: `#${dbLayer.colour}`
+                }),
+              }),
+            })
+          }
+        },
+        visible: layer.visible,
+        opacity: layer.opacity
+      })
+    }
   }
 }

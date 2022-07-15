@@ -7,6 +7,13 @@ export interface MapTileLayer {
   maxZoom: number
 }
 
+export interface Overlay {
+  id: number
+  name: string
+  colour: string
+}
+
 export interface DBModels {
   mapTileLayers: MapTileLayer[]
+  overlays: Overlay[]
 }

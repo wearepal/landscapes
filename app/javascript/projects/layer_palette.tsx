@@ -43,17 +43,57 @@ export const LayerPalette = ({ addLayer, hide, dbModels }: LayerPaletteProps) =>
     </div>
     <div className="flex-grow-1">
       {
+        dbModels.overlays.length > 0 &&
+        <Section title="Overlays">
+          {
+            dbModels.overlays.map(layer => (
+              <AddLayerButton
+                key={layer.id}
+                addLayer={addLayer}
+                prototype={{
+                  type: "OverlayLayer",
+                  name: layer.name,
+                  visible: true,
+                  opacity: 1,
+                  id: layer.id,
+                  strokeWidth: 2,
+                  fillOpacity: 0.2
+                }}
+              />
+            ))
+          }
+        </Section>
+      }
+      {
         dbModels.mapTileLayers.length > 0 &&
         <Section title="Aerial/Satellite imagery">
           {
             dbModels.mapTileLayers.map(layer => (
-              <AddLayerButton key={layer.id} addLayer={addLayer} prototype={{ type: "MapTileLayer", name: layer.name, visible: true, opacity: 1, mapTileLayerId: layer.id }}/>
+              <AddLayerButton
+                key={layer.id}
+                addLayer={addLayer}
+                prototype={{
+                  type: "MapTileLayer",
+                  name: layer.name,
+                  visible: true,
+                  opacity: 1,
+                  mapTileLayerId: layer.id
+                }}
+              />
             ))
           }
         </Section>
       }
       <Section title="Base layers">
-        <AddLayerButton addLayer={addLayer} prototype={{ type: "OsmLayer", name: "OpenStreetMap", visible: true, opacity: 1 }}/>
+        <AddLayerButton
+          addLayer={addLayer}
+          prototype={{
+            type: "OsmLayer",
+            name: "OpenStreetMap",
+            visible: true,
+            opacity: 1
+          }}
+        />
       </Section>
     </div>
   </div>

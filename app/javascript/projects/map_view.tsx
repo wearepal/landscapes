@@ -50,6 +50,8 @@ export const MapView = ({ layers }: MapViewProps) => {
   React.useEffect(() => map?.updateSize())
 
   React.useEffect(() => {
+    // TODO: doesn't calculate extent of overlay layers properly
+    // TODO: maybe we should add a "zoom to selection" button as well?
     if (map !== null && zoomToExtent !== null) {
       const extent = createEmptyExtent()
       map.getLayers().forEach(layer => {

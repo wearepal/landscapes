@@ -1,7 +1,40 @@
 import * as React from 'react'
 
 import { Project } from './project'
-import { iconForLayerType } from './layers'
+import { iconForLayerType, OverlayLayer } from './layers'
+
+interface OverlayLayerSettingsProps {
+  layer: OverlayLayer
+  mutate: (data: any) => void
+}
+const OverlayLayerSettings = ({ layer, mutate }: OverlayLayerSettingsProps) => (
+  <>
+    <div className="d-flex align-items-center mt-3">
+      Stroke width
+      <input
+        type="range"
+        min="1"
+        max="10"
+        step="1"
+        className="custom-range ml-3"
+        value={layer.strokeWidth} 
+        onChange={e => mutate({ strokeWidth: Number(e.target.value) })}
+      />
+    </div>
+    <div className="d-flex align-items-center mt-3">
+      Fill opacity
+      <input
+        type="range"
+        min="0"
+        max="1"
+        step="0.1"
+        className="custom-range ml-3"
+        value={layer.fillOpacity} 
+        onChange={e => mutate({ fillOpacity: Number(e.target.value) })}
+      />
+    </div>
+  </>
+)
 
 interface SidebarProps {
   project: Project
@@ -11,8 +44,9 @@ interface SidebarProps {
   showLayerPalette: () => void
   hide: () => void
 }
-export const Sidebar = ({ project, selectLayer, mutateLayer, deleteLayer, showLayerPalette, hide }: SidebarProps) => (
-  <div className="d-flex flex-column" style={{ width: "300px" }}>
+export const Sidebar = ({ project, selectLayer, mutateLayer, deleteLayer, showLayerPalette, hide }: SidebarProps) => {
+  const selectedLayer = project.selectedLayer === undefined ? null : project.layers[project.selectedLayer]
+  return <div className="d-flex flex-column" style={{ width: "300px" }}>
     <div className="px-3 py-2 border-top border-bottom d-flex align-items-center bg-light">
       <div className="flex-grow-1">Layers</div>
       <i className="ml-2 fas fa-plus fa-fw" style={{ cursor: "pointer" }} onClick={showLayerPalette}/>
@@ -55,30 +89,45 @@ export const Sidebar = ({ project, selectLayer, mutateLayer, deleteLayer, showLa
       }
     </div>
     <div className="px-3 py-2 border-top border-bottom bg-light">Layer settings</div>
-    <div className="p-3 bg-white">
+    <div className="p-3 bg-white text-nowrap">
       {
-        project.selectedLayer ?
+        selectedLayer !== null ?
           <>
-            Name
-            <br/>
             <input
               type="text"
               className="form-control"
-              value={project.layers[project.selectedLayer].name}
-              onChange={e => project.selectedLayer && mutateLayer(project.selectedLayer, { name: e.target.value })}
+              placeholder="Layer name"
+              value={selectedLayer.name}
+              onChange={
+                e => project.selectedLayer !== undefined &&
+                mutateLayer(project.selectedLayer, { name: e.target.value })
+              }
             />
-            <br/>
-            Opacity
-            <br/>
-            <input
-              type="range"
-              min="0"
-              max="1"
-              step="0.1"
-              className="custom-range"
-              value={project.layers[project.selectedLayer].opacity} 
-              onChange={e => project.selectedLayer && mutateLayer(project.selectedLayer, { opacity: Number(e.target.value) })}
-            />
+            <div className="d-flex align-items-center mt-3">
+              Opacity
+              <input
+                type="range"
+                min="0"
+                max="1"
+                step="0.1"
+                className="custom-range ml-3"
+                value={selectedLayer.opacity} 
+                onChange={
+                  e => project.selectedLayer !== undefined &&
+                  mutateLayer(project.selectedLayer, { opacity: Number(e.target.value) })
+                }
+              />
+            </div>
+            {
+              selectedLayer?.type == "OverlayLayer" &&
+              <OverlayLayerSettings
+                layer={selectedLayer}
+                mutate={
+                  data => project.selectedLayer !== undefined &&
+                  mutateLayer(project.selectedLayer, data)
+                }
+              />
+            }
           </> :
           <em>No layer selected</em>
       }
@@ -86,12 +135,15 @@ export const Sidebar = ({ project, selectLayer, mutateLayer, deleteLayer, showLa
     <button
       disabled={project.selectedLayer === undefined}
       className="btn btn-outline-danger rounded-0 border-left-0 border-right-0 border-bottom-0"
-      onClick={() => project.selectedLayer && deleteLayer(project.selectedLayer)}
+      onClick={
+        () => project.selectedLayer !== undefined &&
+        deleteLayer(project.selectedLayer)
+      }
     >
       Delete layer
     </button>
   </div>
-)
+}
 
 interface CollapsedSidebarProps {
   show: () => void
