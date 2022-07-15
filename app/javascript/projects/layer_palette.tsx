@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { DBModels } from './db_models'
 import { Layer, iconForLayerType } from './layers'
 
 interface AddLayerButtonProps {
@@ -32,14 +33,22 @@ const Section = ({ title, children }: SectionProps) => (
 interface LayerPaletteProps {
   addLayer: (Layer) => void
   hide: () => void
+  dbModels: DBModels
 }
-export const LayerPalette = ({ addLayer, hide }: LayerPaletteProps) => (
+export const LayerPalette = ({ addLayer, hide, dbModels }: LayerPaletteProps) => (
   <div className="bg-light border-right d-flex flex-column" style={{ minWidth: "300px" }}>
     <div className="px-3 py-2 border-top border-bottom d-flex align-items-center justify-content-between">
       Add layer
       <i className="fas fa-times" style={{ cursor: "pointer" }} onClick={ hide }/>
     </div>
     <div className="flex-grow-1">
+      <Section title="Aerial imagery">
+        {
+          dbModels.mapTileLayers.map(layer => (
+            <AddLayerButton key={layer.id} addLayer={addLayer} prototype={{ type: "MapTileLayer", name: layer.name, visible: true, opacity: 1, mapTileLayerId: layer.id }}/>
+          ))
+        }
+      </Section>
       <Section title="Base layers">
         <AddLayerButton addLayer={addLayer} prototype={{ type: "OsmLayer", name: "OpenStreetMap", visible: true, opacity: 1 }}/>
       </Section>

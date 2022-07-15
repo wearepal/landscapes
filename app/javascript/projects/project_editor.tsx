@@ -12,6 +12,7 @@ import { Layer, layerToOpenLayers } from './layers'
 import { Project } from './project'
 import { Sidebar, CollapsedSidebar } from './sidebar'
 import { MapView } from './map_view'
+import { DBModels } from './db_models'
 
 const reduce = (state: Project, action: Action): Project => {
   switch (action.type) {
@@ -52,8 +53,9 @@ const defaultState: Project = {
 interface ProjectEditorProps {
   projectSource: Project
   backButtonPath: string
+  dbModels: DBModels
 }
-export function ProjectEditor({ projectSource, backButtonPath }: ProjectEditorProps) {
+export function ProjectEditor({ projectSource, backButtonPath, dbModels }: ProjectEditorProps) {
   const [project, dispatch] = React.useReducer(reduce, { ...defaultState, ...projectSource })
   const [sidebarVisible, setSidebarVisible] = React.useState(true)
   const [layerPaletteVisible, setLayerPaletteVisible] = React.useState(false)
@@ -62,12 +64,13 @@ export function ProjectEditor({ projectSource, backButtonPath }: ProjectEditorPr
     <div style={{ height: "calc(100vh - 3.5rem)" }} className="d-flex flex-column">
       <Toolbar backButtonPath={backButtonPath} projectName={project.name} setProjectName={name => dispatch({ type: ActionType.SET_NAME, payload: name })}/>
       <div className="flex-grow-1 d-flex">
-        <MapView layers={Object.values(project.layers).map(layer => layerToOpenLayers(layer))}/>
+        <MapView layers={Object.values(project.layers).map(layer => layerToOpenLayers(layer, dbModels))}/>
         {
           layerPaletteVisible &&
           <LayerPalette
             hide={() => setLayerPaletteVisible(false)}
             addLayer={layer => dispatch({ type: ActionType.ADD_LAYER, payload: layer })}
+            dbModels={dbModels}
           />
         }
         {
