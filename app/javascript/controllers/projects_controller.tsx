@@ -14,7 +14,6 @@ export default class extends Controller {
   declare readonly backButtonPathValue: string
 
   connect() {
-    console.log(this.projectSourceValue)
     ReactDOM.render(
       <ProjectEditor projectSource={this.projectSourceValue} backButtonPath={this.backButtonPathValue}/>,
       this.element
