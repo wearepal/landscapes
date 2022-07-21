@@ -3,13 +3,14 @@ import olTileLayer from 'ol/layer/Tile'
 import OSM from 'ol/source/OSM'
 import XYZ from 'ol/source/XYZ'
 import { fromLonLat } from 'ol/proj'
-import { DBModels } from './db_models'
+import { DBModels, MapTileLayer as dbMapTileLayer } from './db_models'
 import olVectorLayer from 'ol/layer/Vector'
 import VectorSource from 'ol/source/Vector'
 import GeoJSON from 'ol/format/GeoJSON'
 import { asArray } from 'ol/color'
 import { Circle, Fill, Stroke, Style, Text } from 'ol/style'
 import { Point } from 'ol/geom'
+import { memoize } from 'lodash'
 
 interface BaseLayer {
   name: string
@@ -47,11 +48,26 @@ export function iconForLayerType(type: Layer['type']) {
   }
 }
 
-export function layerToOpenLayers(layer: Layer, dbModels: DBModels): olBaseLayer {
+const osmSource = new OSM({ transition: 0 })
+const createMapTileSource = memoize((id: number, minZoom: number, maxZoom: number) =>
+  new XYZ({
+    tileUrlFunction: p => `/map_tile_layers/${id}/map_tile?x=${p[1]}&y=${p[2]}&zoom=${p[0]}`,
+    tilePixelRatio: 2,
+    minZoom,
+    maxZoom,
+    transition: 0
+  })
+)
+const geoJSONFormat = new GeoJSON()
+const createOverlaySource = memoize((id: number) =>
+  new VectorSource({ url: `/overlays/${id}`, format: geoJSONFormat })
+)
+
+export const layerToOpenLayers = memoize((layer: Layer, dbModels: DBModels): olBaseLayer => {
   switch (layer.type) {
     case "OsmLayer":
       return new olTileLayer({
-        source: new OSM({ transition: 0 }),
+        source: osmSource,
         visible: layer.visible,
         opacity: layer.opacity
       })
@@ -62,12 +78,7 @@ export function layerToOpenLayers(layer: Layer, dbModels: DBModels): olBaseLayer
         throw ""
       }
       return new olTileLayer({
-        source: new XYZ({
-          tileUrlFunction: p => `/map_tile_layers/${dbLayer.id}/map_tile?x=${p[1]}&y=${p[2]}&zoom=${p[0]}`,
-          tilePixelRatio: 2,
-          minZoom: dbLayer.minZoom,
-          maxZoom: dbLayer.maxZoom
-        }),
+        source: createMapTileSource(dbLayer.id, dbLayer.minZoom, dbLayer.maxZoom),
         extent: fromLonLat([...dbLayer.southWestExtent].reverse()).concat(
           fromLonLat([...dbLayer.northEastExtent].reverse())
         ),
@@ -84,7 +95,7 @@ export function layerToOpenLayers(layer: Layer, dbModels: DBModels): olBaseLayer
       const colourWithOpacity = asArray(`#${dbLayer.colour}`)
       colourWithOpacity[3] = layer.fillOpacity
       return new olVectorLayer({
-        source: new VectorSource({ url: `/overlays/${dbLayer.id}`, format: new GeoJSON() }),
+        source: createOverlaySource(dbLayer.id),
         style: (feature) => {
           if (feature.getGeometry() instanceof Point && !feature.get('name')) {
             return new Style({
@@ -113,4 +124,4 @@ export function layerToOpenLayers(layer: Layer, dbModels: DBModels): olBaseLayer
       })
     }
   }
-}
+}, (layer) => JSON.stringify(layer))
