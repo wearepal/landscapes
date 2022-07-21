@@ -25,12 +25,14 @@
     "prop-types": "^15.7.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "react-sortablejs": "^6.1.4",
     "rete": "^1.4.4",
     "rete-connection-plugin": "file:rete-connection-plugin-0.9.0.tgz",
     "rete-context-menu-plugin": "^0.6.0-rc.1",
     "rete-history-plugin": "^0.2.1",
     "rete-minimap-plugin": "^0.3.1",
     "rete-vue-render-plugin": "^0.5.0",
+    "sortablejs": "^1.15.0",
     "stimulus": "2.0.0",
     "threads": "^1.6.3",
     "turbolinks": "^5.2.0",
@@ -44,6 +46,7 @@
   "version": "0.1.0",
   "devDependencies": {
     "@types/lodash": "^4.14.182",
+    "@types/sortablejs": "^1.13.0",
     "fork-ts-checker-webpack-plugin": "^6.2.6",
     "webpack-dev-server": "^3.11.1"
   }

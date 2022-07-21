@@ -4,6 +4,7 @@ export enum ActionType {
   ADD_LAYER,
   DELETE_LAYER,
   MUTATE_LAYER,
+  SET_LAYER_ORDER,
 }
 
 export interface Action {

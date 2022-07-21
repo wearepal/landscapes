@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { cloneDeep } from 'lodash'
+import { cloneDeep, isEqual } from 'lodash'
 
 import TileLayer from 'ol/layer/Tile'
 import OSM from 'ol/source/OSM'
@@ -37,6 +37,12 @@ const reduce = (state: Project, action: Action): Project => {
       Object.assign(layers[id], data)
       return { ...state, layers }
     }
+    case ActionType.SET_LAYER_ORDER: {
+      if (!isEqual([...state.allLayers].sort(), [...action.payload].sort())) {
+        throw new Error("Cannot add or remove layers via SET_LAYER_ORDER action")
+      }
+      return { ...state, allLayers: action.payload }
+    }
     default:
       return { ...state }
   }
@@ -64,7 +70,7 @@ export function ProjectEditor({ projectSource, backButtonPath, dbModels }: Proje
     <div style={{ height: "calc(100vh - 3.5rem)" }} className="d-flex flex-column">
       <Toolbar backButtonPath={backButtonPath} projectName={project.name} setProjectName={name => dispatch({ type: ActionType.SET_NAME, payload: name })}/>
       <div className="flex-grow-1 d-flex">
-        <MapView layers={Object.values(project.layers).map(layer => layerToOpenLayers(layer, dbModels))}/>
+        <MapView layers={project.allLayers.map(id => layerToOpenLayers(project.layers[id], dbModels))}/>
         {
           layerPaletteVisible &&
           <LayerPalette
@@ -80,6 +86,7 @@ export function ProjectEditor({ projectSource, backButtonPath, dbModels }: Proje
               selectLayer={id => dispatch({ type: ActionType.SELECT_LAYER, payload: id })}
               mutateLayer={(id, data) => dispatch({ type: ActionType.MUTATE_LAYER, payload: { id, data } })}
               deleteLayer={id => dispatch({ type: ActionType.DELETE_LAYER, payload: id })}
+              setLayerOrder={ids => dispatch({ type: ActionType.SET_LAYER_ORDER, payload: ids })}
               showLayerPalette={() => setLayerPaletteVisible(true)}
               hide={() => setSidebarVisible(false)}
             />

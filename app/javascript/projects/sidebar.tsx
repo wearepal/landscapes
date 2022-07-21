@@ -2,6 +2,7 @@ import * as React from 'react'
 
 import { Project } from './project'
 import { iconForLayerType, OverlayLayer } from './layers'
+import { ReactSortable } from 'react-sortablejs'
 
 interface OverlayLayerSettingsProps {
   layer: OverlayLayer
@@ -41,10 +42,11 @@ interface SidebarProps {
   selectLayer: (id: number | undefined) => void
   mutateLayer: (id: number, data: any) => void
   deleteLayer: (id: number) => void
+  setLayerOrder: (ids: number[]) => void
   showLayerPalette: () => void
   hide: () => void
 }
-export const Sidebar = ({ project, selectLayer, mutateLayer, deleteLayer, showLayerPalette, hide }: SidebarProps) => {
+export const Sidebar = ({ project, selectLayer, mutateLayer, deleteLayer, setLayerOrder, showLayerPalette, hide }: SidebarProps) => {
   const selectedLayer = project.selectedLayer === undefined ? null : project.layers[project.selectedLayer]
   return <div className="d-flex flex-column" style={{ width: "300px" }}>
     <div className="px-3 py-2 border-top border-bottom d-flex align-items-center bg-light">
@@ -57,36 +59,41 @@ export const Sidebar = ({ project, selectLayer, mutateLayer, deleteLayer, showLa
       style={{ overflowY: "auto", flexBasis: "0px" }}
       onClick={() => selectLayer(undefined)}
     >
-      {
-        Array.from(project.allLayers).reverse().map(id =>
-          <div
-            key={id}
-            className={id === project.selectedLayer ? "d-flex align-items-center bg-primary text-white px-3 py-2" : "align-items-center d-flex px-3 py-2"}
-            style={{ cursor: "pointer" }}
-            onClick={(e) => {
-              e.stopPropagation()
-              selectLayer(id === project.selectedLayer ? undefined : id)
-            }}
-          >
-            <div><i className={`fas fa-fw ${iconForLayerType(project.layers[id].type)}`}/></div>
-            <span className="ml-2 mr-3 flex-grow-1" style={{ overflowX: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-              { project.layers[id].name }
-            </span>
-            <span
+      <ReactSortable
+        list={Array.from(project.allLayers).reverse().map(id => ({ id }))}
+        setList={(list: {id: number}[]) => { setLayerOrder(list.map(item => item.id).reverse()) }}
+      >
+        {
+          Array.from(project.allLayers).reverse().map(id =>
+            <div
+              key={id}
+              className={id === project.selectedLayer ? "d-flex align-items-center bg-primary text-white px-3 py-2" : "align-items-center d-flex px-3 py-2"}
+              style={{ cursor: "pointer" }}
               onClick={(e) => {
                 e.stopPropagation()
-                mutateLayer(id, { visible: !project.layers[id].visible })
+                selectLayer(id === project.selectedLayer ? undefined : id)
               }}
             >
-              {
-                project.layers[id].visible ?
-                  <i className="fas fa-fw fa-eye"/> :
-                  <i className="fas fa-fw fa-eye-slash"/>
-              }
-            </span>
-          </div>
-        )
-      }
+              <div><i className={`fas fa-fw ${iconForLayerType(project.layers[id].type)}`}/></div>
+              <span className="ml-2 mr-3 flex-grow-1" style={{ overflowX: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                { project.layers[id].name }
+              </span>
+              <span
+                onClick={(e) => {
+                  e.stopPropagation()
+                  mutateLayer(id, { visible: !project.layers[id].visible })
+                }}
+              >
+                {
+                  project.layers[id].visible ?
+                    <i className="fas fa-fw fa-eye"/> :
+                    <i className="fas fa-fw fa-eye-slash"/>
+                }
+              </span>
+            </div>
+          )
+        }
+      </ReactSortable>
     </div>
     <div className="px-3 py-2 border-top border-bottom bg-light">Layer settings</div>
     <div className="p-3 bg-white text-nowrap">
