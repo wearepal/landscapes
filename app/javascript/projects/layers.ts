@@ -62,6 +62,7 @@ const geoJSONFormat = new GeoJSON()
 const createOverlaySource = memoize((id: number) =>
   new VectorSource({ url: `/overlays/${id}`, format: geoJSONFormat })
 )
+const emptyLayer = new olTileLayer()
 
 export const layerToOpenLayers = memoize((layer: Layer, dbModels: DBModels): olBaseLayer => {
   switch (layer.type) {
@@ -74,8 +75,7 @@ export const layerToOpenLayers = memoize((layer: Layer, dbModels: DBModels): olB
     case "MapTileLayer": {
       const dbLayer = dbModels.mapTileLayers.find(mapTileLayer => mapTileLayer.id === layer.mapTileLayerId)
       if (dbLayer === undefined) {
-        // TODO: return an empty layer or one that renders an error message
-        throw ""
+        return emptyLayer
       }
       return new olTileLayer({
         source: createMapTileSource(dbLayer.id, dbLayer.minZoom, dbLayer.maxZoom),
@@ -89,8 +89,7 @@ export const layerToOpenLayers = memoize((layer: Layer, dbModels: DBModels): olB
     case "OverlayLayer": {
       const dbLayer = dbModels.overlays.find(overlay => overlay.id === layer.id)
       if (dbLayer === undefined) {
-        // TODO: return an empty layer or one that renders an error message
-        throw ""
+        return emptyLayer
       }
       const colourWithOpacity = asArray(`#${dbLayer.colour}`)
       colourWithOpacity[3] = layer.fillOpacity
