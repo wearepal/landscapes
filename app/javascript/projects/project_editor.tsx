@@ -1,14 +1,10 @@
 import * as React from 'react'
 import { cloneDeep, isEqual } from 'lodash'
-
-import TileLayer from 'ol/layer/Tile'
-import OSM from 'ol/source/OSM'
-
 import './project_editor.css'
 import { ActionType, Action } from './actions'
 import { LayerPalette } from './layer_palette'
 import { Toolbar } from './toolbar'
-import { Layer, layerToOpenLayers } from './layers'
+import { layerToOpenLayers } from './layers'
 import { Project } from './project'
 import { Sidebar, CollapsedSidebar } from './sidebar'
 import { MapView } from './map_view'
