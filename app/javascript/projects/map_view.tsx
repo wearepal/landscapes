@@ -1,10 +1,51 @@
 import * as React from 'react'
 
 import { Map, View } from 'ol'
-import { defaults as defaultControls, ZoomToExtent } from 'ol/control'
+import { Control, defaults as defaultControls } from 'ol/control'
 import BaseLayer from 'ol/layer/Base'
 import { createEmpty as createEmptyExtent, extend, isEmpty } from 'ol/extent'
 import { createIconElement } from './util'
+import VectorLayer from 'ol/layer/Vector'
+
+function getLayerExtent(layer: BaseLayer) {
+  if (layer instanceof VectorLayer) {
+    return layer.getSource().getExtent()
+  }
+  else {
+    return layer.getExtent()
+  }
+}
+
+class FitViewControl extends Control {
+  constructor() {
+    const button = document.createElement("button")
+    button.appendChild(createIconElement("search-location"))
+    button.title = "Zoom to fit"
+
+    const element = document.createElement("div")
+    element.className = "ol-unselectable ol-control"
+    element.style.left = ".5em"
+    element.style.top = "4em"
+    element.appendChild(button)
+
+    super({ element })
+
+    button.addEventListener('click', this.handleClick.bind(this), false)
+  }
+
+  handleClick() {
+    const map = this.getMap()
+    const view = map?.getView()
+    const extent = createEmptyExtent()
+    map?.getLayers().forEach(layer => {
+      const layerExtent = getLayerExtent(layer)
+      if (layerExtent !== undefined) {
+        extend(extent, layerExtent)
+      }
+    })
+    view?.fit(isEmpty(extent) ? view.getProjection().getExtent() : extent)
+  }
+}
 
 interface MapViewProps {
   layers: BaseLayer[]
@@ -12,10 +53,8 @@ interface MapViewProps {
 export const MapView = ({ layers }: MapViewProps) => {
   const mapRef = React.useRef<HTMLDivElement>()
   const [map, setMap] = React.useState<Map | null>(null)
-  const [zoomToExtent, setZoomToExtent] = React.useState<ZoomToExtent | null>(null)
 
   React.useEffect(() => {
-    const zoomToExtent = new ZoomToExtent({ label: createIconElement("search-location") })
     const map = new Map({
       view: new View({
         center: [0, 0],
@@ -26,39 +65,21 @@ export const MapView = ({ layers }: MapViewProps) => {
           zoomInLabel: createIconElement("search-plus"),
           zoomOutLabel: createIconElement("search-minus")
         }
-      }).extend([zoomToExtent]),
+      }).extend([new FitViewControl()]),
       target: mapRef.current
     });
 
     setMap(map)
-    setZoomToExtent(zoomToExtent)
 
     return () => {
       map.dispose()
       setMap(null)
-      setZoomToExtent(null)
     }
   }, [])
 
   React.useEffect(() => map?.setLayers(layers), [map, layers])
 
   React.useEffect(() => map?.updateSize())
-
-  React.useEffect(() => {
-    // TODO: doesn't calculate extent of overlay layers properly
-    // TODO: maybe we should add a "zoom to selection" button as well?
-    if (map !== null && zoomToExtent !== null) {
-      const extent = createEmptyExtent()
-      map.getLayers().forEach(layer => {
-        const layerExtent = layer.getExtent()
-        if (layerExtent !== undefined) {
-          extend(extent, layerExtent)
-        }
-      })
-
-      Object.assign(zoomToExtent, { extent: isEmpty(extent) ? undefined : extent })
-    }
-  })
 
   return <div className="flex-grow-1 bg-dark" ref={mapRef as any}></div>
 }
