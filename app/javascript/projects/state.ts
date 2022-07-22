@@ -28,3 +28,11 @@ export interface Project {
   allLayers: number[]
   selectedLayer?: number
 }
+
+export const initialState: Project = {
+  name: "Untitled project",
+  layers: {
+    1: { type: "OsmLayer", name: "OpenStreetMap", visible: true, opacity: 1 },
+  },
+  allLayers: [1]
+}

@@ -3,19 +3,11 @@ import './project_editor.css'
 import { LayerPalette } from './layer_palette'
 import { Toolbar } from './toolbar'
 import { reifyLayer } from './reify_layer'
-import { Project } from './state'
+import { initialState, Project } from './state'
 import { Sidebar, CollapsedSidebar } from './sidebar'
 import { MapView } from './map_view'
 import { DBModels } from './db_models'
 import { reduce } from './reducer'
-
-const defaultState: Project = {
-  name: "Untitled project",
-  layers: {
-    1: { type: "OsmLayer", name: "OpenStreetMap", visible: true, opacity: 1 },
-  },
-  allLayers: [1]
-}
 
 interface ProjectEditorProps {
   projectSource: Project
@@ -23,7 +15,7 @@ interface ProjectEditorProps {
   dbModels: DBModels
 }
 export function ProjectEditor({ projectSource, backButtonPath, dbModels }: ProjectEditorProps) {
-  const [project, dispatch] = React.useReducer(reduce, { ...defaultState, ...projectSource })
+  const [project, dispatch] = React.useReducer(reduce, { ...initialState, ...projectSource })
   const [sidebarVisible, setSidebarVisible] = React.useState(true)
   const [layerPaletteVisible, setLayerPaletteVisible] = React.useState(false)
 
