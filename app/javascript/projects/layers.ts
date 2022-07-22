@@ -65,13 +65,16 @@ const createOverlaySource = memoize((id: number) =>
 const createEmptyLayer = () => new olTileLayer()
 
 export const reifyLayer = (layer: Layer, dbModels: DBModels): olBaseLayer => {
-  switch (layer.type) {
-    case "OsmLayer":
+  const layerType = layer.type
+  switch (layerType) {
+    case "OsmLayer": {
       return new olTileLayer({
         source: osmSource,
         visible: layer.visible,
         opacity: layer.opacity
       })
+    }
+
     case "MapTileLayer": {
       const dbLayer = dbModels.mapTileLayers.find(mapTileLayer => mapTileLayer.id === layer.id)
       if (dbLayer === undefined) {
@@ -86,6 +89,7 @@ export const reifyLayer = (layer: Layer, dbModels: DBModels): olBaseLayer => {
         opacity: layer.opacity
       })
     }
+
     case "OverlayLayer": {
       const dbLayer = dbModels.overlays.find(overlay => overlay.id === layer.id)
       if (dbLayer === undefined) {
@@ -121,6 +125,12 @@ export const reifyLayer = (layer: Layer, dbModels: DBModels): olBaseLayer => {
         visible: layer.visible,
         opacity: layer.opacity
       })
+    }
+
+    default: {
+      // Ensure this switch statement is exhaustive
+      const unreachable: never = layerType
+      return createEmptyLayer()
     }
   }
 }
