@@ -4,7 +4,7 @@ import './project_editor.css'
 import { ActionType, Action } from './actions'
 import { LayerPalette } from './layer_palette'
 import { Toolbar } from './toolbar'
-import { layerToOpenLayers } from './layers'
+import { reifyLayer } from './layers'
 import { Project } from './project'
 import { Sidebar, CollapsedSidebar } from './sidebar'
 import { MapView } from './map_view'
@@ -66,7 +66,7 @@ export function ProjectEditor({ projectSource, backButtonPath, dbModels }: Proje
     <div style={{ height: "calc(100vh - 3.5rem)" }} className="d-flex flex-column">
       <Toolbar backButtonPath={backButtonPath} projectName={project.name} setProjectName={name => dispatch({ type: ActionType.SET_NAME, payload: name })}/>
       <div className="flex-grow-1 d-flex">
-        <MapView layers={project.allLayers.map(id => layerToOpenLayers(project.layers[id], dbModels))}/>
+        <MapView layers={project.allLayers.map(id => reifyLayer(project.layers[id], dbModels))}/>
         {
           layerPaletteVisible &&
           <LayerPalette

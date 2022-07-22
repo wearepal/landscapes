@@ -64,7 +64,7 @@ const createOverlaySource = memoize((id: number) =>
 )
 const emptyLayer = new olTileLayer()
 
-export const layerToOpenLayers = memoize((layer: Layer, dbModels: DBModels): olBaseLayer => {
+const createLayer = (layer: Layer, dbModels: DBModels): olBaseLayer => {
   switch (layer.type) {
     case "OsmLayer":
       return new olTileLayer({
@@ -123,4 +123,6 @@ export const layerToOpenLayers = memoize((layer: Layer, dbModels: DBModels): olB
       })
     }
   }
-}, (layer) => JSON.stringify(layer))
+}
+
+export const reifyLayer = memoize(createLayer, layer => JSON.stringify(layer))
