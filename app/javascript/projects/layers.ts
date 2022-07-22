@@ -24,7 +24,7 @@ export interface OsmLayer extends BaseLayer {
 
 export interface MapTileLayer extends BaseLayer {
   type: "MapTileLayer"
-  mapTileLayerId: number // TODO: rename to simply "id"
+  id: number
 }
 
 export interface OverlayLayer extends BaseLayer {
@@ -73,7 +73,7 @@ export const layerToOpenLayers = memoize((layer: Layer, dbModels: DBModels): olB
         opacity: layer.opacity
       })
     case "MapTileLayer": {
-      const dbLayer = dbModels.mapTileLayers.find(mapTileLayer => mapTileLayer.id === layer.mapTileLayerId)
+      const dbLayer = dbModels.mapTileLayers.find(mapTileLayer => mapTileLayer.id === layer.id)
       if (dbLayer === undefined) {
         return emptyLayer
       }

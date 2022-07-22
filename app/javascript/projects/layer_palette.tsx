@@ -77,7 +77,7 @@ export const LayerPalette = ({ addLayer, hide, dbModels }: LayerPaletteProps) =>
                   name: layer.name,
                   visible: true,
                   opacity: 1,
-                  mapTileLayerId: layer.id
+                  id: layer.id
                 }}
               />
             ))
