@@ -13,6 +13,8 @@ Rails.application.routes.draw do
       resources :duplicates, model_name: "Model"
     end
 
+    resources :projects
+
     resources :regions do
       resources :labelling_group_uploads
       resources :map_tile_downloads

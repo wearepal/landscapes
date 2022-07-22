@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_02_10_180911) do
+ActiveRecord::Schema.define(version: 2022_07_07_111959) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -236,6 +236,14 @@ ActiveRecord::Schema.define(version: 2022_02_10_180911) do
     t.index ["region_id"], name: "index_overlays_on_region_id"
   end
 
+  create_table "projects", force: :cascade do |t|
+    t.bigint "team_id", null: false
+    t.jsonb "source", default: {}, null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["team_id"], name: "index_projects_on_team_id"
+  end
+
   create_table "regions", force: :cascade do |t|
     t.string "name", null: false
     t.datetime "created_at", precision: 6, null: false
@@ -299,6 +307,7 @@ ActiveRecord::Schema.define(version: 2022_02_10_180911) do
   add_foreign_key "metrics", "metric_sets"
   add_foreign_key "models", "teams"
   add_foreign_key "overlays", "regions"
+  add_foreign_key "projects", "teams"
   add_foreign_key "regions", "teams"
   add_foreign_key "training_data_downloads", "labelling_groups"
 end

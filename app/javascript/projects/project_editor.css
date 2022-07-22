@@ -1,0 +1,15 @@
+.add-layer-button {
+  cursor: pointer;
+}
+
+.add-layer-button .add-layer-button-plus {
+  visibility: hidden;
+}
+
+.add-layer-button:hover {
+  background-color: #f8f9fa;
+}
+
+.add-layer-button:hover .add-layer-button-plus {
+  visibility: visible;
+}
