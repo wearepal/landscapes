@@ -1,13 +1,34 @@
-export enum ActionType {
-  SET_NAME,
-  SELECT_LAYER,
-  ADD_LAYER,
-  DELETE_LAYER,
-  MUTATE_LAYER,
-  SET_LAYER_ORDER,
+import { Layer } from "./layers"
+
+interface SetProjectName {
+  type: "SetProjectName"
+  name: string
 }
 
-export interface Action {
-  type: ActionType
-  payload?: any
+interface SelectLayer {
+  type: "SelectLayer"
+  id: number | undefined
 }
+
+interface AddLayer {
+  type: "AddLayer"
+  layer: Layer
+}
+
+interface DeleteLayer {
+  type: "DeleteLayer"
+  id: number
+}
+
+interface MutateLayer {
+  type: "MutateLayer"
+  id: number
+  data: Partial<Layer>
+}
+
+interface SetLayerOrder {
+  type: "SetLayerOrder"
+  order: number[]
+}
+
+export type Action = SetProjectName | SelectLayer | AddLayer | DeleteLayer | MutateLayer | SetLayerOrder

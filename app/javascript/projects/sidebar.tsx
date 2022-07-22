@@ -1,7 +1,7 @@
 import * as React from 'react'
 
 import { Project } from './project'
-import { iconForLayerType, OverlayLayer } from './layers'
+import { iconForLayerType, Layer, OverlayLayer } from './layers'
 import { ReactSortable } from 'react-sortablejs'
 
 interface OverlayLayerSettingsProps {
@@ -40,7 +40,7 @@ const OverlayLayerSettings = ({ layer, mutate }: OverlayLayerSettingsProps) => (
 interface SidebarProps {
   project: Project
   selectLayer: (id: number | undefined) => void
-  mutateLayer: (id: number, data: any) => void
+  mutateLayer: (id: number, data: Partial<Layer>) => void
   deleteLayer: (id: number) => void
   setLayerOrder: (ids: number[]) => void
   showLayerPalette: () => void
