@@ -1,7 +1,8 @@
 import * as React from 'react'
 
-import { Project } from './project'
-import { iconForLayerType, Layer, OverlayLayer } from './layers'
+import { Project } from './state'
+import { Layer, OverlayLayer } from './state'
+import { iconForLayerType } from "./util"
 import { ReactSortable } from 'react-sortablejs'
 
 interface OverlayLayerSettingsProps {

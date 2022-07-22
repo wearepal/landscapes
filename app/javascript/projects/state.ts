@@ -22,14 +22,9 @@ export interface OverlayLayer extends BaseLayer {
 
 export type Layer = OsmLayer | MapTileLayer | OverlayLayer
 
-export function iconForLayerType(type: Layer['type']) {
-  switch (type) {
-    case "OsmLayer":
-    case "MapTileLayer":
-      return "fa-image"
-    case "OverlayLayer":
-      return "fa-draw-polygon"
-    default:
-      return "fa-layer-group"
-  }
+export interface Project {
+  name: string
+  layers: Record<number, Layer>
+  allLayers: number[]
+  selectedLayer?: number
 }

@@ -1,4 +1,4 @@
-import { Layer } from "./layers"
+import { Layer } from "./state"
 
 interface SetProjectName {
   type: "SetProjectName"

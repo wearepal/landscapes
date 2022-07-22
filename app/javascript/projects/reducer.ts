@@ -1,6 +1,6 @@
 import { cloneDeep, isEqual } from "lodash"
 import { Action } from "./actions"
-import { Project } from "./project"
+import { Project } from "./state"
 
 export const reduce = (state: Project, action: Action): Project => {
   const actionType = action.type

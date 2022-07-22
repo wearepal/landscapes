@@ -4,12 +4,7 @@ import { Map, View } from 'ol'
 import { defaults as defaultControls, ZoomToExtent } from 'ol/control'
 import BaseLayer from 'ol/layer/Base'
 import { createEmpty as createEmptyExtent, extend, isEmpty } from 'ol/extent'
-
-function createIconElement(iconName: string) {
-  const result = document.createElement("i")
-  result.classList.add("fas", `fa-${iconName}`)
-  return result
-}
+import { createIconElement } from './util'
 
 interface MapViewProps {
   layers: BaseLayer[]

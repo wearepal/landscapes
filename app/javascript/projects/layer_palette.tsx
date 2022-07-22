@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { DBModels } from './db_models'
-import { Layer, iconForLayerType } from './layers'
+import { Layer } from './state'
+import { iconForLayerType } from "./util"
 
 interface AddLayerButtonProps {
   prototype: Layer

@@ -11,7 +11,7 @@ import { asArray } from 'ol/color'
 import { Circle, Fill, Stroke, Style, Text } from 'ol/style'
 import { Point } from 'ol/geom'
 import { memoize } from 'lodash'
-import { Layer } from './layers'
+import { Layer } from './state'
 
 const osmSource = new OSM({ transition: 0 })
 const createMapTileSource = memoize((id: number, minZoom: number, maxZoom: number) =>

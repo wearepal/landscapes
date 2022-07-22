@@ -2,7 +2,7 @@ import { Controller } from "stimulus"
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 import { ProjectEditor } from '../projects/project_editor'
-import { Project } from "../projects/project"
+import { Project } from "../projects/state"
 import { DBModels } from "../projects/db_models"
 
 export default class extends Controller {
