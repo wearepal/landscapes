@@ -62,9 +62,9 @@ const geoJSONFormat = new GeoJSON()
 const createOverlaySource = memoize((id: number) =>
   new VectorSource({ url: `/overlays/${id}`, format: geoJSONFormat })
 )
-const emptyLayer = new olTileLayer()
+const createEmptyLayer = () => new olTileLayer()
 
-const createLayer = (layer: Layer, dbModels: DBModels): olBaseLayer => {
+export const reifyLayer = (layer: Layer, dbModels: DBModels): olBaseLayer => {
   switch (layer.type) {
     case "OsmLayer":
       return new olTileLayer({
@@ -75,7 +75,7 @@ const createLayer = (layer: Layer, dbModels: DBModels): olBaseLayer => {
     case "MapTileLayer": {
       const dbLayer = dbModels.mapTileLayers.find(mapTileLayer => mapTileLayer.id === layer.id)
       if (dbLayer === undefined) {
-        return emptyLayer
+        return createEmptyLayer()
       }
       return new olTileLayer({
         source: createMapTileSource(dbLayer.id, dbLayer.minZoom, dbLayer.maxZoom),
@@ -89,7 +89,7 @@ const createLayer = (layer: Layer, dbModels: DBModels): olBaseLayer => {
     case "OverlayLayer": {
       const dbLayer = dbModels.overlays.find(overlay => overlay.id === layer.id)
       if (dbLayer === undefined) {
-        return emptyLayer
+        return createEmptyLayer()
       }
       const colourWithOpacity = asArray(`#${dbLayer.colour}`)
       colourWithOpacity[3] = layer.fillOpacity
@@ -124,5 +124,3 @@ const createLayer = (layer: Layer, dbModels: DBModels): olBaseLayer => {
     }
   }
 }
-
-export const reifyLayer = memoize(createLayer, layer => JSON.stringify(layer))
