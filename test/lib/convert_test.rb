@@ -8,7 +8,7 @@ class ConvertTest < ActiveJob::TestCase
 
   test "to_lat_lng" do
     assert_equal [0, 0], Convert.to_lat_lng(1, 1, 1)
-    assert_equal [LAT, LNG], Convert.to_lat_lng(TILE_X, TILE_Y, 18)
+    assert_equal [LAT, LNG].map { |float| float.round(5) }, Convert.to_lat_lng(TILE_X, TILE_Y, 18).map { |float| float.round(5) }
   end
 
   private
