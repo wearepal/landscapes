@@ -53,5 +53,5 @@ jobs:
         run: bin/webpack
       - name: End-to-End Tests
         run: |
-          npx playwright install-deps
-          npx playwright test
+          yarn add playwright --with-deps
+          yarn playwright test
