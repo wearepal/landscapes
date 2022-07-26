@@ -39,6 +39,8 @@
   },
   "version": "0.1.0",
   "devDependencies": {
+    "@playwright/test": "^1.24.0",
     "webpack-dev-server": "^3.11.1"
-  }
+  },
+  "scripts": {}
 }

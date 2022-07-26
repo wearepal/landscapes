@@ -44,8 +44,14 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
-          node-version: '18'
+          node-version: '16'
           cache: 'yarn'
       - name: Install Node dependencies
         run: |
           yarn --frozen-lockfile
+      - name: Webpack
+        run: bin/webpack
+      - name: End-to-End Tests
+        run: |
+          yarn add playwright
+          yarn playwright test
