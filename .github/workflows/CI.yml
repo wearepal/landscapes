@@ -7,7 +7,7 @@ on:
     branches:
     - main
 jobs:
-  database:
+  test_suite:
     runs-on: ubuntu-latest
     services:
       postgres:
@@ -51,7 +51,19 @@ jobs:
           yarn --frozen-lockfile
       - name: Webpack
         run: bin/webpack
-      - name: End-to-End Tests
+      - name: Install Playwright
+        # Install Webkit dependencies. Seems to need installing in a couple of steps.
         run: |
-          yarn add playwright --with-deps
+          sudo apt-get -y install libegl1 libgles2 libopengl0 libwoff1 libharfbuzz-icu0 libopenjp2-7 libenchant1c2a
+          sudo apt-get -y install libwebpdemux2 libenchant-2-2 libhyphen0 libevdev2 libx264-155 libopus0
+          sudo apt-get -y install libgstreamer1.0-0 libgstreamer-gl1.0-0 libgst7
+          yarn add playwright
+      - name: Run End to End tests
+        run: |
           yarn playwright test
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          name: playwright-report
+          path: playwright-report
