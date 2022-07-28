@@ -57,10 +57,14 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 gem 'aws-sdk-s3', require: false
 gem 'base58'
 gem 'chunky_png'
-gem 'net-smtp', require: false
 gem 'resque-pool'
 gem 'resque-scheduler'
 gem 'rubyzip', '~> 2.3.0'
 gem 'sentry-ruby', '~> 4.0'
 gem 'sentry-rails', '~> 4.0'
 gem 'sentry-resque', '~> 4.0'
+
+# The following can be removed after upgrading to Rails >= 7.0.1
+gem 'net-imap', require: false
+gem 'net-pop', require: false
+gem 'net-smtp', require: false
