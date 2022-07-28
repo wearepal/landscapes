@@ -1,4 +1,4 @@
-FROM ruby:3.0.3-alpine AS base
+FROM ruby:3.1.2-alpine AS base
 ENV RACK_ENV=production RAILS_ENV=production NODE_ENV=production
 RUN apk add --no-cache bash imagemagick libpq postgresql-client redis tzdata vips zip
 RUN gem install bundler -v '~> 2.2'
