@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby '3.0.3'
+ruby '3.1.2'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 6.1.4'
@@ -57,9 +57,10 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 gem 'aws-sdk-s3', require: false
 gem 'base58'
 gem 'chunky_png'
+gem 'net-smtp', require: false
 gem 'resque-pool'
 gem 'resque-scheduler'
 gem 'rubyzip', '~> 2.3.0'
-gem 'sentry-ruby'
-gem 'sentry-rails'
-gem 'sentry-resque'
+gem 'sentry-ruby', '~> 4.0'
+gem 'sentry-rails', '~> 4.0'
+gem 'sentry-resque', '~> 4.0'
