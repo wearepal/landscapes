@@ -7,7 +7,7 @@ on:
     branches:
     - main
 jobs:
-  database:
+  ci:
     runs-on: ubuntu-latest
     services:
       postgres:
@@ -51,5 +51,7 @@ jobs:
           yarn --frozen-lockfile
       - name: Webpack
         run: bin/webpack
-      - name: System Test
-        run: bin/rails test:system
+      - name: System Tests (Chrome)
+        run: SYSTEM_TEST_BROWSER=headless_chrome bin/rails test:system
+      - name: System Tests (Firefox)
+        run: SYSTEM_TEST_BROWSER=headless_firefox bin/rails test:system
