@@ -49,3 +49,7 @@ jobs:
       - name: Install Node dependencies
         run: |
           yarn --frozen-lockfile
+      - name: Webpack
+        run: bin/webpack
+      - name: System Test
+        run: bin/rails test:system
