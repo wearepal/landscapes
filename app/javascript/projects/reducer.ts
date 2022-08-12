@@ -41,7 +41,7 @@ const reduceProject = (state: Project, action: Action): Project => {
 
 export const reduceSelectedLayer = (state: number | undefined, action: Action): number | undefined => {
   switch (action.type) {
-    case "DeleteLayer": return undefined
+    case "DeleteLayer": return action.id === state ? undefined : state
     case "SelectLayer": return action.id
     default: return state
   }
