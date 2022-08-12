@@ -3,9 +3,11 @@ import * as React from 'react'
 interface ToolbarProps {
   backButtonPath: string
   projectName: string
+  hasUnsavedChanges: boolean
   setProjectName: (name: string) => void
+  saveProject: () => void
 }
-export const Toolbar = ({ backButtonPath, projectName, setProjectName }: ToolbarProps) => (
+export const Toolbar = ({ backButtonPath, projectName, hasUnsavedChanges, setProjectName, saveProject }: ToolbarProps) => (
   <div className="btn-toolbar p-2 bg-light border-top">
     <div className="btn-group mr-2">
       <a className="btn btn-sm btn-outline-primary" href={backButtonPath}>
@@ -15,6 +17,11 @@ export const Toolbar = ({ backButtonPath, projectName, setProjectName }: Toolbar
     </div>
     <div className="input-group mr-2">
       <input type="text" className="form-control form-control-sm" value={ projectName } onChange={e => setProjectName(e.target.value)}/>
+    </div>
+    <div className="btn-group mr-2">
+      <button className="btn btn-sm btn-outline-primary" disabled={!hasUnsavedChanges} onClick={saveProject}>
+        <i className="fas fa-save"/> Save
+      </button>
     </div>
     <div className="btn-group mr-2">
       <button className="btn btn-sm btn-outline-primary" disabled>

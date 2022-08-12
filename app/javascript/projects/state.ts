@@ -31,6 +31,7 @@ export interface Project {
 export interface State {
   project: Project
   selectedLayer?: number
+  hasUnsavedChanges: boolean
 }
 
 export const defaultProject: Project = {

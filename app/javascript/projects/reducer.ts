@@ -47,7 +47,11 @@ export const reduceSelectedLayer = (state: number | undefined, action: Action): 
   }
 }
 
-export const reduce = (state: State, action: Action): State => ({
-  project: reduceProject(state.project, action),
-  selectedLayer: reduceSelectedLayer(state.selectedLayer, action),
-})
+export const reduce = (state: State, action: Action): State => {
+  const newProjectState = reduceProject(state.project, action)
+  return {
+    project: newProjectState,
+    selectedLayer: reduceSelectedLayer(state.selectedLayer, action),
+    hasUnsavedChanges: action.type !== "FinishSave" && (state.hasUnsavedChanges || !isEqual(state.project, newProjectState))
+  }
+}

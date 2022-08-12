@@ -31,4 +31,8 @@ interface SetLayerOrder {
   order: number[]
 }
 
-export type Action = SetProjectName | SelectLayer | AddLayer | DeleteLayer | MutateLayer | SetLayerOrder
+interface FinishSave {
+  type: "FinishSave"
+}
+
+export type Action = SetProjectName | SelectLayer | AddLayer | DeleteLayer | MutateLayer | SetLayerOrder | FinishSave

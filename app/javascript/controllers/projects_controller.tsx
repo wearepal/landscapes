@@ -7,11 +7,13 @@ import { DBModels } from "../projects/db_models"
 
 export default class extends Controller {
   static values = {
+    projectId: Number,
     projectSource: Object,
     backButtonPath: String,
     dbModels: Object,
   }
 
+  declare readonly projectIdValue: number
   declare readonly projectSourceValue: Project
   declare readonly backButtonPathValue: string
   declare readonly dbModelsValue: DBModels
@@ -19,6 +21,7 @@ export default class extends Controller {
   connect() {
     ReactDOM.render(
       <ProjectEditor
+        projectId={this.projectIdValue}
         projectSource={this.projectSourceValue}
         backButtonPath={this.backButtonPathValue}
         dbModels={this.dbModelsValue}

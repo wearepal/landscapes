@@ -19,6 +19,16 @@ class ProjectsController < ApplicationController
     end
   end
 
+  def update
+    @project = Project.find(params[:id])
+    authorize_for! @project.team
+    if @project.update(source: JSON.parse(params.require(:project).require(:source)))
+      head :ok
+    else
+      head :unprocessable_entity
+    end
+  end
+
   def show
     @project = Project.find(params[:id])
     @team = @project.team
