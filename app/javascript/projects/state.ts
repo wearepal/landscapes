@@ -26,10 +26,14 @@ export interface Project {
   name: string
   layers: Record<number, Layer>
   allLayers: number[]
+}
+
+export interface State {
+  project: Project
   selectedLayer?: number
 }
 
-export const initialState: Project = {
+export const defaultProject: Project = {
   name: "Untitled project",
   layers: {
     1: { type: "OsmLayer", name: "OpenStreetMap", visible: true, opacity: 1 },

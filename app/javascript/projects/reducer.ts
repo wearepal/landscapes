@@ -1,16 +1,11 @@
 import { cloneDeep, isEqual } from "lodash"
 import { Action } from "./actions"
-import { Project } from "./state"
+import { Project, State } from "./state"
 
-export const reduce = (state: Project, action: Action): Project => {
-  const actionType = action.type
-  switch (actionType) {
+const reduceProject = (state: Project, action: Action): Project => {
+  switch (action.type) {
     case "SetProjectName": {
       return { ...state, name: action.name }
-    }
-
-    case "SelectLayer": {
-      return { ...state, selectedLayer: action.id }
     }
 
     case "AddLayer": {
@@ -23,7 +18,7 @@ export const reduce = (state: Project, action: Action): Project => {
     case "DeleteLayer": {
       const layers = cloneDeep(state.layers)
       delete layers[action.id]
-      return { ...state, selectedLayer: undefined, layers, allLayers: state.allLayers.filter(e => e !== action.id) }
+      return { ...state, layers, allLayers: state.allLayers.filter(e => e !== action.id) }
     }
 
     case "MutateLayer": {
@@ -40,10 +35,19 @@ export const reduce = (state: Project, action: Action): Project => {
       return { ...state, allLayers: action.order }
     }
 
-    default: {
-      // Ensure we've handled every action type
-      const unreachable: never = actionType
-      return { ...state }
-    }
+    default: return state
   }
 }
+
+export const reduceSelectedLayer = (state: number | undefined, action: Action): number | undefined => {
+  switch (action.type) {
+    case "DeleteLayer": return undefined
+    case "SelectLayer": return action.id
+    default: return state
+  }
+}
+
+export const reduce = (state: State, action: Action): State => ({
+  project: reduceProject(state.project, action),
+  selectedLayer: reduceSelectedLayer(state.selectedLayer, action),
+})

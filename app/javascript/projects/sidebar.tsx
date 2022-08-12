@@ -1,6 +1,6 @@
 import * as React from 'react'
 
-import { Project } from './state'
+import { State } from './state'
 import { Layer, OverlayLayer } from './state'
 import { iconForLayerType } from "./util"
 import { ReactSortable } from 'react-sortablejs'
@@ -39,7 +39,7 @@ const OverlayLayerSettings = ({ layer, mutate }: OverlayLayerSettingsProps) => (
 )
 
 interface SidebarProps {
-  project: Project
+  state: State
   selectLayer: (id: number | undefined) => void
   mutateLayer: (id: number, data: Partial<Layer>) => void
   deleteLayer: (id: number) => void
@@ -47,8 +47,8 @@ interface SidebarProps {
   showLayerPalette: () => void
   hide: () => void
 }
-export const Sidebar = ({ project, selectLayer, mutateLayer, deleteLayer, setLayerOrder, showLayerPalette, hide }: SidebarProps) => {
-  const selectedLayer = project.selectedLayer === undefined ? null : project.layers[project.selectedLayer]
+export const Sidebar = ({ state, selectLayer, mutateLayer, deleteLayer, setLayerOrder, showLayerPalette, hide }: SidebarProps) => {
+  const selectedLayer = state.selectedLayer === undefined ? null : state.project.layers[state.selectedLayer]
   return <div className="d-flex flex-column" style={{ width: "300px" }}>
     <div className="px-3 py-2 border-top border-bottom d-flex align-items-center bg-light">
       <div className="flex-grow-1">Layers</div>
@@ -61,32 +61,32 @@ export const Sidebar = ({ project, selectLayer, mutateLayer, deleteLayer, setLay
       onClick={() => selectLayer(undefined)}
     >
       <ReactSortable
-        list={Array.from(project.allLayers).reverse().map(id => ({ id }))}
+        list={Array.from(state.project.allLayers).reverse().map(id => ({ id }))}
         setList={(list: {id: number}[]) => { setLayerOrder(list.map(item => item.id).reverse()) }}
       >
         {
-          Array.from(project.allLayers).reverse().map(id =>
+          Array.from(state.project.allLayers).reverse().map(id =>
             <div
               key={id}
-              className={id === project.selectedLayer ? "d-flex align-items-center bg-primary text-white px-3 py-2" : "align-items-center d-flex px-3 py-2"}
+              className={id === state.selectedLayer ? "d-flex align-items-center bg-primary text-white px-3 py-2" : "align-items-center d-flex px-3 py-2"}
               style={{ cursor: "pointer" }}
               onClick={(e) => {
                 e.stopPropagation()
-                selectLayer(id === project.selectedLayer ? undefined : id)
+                selectLayer(id === state.selectedLayer ? undefined : id)
               }}
             >
-              <div><i className={`fas fa-fw ${iconForLayerType(project.layers[id].type)}`}/></div>
+              <div><i className={`fas fa-fw ${iconForLayerType(state.project.layers[id].type)}`}/></div>
               <span className="ml-2 mr-3 flex-grow-1" style={{ overflowX: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                { project.layers[id].name }
+                { state.project.layers[id].name }
               </span>
               <span
                 onClick={(e) => {
                   e.stopPropagation()
-                  mutateLayer(id, { visible: !project.layers[id].visible })
+                  mutateLayer(id, { visible: !state.project.layers[id].visible })
                 }}
               >
                 {
-                  project.layers[id].visible ?
+                  state.project.layers[id].visible ?
                     <i className="fas fa-fw fa-eye"/> :
                     <i className="fas fa-fw fa-eye-slash"/>
                 }
@@ -107,8 +107,8 @@ export const Sidebar = ({ project, selectLayer, mutateLayer, deleteLayer, setLay
               placeholder="Layer name"
               value={selectedLayer.name}
               onChange={
-                e => project.selectedLayer !== undefined &&
-                mutateLayer(project.selectedLayer, { name: e.target.value })
+                e => state.selectedLayer !== undefined &&
+                mutateLayer(state.selectedLayer, { name: e.target.value })
               }
             />
             <div className="d-flex align-items-center mt-3">
@@ -121,8 +121,8 @@ export const Sidebar = ({ project, selectLayer, mutateLayer, deleteLayer, setLay
                 className="custom-range ml-3"
                 value={selectedLayer.opacity} 
                 onChange={
-                  e => project.selectedLayer !== undefined &&
-                  mutateLayer(project.selectedLayer, { opacity: Number(e.target.value) })
+                  e => state.selectedLayer !== undefined &&
+                  mutateLayer(state.selectedLayer, { opacity: Number(e.target.value) })
                 }
               />
             </div>
@@ -131,8 +131,8 @@ export const Sidebar = ({ project, selectLayer, mutateLayer, deleteLayer, setLay
               <OverlayLayerSettings
                 layer={selectedLayer}
                 mutate={
-                  data => project.selectedLayer !== undefined &&
-                  mutateLayer(project.selectedLayer, data)
+                  data => state.selectedLayer !== undefined &&
+                  mutateLayer(state.selectedLayer, data)
                 }
               />
             }
@@ -141,11 +141,11 @@ export const Sidebar = ({ project, selectLayer, mutateLayer, deleteLayer, setLay
       }
     </div>
     <button
-      disabled={project.selectedLayer === undefined}
+      disabled={state.selectedLayer === undefined}
       className="btn btn-outline-danger rounded-0 border-left-0 border-right-0 border-bottom-0"
       onClick={
-        () => project.selectedLayer !== undefined &&
-        deleteLayer(project.selectedLayer)
+        () => state.selectedLayer !== undefined &&
+        deleteLayer(state.selectedLayer)
       }
     >
       Delete layer
