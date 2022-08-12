@@ -1,11 +1,10 @@
 import * as React from 'react'
-
 import { Map, View } from 'ol'
 import { Control, defaults as defaultControls } from 'ol/control'
-import BaseLayer from 'ol/layer/Base'
 import { createEmpty as createEmptyExtent, extend, isEmpty } from 'ol/extent'
-import { createIconElement } from './util'
+import BaseLayer from 'ol/layer/Base'
 import VectorLayer from 'ol/layer/Vector'
+import { createIconElement } from './util'
 
 function getLayerExtent(layer: BaseLayer) {
   if (layer instanceof VectorLayer) {

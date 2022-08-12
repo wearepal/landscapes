@@ -1,13 +1,13 @@
 import * as React from 'react'
-import './project_editor.css'
-import { LayerPalette } from './layer_palette'
-import { Toolbar } from './toolbar'
-import { reifyLayer } from './reify_layer'
-import { defaultProject, State, Project } from './state'
-import { Sidebar, CollapsedSidebar } from './sidebar'
-import { MapView } from './map_view'
 import { DBModels } from './db_models'
+import { LayerPalette } from './layer_palette'
+import { MapView } from './map_view'
+import './project_editor.css'
 import { reduce } from './reducer'
+import { reifyLayer } from './reify_layer'
+import { CollapsedSidebar, Sidebar } from './sidebar'
+import { defaultProject, Project } from './state'
+import { Toolbar } from './toolbar'
 
 interface ProjectEditorProps {
   projectId: number
