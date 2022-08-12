@@ -54,7 +54,7 @@ export const MapView = ({ layers }: MapViewProps) => {
   const [map, setMap] = React.useState<Map | null>(null)
 
   React.useEffect(() => {
-    const map = new Map({
+    const newMap = new Map({
       view: new View({
         center: [0, 0],
         zoom: 1
@@ -68,10 +68,10 @@ export const MapView = ({ layers }: MapViewProps) => {
       target: mapRef.current
     });
 
-    setMap(map)
+    setMap(newMap)
 
     return () => {
-      map.dispose()
+      newMap.dispose()
       setMap(null)
     }
   }, [])
