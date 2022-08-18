@@ -1,0 +1,36 @@
+# https://prettier.io/docs/en/options.html
+overrides:
+  - files: "*.(j|t)sx?"
+    options:
+      printWidth: 80
+      tabWidth: 2
+      useTabs: false
+      semi: false
+      singleQuote: true
+      quoteProps: "as-needed"
+      jsxSingleQuote: false
+      trailingComma: "es5"
+      bracketSpacing: true
+      bracketSameLine: false
+      arrowParens: "always"
+      proseWrap: "preserve"
+      htmlWhitespaceSensitivity: "css"
+      vueIndentScriptAndStyle: false
+      singleAttributePerLine: false
+  - files: "*.rb"
+    options:
+      printWidth: 80
+      tabWidth: 2
+      useTabs: false
+      semi: false
+      singleQuote: true
+      quoteProps: "as-needed"
+      jsxSingleQuote: false
+      trailingComma: "es5"
+      bracketSpacing: true
+      bracketSameLine: false
+      arrowParens: "always"
+      proseWrap: "preserve"
+      htmlWhitespaceSensitivity: "css"
+      vueIndentScriptAndStyle: false
+      singleAttributePerLine: false
