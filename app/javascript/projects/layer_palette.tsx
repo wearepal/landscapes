@@ -20,7 +20,7 @@ const AddLayerButton = ({ prototype, addLayer }: AddLayerButtonProps) => (
 
 interface SectionProps {
   title: string
-  children: React.ReactNode
+  children?: React.ReactNode
 }
 const Section = ({ title, children }: SectionProps) => (
   <details>
