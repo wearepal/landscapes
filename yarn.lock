@@ -6868,9 +6868,9 @@ rete-vue-render-plugin@^0.5.0:
     vue "^2.6.6"
 
 rete@^1.4.4:
-  version "1.4.5"
-  resolved "https://registry.yarnpkg.com/rete/-/rete-1.4.5.tgz#57d83ad34694d9ffb5a287fc4a226e97307b9fbe"
-  integrity sha512-Y+Y9tszG//jU1GK2HIVlV+T9JFcLjY95y5K3oPBWLWPtD3puOn949BicC5AYrI0S3VFn3+zu9xTYpeidPI5xqw==
+  version "1.4.9"
+  resolved "https://registry.yarnpkg.com/rete/-/rete-1.4.9.tgz#5568995b84a4f08abe1225cf53b4b1a355618157"
+  integrity sha512-AYuCPt8dVsDAJB1561vBzH7lbX1zjkBzt71mqIAVU6I7wxeLg5yI6FHM12gnphj+BeWSxmMUcO7dHFTmy1pmYw==
 
 retry@^0.12.0:
   version "0.12.0"
