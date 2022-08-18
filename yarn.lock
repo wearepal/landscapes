@@ -1868,9 +1868,9 @@ balanced-match@^1.0.0:
   integrity sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==
 
 base58-js@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/base58-js/-/base58-js-1.0.0.tgz#08b6d745d811103114cc150f7da517b3c02a24ec"
-  integrity sha512-izVZ4M54gJYRk7VGsiRatRyUVCUaUDF15earKs3u9sUXlawvTwttC9xitGk8Xzlgib5rDL71WPOe4JsyJu9Scg==
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/base58-js/-/base58-js-1.0.4.tgz#abf0357edac3d3994cd7ee51df79c031ce3aca3f"
+  integrity sha512-DQtWOeY+JwAUyFaL1KBqL0L81LWUj5S92N39LCiQwBouHz1GNZBqyhJz9ZtIDEtwaBYyoF63x27oqFL0Lu7DUg==
 
 base64-js@^1.0.2:
   version "1.5.1"
