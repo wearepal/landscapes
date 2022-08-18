@@ -1,0 +1,41 @@
+version: 2
+updates:
+  - package-ecosystem: "bundler"
+    directory: '/'
+    schedule:
+      interval: "daily"
+      time: "06:00"
+      timezone: "Europe/London"
+  - package-ecosystem: "npm"
+    directory: '/'
+    schedule:
+      interval: "weekly"
+      day: "friday"
+      time: "06:00"
+      timezone: "Europe/London"
+    allow:
+      - dependency-name: "base58-js"
+      - dependency-name: "bootstrap"
+      - dependency-name: "bs-custom-file-input"
+      - dependency-name: "d3"
+      - dependency-name: "d3-sankey"
+      - dependency-name: "kd-tree-javascript"
+      - dependency-name: "ol"
+      - dependency-name: "react"
+      - dependency-name: "react-dom"
+      - dependency-name: "react-sortablejs"
+      - dependency-name: "rete"
+      - dependency-name: "rete-connection-plugin"
+      - dependency-name: "rete-context-menu-plugin"
+      - dependency-name: "rete-history-plugin"
+      - dependency-name: "rete-minimap-plugin"
+      - dependency-name: "rete-vue-render-plugin"
+      - dependency-name: "sortablejs"
+      - dependency-name: "stimulus"
+      - dependency-name: "threads"
+      - dependency-name: "turbolinks"
+      - dependency-name: "varint"
+      - dependency-name: "vue"
+      - dependency-name: "vue-loader"
+      - dependency-name: "vue-template-compiler"
+      - dependency-name: "vue-turbolinks"
