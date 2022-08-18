@@ -3,19 +3,7 @@ set -euo pipefail
 
 if ! docker secret inspect landscapes_secret_key_base &>/dev/null
 then
-  docker run --rm wearepal/landscapes:4.1.0 bin/rails secret | docker secret create landscapes_secret_key_base - &>/dev/null
-fi
-
-if ! docker secret inspect landscapes_database_url &>/dev/null
-then
-  read -p "Enter the connection URL for your PostgreSQL instance, e.g. postgres://username:password@address/landscapes: " DATABASE_URL
-  echo "${DATABASE_URL}" | docker secret create landscapes_database_url - &>/dev/null
-fi
-
-if ! docker secret inspect landscapes_redis_url &>/dev/null
-then
-  read -p "Enter the connection URL for your Redis instance, e.g. redis://:password@address/: " REDIS_URL
-  echo "${REDIS_URL}" | docker secret create landscapes_redis_url - &>/dev/null
+  docker run --rm wearepal/landscapes:5.0.0 bin/rails secret | docker secret create landscapes_secret_key_base - &>/dev/null
 fi
 
 if ! docker config inspect landscapes_caddyfile &>/dev/null

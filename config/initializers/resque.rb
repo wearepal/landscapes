@@ -1,1 +1,1 @@
-Resque.redis = ENV['REDIS_URL']
+Resque.redis = "redis://queue"
