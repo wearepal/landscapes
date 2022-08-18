@@ -1,7 +1,5 @@
 import { createEmpty as createEmptyExtent, extend as extendExtent } from 'ol/extent'
 import GeoJSON from 'ol/format/GeoJSON'
-import GeometryType from 'ol/geom/GeometryType'
-import Polygon from 'ol/geom/Polygon'
 import { createXYZ } from 'ol/tilegrid'
 import { BooleanTileGrid } from '../TileGrid'
 
@@ -28,7 +26,7 @@ export async function rasteriseOverlay(overlayId, zoom) {
 
   features.forEach(feature => {
     const geom = feature.getGeometry()
-    if (geom.getType() === GeometryType.POINT) {
+    if (geom.getType() === "Point") {
       const [, x, y] = tileGrid.getTileCoordForCoordAndZ(geom.getCoordinates(), zoom)
       result.set(x, y, true)
     }

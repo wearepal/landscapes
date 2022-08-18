@@ -1,7 +1,3 @@
-import { createEmpty as createEmptyExtent, extend as extendExtent } from 'ol/extent'
-import GeoJSON from 'ol/format/GeoJSON'
-import GeometryType from 'ol/geom/GeometryType'
-import { createXYZ } from 'ol/tilegrid'
 import { Component, Output } from 'rete'
 import { NumberControl } from '../controls/NumberControl'
 import { PreviewControl } from '../controls/PreviewControl'
