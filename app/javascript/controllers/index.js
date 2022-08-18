@@ -13,5 +13,5 @@ if (process.env.NODE_ENV === "production") {
     defaultErrorHandler(ex)
   }
 }
-const context = require.context("controllers", true, /_controller\.jsx?$/)
+const context = require.context("controllers", true, /_controller\.[jt]sx?$/)
 application.load(definitionsFromContext(context))
