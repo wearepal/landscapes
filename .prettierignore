@@ -1,0 +1,24 @@
+# Ignore artifacts:
+.github
+bin
+config
+coverage
+db
+GeoJSON_conversion
+lib
+public
+storage
+test
+tmp
+vendor
+
+**/.git
+**/.svn
+**/.hg
+**/node_modules
+
+# Ignore filetypes:
+*.html
+*.erb
+*.json
+*.jbuilder

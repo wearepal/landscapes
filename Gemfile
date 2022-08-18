@@ -34,6 +34,9 @@ group :development, :test do
 end
 
 group :development do
+  # Code formatting
+  gem "prettier"
+  gem "syntax_tree"
   # Access an interactive console on exception pages or by calling 'console' anywhere in the code.
   gem 'web-console', '>= 3.3.0'
   gem 'listen', '~> 3.2'
