@@ -37,10 +37,8 @@ jobs:
         uses: ruby/setup-ruby@08245253a76fa4d1e459b7809579c62bd9eb718a # v1.111
         with:
           bundler-cache: true
-      - name: Set up database schema
+      - name: Setup database
         run: bin/rails db:setup
-      - name: Rails tests
-        run: bin/rails test
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
@@ -49,9 +47,11 @@ jobs:
       - name: Install Node dependencies
         run: |
           yarn --frozen-lockfile
-      - name: Webpack
-        run: bin/webpack
-      - name: System Tests (Chrome)
+      - name: Precompile assets
+        run: SECRET_KEY_BASE="0" bin/rails assets:precompile
+      - name: Rails tests
+        run: bin/rails test
+      - name: System tests (Chrome)
         run: SYSTEM_TEST_BROWSER=headless_chrome bin/rails test:system
-      - name: System Tests (Firefox)
+      - name: System tests (Firefox)
         run: SYSTEM_TEST_BROWSER=headless_firefox bin/rails test:system
