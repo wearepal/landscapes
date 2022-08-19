@@ -1,4 +1,4 @@
-import React from 'react'
+import * as React from 'react'
 
 export const Slider = ({ icon, min, max, step, value, setValue }) => (
   <div className="d-flex align-items-center mt-2">

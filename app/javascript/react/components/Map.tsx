@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useEffect, useRef, useState } from 'react'
+import * as React from 'react'
+import { createContext, useContext, useEffect, useRef, useState } from 'react'
 
 import * as ol from 'ol'
 import { asArray } from 'ol/color'
@@ -12,8 +13,9 @@ import XYZ from 'ol/source/XYZ'
 import { fromLonLat } from 'ol/proj'
 import { Circle, Fill, Stroke, Style, Text } from 'ol/style'
 import { Point } from 'ol/geom'
+import VectorLayer from "ol/layer/Vector";
 
-const MapContext = createContext()
+const MapContext = createContext(null)
 
 const useMapLayerBinding = (map, layer) => {
   useEffect(() => {
@@ -25,13 +27,13 @@ const useMapLayerBinding = (map, layer) => {
 }
 
 export const Map = ({ extent, children }) => {
-  const mapRef = useRef()
-  const [map, setMap] = useState(null)
+  const mapRef = useRef<any>()
+  const [map, setMap] = useState<ol.Map | null>(null)
 
   useEffect(() => {
     const labelElement = document.createElement("i")
     labelElement.classList.add("fas", "fa-expand")
-    const map = new ol.Map({
+    const newMap = new ol.Map({
       target: mapRef.current,
       view: new ol.View({ center: [0, 0], zoom: 0 }),
       controls: defaultControls().extend([
@@ -39,10 +41,10 @@ export const Map = ({ extent, children }) => {
       ])
     })
 
-    setMap(map)
+    setMap(newMap)
 
     return () => {
-      map.dispose()
+      newMap.dispose()
       setMap(null)
     }
   }, [])
@@ -51,9 +53,11 @@ export const Map = ({ extent, children }) => {
     if (map === null) { return }
     map.getView().fit(extent)
     let zoomControl = map.getControls().item(map.getControls().getLength() - 1)
+    // @ts-ignore
     zoomControl.extent = extent
   }, [map, extent[0], extent[1], extent[2], extent[3]])
 
+  // @ts-ignore
   return <MapContext.Provider value={map}>
     <div ref={mapRef} style={{ width: "100%", height: "100%" }}/>
     { children }
@@ -62,7 +66,7 @@ export const Map = ({ extent, children }) => {
 
 export const OSMLayer = ({ visible }) => {
   const map = useContext(MapContext)
-  const [layer, setLayer] = useState(null)
+  const [layer, setLayer] = useState<olTileLayer<OSM> | null>(null)
 
   useEffect(() => {
     setLayer(new olTileLayer({ source: new OSM(), visible }))
@@ -83,7 +87,7 @@ export const OverlayLayer = ({ visible, id, colour, strokeWidth, backgroundOpaci
   colourWithOpacity[3] = backgroundOpacity
 
   const map = useContext(MapContext)
-  const [layer, setLayer] = useState(null)
+  const [layer, setLayer] = useState<VectorLayer<VectorSource> | null>(null)
 
   useEffect(() => {
     setLayer(new olVectorLayer({
@@ -126,7 +130,7 @@ export const OverlayLayer = ({ visible, id, colour, strokeWidth, backgroundOpaci
 
 export const TileLayer = ({ opacity, visible, mapTileLayer }) => {
   const map = useContext(MapContext)
-  const [layer, setLayer] = useState(null)
+  const [layer, setLayer] = useState<olTileLayer<any> | null>(null)
 
   useEffect(() => {
     setLayer(new olTileLayer({ opacity, visible }))
@@ -167,7 +171,7 @@ export const TileLayer = ({ opacity, visible, mapTileLayer }) => {
 
 export const ImageLayer = ({ url, imageExtent, opacity, visible }) => {
   const map = useContext(MapContext)
-  const [layer, setLayer] = useState(null)
+  const [layer, setLayer] = useState<olImageLayer<any> | null>(null)
 
   useEffect(() => {
     setLayer(new olImageLayer({ opacity, visible }))

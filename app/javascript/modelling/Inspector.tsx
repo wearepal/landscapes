@@ -12,13 +12,24 @@ import ImageCanvasSource from 'ol/source/ImageCanvas'
 import VectorSource from 'ol/source/Vector'
 import { Circle, Fill, Stroke, Style, Text } from 'ol/style'
 import { createXYZ } from 'ol/tilegrid'
-import React, { useEffect, useRef, useState } from 'react'
+import * as React from 'react'
+import { useEffect, useRef, useState } from 'react'
 import LabellingSource from '../sources/labelling'
 import { LabelledTileGrid } from './TileGrid'
 
 const tileGrid = createXYZ()
 
 class InspectorSource extends ImageCanvasSource {
+  private nodeOutput: any;
+  private minValue: number;
+  private maxValue: number;
+  private zoom: number;
+  private x0: number;
+  private x1: number;
+  private y0: number;
+  private y1: number;
+  private data: any;
+
   constructor(nodeOutput) {
     super({
       canvasFunction: (extent, resolution, pixelRatio, size, projection) => this.drawCanvas(extent, pixelRatio, size)
@@ -48,7 +59,7 @@ class InspectorSource extends ImageCanvasSource {
     canvas.width = size[0]
     canvas.height = size[1]
 
-    const ctx = canvas.getContext("2d")
+    const ctx = canvas.getContext("2d")!
 
     tileGrid.forEachTileCoord(
       extent,
@@ -58,7 +69,7 @@ class InspectorSource extends ImageCanvasSource {
         const y = coord[2]
         if (x >= this.x0 && x < this.x1 && y >= this.y0 && y < this.y1) {
           const value = this.data[(x - this.x0) * (this.y1 - this.y0) + (y - this.y0)]
-          
+
           const tileExtent = tileGrid.getTileCoordExtent([this.zoom, x, y])
 
           const tileX0 = (tileExtent[0] - extent[0]) / (extent[2] - extent[0]) * size[0]
@@ -114,27 +125,27 @@ function createOverlayLayer(id, colour) {
   })
 }
 
-function useFetchedArray(url) {
+function useFetchedArray(url): any[] {
   const [data, setData] = useState([])
   async function fetchArray() {
     const response = await fetch(url)
     setData(await response.json())
   }
-  useEffect(() => fetchArray(), [])
+  useEffect(() => {fetchArray();}, [])
   return data
 }
 
 export default function({ teamId, nodeLabel, nodeOutput, close }) {
-  const mapRef = useRef()
+  const mapRef = useRef<any>()
 
-  const [map, setMap] = useState(null)
+  const [map, setMap] = useState<olMap | null>(null)
   const [osmVisible, setOsmVisible] = useState(true)
   const [opacity, setOpacity] = useState(0.5)
   const regions = useFetchedArray(`/teams/${teamId}/regions.json`)
   const mapTileLayers = useFetchedArray(`/teams/${teamId}/map_tile_layers.json`)
   const overlays = useFetchedArray(`/teams/${teamId}/overlays.json`)
   const [visibleOverlayIds, setVisibleOverlayIds] = useState(new Set())
-  const [selectedLayerId, setSelectedLayerId] = useState(null)
+  const [selectedLayerId, setSelectedLayerId] = useState<number | null>(null)
   const [labelVisibility, setLabelVisibility] = useState(nodeOutput instanceof LabelledTileGrid ? new Map(nodeOutput.labelSchema.labels.map(l => [l.index, true])) : new Map())
 
   const { x, y, width, height, zoom } = nodeOutput
@@ -169,6 +180,7 @@ export default function({ teamId, nodeLabel, nodeOutput, close }) {
       const extent = fromLonLat([...layerMeta.south_west_extent].reverse()).concat(
         fromLonLat([...layerMeta.north_east_extent].reverse())
       )
+      // @ts-ignore
       layer.setSource(new XYZ({
         tileUrlFunction: p => `/map_tile_layers/${selectedLayerId}/map_tile?x=${p[1]}&y=${p[2]}&zoom=${p[0]}`,
         tilePixelRatio: 2,
@@ -197,6 +209,7 @@ export default function({ teamId, nodeLabel, nodeOutput, close }) {
     if (!map) return
 
     const group = map.getLayers().item(3)
+    // @ts-ignore
     group.setLayers(new Collection([...visibleOverlayIds].map(id =>
       createOverlayLayer(id, overlays.find(o => o.id === id).colour)
     )))
@@ -205,6 +218,7 @@ export default function({ teamId, nodeLabel, nodeOutput, close }) {
   useEffect(() => {
     if (!map) return
 
+    // @ts-ignore
     map.getLayers().item(2).setSource((
       nodeOutput instanceof LabelledTileGrid ?
         new LabellingSource(
@@ -218,7 +232,7 @@ export default function({ teamId, nodeLabel, nodeOutput, close }) {
         new InspectorSource(nodeOutput)
     ))
   }, [map, labelVisibility])
-
+  
   return (
     <div>
       <div
@@ -344,7 +358,7 @@ export default function({ teamId, nodeLabel, nodeOutput, close }) {
                           type="checkbox"
                           className="custom-control-input"
                           id={`label-${label.id}`}
-                          checked={labelVisibility.get(label.index)}
+                          checked={labelVisibility.get(label.index) as boolean}
                           onChange={e => {
                             const newValue = new Map(labelVisibility)
                             newValue.set(label.index, e.target.checked)

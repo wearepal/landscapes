@@ -5,14 +5,15 @@ import HistoryPlugin from 'rete-history-plugin'
 import MinimapPlugin from 'rete-minimap-plugin'
 import VueRenderPlugin from 'rete-vue-render-plugin'
 import { Controller } from 'stimulus'
-import _ from 'lodash'
+import * as _ from 'lodash'
 
 import { createDefaultComponents } from '../modelling/components'
-import NodeComponent from '../modelling/Node'
+// @ts-ignore
+import * as NodeComponent from '../modelling/Node'
 import { BooleanTileGrid, NumericTileGrid } from '../modelling/TileGrid'
 import Inspector from '../modelling/Inspector'
-import React from 'react'
-import ReactDOM from 'react-dom'
+import * as React from 'react'
+import * as ReactDOM from 'react-dom'
 
 export default class extends Controller {
   static targets = [
@@ -24,6 +25,15 @@ export default class extends Controller {
     'inspectButton',
     'inspectedNodeName',
   ]
+  private editor?: NodeEditor;
+  private editorTarget: HTMLElement;
+  private engine?: Engine;
+  private saveButtonTarget: any;
+  private saveStatusTarget: any;
+  private modelNameFieldTarget: any;
+  private stopButtonTarget: any;
+  private inspectButtonTarget: any;
+  private inspectorElement?: HTMLDivElement;
 
   async connect() {
     this.editor = new NodeEditor('ssrp-web-application@1.0.0', this.editorTarget)
@@ -49,24 +59,25 @@ export default class extends Controller {
     })
 
     createDefaultComponents(
-      JSON.parse(this.data.get('defs'))
+      JSON.parse(this.data.get('defs')!)
     ).forEach(component => {
-      this.editor.register(component)
-      this.engine.register(component)
+      this.editor!.register(component)
+      this.engine!.register(component)
     })
 
     if (this.data.has('model')) {
-      await this.editor.fromJSON(JSON.parse(this.data.get('model')))
+      await this.editor.fromJSON(JSON.parse(this.data.get('model')!))
     }
 
     this.editor.use(HistoryPlugin)
 
     this.editor.on(
+      // @ts-ignore
       'nodecreated noderemoved connectioncreated connectionremoved nodetranslated nodedragged',
       _.debounce(
         () => {
           // TODO: respond to changes to node controls
-          const newModel = JSON.stringify(this.editor.toJSON())
+          const newModel = JSON.stringify(this.editor!.toJSON())
           if (this.data.get('model') !== newModel) {
             this.data.set('model', newModel)
             this.setDirtyFlag()
@@ -77,21 +88,21 @@ export default class extends Controller {
     )
 
     this.editor.on('click', () => {
-      const previousSelection = Array.from(this.editor.selected.list)
-      this.editor.selected.clear()
+      const previousSelection = Array.from(this.editor!.selected.list)
+      this.editor!.selected.clear()
       previousSelection.forEach(node => node.update())
       this.updateInspectability()
     })
 
     this.editor.on('nodeselected', this.updateInspectability.bind(this))
-    this.editor.on('noderemoved', (node) => { this.editor.selected.remove(node); this.updateInspectability() })
+    this.editor.on('noderemoved', (node) => { this.editor!.selected.remove(node); this.updateInspectability() })
   }
 
   disconnect() {
-    this.editor.destroy()
+    this.editor!.destroy()
     delete this.editor
 
-    this.engine.destroy()
+    this.engine!.destroy()
     delete this.engine
 
     this.editorTarget.innerHTML = ''
@@ -106,11 +117,13 @@ export default class extends Controller {
   }
 
   undo() {
-    this.editor.trigger('undo')
+    // @ts-ignore
+    this.editor!.trigger('undo')
   }
 
   redo() {
-    this.editor.trigger('redo')
+    // @ts-ignore
+    this.editor!.trigger('redo')
   }
 
   async save() {
@@ -124,14 +137,15 @@ export default class extends Controller {
       const method = 'PATCH'
 
       const headers = new Headers()
+      // @ts-ignore
       headers.set('X-CSRF-Token', document.querySelector('meta[name="csrf-token"]').content)
 
       const body = new FormData()
       body.set('model[name]', this.modelNameFieldTarget.value)
-      body.set('model[source]', JSON.stringify(this.editor.toJSON()))
-      body.set('model[lock_version]', this.data.get('lock-version'))
+      body.set('model[source]', JSON.stringify(this.editor!.toJSON()))
+      body.set('model[lock_version]', this.data.get('lock-version')!)
 
-      const response = await fetch(this.data.get('url'), { method, headers, body })
+      const response = await fetch(this.data.get('url')!, { method, headers, body })
 
       if (response.status === 409) {
         alert("Another user has edited this model since you opened it.\n* To overwrite their changes with your own, click the Save button again.\n* To discard your own changes, refresh your browser.")
@@ -168,7 +182,7 @@ export default class extends Controller {
   async run(event) {
     this.stopButtonTarget.disabled = false
     event.target.disabled = true
-    await this.engine.process(this.editor.toJSON())
+    await this.engine!.process(this.editor!.toJSON())
     event.target.disabled = false
     this.stopButtonTarget.disabled = true
     this.updateInspectability()
@@ -176,11 +190,11 @@ export default class extends Controller {
 
   async stop(event) {
     event.target.disabled = true
-    await this.engine.abort()
+    await this.engine!.abort()
   }
 
   updateInspectability() {
-    const selectedNodes = this.editor.selected.list
+    const selectedNodes = this.editor!.selected.list
     this.inspectButtonTarget.disabled = !(
       selectedNodes.length == 1 &&
       selectedNodes[0].meta.hasOwnProperty('output')
@@ -188,7 +202,7 @@ export default class extends Controller {
   }
 
   inspect() {
-    const selectedNode = this.editor.selected.list[0]
+    const selectedNode = this.editor!.selected.list[0]
     const nodeName = selectedNode.name
     const nodeLabel = selectedNode.data.name
     this.inspectorElement = this.element.appendChild(document.createElement("div"))
@@ -204,8 +218,8 @@ export default class extends Controller {
   }
 
   closeInspector() {
-    ReactDOM.unmountComponentAtNode(this.inspectorElement)
-    this.inspectorElement.remove()
+    ReactDOM.unmountComponentAtNode(this.inspectorElement!)
+    this.inspectorElement!.remove()
     delete this.inspectorElement
   }
 }
