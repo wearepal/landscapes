@@ -4,6 +4,7 @@ export default class extends Controller {
   static targets = [
     "item"
   ]
+  private itemTargets: any;
 
   update(event) {
     this.itemTargets.forEach(target => {

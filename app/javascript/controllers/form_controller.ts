@@ -14,6 +14,8 @@ export default class extends Controller {
     "error",
     "field",
   ]
+  private errorTargets: any;
+  private fieldTargets: any;
 
   onError(event) {
     const [errors] = event.detail

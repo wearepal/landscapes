@@ -30,6 +30,12 @@ function toIndex(grid, x, y) {
 }
 
 class TileGrid {
+  protected zoom: number;
+  data: any;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
   constructor(zoom, x, y, width, height) {
     validateZoom(zoom)
     validateAxisExtent(zoom, x, width)
@@ -63,7 +69,7 @@ export class BooleanTileGrid extends TileGrid {
   }
 
   get(x, y, zoom = this.zoom) {
-    return (super.get(x, y, zoom) === 1) ? true : false
+    return (super.get(x, y, zoom) === 1)
   }
 
   set(x, y, value) {
@@ -94,6 +100,7 @@ export class NumericTileGrid extends TileGrid {
 }
 
 export class LabelledTileGrid extends TileGrid {
+  labelSchema: any;
   constructor(zoom, x, y, width, height, labelSchema) {
     super(zoom, x, y, width, height)
     this.labelSchema = labelSchema
@@ -116,20 +123,25 @@ export class LabelledTileGrid extends TileGrid {
 
 registerSerializer({
   deserialize(message, defaultHandler) {
+    // @ts-ignore
     if (message && message.__type === "$$BooleanTileGrid") {
+      // @ts-ignore
       const { zoom, x, y, width, height, data } = message
       const result = new BooleanTileGrid(zoom, x, y, width, height)
       result.data = data
       return result
     }
-    else if (message && message.__type === "$$NumericTileGrid") {
-      const { zoom, x, y, width, height, data } = message
-      const result = new NumericTileGrid(zoom, x, y, width, height)
-      result.data = data
-      return result
-    }
-    else {
-      return defaultHandler(message)
+    else { // @ts-ignore
+      if (message && message.__type === "$$NumericTileGrid") {
+            // @ts-ignore
+            const { zoom, x, y, width, height, data } = message
+            const result = new NumericTileGrid(zoom, x, y, width, height)
+            result.data = data
+            return result
+          }
+          else {
+            return defaultHandler(message)
+          }
     }
   },
   serialize(thing, defaultHandler) {

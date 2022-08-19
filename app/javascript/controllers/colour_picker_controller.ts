@@ -2,6 +2,8 @@ import { Controller } from "stimulus"
 
 export default class extends Controller {
   static targets = ["field", "swatch"]
+  private swatchTarget: any;
+  private fieldTarget: any;
 
   change(event) {
     this.swatchTarget.style.backgroundColor = `#${event.target.value}`

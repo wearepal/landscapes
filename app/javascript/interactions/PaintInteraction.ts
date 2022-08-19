@@ -4,6 +4,9 @@ import Feature from "ol/Feature"
 import Circle from "ol/geom/Circle"
 
 export default class PaintInteraction extends PointerInteraction {
+  private mouseCoordinate: any;
+  private radius: number;
+  private source: any;
   constructor(source, onPaint) {
     super({
       handleMoveEvent: (event) => {

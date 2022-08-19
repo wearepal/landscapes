@@ -1,10 +1,13 @@
 import { Controller } from "stimulus"
+import Turbolinks from 'turbolinks'
 
 export default class extends Controller {
   static targets = ["container"]
+  private timer: NodeJS.Timer;
+  private containerTarget: any;
 
   connect() {
-    this.timer = setInterval(this.refresh.bind(this), parseInt(this.data.get("interval")))
+    this.timer = setInterval(this.refresh.bind(this), parseInt(this.data.get("interval")!))
   }
 
   disconnect() {
@@ -12,7 +15,7 @@ export default class extends Controller {
   }
 
   refresh() {
-    fetch(this.data.get("url"))
+    fetch(this.data.get("url")!)
     .then(response => {
       if (!response.ok) {
         throw new Error()

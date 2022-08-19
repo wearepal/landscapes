@@ -47,5 +47,5 @@ Rails.application.routes.draw do
 
   root to: "maps#show"
 
-  get "modelling_worker.js", to: redirect(status: 302) { Webpacker.manifest.lookup("modelling_worker.js") }
+  get "modelling_worker.ts", to: redirect(status: 302) { Webpacker.manifest.lookup("modelling_worker.ts") }
 end

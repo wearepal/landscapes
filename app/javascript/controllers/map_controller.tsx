@@ -1,10 +1,12 @@
 import { Controller } from 'stimulus'
-import React, { useEffect, useReducer } from 'react'
-import ReactDOM from 'react-dom'
+import * as React from 'react'
+import { useEffect, useReducer } from 'react'
+import * as ReactDOM from 'react-dom'
 import { last } from 'lodash'
 import { binary_to_base58, base58_to_binary } from 'base58-js'
 import { encode, decode } from 'varint'
 
+// @ts-ignore
 import { Checkbox, CollectionSelect, CollectionToggles, ImageLayer, Map, OSMLayer, OverlayLayer, Slider, TileLayer, ToggleAllCheckbox } from '../react/components'
 import { fromLonLat } from 'ol/proj'
 
@@ -30,6 +32,7 @@ const LabelToggles = ({ labelSchemaName, labels, visibleIds, toggleLabel, toggle
 
 const serialise = (state) => {
   let buffer = []
+  // @ts-ignore
   const write = (value) => buffer.push(...encode(value))
 
   write(0)
@@ -55,6 +58,19 @@ const serialise = (state) => {
   return binary_to_base58(buffer)
 }
 
+type DeserialiseState = {
+  regionId?: any
+  osmVisible?: boolean
+  imageryVisible?: boolean
+  mapTileLayerId?: any
+  labellingId?: any
+  labellingOpacity?: number
+  visibleLabels?: any
+  visibleOverlays?: any
+  overlayLineWidth?: any
+  overlayOpacity?: number
+}
+
 const deserialise = (string) => {
   try {
     let buffer = base58_to_binary(string)
@@ -68,7 +84,7 @@ const deserialise = (string) => {
       throw 'Invalid version number'
     }
 
-    const state = {}
+    const state: DeserialiseState = {    }
     state.regionId = read()
     const flags = read()
     state.osmVisible = !!(flags & 1)
@@ -113,6 +129,7 @@ const MapView = ({ labels, labellingGroups, labellings, labelSchemas, mapTileLay
           ...state,
           regionId: action.value,
           labellingId: null,
+          // @ts-ignore
           mapTileLayerId: last(mapTileLayers.filter(l => l.regionId === action.value))?.id,
           visibleOverlays: []
         }
@@ -173,6 +190,7 @@ const MapView = ({ labels, labellingGroups, labellings, labelSchemas, mapTileLay
   const initState = () => {
     return deserialise(window.location.hash.replace('#', '')) || {
       regionId: regions[0]?.id,
+      // @ts-ignore
       mapTileLayerId: last(mapTileLayers.filter(l => l.regionId === regions[0]?.id))?.id,
       labellingId: null,
       imageryVisible: true,
@@ -195,7 +213,7 @@ const MapView = ({ labels, labellingGroups, labellings, labelSchemas, mapTileLay
       fromLonLat([...region.northEastExtent].reverse())
     )
   
-  useEffect(() => history.replaceState(undefined, undefined, `#${serialise(state)}`))
+  useEffect(() => history.replaceState(undefined, "", `#${serialise(state)}`))
   return (
     <div className="d-flex align-items-stretch" style={{ height: "calc(100vh - 3.5rem)" }}>
       <div className="flex-grow-1 bg-dark" style={{ height: "100%" }}>
@@ -234,23 +252,25 @@ const MapView = ({ labels, labellingGroups, labellings, labelSchemas, mapTileLay
           items={regions}
           id={regionId}
           setId={value => dispatch({ type: 'SET_REGION_ID', value })}
+          placeholder={undefined}
         />
 
         <hr/>
 
         <div className="lead">Base layers</div>
         
-        <Checkbox checked={imageryVisible} change={() => dispatch({ type: 'TOGGLE_IMAGERY_VISIBILITY' })}>Imagery</Checkbox>
+        <Checkbox checked={imageryVisible} change={() => dispatch({ type: 'TOGGLE_IMAGERY_VISIBILITY' })} indeterminate={false}>Imagery</Checkbox>
         
         <div className="ml-4 my-1">
           <CollectionSelect
             items={mapTileLayers.filter(l => l.regionId === regionId)}
             id={mapTileLayerId}
             setId={value => dispatch({ type: 'SET_MAP_TILE_LAYER_ID', value })}
+            placeholder={undefined}
           />
         </div>
 
-        <Checkbox checked={osmVisible} change={() => dispatch({ type: 'TOGGLE_OSM_VISIBILITY' })}>OpenStreetMap</Checkbox>
+        <Checkbox checked={osmVisible} change={() => dispatch({ type: 'TOGGLE_OSM_VISIBILITY' })} indeterminate={false}>OpenStreetMap</Checkbox>
 
         <hr/>
 
@@ -273,6 +293,7 @@ const MapView = ({ labels, labellingGroups, labellings, labelSchemas, mapTileLay
                 items={labellings.filter(l => l.labellingGroupId === labellingGroup.id).map(l => ({ id: l.id, name: mapTileLayers.find(m => m.id === l.mapTileLayerId).name }))}
                 id={labellingId}
                 setId={value => dispatch({ type: 'SET_LABELLING_ID', value })}
+                placeholder={undefined}
               />
             </div>
 
@@ -304,6 +325,7 @@ const MapView = ({ labels, labellingGroups, labellings, labelSchemas, mapTileLay
           max="10"
           value={overlayLineWidth}
           setValue={value => dispatch({ type: 'SET_OVERLAY_LINE_WIDTH', value })}
+          step={0.1}
         />
 
         <Slider
@@ -322,7 +344,7 @@ const MapView = ({ labels, labellingGroups, labellings, labelSchemas, mapTileLay
 export default class extends Controller {
   connect() {
     ReactDOM.render(
-      <MapView {...JSON.parse(this.data.get("defs"))}/>,
+      <MapView {...JSON.parse(this.data.get("defs")!)}/>,
       this.element
     )
   }

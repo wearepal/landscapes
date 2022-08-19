@@ -2,6 +2,7 @@ import { Controller } from "stimulus"
 
 export default class extends Controller {
   static targets = ["button"]
+    private buttonTargets: any;
 
   handleKey(event) {
     const { key } = event

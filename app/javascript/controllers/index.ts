@@ -10,7 +10,7 @@ if (process.env.NODE_ENV === "production") {
   const defaultErrorHandler = application.handleError
   application.handleError = (ex) => {
     Sentry.captureException(ex)
-    defaultErrorHandler(ex)
+    defaultErrorHandler(ex, ex.message, ex)
   }
 }
 const context = require.context("controllers", true, /_controller\.[jt]sx?$/)

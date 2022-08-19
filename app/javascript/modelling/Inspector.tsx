@@ -14,7 +14,7 @@ import { Circle, Fill, Stroke, Style, Text } from 'ol/style'
 import { createXYZ } from 'ol/tilegrid'
 import * as React from 'react'
 import { useEffect, useRef, useState } from 'react'
-import LabellingSource from '../sources/labelling'
+import LabellingSource from '../sources/LabellingSource'
 import { LabelledTileGrid } from './TileGrid'
 
 const tileGrid = createXYZ()
@@ -227,6 +227,7 @@ export default function({ teamId, nodeLabel, nodeOutput, close }) {
             const { index, colour } = l
             return { ...acc, [index]: colour }
           }, {}),
+          // @ts-ignore
           (id) => labelVisibility.get(id)
         ) :
         new InspectorSource(nodeOutput)

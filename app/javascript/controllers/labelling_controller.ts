@@ -17,9 +17,9 @@ import { createXYZ } from "ol/tilegrid"
 
 import DragPan from "ol/interaction/DragPan"
 import { platformModifierKeyOnly } from "ol/events/condition"
-import LabellingSource from "../sources/labelling"
+import LabellingSource from "../sources/LabellingSource"
 
-import PaintInteraction from "../interactions/paint"
+import PaintInteraction from "../interactions/PaintInteraction"
 
 export default class extends Controller {
   static targets = [
@@ -29,9 +29,17 @@ export default class extends Controller {
     "control",
     "saveButton",
   ]
+  private labels?: Uint8Array;
+  private paintInteraction?: PaintInteraction;
+  private containerTarget: string | HTMLElement | undefined;
+  private map: any;
+  private controlTargets: any;
+  private brushSizeTarget: any;
+  private brushSizeLabelTarget: any;
+  private saveButtonTarget: any;
 
   connect() {
-    this.labels = Uint8Array.from(atob(this.data.get("labels")), c => c.charCodeAt(0))
+    this.labels = Uint8Array.from(atob(this.data.get("labels")!), c => c.charCodeAt(0))
 
     const southWest = fromLonLat([
       Number(this.data.get("south-west-lng")),
@@ -50,17 +58,17 @@ export default class extends Controller {
       source: new XYZ({
         tileUrlFunction: p => `/map_tile_layers/${this.data.get("map-tile-layer-id")}/map_tile?x=${p[1]}&y=${p[2]}&zoom=${p[0]}`,
         tilePixelRatio: 2,
-        minZoom: parseInt(this.data.get("zoom-min")),
-        maxZoom: parseInt(this.data.get("zoom-max"))
+        minZoom: parseInt(this.data.get("zoom-min")!),
+        maxZoom: parseInt(this.data.get("zoom-max")!)
       })
     })
 
-    const zoom = parseInt(this.data.get("zoom"))
-    const x0 = parseInt(this.data.get("x"))
-    const y0 = parseInt(this.data.get("y"))
-    const width = parseInt(this.data.get("width"))
-    const height = parseInt(this.data.get("height"))
-    const colours = JSON.parse(this.data.get("colours"))
+    const zoom = parseInt(this.data.get("zoom")!)
+    const x0 = parseInt(this.data.get("x")!)
+    const y0 = parseInt(this.data.get("y")!)
+    const width = parseInt(this.data.get("width")!)
+    const height = parseInt(this.data.get("height")!)
+    const colours = JSON.parse(this.data.get("colours")!)
 
     const labellingLayer = new ImageLayer({
       source: new LabellingSource(x0, y0, x0 + width, y0 + height, zoom, this.labels, colours),
@@ -73,6 +81,7 @@ export default class extends Controller {
       paintBrushSource,
       (coordinate, radius) => {
         const tileGrid = createXYZ()
+        // @ts-ignore
         const label = parseInt(this.element.querySelector('input[name="brush"]:checked').value)
 
         tileGrid.forEachTileCoord(
@@ -89,13 +98,13 @@ export default class extends Controller {
             if (x >= x0 && x < x0 + width && y >= y0 && y < y0 + height) {
               const tileCenter = tileGrid.getTileCoordCenter(coord)
               if (new LineString([coordinate, tileCenter]).getLength() < radius) {
-                this.labels[(x - x0) * height + (y - y0)] = label
+                this.labels![(x - x0) * height + (y - y0)] = label
               }
             }
           }
         )
 
-        labellingLayer.getSource().refresh()
+        labellingLayer.getSource()!.refresh()
         this.data.set("dirty", "true")
       }
     )
@@ -143,12 +152,12 @@ export default class extends Controller {
   }
 
   setBrushSize() {
-    const minRadius = 20000000 / (2 ** parseInt(this.data.get("zoom")))
-    const maxRadius = minRadius * Math.max(parseInt(this.data.get("width")), parseInt(this.data.get("height")))
+    const minRadius = 20000000 / (2 ** parseInt(this.data.get("zoom")!))
+    const maxRadius = minRadius * Math.max(parseInt(this.data.get("width")!), parseInt(this.data.get("height")!))
     const scale = Math.pow(Number(this.brushSizeTarget.value), 2)
     const radius = minRadius + scale * (maxRadius - minRadius)
-    this.brushSizeLabelTarget.innerHTML = parseInt(radius).toLocaleString()
-    this.paintInteraction.setRadius(radius)
+    this.brushSizeLabelTarget.innerHTML = Math.round(radius).toLocaleString()
+    this.paintInteraction!.setRadius(radius)
   }
 
   save(event) {
@@ -156,12 +165,13 @@ export default class extends Controller {
 
     const formData = new FormData()
     formData.set("data", btoa(new TextDecoder('ascii').decode(this.labels)))
-    
+
     fetch(
-      this.data.get("url"),
+      this.data.get("url")!,
       {
         method: "PATCH",
         headers: {
+          // @ts-ignore
           "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]').content
         },
         body: formData
@@ -203,10 +213,11 @@ export default class extends Controller {
   handleShortcutKey(event) {
     const { key } = event
     if (key === "[" || key === "]") {
-      const slider = document.getElementById("brush-radius")
+      const slider = document.getElementById("brush-radius")!
+      // @ts-ignore
       key === "[" ? slider.stepDown() : slider.stepUp()
       slider.dispatchEvent(new Event('change'))
-      this.paintInteraction.drawPaintBrush()
+      this.paintInteraction!.drawPaintBrush()
       event.preventDefault()
     }
     else if (key.length == 1) {
@@ -214,6 +225,7 @@ export default class extends Controller {
       if (!isNaN(num)) {
         const elem = document.getElementById(`brush-${num}`)
         if (elem) {
+          // @ts-ignore
           elem.checked = true
           event.preventDefault()
         }

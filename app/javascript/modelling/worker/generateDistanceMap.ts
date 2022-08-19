@@ -1,12 +1,17 @@
 import { kdTree } from 'kd-tree-javascript'
 import { NumericTileGrid } from '../TileGrid'
 
+type Coordinate = {
+  x: number
+  y: number
+}
+
 export function generateDistanceMap(input) {
   const result = new NumericTileGrid(
     input.zoom, input.x, input.y, input.width, input.height
   )
 
-  const points = []
+  const points: Coordinate[] = []
   for (let x = input.x; x < input.x + input.width; ++x) {
     for (let y = input.y; y < input.y + input.height; ++y) {
       if (input.get(x, y)) {

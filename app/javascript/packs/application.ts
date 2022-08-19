@@ -28,6 +28,7 @@ document.addEventListener("turbolinks:load", () => $("[title]").tooltip())
 
 // Stop ImageStatic from resampling its image on load
 import ImageStatic from "ol/source/ImageStatic"
+// @ts-ignore
 delete ImageStatic.prototype.handleImageChange
 
 

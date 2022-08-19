@@ -4,6 +4,14 @@ import { createXYZ } from "ol/tilegrid"
 const tileGrid = createXYZ()
 
 export default class LabellingSource extends ImageCanvasSource {
+  private x0: number;
+  private y0: number;
+  private x1: number;
+  private y1: number;
+  private zoom: number;
+  private labels: any;
+  private colours: any;
+  private isLabelVisible: (id) => boolean;
   constructor(x0, y0, x1, y1, zoom, labels, colours, isLabelVisible = (id) => true) {
     super({
       canvasFunction: (extent, resolution, pixelRatio, size, projection) => this.drawCanvas(extent, pixelRatio, size)
@@ -23,7 +31,7 @@ export default class LabellingSource extends ImageCanvasSource {
     canvas.width = size[0]
     canvas.height = size[1]
 
-    const ctx = canvas.getContext("2d")
+    const ctx = canvas.getContext("2d")!
 
     tileGrid.forEachTileCoord(
       extent,

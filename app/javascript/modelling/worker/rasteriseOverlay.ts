@@ -11,7 +11,7 @@ export async function rasteriseOverlay(overlayId, zoom) {
   const features = new GeoJSON({ dataProjection: json.crs?.properties?.name, featureProjection: "EPSG:3857" }).readFeatures(json)
 
   const extent = features.reduce(
-    (extent, feature) => extendExtent(extent, feature.getGeometry().getExtent()),
+    (extent, feature) => extendExtent(extent, feature.getGeometry()!.getExtent()),
     createEmptyExtent()
   )
 
@@ -25,8 +25,9 @@ export async function rasteriseOverlay(overlayId, zoom) {
     )
 
   features.forEach(feature => {
-    const geom = feature.getGeometry()
+    const geom = feature.getGeometry()!
     if (geom.getType() === "Point") {
+      // @ts-ignore
       const [, x, y] = tileGrid.getTileCoordForCoordAndZ(geom.getCoordinates(), zoom)
       result.set(x, y, true)
     }

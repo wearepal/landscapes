@@ -7,6 +7,10 @@ export default class extends Controller {
     "status",
     "submitButton",
   ]
+  private progressTarget: any;
+  private progressBarTarget: any;
+  private statusTarget: any;
+  private submitButtonTarget: any;
 
   start(event) {
     this.progressTarget.classList.remove("d-none")

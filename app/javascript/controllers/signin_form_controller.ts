@@ -2,6 +2,7 @@ import { Controller } from "stimulus"
 
 export default class extends Controller {
   static targets = ["error"]
+  private errorTarget: any;
 
   onSubmit() {
     this.errorTarget.innerHTML = ""

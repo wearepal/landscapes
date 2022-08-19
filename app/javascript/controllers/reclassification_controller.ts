@@ -4,6 +4,9 @@ class HttpError extends Error {}
 
 export default class extends Controller {
   static targets = ["label", "navigationButton"]
+  private numPendingPromises?: number;
+  private labelTargets: any;
+  private navigationButtonTargets: any;
 
   connect() {
     this.numPendingPromises = 0
@@ -22,13 +25,14 @@ export default class extends Controller {
 
     const originalColour = event.target.style.getPropertyValue("--label-colour")
     event.target.style.setProperty("--label-colour", label.dataset.colour)
-    this.numPendingPromises++
+    this.numPendingPromises!++
     this.navigationButtonTargets.forEach(target => target.disabled = true)
     this.fetchWithRetry(
       `/labellings/${this.data.get("labelling-id")}/labelling_corrections`,
       {
         method: "POST",
         headers: {
+          // @ts-ignore
           "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]').content
         },
         body: formData
@@ -39,7 +43,7 @@ export default class extends Controller {
       throw error
     })
     .finally(() => {
-      this.numPendingPromises--
+      this.numPendingPromises!--
       if (this.numPendingPromises == 0) {
         this.navigationButtonTargets.forEach(target => target.disabled = false)
       }
