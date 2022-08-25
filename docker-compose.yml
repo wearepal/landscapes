@@ -46,6 +46,8 @@ services:
     - secret_key_base
     - source: storage
       target: /app/config/storage.yml
+    volumes:
+    - storage:/app/storage
 
   worker:
     image: wearepal/landscapes:5.0.0
@@ -55,6 +57,8 @@ services:
     - secret_key_base
     - source: storage
       target: /app/config/storage.yml
+    volumes:
+    - storage:/app/storage
 
 configs:
   caddyfile:
@@ -73,3 +77,4 @@ volumes:
   caddy:
   postgres:
   redis_queue:
+  storage:
