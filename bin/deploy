@@ -3,7 +3,7 @@ set -euo pipefail
 
 if ! docker secret inspect landscapes_secret_key_base &>/dev/null
 then
-  docker run --rm wearepal/landscapes:5.0.0 bin/rails secret | docker secret create landscapes_secret_key_base - &>/dev/null
+  docker run --rm wearepal/landscapes:5.1.0 bin/rails secret | docker secret create landscapes_secret_key_base - &>/dev/null
 fi
 
 if ! docker config inspect landscapes_caddyfile &>/dev/null
