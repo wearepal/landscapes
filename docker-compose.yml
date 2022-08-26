@@ -31,7 +31,7 @@ services:
     - redis_queue:/data
 
   migration:
-    image: wearepal/landscapes:5.1.0
+    image: "wearepal/landscapes:${VERSION}"
     command: bin/run-migrations
     secrets:
     - secret_key_base
@@ -40,7 +40,7 @@ services:
         condition: none
 
   web:
-    image: wearepal/landscapes:5.1.0
+    image: "wearepal/landscapes:${VERSION}"
     command: bin/run-server
     secrets:
     - secret_key_base
@@ -50,7 +50,7 @@ services:
     - storage:/app/storage
 
   worker:
-    image: wearepal/landscapes:5.1.0
+    image: "wearepal/landscapes:${VERSION}"
     command: bin/run-worker
     stop_signal: SIGQUIT
     secrets:
