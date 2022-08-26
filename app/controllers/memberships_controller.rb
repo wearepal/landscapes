@@ -7,7 +7,7 @@ class MembershipsController < ApplicationController
   end
 
   def create
-    user = User.find_by params.require(:membership).permit(:email)
+    user = User.find_by email: params.dig(:membership, :email).try(&:downcase)
     if user.nil?
       # TODO: create the user then send them an invitation by email to reset their password
       render json: { email: ["is not present in the system - please have them sign up first"] }, status: :unprocessable_entity
