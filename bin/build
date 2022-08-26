@@ -1,8 +1,10 @@
 #!/bin/bash
 set -euxo pipefail
 
+VERSION=`git describe | cut -c2-`
+
 docker build --pull \
   --platform "linux/amd64" \
   -f "Dockerfile" \
-  -t "wearepal/landscapes:5.1.0" \
+  -t "wearepal/landscapes:$VERSION" \
   .
