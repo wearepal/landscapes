@@ -42,7 +42,7 @@ export const LayerPalette = ({ addLayer, hide, dbModels }: LayerPaletteProps) =>
       Add layer
       <i className="fas fa-times" style={{ cursor: "pointer" }} onClick={ hide }/>
     </div>
-    <div className="flex-grow-1">
+    <div className="flex-grow-1" style={{ overflowY: "auto", flexBasis: "0px" }}>
       {
         dbModels.overlays.length > 0 &&
         <Section title="Overlays">
