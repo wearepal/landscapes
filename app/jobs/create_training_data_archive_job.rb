@@ -40,7 +40,7 @@ class CreateTrainingDataArchiveJob < ApplicationJob
 
       download.update! message: "Archiving map tiles..."
       Dir.chdir root do
-        if system("zip", "-r", "archive.zip", ".")
+        if system("zip", "-r", "archive.zip", ".", out: "/dev/null")
           download.archive.attach io: File.open(File.join(root, "archive.zip")), filename: "archive.zip"
           download.update! message: "Archive complete"
         else
