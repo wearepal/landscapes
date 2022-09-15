@@ -10,8 +10,6 @@ You will need a server with:
 
 * [Docker](https://www.docker.com), running in [swarm mode](https://docs.docker.com/engine/swarm/)
 * At least 2GB of RAM
-* A PostgreSQL instance
-* A Redis instance, [configured for persistence](https://redis.io/topics/persistence) (i.e. AOF enabled)
 * A domain name that resolves to the server's IPv4 and/or IPv6 address
 * TCP ports 80 and 443 open
 * An Amazon S3 (or compatible, e.g. DigitalOcean Spaces) bucket with appropriate [CORS configuration](https://edgeguides.rubyonrails.org/active_storage_overview.html#cross-origin-resource-sharing-cors-configuration)
