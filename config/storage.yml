@@ -2,11 +2,6 @@ test:
   service: Disk
   root: <%= Rails.root.join("tmp/storage") %>
 
-# Only used to test MigrateBlobsJob, can be removed later
-test_2:
-  service: Disk
-  root: <%= Rails.root.join("tmp/storage2") %>
-
 local:
   service: Disk
   root: <%= Rails.root.join("storage") %>
