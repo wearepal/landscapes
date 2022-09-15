@@ -48,8 +48,6 @@ services:
         max-size: "1G"
     secrets:
     - secret_key_base
-    - source: storage
-      target: /app/config/storage.yml
     volumes:
     - storage:/app/storage
 
@@ -63,8 +61,6 @@ services:
         max-size: "1G"
     secrets:
     - secret_key_base
-    - source: storage
-      target: /app/config/storage.yml
     volumes:
     - storage:/app/storage
 
@@ -77,9 +73,6 @@ secrets:
   secret_key_base:
     external: true
     name: landscapes_secret_key_base
-  storage:
-    external: true
-    name: landscapes_storage
 
 volumes:
   caddy:
