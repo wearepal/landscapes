@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { DBModels } from './db_models'
+import { NevoLevel } from './nevo'
 import { Layer } from './state'
 import { iconForLayerType } from "./util"
 
@@ -43,6 +44,34 @@ export const LayerPalette = ({ addLayer, hide, dbModels }: LayerPaletteProps) =>
       <i className="fas fa-times" style={{ cursor: "pointer" }} onClick={ hide }/>
     </div>
     <div className="flex-grow-1" style={{ overflowY: "auto", flexBasis: "0px" }}>
+      <Section title="NEVO">
+        {
+          Array<{ name: string, level: NevoLevel }>(
+            { name: "NEVO data (2km grid)", level: "2km" },
+            { name: "NEVO data (Subcatchments)", level: "subbasins" },
+            { name: "NEVO data (National Parks)", level: "national_parks" },
+            { name: "NEVO data (Local Authorities)", level: "lad" },
+            { name: "NEVO data (Catchments)", level: "basins" },
+            { name: "NEVO data (Counties)", level: "counties_uas" },
+            { name: "NEVO data (GORs)", level: "regions" },
+            { name: "NEVO data (Countries)", level: "countries" },
+          ).map(({ name, level }) =>
+            <AddLayerButton
+              key={level}
+              addLayer={addLayer}
+              prototype={{
+                type: "NevoLayer",
+                name,
+                visible: true,
+                opacity: 1,
+                level,
+                property: "urban_ha",
+                fill: "heatmap"
+              }}
+            />
+          )
+        }
+      </Section>
       {
         dbModels.overlays.length > 0 &&
         <Section title="Overlays">

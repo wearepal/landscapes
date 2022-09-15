@@ -2,11 +2,14 @@ import * as React from 'react'
 import { Map, View } from 'ol'
 import { Control, defaults as defaultControls } from 'ol/control'
 import { createEmpty as createEmptyExtent, extend, isEmpty } from 'ol/extent'
-import BaseLayer from 'ol/layer/Base'
+import olBaseLayer from 'ol/layer/Base'
 import VectorLayer from 'ol/layer/Vector'
 import { createIconElement } from './util'
+import { Layer } from './state'
+import { reifyLayer } from './reify_layer'
+import { DBModels } from './db_models'
 
-function getLayerExtent(layer: BaseLayer) {
+function getLayerExtent(layer: olBaseLayer) {
   if (layer instanceof VectorLayer) {
     return layer.getSource().getExtent()
   }
@@ -47,9 +50,10 @@ class FitViewControl extends Control {
 }
 
 interface MapViewProps {
-  layers: BaseLayer[]
+  layers: Layer[]
+  dbModels: DBModels
 }
-export const MapView = ({ layers }: MapViewProps) => {
+export const MapView = ({ layers, dbModels }: MapViewProps) => {
   const mapRef = React.useRef<HTMLDivElement>()
   const [map, setMap] = React.useState<Map | null>(null)
 
@@ -76,7 +80,7 @@ export const MapView = ({ layers }: MapViewProps) => {
     }
   }, [])
 
-  React.useEffect(() => map?.setLayers(layers), [map, layers])
+  React.useEffect(() => map?.setLayers(layers.map(l => reifyLayer(l, dbModels, map))), [map, layers])
 
   React.useEffect(() => map?.updateSize())
 

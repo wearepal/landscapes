@@ -1,3 +1,5 @@
+import { NevoLevel, NevoProperty } from "./nevo"
+
 interface BaseLayer {
   name: string
   visible: boolean
@@ -20,7 +22,14 @@ export interface OverlayLayer extends BaseLayer {
   fillOpacity: number
 }
 
-export type Layer = OsmLayer | MapTileLayer | OverlayLayer
+export interface NevoLayer extends BaseLayer {
+  type: "NevoLayer"
+  level: NevoLevel
+  property: NevoProperty
+  fill: "greyscale" | "heatmap"
+}
+
+export type Layer = OsmLayer | MapTileLayer | OverlayLayer | NevoLayer
 
 export interface Project {
   name: string

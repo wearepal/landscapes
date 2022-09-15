@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { ReactSortable } from 'react-sortablejs'
-import { Layer, OverlayLayer, State } from './state'
+import { NevoLevelNames, NevoPropertyNames } from './nevo'
+import { Layer, NevoLayer, OverlayLayer, State } from './state'
 import { iconForLayerType } from "./util"
 
 interface OverlayLayerSettingsProps {
@@ -32,6 +33,44 @@ const OverlayLayerSettings = ({ layer, mutate }: OverlayLayerSettingsProps) => (
         value={layer.fillOpacity} 
         onChange={e => mutate({ fillOpacity: Number(e.target.value) })}
       />
+    </div>
+  </>
+)
+
+interface NevoLayerSettingsProps {
+  layer: NevoLayer
+  mutate: (data: any) => void
+}
+const NevoLayerSettings = ({ layer, mutate }: NevoLayerSettingsProps) => (
+  <>
+    <div className="d-flex flex-column mt-3">
+      Scale
+      <select className="custom-select" value={layer.level} onChange={e => mutate({ level: e.target.value })}>
+        {
+          Object.keys(NevoLevelNames).map(level =>
+            <option key={level} value={level}>{NevoLevelNames[level]}</option>
+          )
+        }
+      </select>
+    </div>
+    <div className="d-flex flex-column mt-3">
+      Visualised property
+      <select className="custom-select" value={layer.property} onChange={e => mutate({ property: e.target.value })}>
+        {
+          Object.keys(NevoPropertyNames).map(property =>
+            <option key={property} value={property}>
+              {NevoPropertyNames[property]}
+            </option>
+          )
+        }
+      </select>
+    </div>
+    <div className="d-flex flex-column mt-3">
+      Fill mode
+      <select className="custom-select" value={layer.fill} onChange={e => mutate({ fill: e.target.value })}>
+        <option value="heatmap">Heatmap</option>
+        <option value="greyscale">Greyscale</option>
+      </select>
     </div>
   </>
 )
@@ -127,6 +166,16 @@ export const Sidebar = ({ state, selectLayer, mutateLayer, deleteLayer, setLayer
             {
               selectedLayer?.type == "OverlayLayer" &&
               <OverlayLayerSettings
+                layer={selectedLayer}
+                mutate={
+                  data => state.selectedLayer !== undefined &&
+                  mutateLayer(state.selectedLayer, data)
+                }
+              />
+            }
+            {
+              selectedLayer?.type == "NevoLayer" &&
+              <NevoLayerSettings
                 layer={selectedLayer}
                 mutate={
                   data => state.selectedLayer !== undefined &&
