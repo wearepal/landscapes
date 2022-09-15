@@ -6,7 +6,7 @@
   <% unless @model.source.nil? %>
     data-modelling-model="<%= @model.source %>"
   <% end %>
-  data-modelling-defs="<%= render "defs.json" %>"
+  data-modelling-defs="<%= render partial: "defs", formats: [:json] %>"
   data-modelling-lock-version="<%= @model.lock_version %>"
 >
   <div class="btn-toolbar bg-light p-2 border-top">
