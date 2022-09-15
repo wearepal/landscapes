@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_07_07_111959) do
+ActiveRecord::Schema.define(version: 2022_09_15_150131) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -49,53 +49,6 @@ ActiveRecord::Schema.define(version: 2022_07_07_111959) do
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "team_id", null: false
     t.index ["team_id"], name: "index_label_schemas_on_team_id"
-  end
-
-  create_table "labelling_function_applications", force: :cascade do |t|
-    t.bigint "region_id", null: false
-    t.bigint "labelling_function_id", null: false
-    t.bigint "labelling_group_id"
-    t.jsonb "bindings", default: {}, null: false
-    t.string "message"
-    t.integer "percent_complete", default: 0, null: false
-    t.boolean "status_flag"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["labelling_function_id"], name: "index_labelling_function_applications_on_labelling_function_id"
-    t.index ["labelling_group_id"], name: "index_labelling_function_applications_on_labelling_group_id"
-    t.index ["region_id"], name: "index_labelling_function_applications_on_region_id"
-  end
-
-  create_table "labelling_function_inputs", force: :cascade do |t|
-    t.bigint "labelling_function_id", null: false
-    t.bigint "label_schema_id", null: false
-    t.string "name", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.boolean "mapped"
-    t.index ["label_schema_id"], name: "index_labelling_function_inputs_on_label_schema_id"
-    t.index ["labelling_function_id", "mapped"], name: "index_labelling_function_inputs_on_function_id_and_mapped", unique: true
-    t.index ["labelling_function_id", "name"], name: "idx_labelling_function_inputs_on_labelling_function_id_and_name", unique: true
-    t.index ["labelling_function_id"], name: "index_labelling_function_inputs_on_labelling_function_id"
-  end
-
-  create_table "labelling_function_rules", force: :cascade do |t|
-    t.bigint "labelling_function_id", null: false
-    t.bigint "label_id", null: false
-    t.integer "position", null: false
-    t.string "expression", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["label_id"], name: "index_labelling_function_rules_on_label_id"
-    t.index ["labelling_function_id"], name: "index_labelling_function_rules_on_labelling_function_id"
-  end
-
-  create_table "labelling_functions", force: :cascade do |t|
-    t.bigint "label_schema_id", null: false
-    t.string "name", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["label_schema_id"], name: "index_labelling_functions_on_label_schema_id"
   end
 
   create_table "labelling_group_uploads", force: :cascade do |t|
@@ -281,14 +234,6 @@ ActiveRecord::Schema.define(version: 2022_07_07_111959) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "label_schemas", "teams"
-  add_foreign_key "labelling_function_applications", "labelling_functions"
-  add_foreign_key "labelling_function_applications", "labelling_groups"
-  add_foreign_key "labelling_function_applications", "regions"
-  add_foreign_key "labelling_function_inputs", "label_schemas"
-  add_foreign_key "labelling_function_inputs", "labelling_functions"
-  add_foreign_key "labelling_function_rules", "labelling_functions"
-  add_foreign_key "labelling_function_rules", "labels"
-  add_foreign_key "labelling_functions", "label_schemas"
   add_foreign_key "labelling_group_uploads", "label_schemas"
   add_foreign_key "labelling_group_uploads", "labelling_groups"
   add_foreign_key "labelling_group_uploads", "regions"
