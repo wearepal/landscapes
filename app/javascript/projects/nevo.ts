@@ -519,3 +519,14 @@ export const NevoPropertyNames = {
 } as const
 
 export type NevoProperty = keyof typeof NevoPropertyNames
+
+export const minZoomByNevoLevel = new Map<NevoLevel, number>([
+  ["2km", 11],
+  ["subbasins", 11],
+  ["national_parks", 0],
+  ["lad", 0],
+  ["basins", 10],
+  ["counties_uas", 0],
+  ["regions", 0],
+  ["countries", 0],
+])

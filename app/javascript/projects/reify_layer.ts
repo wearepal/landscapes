@@ -13,7 +13,7 @@ import VectorSource from 'ol/source/Vector'
 import XYZ from 'ol/source/XYZ'
 import { Circle, Fill, Stroke, Style, Text } from 'ol/style'
 import { DBModels } from './db_models'
-import { NevoLevel, NevoProperty } from './nevo'
+import { minZoomByNevoLevel, NevoLevel, NevoProperty } from './nevo'
 import { Layer } from './state'
 import { Map } from 'ol'
 
@@ -37,6 +37,7 @@ const createNevoSource = memoize((level: NevoLevel) =>
     strategy: bbox,
     attributions: '&copy; <a href="https://www.exeter.ac.uk/research/leep/research/nevo/">NEVO</a> Partners',
     format: createGeoJSONFormat("EPSG:27700"),
+    overlaps: false,
   })
 )
 const createEmptyLayer = () => new olTileLayer()
@@ -135,7 +136,8 @@ export const reifyLayer = (layer: Layer, dbModels: DBModels, map: Map): olBaseLa
           })
         },
         visible: layer.visible,
-        opacity: layer.opacity
+        opacity: layer.opacity,
+        minZoom: minZoomByNevoLevel.get(layer.level)
       })
     }
 
