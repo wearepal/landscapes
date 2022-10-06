@@ -43,14 +43,21 @@ interface NevoLayerSettingsProps {
 }
 const NevoLayerSettings = ({ layer, mutate }: NevoLayerSettingsProps) => (
   <>
-    <div className="d-flex flex-column mt-3">
+    <div className="d-flex align-items-center mt-3">
       Scale
-      <select className="custom-select" value={layer.level} onChange={e => mutate({ level: e.target.value })}>
+      <select className="custom-select ml-3" value={layer.level} onChange={e => mutate({ level: e.target.value })}>
         {
           Object.keys(NevoLevelNames).map(level =>
             <option key={level} value={level}>{NevoLevelNames[level]}</option>
           )
         }
+      </select>
+    </div>
+    <div className="d-flex align-items-center mt-3">
+      Fill mode
+      <select className="custom-select ml-3" value={layer.fill} onChange={e => mutate({ fill: e.target.value })}>
+        <option value="heatmap">Heatmap</option>
+        <option value="greyscale">Greyscale</option>
       </select>
     </div>
     <div className="d-flex flex-column mt-3">
@@ -59,17 +66,10 @@ const NevoLayerSettings = ({ layer, mutate }: NevoLayerSettingsProps) => (
         {
           Object.keys(NevoPropertyNames).map(property =>
             <option key={property} value={property}>
-              {NevoPropertyNames[property]}
+              {property} - {NevoPropertyNames[property]}
             </option>
           )
         }
-      </select>
-    </div>
-    <div className="d-flex flex-column mt-3">
-      Fill mode
-      <select className="custom-select" value={layer.fill} onChange={e => mutate({ fill: e.target.value })}>
-        <option value="heatmap">Heatmap</option>
-        <option value="greyscale">Greyscale</option>
       </select>
     </div>
   </>
