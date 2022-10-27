@@ -137,7 +137,7 @@ export const reifyLayer = (layer: Layer, dbModels: DBModels, map: Map): olBaseLa
         },
         visible: layer.visible,
         opacity: layer.opacity,
-        minZoom: minZoomByNevoLevel.get(layer.level)
+        minZoom: minZoomByNevoLevel[layer.level]
       })
     }
 

@@ -7,7 +7,7 @@ export const NevoLevelNames = {
   "counties_uas": "County",
   "regions": "Government Office Region",
   "countries": "Country",
-}
+} as const
 
 export type NevoLevel = keyof typeof NevoLevelNames
 
@@ -414,13 +414,13 @@ export const NevoPropertyNames = {
 
 export type NevoProperty = keyof typeof NevoPropertyNames
 
-export const minZoomByNevoLevel = new Map<NevoLevel, number>([
-  ["2km", 11],
-  ["subbasins", 11],
-  ["national_parks", 0],
-  ["lad", 0],
-  ["basins", 10],
-  ["counties_uas", 0],
-  ["regions", 0],
-  ["countries", 0],
-])
+export const minZoomByNevoLevel: Record<NevoLevel, number> = {
+  "2km": 11,
+  "subbasins": 11,
+  "national_parks": 0,
+  "lad": 0,
+  "basins": 10,
+  "counties_uas": 0,
+  "regions": 0,
+  "countries": 0,
+}
