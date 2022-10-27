@@ -414,7 +414,7 @@ export const nevoPropertyNames = {
 
 export type NevoProperty = keyof typeof nevoPropertyNames
 
-export const minZoomByNevoLevel: Record<NevoLevel, number> = {
+export const minZoomByNevoLevel: Readonly<Record<NevoLevel, number>> = {
   "2km": 11,
   "subbasins": 11,
   "national_parks": 0,
