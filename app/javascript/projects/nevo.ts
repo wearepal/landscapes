@@ -1,4 +1,4 @@
-export const NevoLevelNames = {
+export const nevoLevelNames = {
   "2km": "2km Grid",
   "subbasins": "Subcatchment",
   "national_parks": "National Park",
@@ -9,9 +9,9 @@ export const NevoLevelNames = {
   "countries": "Country",
 } as const
 
-export type NevoLevel = keyof typeof NevoLevelNames
+export type NevoLevel = keyof typeof nevoLevelNames
 
-export const NevoPropertyNames = {
+export const nevoPropertyNames = {
   "tot_area": "total hectare area of spatial unit",
   "wood_ha": "woodland hectares",
   "sngrass_ha": "semi-natural grassland hectares",
@@ -412,7 +412,7 @@ export const NevoPropertyNames = {
   "sr_100_50": "predicted species richness in 2050s",
 } as const
 
-export type NevoProperty = keyof typeof NevoPropertyNames
+export type NevoProperty = keyof typeof nevoPropertyNames
 
 export const minZoomByNevoLevel: Record<NevoLevel, number> = {
   "2km": 11,

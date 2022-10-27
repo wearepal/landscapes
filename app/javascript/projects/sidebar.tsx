@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { ReactSortable } from 'react-sortablejs'
-import { NevoLevelNames, NevoPropertyNames } from './nevo'
+import { nevoLevelNames, nevoPropertyNames } from './nevo'
 import { Layer, NevoLayer, OverlayLayer, State } from './state'
 import { iconForLayerType } from "./util"
 
@@ -47,8 +47,8 @@ const NevoLayerSettings = ({ layer, mutate }: NevoLayerSettingsProps) => (
       Scale
       <select className="custom-select ml-3" value={layer.level} onChange={e => mutate({ level: e.target.value })}>
         {
-          Object.keys(NevoLevelNames).map(level =>
-            <option key={level} value={level}>{NevoLevelNames[level]}</option>
+          Object.keys(nevoLevelNames).map(level =>
+            <option key={level} value={level}>{nevoLevelNames[level]}</option>
           )
         }
       </select>
@@ -64,9 +64,9 @@ const NevoLayerSettings = ({ layer, mutate }: NevoLayerSettingsProps) => (
       Visualised property
       <select className="custom-select" value={layer.property} onChange={e => mutate({ property: e.target.value })}>
         {
-          Object.keys(NevoPropertyNames).map(property =>
+          Object.keys(nevoPropertyNames).map(property =>
             <option key={property} value={property}>
-              {property} - {NevoPropertyNames[property]}
+              {property} - {nevoPropertyNames[property]}
             </option>
           )
         }
