@@ -56,6 +56,16 @@ interface MapViewProps {
 export const MapView = ({ layers, dbModels }: MapViewProps) => {
   const mapRef = React.useRef<HTMLDivElement>()
   const [map, setMap] = React.useState<Map | null>(null)
+  const [allLayersVisible, setAllLayersVisible] = React.useState(true)
+  const updateAllLayersVisible = (map: Map) => {
+    const zoom = map.getView().getZoom()
+    if (zoom !== undefined) {
+      const layerMinZooms = map.getLayers().getArray()
+        .filter(layer => layer.getVisible())
+        .map(layer => layer.getMinZoom())
+      setAllLayersVisible(zoom > Math.max(...layerMinZooms))
+    }
+  }
 
   React.useEffect(() => {
     const newMap = new Map({
@@ -72,6 +82,10 @@ export const MapView = ({ layers, dbModels }: MapViewProps) => {
       target: mapRef.current
     });
 
+    newMap.getView().on("change", e => {
+      updateAllLayersVisible(newMap)
+    })
+
     setMap(newMap)
 
     return () => {
@@ -82,7 +96,20 @@ export const MapView = ({ layers, dbModels }: MapViewProps) => {
 
   React.useEffect(() => map?.setLayers(layers.map(l => reifyLayer(l, dbModels, map))), [map, layers])
 
-  React.useEffect(() => map?.updateSize())
+  React.useEffect(() => {
+    if (map === null) { return }
 
-  return <div className="flex-grow-1 bg-dark" ref={mapRef as any}></div>
+    map.updateSize()
+    updateAllLayersVisible(map)
+  })
+
+  return <div className="flex-grow-1 position-relative">
+    <div className="bg-dark" style={{ width: "100%", height: "100%" }} ref={mapRef as any}/>
+    {
+      !allLayersVisible &&
+        <div className="bg-dark text-light rounded-sm px-3 py-2 position-absolute" style={{ bottom: "1em", left: "50%", transform: "translateX(-50%)" }}>
+          <i className="fas fa-info-circle"/> Zoom in further to see all layers
+        </div>
+    }
+  </div>
 }
