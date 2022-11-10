@@ -13,7 +13,7 @@ import VectorSource from 'ol/source/Vector'
 import XYZ from 'ol/source/XYZ'
 import { Circle, Fill, Stroke, Style, Text } from 'ol/style'
 import { DBModels } from './db_models'
-import { minZoomByNevoLevel, NevoLevel, NevoProperty } from './nevo'
+import { minMaxByNevoLevelAndProperty, minZoomByNevoLevel, NevoLevel } from './nevo'
 import { Layer } from './state'
 import { Map } from 'ol'
 
@@ -108,20 +108,11 @@ export const reifyLayer = (layer: Layer, dbModels: DBModels, map: Map): olBaseLa
     case "NevoLayer": {
       const source = createNevoSource(layer.level)
 
-      const minmaxValue = memoize((extent: Extent, property: NevoProperty) => {
-        const values = source.getFeatures().filter(f =>
-          f.getGeometry()?.intersectsExtent(extent) && f.get("tot_area") > 0
-        ).map(f =>
-          f.get(property) / f.get("tot_area")
-        )
-        return [Math.min(...values), Math.max(...values)]
-      }, (extent: Extent, property: NevoProperty) => `${extent.join(",")}${property}`)
-
       return new olVectorLayer({
         source: source,
         style: (feature) => {
           const color = (() => {
-            const [min, max] = minmaxValue(map.getView().calculateExtent(), layer.property)
+            const [min, max] = minMaxByNevoLevelAndProperty[layer.level][layer.property]
             const value = feature.get(layer.property) / feature.get("tot_area")
             const normalisedValue = max === min ? 1 : (value - min) / (max - min)
             switch (layer.fill) {
