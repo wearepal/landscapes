@@ -33,10 +33,10 @@ const createOverlaySource = memoize((id: number) =>
 )
 const createNevoSource = memoize((level: NevoLevel) =>
   new VectorSource({
-    url: (extent: Extent) => `https://geo.leep.exeter.ac.uk/geoserver/nevo/wfs?bbox=${extent.join(",")},EPSG:3857&outputFormat=application/json&request=GetFeature&typename=nevo:explore_${level}_rounded&version=2.0.0`,
+    url: (extent: Extent) => `https://geo.leep.exeter.ac.uk/geoserver/nevo/wfs?bbox=${extent.join(",")},EPSG:3857&srsname=EPSG:3857&outputFormat=application/json&request=GetFeature&typename=nevo:explore_${level}_rounded&version=2.0.0`,
     strategy: bbox,
     attributions: '&copy; <a href="https://www.exeter.ac.uk/research/leep/research/nevo/">NEVO</a> Partners',
-    format: createGeoJSONFormat("EPSG:27700"),
+    format: createGeoJSONFormat(),
     overlaps: false,
   })
 )
