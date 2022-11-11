@@ -4,7 +4,6 @@ import { LayerPalette } from './layer_palette'
 import { MapView } from './map_view'
 import './project_editor.css'
 import { reduce } from './reducer'
-import { reifyLayer } from './reify_layer'
 import { CollapsedSidebar, Sidebar } from './sidebar'
 import { defaultProject, Project } from './state'
 import { Toolbar } from './toolbar'
@@ -52,7 +51,7 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
         saveProject={saveProject}
       />
       <div className="flex-grow-1 d-flex">
-        <MapView layers={state.project.allLayers.map(id => reifyLayer(state.project.layers[id], dbModels))}/>
+        <MapView layers={state.project.allLayers.map(id => state.project.layers[id])} dbModels={dbModels}/>
         {
           layerPaletteVisible &&
           <LayerPalette
