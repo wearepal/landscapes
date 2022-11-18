@@ -14,6 +14,7 @@ import { AreaComponent } from './AreaComponent'
 import { BarChartComponent } from './BarChartComponent'
 import { SankeyComponent } from './SankeyComponent'
 import { MaskLabellingComponent } from './MaskLabellingComponent'
+import { MaskNumericDataComponent } from './MaskNumericDataComponent'
 
 export function createDefaultComponents({ label_schemas, regions }) {
   return [
@@ -51,5 +52,6 @@ export function createDefaultComponents({ label_schemas, regions }) {
 
     new DistanceMapComponent(),
     new MaskLabellingComponent(),
+    new MaskNumericDataComponent(),
   ]
 }
