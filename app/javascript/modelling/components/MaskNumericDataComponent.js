@@ -1,8 +1,7 @@
 import { Component, Input, Output } from 'rete'
 import { PreviewControl } from '../controls/PreviewControl'
-import { BooleanTileGrid, LabelledTileGrid, NumericTileGrid } from '../TileGrid'
-import { layerSocket, setSocket, mapSocket } from '../sockets'
-import { component } from 'vue/types/umd'
+import { NumericTileGrid } from '../TileGrid'
+import { setSocket, mapSocket } from '../sockets'
 
 export class MaskNumericDataComponent extends Component{
 
