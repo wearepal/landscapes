@@ -59,9 +59,9 @@ gem 'chunky_png'
 gem 'resque-pool'
 gem 'resque-scheduler'
 gem 'rubyzip', '~> 2.3.0'
-gem 'sentry-ruby', '~> 4.0'
-gem 'sentry-rails', '~> 4.0'
-gem 'sentry-resque', '~> 4.0'
+gem 'sentry-ruby', '~> 5.6'
+gem 'sentry-rails', '~> 5.6'
+gem 'sentry-resque', '~> 5.6'
 
 # The following can be removed after upgrading to Rails >= 7.0.1
 gem 'net-imap', require: false
