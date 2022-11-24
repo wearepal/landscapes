@@ -14,6 +14,7 @@ import { AreaComponent } from './AreaComponent'
 import { BarChartComponent } from './BarChartComponent'
 import { SankeyComponent } from './SankeyComponent'
 import { MaskLabellingComponent } from './MaskLabellingComponent'
+import { MaskNumericDataComponent } from './MaskNumericDataComponent'
 
 export function createDefaultComponents({ label_schemas, regions }) {
   return [
@@ -31,6 +32,8 @@ export function createDefaultComponents({ label_schemas, regions }) {
     new VariadicOpComponent('Symmetric difference', 'Δ', setSocket, setSocket, 'Set operations'),
     new UnaryOpComponent('Complement', '′', 'postfix', setSocket, setSocket, 'Set operations'),
 
+
+    new MaskNumericDataComponent(),
     new VariadicOpComponent('Sum', '∑', mapSocket, mapSocket, 'Arithmetic'),
     new VariadicOpComponent('Product', '∏', mapSocket, mapSocket, 'Arithmetic'),
     new BinaryOpComponent('Add', '+', mapSocket, mapSocket, 'Arithmetic'),
