@@ -13,6 +13,7 @@
       <%= link_to project_path(project), class: "list-group-item list-group-item-action", data: { "filter-target": "item" } do %>
         <div class="d-flex align-items-center justify-content-between">
           <%= project.name %>
+          <%= link_to "Delete", project_path(project), method: :delete, data: { confirm: "Are you sure you want to delete '#{project.name}'?" }, class: "btn btn-outline-danger" %>
           <i class="fas fa-chevron-right"></i>
         </div>
       <% end %>
