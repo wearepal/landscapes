@@ -10,13 +10,17 @@
       <input placeholder="Search" class="form-control" data-action="input->filter#update" autofocus>
     </div>
     <% @team.projects.sort_by(&:name).each do |project| %>
-      <%= link_to project_path(project), class: "list-group-item list-group-item-action", data: { "filter-target": "item" } do %>
-        <div class="d-flex align-items-center justify-content-between">
-          <%= project.name %>
-          <%= link_to "Delete", project_path(project), method: :delete, data: { confirm: "Are you sure you want to delete '#{project.name}'?" }, class: "btn btn-outline-danger" %>
-          <i class="fas fa-chevron-right"></i>
-        </div>
-      <% end %>
+      <div class="list-group-item p-0 d-flex align-items-center">
+        <%= link_to project_path(project), class: "list-group-item list-group-item-action border-0", data: { "filter-target": "item" } do %>
+          <div class="d-flex align-items-center justify-content-between">
+            <%= project.name %>
+            <i class="fas fa-chevron-right"></i>
+          </div>
+        <% end %>
+        <%= link_to project_path(project), method: :delete, data: { confirm: "Are you sure you want to delete '#{project.name}'?" }, class: "px-3 py-2 text-danger" do %>
+          <i class="fas fa-trash-alt"></i>
+        <% end %>
+      </div>
     <% end %>
   </div>
 </div>
