@@ -34,4 +34,12 @@ class ProjectsController < ApplicationController
     @team = @project.team
     authorize_for! @team
   end
+
+  def destroy
+    @project = Project.find(params[:id])
+    @team = @project.team
+    authorize_for! @team
+    @project.destroy
+    redirect_to team_projects_url(@team)
+  end
 end
