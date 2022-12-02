@@ -9,7 +9,7 @@
     "@rails/activestorage": "^6.0.0",
     "@rails/ujs": "^6.0.0",
     "@rails/webpacker": "^5.2.1",
-    "@sentry/browser": "^5.15.5",
+    "@sentry/browser": "^7.21.1",
     "@types/react": "^18.0.15",
     "@types/react-dom": "^18.0.6",
     "babel-plugin-transform-react-remove-prop-types": "^0.4.24",
