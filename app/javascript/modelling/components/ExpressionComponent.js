@@ -18,6 +18,7 @@ export class ExpressionComponent extends Component{
         node.addControl(
             new SelectControl(
               'expressionId',
+              //get expressions from schema
               () => [{ id: 1, name: "x ^ z" }, { id: 2, name: "(x + 3) / (y + z)"}],
               () => this.updateInputs(node),
               "Expression"
@@ -29,17 +30,31 @@ export class ExpressionComponent extends Component{
 
     worker(node, inputs, outputs) {
 
-        console.log(inputs)
+        //get expression
+
+        //create output
+
+        //loop through output array(s)
+
+        //set variables
+
+        //evaluate expression
 
 
+        //end loop
+
+        //output 
 
     }
 
     calculateVariables(node){
 
         const regex = /[a-z]\b/gi;
-        const str = `(x * y) / 3i + y`;
 
+        //get expression using the expressionId
+
+        //str should be the expression
+        const str = `(x * y) / 3i + y`;
 
         let m;
         let v = [];
