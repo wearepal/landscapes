@@ -15,6 +15,7 @@ import { BarChartComponent } from './BarChartComponent'
 import { SankeyComponent } from './SankeyComponent'
 import { MaskLabellingComponent } from './MaskLabellingComponent'
 import { MaskNumericDataComponent } from './MaskNumericDataComponent'
+import { ExpressionComponent } from './ExpressionComponent'
 
 export function createDefaultComponents({ label_schemas, regions }) {
   return [
@@ -43,6 +44,7 @@ export function createDefaultComponents({ label_schemas, regions }) {
     new BinaryOpComponent('Power', '^', mapSocket, mapSocket, 'Arithmetic'),
     new UnaryOpComponent('Negate', '−', 'prefix', mapSocket, mapSocket, 'Arithmetic'),
     new UnaryOpComponent('Reciprocal', '⁻¹', 'postfix', mapSocket, mapSocket, 'Arithmetic'),
+    new ExpressionComponent(),
 
     new BinaryOpComponent('Less', '<', mapSocket, setSocket, 'Comparisons'),
     new BinaryOpComponent('Greater', '>', mapSocket, setSocket, 'Comparisons'),

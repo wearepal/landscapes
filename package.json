@@ -20,6 +20,7 @@
     "d3-sankey": "^0.12.3",
     "jquery": "^3.5.1",
     "kd-tree-javascript": "^1.0.3",
+    "mathjs": "^11.4.0",
     "ol": "^6.3.1",
     "popper.js": "^1.16.0",
     "prop-types": "^15.7.2",
