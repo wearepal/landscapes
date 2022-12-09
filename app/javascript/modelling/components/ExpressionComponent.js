@@ -4,7 +4,7 @@ import { setSocket, mapSocket } from '../sockets'
 import { SelectControl } from '../controls/SelectControl'
 import { NumericTileGrid } from '../TileGrid'
 import { workerPool } from '../workerPool'
-import { evaluate, parser } from 'mathjs'
+import { parser } from 'mathjs'
 
 export class ExpressionComponent extends Component{
 
@@ -19,31 +19,62 @@ export class ExpressionComponent extends Component{
             new SelectControl(
               'expressionId',
               //get expressions from schema
-              () => [{ id: 1, name: "x ^ z" }, { id: 2, name: "(x + 3) / (y + z)"}],
+              () => [{ id: 1, name: `(x * y) / 3i + y` }, { id: 2, name: `(x * y) / 4i + y`}],
               () => this.updateInputs(node),
               "Expression"
             )
-          )
+        )
+
+        this.calculateVariables(node)
 
         node.addOutput(new Output('out', 'Output', mapSocket))
     }
 
     worker(node, inputs, outputs) {
 
-        //get expression
+        const editorNode = this.editor.nodes.find(n => n.id === node.id)
 
-        //create output
+        let variables = []
 
-        //loop through output array(s)
+        let errorMsg = null;
 
-        //set variables
+        for (const input in inputs) {
+            inputs[input][0] === undefined ? errorMsg = "" : null;
+            variables.push(input)
+        }
 
-        //evaluate expression
+        if (errorMsg){
 
+            editorNode.meta.errorMessage = errorMsg
 
-        //end loop
+        }else{
 
-        //output 
+            delete editorNode.meta.errorMessage
+
+            const p = parser()
+
+            let v = inputs[variables[0]][0]
+      
+            const out = editorNode.meta.output = outputs['out'] = new NumericTileGrid(v.zoom, v.x, v.y, v.width, v.height, v.labelSchema)
+      
+            for (let x = v.x; x < v.x + v.width; ++x) {
+                for (let y = v.y; y < v.y + v.height; ++y) {
+
+                    variables.forEach((i)=>{
+                        p.set(i, inputs[i][0].get(x, y));
+                    })
+
+                    //need to use selected expression
+                    let r  = p.evaluate(`(x * y) / 3i + y`)
+
+                    out.set(x, y, isNaN(r) ? 0 : r);
+
+                    p.clear();
+                }
+            }
+
+        }
+        editorNode.update()
 
     }
 
