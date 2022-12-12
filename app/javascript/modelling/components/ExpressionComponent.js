@@ -1,16 +1,16 @@
 import { Component, Input, Output } from 'rete'
-import { PreviewControl } from '../controls/PreviewControl'
-import { setSocket, mapSocket } from '../sockets'
+import { mapSocket } from '../sockets'
 import { SelectControl } from '../controls/SelectControl'
 import { NumericTileGrid } from '../TileGrid'
-import { workerPool } from '../workerPool'
-import { parser } from 'mathjs'
+import { exp, parser } from 'mathjs'
 
 export class ExpressionComponent extends Component{
 
-    constructor(){
+    constructor(labelSchemas){
         super('Expression')
         this.category = 'Arithmetic'
+        this.labelSchemas = labelSchemas
+        this.expressions = [{ id: 1, name: `(x * y) / 3i + y` }, { id: 2, name: `(x * y) / 4i + y`}, {id: 3, name: `x ^ y`}, {id: 4, name: `(x ^ 3y) - 2k`}]
     }
 
     builder(node){
@@ -18,8 +18,7 @@ export class ExpressionComponent extends Component{
         node.addControl(
             new SelectControl(
               'expressionId',
-              //get expressions from schema
-              () => [{ id: 1, name: `(x * y) / 3i + y` }, { id: 2, name: `(x * y) / 4i + y`}],
+              () => this.expressions,
               () => this.updateInputs(node),
               "Expression"
             )
@@ -64,8 +63,9 @@ export class ExpressionComponent extends Component{
                         p.set(i, inputs[i][0].get(x, y));
                     })
 
-                    //need to use selected expression
-                    let r  = p.evaluate(`(x * y) / 3i + y`)
+                    let expression = this.getExpression(editorNode.data.expressionId);
+
+                    let r  = p.evaluate(expression)
 
                     out.set(x, y, isNaN(r) ? 0 : r);
 
@@ -78,19 +78,23 @@ export class ExpressionComponent extends Component{
 
     }
 
+    getExpression(expressionId){
+
+        let r = this.expressions.find(a => a.id == expressionId)
+
+        return r.name;
+    }
+
     calculateVariables(node){
 
         const regex = /[a-z]\b/gi;
 
-        //get expression using the expressionId
-
-        //str should be the expression
-        const str = `(x * y) / 3i + y`;
+        const expression = this.getExpression(node.data.expressionId);
 
         let m;
         let v = [];
         
-        while ((m = regex.exec(str)) !== null) {
+        while ((m = regex.exec(expression)) !== null) {
 
             if (m.index === regex.lastIndex) {
                 regex.lastIndex++;

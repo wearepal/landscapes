@@ -35,6 +35,7 @@ export function createDefaultComponents({ label_schemas, regions }) {
 
 
     new MaskNumericDataComponent(),
+    new ExpressionComponent(label_schemas),
     new VariadicOpComponent('Sum', '∑', mapSocket, mapSocket, 'Arithmetic'),
     new VariadicOpComponent('Product', '∏', mapSocket, mapSocket, 'Arithmetic'),
     new BinaryOpComponent('Add', '+', mapSocket, mapSocket, 'Arithmetic'),
@@ -44,7 +45,6 @@ export function createDefaultComponents({ label_schemas, regions }) {
     new BinaryOpComponent('Power', '^', mapSocket, mapSocket, 'Arithmetic'),
     new UnaryOpComponent('Negate', '−', 'prefix', mapSocket, mapSocket, 'Arithmetic'),
     new UnaryOpComponent('Reciprocal', '⁻¹', 'postfix', mapSocket, mapSocket, 'Arithmetic'),
-    new ExpressionComponent(),
 
     new BinaryOpComponent('Less', '<', mapSocket, setSocket, 'Comparisons'),
     new BinaryOpComponent('Greater', '>', mapSocket, setSocket, 'Comparisons'),
