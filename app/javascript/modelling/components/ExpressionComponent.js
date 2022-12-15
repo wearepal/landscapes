@@ -120,6 +120,7 @@ export class ExpressionComponent extends Component{
           }
         })
 
+        node.getConnections().forEach(c => this.editor.removeConnection(c))
         Array.from(node.inputs.values()).forEach(input => node.removeInput(input))
 
         this.calculateVariables(node);
