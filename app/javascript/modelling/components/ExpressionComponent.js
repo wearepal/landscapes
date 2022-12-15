@@ -3,6 +3,7 @@ import { mapSocket } from '../sockets'
 import { SelectControl } from '../controls/SelectControl'
 import { NumericTileGrid } from '../TileGrid'
 import { exp, isSymbolNode, parse, parser } from 'mathjs'
+import { PreviewControl } from '../controls/PreviewControl'
 
 export class ExpressionComponent extends Component{
 
@@ -13,6 +14,10 @@ export class ExpressionComponent extends Component{
     }
 
     builder(node){
+        node.addControl(new PreviewControl(() => 
+          node.meta.output || new NumericTileGrid(0, 0, 0, 1, 1, 0)
+        ))
+
         if (node.data.expressionId === undefined) {
             node.data.expressionId = 1
         }
@@ -79,6 +84,7 @@ export class ExpressionComponent extends Component{
 
         }
         editorNode.update()
+        editorNode.controls.get('preview').update()
 
     }
 
