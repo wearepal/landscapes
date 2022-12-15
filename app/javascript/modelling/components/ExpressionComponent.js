@@ -14,6 +14,9 @@ export class ExpressionComponent extends Component{
     }
 
     builder(node){
+        if (node.data.expressionId === undefined) {
+            node.data.expressionId = 1
+        }
 
         node.addControl(
             new SelectControl(
