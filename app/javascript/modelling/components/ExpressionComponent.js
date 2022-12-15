@@ -2,7 +2,7 @@ import { Component, Input, Output } from 'rete'
 import { mapSocket } from '../sockets'
 import { SelectControl } from '../controls/SelectControl'
 import { NumericTileGrid } from '../TileGrid'
-import { exp, parser } from 'mathjs'
+import { exp, isSymbolNode, parse, parser } from 'mathjs'
 
 export class ExpressionComponent extends Component{
 
@@ -89,27 +89,16 @@ export class ExpressionComponent extends Component{
     }
 
     calculateVariables(node){
+        const expression = this.getExpression(node.data.expressionId)
 
-        const regex = /[a-z]\b/gi;
+        const uniqueSymbols = new Set(
+            parse(expression)
+                .filter(isSymbolNode)
+                .map(n => n.name)
+        )
 
-        const expression = this.getExpression(node.data.expressionId);
-
-        let m;
-        let v = [];
-        
-        while ((m = regex.exec(expression)) !== null) {
-
-            if (m.index === regex.lastIndex) {
-                regex.lastIndex++;
-            }
-            
-            m.forEach((match) => {
-
-                !v.includes(match) ? node.addInput(new Input(match, match, mapSocket)):null;
-
-                v.push(match)
-                
-            });
+        for (let symbol of uniqueSymbols) {
+            node.addInput(new Input(symbol, symbol, mapSocket))
         }
     }
 
