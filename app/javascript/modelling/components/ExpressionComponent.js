@@ -6,10 +6,9 @@ import { exp, isSymbolNode, parse, parser } from 'mathjs'
 
 export class ExpressionComponent extends Component{
 
-    constructor(labelSchemas){
+    constructor(){
         super('Expression')
         this.category = 'Arithmetic'
-        this.labelSchemas = labelSchemas
         this.expressions = [{ id: 1, name: `(x * y) / 3i + y` }, { id: 2, name: `(x * y) / 4i + y`}, {id: 3, name: `x ^ y`}, {id: 4, name: `(x ^ 3y) - 2k`}]
     }
 
@@ -57,7 +56,7 @@ export class ExpressionComponent extends Component{
 
             let v = inputs[variables[0]][0]
       
-            const out = editorNode.meta.output = outputs['out'] = new NumericTileGrid(v.zoom, v.x, v.y, v.width, v.height, v.labelSchema)
+            const out = editorNode.meta.output = outputs['out'] = new NumericTileGrid(v.zoom, v.x, v.y, v.width, v.height, 0)
       
             for (let x = v.x; x < v.x + v.width; ++x) {
                 for (let y = v.y; y < v.y + v.height; ++y) {
@@ -70,7 +69,9 @@ export class ExpressionComponent extends Component{
 
                     let r  = p.evaluate(expression)
 
-                    out.set(x, y, isNaN(r) ? 0 : r);
+                    if (!isNaN(r)) {
+                        out.set(x, y, r);
+                    }
 
                     p.clear();
                 }

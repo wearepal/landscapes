@@ -35,7 +35,7 @@ export function createDefaultComponents({ label_schemas, regions }) {
 
 
     new MaskNumericDataComponent(),
-    new ExpressionComponent(label_schemas),
+    new ExpressionComponent(),
     new VariadicOpComponent('Sum', '∑', mapSocket, mapSocket, 'Arithmetic'),
     new VariadicOpComponent('Product', '∏', mapSocket, mapSocket, 'Arithmetic'),
     new BinaryOpComponent('Add', '+', mapSocket, mapSocket, 'Arithmetic'),
