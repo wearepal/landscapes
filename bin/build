@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euxo pipefail
 
-VERSION=`git describe | cut -c2-`
+VERSION=`git describe --tags | cut -c2-`
 
 docker build --pull \
   --platform "linux/amd64" \
