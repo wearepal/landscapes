@@ -72,6 +72,18 @@ export const LayerPalette = ({ addLayer, hide, dbModels }: LayerPaletteProps) =>
           )
         }
       </Section>
+      <Section title="UKCEH Land Cover Maps">
+        <AddLayerButton
+          addLayer={addLayer}
+          prototype={{
+            type: "CehLandCoverLayer",
+            name: "UKCEH Land Cover Map 2021",
+            visible: true,
+            opacity: 1,
+            year: 2021,
+          }}
+        />
+      </Section>
       {
         dbModels.overlays.length > 0 &&
         <Section title="Overlays">

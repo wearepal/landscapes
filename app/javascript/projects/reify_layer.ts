@@ -16,6 +16,8 @@ import { DBModels } from './db_models'
 import { minMaxByNevoLevelAndProperty, minZoomByNevoLevel, NevoLevel } from './nevo'
 import { Layer } from './state'
 import { Map } from 'ol'
+import VectorLayer from 'ol/layer/Vector'
+import TileWMS from 'ol/source/TileWMS'
 
 const osmSource = new OSM({ transition: 0 })
 const createMapTileSource = memoize((id: number, minZoom: number, maxZoom: number) =>
@@ -40,6 +42,12 @@ const createNevoSource = memoize((level: NevoLevel) =>
     overlaps: false,
   })
 )
+const createCehSource = memoize(() => new TileWMS({
+  url: "https://catalogue.ceh.ac.uk/maps/2ad19a50-b940-469e-a40d-17818b77020c",
+  params: {"TILED": true, "LAYERS": "LC.10m.GB"},
+  serverType: "geoserver",
+  transition: 0
+}))
 const createEmptyLayer = () => new olTileLayer()
 
 export const reifyLayer = (layer: Layer, dbModels: DBModels, map: Map): olBaseLayer => {
@@ -129,6 +137,14 @@ export const reifyLayer = (layer: Layer, dbModels: DBModels, map: Map): olBaseLa
         visible: layer.visible,
         opacity: layer.opacity,
         minZoom: minZoomByNevoLevel[layer.level]
+      })
+    }
+
+    case "CehLandCoverLayer": {
+      return new olTileLayer({
+        source: createCehSource(),
+        visible: layer.visible,
+        opacity: layer.opacity,
       })
     }
 
