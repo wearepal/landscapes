@@ -75,6 +75,35 @@ const NevoLayerSettings = ({ layer, mutate }: NevoLayerSettingsProps) => (
   </>
 )
 
+const CehLandCoverLayerSettings = () => (
+  <>
+    <details className="mt-3">
+      <summary>Legend</summary>
+      <span className="swatch" style={{backgroundColor: "rgb(255, 0, 0)"}}/> Broadleaved woodland<br/>
+      <span className="swatch" style={{backgroundColor: "rgb(0, 102, 0)"}}/> Coniferous woodland<br/>
+      <span className="swatch" style={{backgroundColor: "rgb(115, 38, 0)"}}/> Arable and horticulture<br/>
+      <span className="swatch" style={{backgroundColor: "rgb(0, 255, 0)"}}/> Improved grassland<br/>
+      <span className="swatch" style={{backgroundColor: "rgb(127, 229, 127)"}}/> Neutral grassland<br/>
+      <span className="swatch" style={{backgroundColor: "rgb(112, 168, 0)"}}/> Calcareous grassland<br/>
+      <span className="swatch" style={{backgroundColor: "rgb(153, 129, 0)"}}/> Acid grassland<br/>
+      <span className="swatch" style={{backgroundColor: "rgb(255, 255, 0)"}}/> Fen, marsh and swamp<br/>
+      <span className="swatch" style={{backgroundColor: "rgb(128, 26, 128)"}}/> Heather<br/>
+      <span className="swatch" style={{backgroundColor: "rgb(230, 140, 166)"}}/> Heather grassland<br/>
+      <span className="swatch" style={{backgroundColor: "rgb(0, 128, 115)"}}/> Bog<br/>
+      <span className="swatch" style={{backgroundColor: "rgb(210, 210, 255)"}}/> Inland rock<br/>
+      <span className="swatch" style={{backgroundColor: "rgb(0, 0, 128)"}}/> Saltwater<br/>
+      <span className="swatch" style={{backgroundColor: "rgb(0, 0, 255)"}}/> Freshwater<br/>
+      <span className="swatch" style={{backgroundColor: "rgb(204, 179, 0)"}}/> Supralittoral rock<br/>
+      <span className="swatch" style={{backgroundColor: "rgb(204, 179, 0)"}}/> Supralittoral sediment<br/>
+      <span className="swatch" style={{backgroundColor: "rgb(255, 255, 128)"}}/> Littoral rock<br/>
+      <span className="swatch" style={{backgroundColor: "rgb(255, 255, 128)"}}/> Littoral sediment<br/>
+      <span className="swatch" style={{backgroundColor: "rgb(128, 128, 255)"}}/> Saltmarsh<br/>
+      <span className="swatch" style={{backgroundColor: "rgb(0, 0, 0)"}}/> Urban<br/>
+      <span className="swatch" style={{backgroundColor: "rgb(128, 128, 128)"}}/> Suburban
+    </details>
+  </>
+)
+
 interface SidebarProps {
   state: State
   selectLayer: (id: number | undefined) => void
@@ -134,7 +163,7 @@ export const Sidebar = ({ state, selectLayer, mutateLayer, deleteLayer, setLayer
       </ReactSortable>
     </div>
     <div className="px-3 py-2 border-top border-bottom bg-light">Layer settings</div>
-    <div className="p-3 bg-white text-nowrap">
+    <div className="p-3 bg-white text-nowrap" style={{ maxHeight: "50vh", overflowY: "auto" }}>
       {
         selectedLayer !== null ?
           <>
@@ -182,6 +211,10 @@ export const Sidebar = ({ state, selectLayer, mutateLayer, deleteLayer, setLayer
                   mutateLayer(state.selectedLayer, data)
                 }
               />
+            }
+            {
+              selectedLayer?.type == "CehLandCoverLayer" &&
+              <CehLandCoverLayerSettings/>
             }
           </> :
           <em>No layer selected</em>

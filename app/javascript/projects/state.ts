@@ -29,7 +29,12 @@ export interface NevoLayer extends BaseLayer {
   fill: "greyscale" | "heatmap"
 }
 
-export type Layer = OsmLayer | MapTileLayer | OverlayLayer | NevoLayer
+export interface CehLandCoverLayer extends BaseLayer {
+  type: "CehLandCoverLayer"
+  year: 2021 // TODO: allow the user to customise this
+}
+
+export type Layer = OsmLayer | MapTileLayer | OverlayLayer | NevoLayer | CehLandCoverLayer
 
 export interface Project {
   name: string
