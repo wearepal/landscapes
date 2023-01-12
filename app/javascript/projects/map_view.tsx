@@ -52,8 +52,14 @@ class FitViewControl extends Control {
 interface MapViewProps {
   layers: Layer[]
   dbModels: DBModels
+  
+  initialZoom: number
+  setZoom: (zoom: number) => void
+
+  initialCenter: [number, number]
+  setCenter: (center: [number, number]) => void
 }
-export const MapView = ({ layers, dbModels }: MapViewProps) => {
+export const MapView = ({ layers, dbModels, initialZoom, setZoom, initialCenter, setCenter }: MapViewProps) => {
   const mapRef = React.useRef<HTMLDivElement>()
   const [map, setMap] = React.useState<Map | null>(null)
   const [allLayersVisible, setAllLayersVisible] = React.useState(true)
@@ -70,8 +76,8 @@ export const MapView = ({ layers, dbModels }: MapViewProps) => {
   React.useEffect(() => {
     const newMap = new Map({
       view: new View({
-        center: [0, 0],
-        zoom: 1
+        center: initialCenter,
+        zoom: initialZoom
       }),
       controls: defaultControls({
         zoomOptions: {
@@ -84,6 +90,10 @@ export const MapView = ({ layers, dbModels }: MapViewProps) => {
 
     newMap.getView().on("change", e => {
       updateAllLayersVisible(newMap)
+      const zoom = newMap.getView().getZoom()
+      if (zoom !== undefined) { setZoom(zoom) }
+      const center = newMap.getView().getCenter()
+      if (center !== undefined) { setCenter(center as [number, number]) }
     })
 
     setMap(newMap)

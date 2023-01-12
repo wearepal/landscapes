@@ -31,6 +31,7 @@
     "rete-context-menu-plugin": "^0.6.0-rc.1",
     "rete-history-plugin": "^0.2.1",
     "rete-minimap-plugin": "^0.3.1",
+    "rete-react-render-plugin": "^0.3.0",
     "rete-vue-render-plugin": "^0.5.0",
     "sortablejs": "^1.15.0",
     "stimulus": "2.0.0",
