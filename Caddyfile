@@ -1,5 +1,7 @@
 $ADDRESS
 
+reverse_proxy /geoserver* geoserver:8080
+
 reverse_proxy web:3000 {
   lb_try_duration 30s
 }
