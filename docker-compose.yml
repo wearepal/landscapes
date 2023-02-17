@@ -26,6 +26,8 @@ services:
   
   geoserver:
     image: docker.osgeo.org/geoserver:2.21.2
+    environment:
+      - GEOSERVER_CSRF_WHITELIST=landscapes.wearepal.ai
     volumes:
     - geoserver:/opt/geoserver_data
 
