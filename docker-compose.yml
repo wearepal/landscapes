@@ -23,6 +23,13 @@ services:
       - POSTGRES_HOST_AUTH_METHOD=trust
     volumes:
     - postgres:/var/lib/postgresql/data
+  
+  geoserver:
+    image: docker.osgeo.org/geoserver:2.21.2
+    environment:
+      - GEOSERVER_CSRF_WHITELIST=landscapes.wearepal.ai
+    volumes:
+    - geoserver:/opt/geoserver_data
 
   queue:
     image: redis:7
@@ -76,6 +83,7 @@ secrets:
 
 volumes:
   caddy:
+  geoserver:
   postgres:
   redis_queue:
   storage:
