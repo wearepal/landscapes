@@ -35,6 +35,10 @@ const reduceProject = (state: Project, action: Action): Project => {
       return { ...state, allLayers: action.order }
     }
 
+    case "SetModel": {
+      return { ...state, model: action.model }
+    }
+
     default: return state
   }
 }

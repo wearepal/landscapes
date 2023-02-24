@@ -1,3 +1,4 @@
+import { Data } from "rete/types/core/data"
 import { Layer } from "./state"
 
 interface SetProjectName {
@@ -35,4 +36,9 @@ interface FinishSave {
   type: "FinishSave"
 }
 
-export type Action = SetProjectName | SelectLayer | AddLayer | DeleteLayer | MutateLayer | SetLayerOrder | FinishSave
+interface SetModel {
+  type: "SetModel"
+  model: Data
+}
+
+export type Action = SetProjectName | SelectLayer | AddLayer | DeleteLayer | MutateLayer | SetLayerOrder | FinishSave | SetModel

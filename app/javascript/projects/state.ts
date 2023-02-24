@@ -1,3 +1,4 @@
+import { Data } from "rete/types/core/data"
 import { NevoLevel, NevoProperty } from "./nevo"
 
 interface BaseLayer {
@@ -40,6 +41,7 @@ export interface Project {
   name: string
   layers: Record<number, Layer>
   allLayers: number[]
+  model: Data | null
 }
 
 export interface State {
@@ -53,5 +55,6 @@ export const defaultProject: Project = {
   layers: {
     1: { type: "OsmLayer", name: "OpenStreetMap", visible: true, opacity: 1 },
   },
-  allLayers: [1]
+  allLayers: [1],
+  model: null
 }

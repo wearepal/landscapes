@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { Data } from 'rete/types/core/data'
 import { DBModels } from './db_models'
 import { LayerPalette } from './layer_palette'
 import { MapView } from './map_view'
@@ -95,7 +96,12 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
           }
         </>}
         { currentTab == Tab.ModelView && <>
-          <ModelView initialTransform={modelViewTransform} setTransform={setModelViewTransform}/>
+          <ModelView
+            initialTransform={modelViewTransform}
+            setTransform={setModelViewTransform}
+            initialModel={state.project.model}
+            setModel={(model: Data) => dispatch({ type: "SetModel", model })}
+          />
         </>}
       </div>
     </div>
