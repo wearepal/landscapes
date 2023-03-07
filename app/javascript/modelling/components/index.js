@@ -16,6 +16,7 @@ import { SankeyComponent } from './SankeyComponent'
 import { MaskLabellingComponent } from './MaskLabellingComponent'
 import { MaskNumericDataComponent } from './MaskNumericDataComponent'
 import { InputHabitatComponent } from  './InputHabitatComponent'
+import { DigitalModelComponent } from './DigitalModelComponent'
 
 export function createDefaultComponents({ label_schemas, regions }) {
   return [
@@ -27,6 +28,7 @@ export function createDefaultComponents({ label_schemas, regions }) {
     new BuildLabellingLayerComponent(label_schemas),
     new NumericConstantComponent(),
     new SaveLabellingComponent(regions),
+    new DigitalModelComponent(),
 
     new VariadicOpComponent('Union', '⋃', setSocket, setSocket, 'Set operations'),
     new VariadicOpComponent('Intersection', '⋂', setSocket, setSocket, 'Set operations'),
