@@ -61,10 +61,10 @@ export class InputHabitatComponent extends Component {
   }
 
   async worker(node, inputs, outputs) {
-    // TODO: make this customisable, currently it covers a box between Crawley (NW) and Eastbourne (SE)
-    // Crawley: 51.1091° N, 0.1872° W (-20839.008676500813, 6640614.986501137)
-    // Eastbourne: 50.7680° N, 0.2905° E (32338.31207544597, 6580357.758144216)
-    const extent = [-20839.008676500813, 6580357.758144216, 32338.31207544597, 6640614.986501137]
+    // TODO: make this customisable, currently it covers a box between Crawley (NW) and Seaford (SE)
+    // Crawley: -20839.008676500813, 6640614.986501137
+    // Seaford: 12889.487811, 6579722.087031
+    const extent = [-20839.008676500813, 6579722.087031, 12889.487811, 6640614.986501137]
     const bbox = `${extent.join(",")},EPSG:3857`
 
     let out = node.outputs
