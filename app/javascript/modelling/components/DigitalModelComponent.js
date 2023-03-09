@@ -35,11 +35,18 @@ export class DigitalModelComponent extends Component{
 
     }
 
-    async retrieveModelData(bbox){
-
-        //retrieve map data using the bbox (bbox may need to be adjusted based on zoom level, etc)
+    calculateHeightWidth(bbox, zoom){
 
         //get height and width (n of tiles within bbox)
+
+        return [50, 50]
+    }
+
+    async retrieveModelData(bbox){
+
+        const [height, width] = this.calculateHeightWidth(bbox, 20)
+
+        console.log(height,width)
 
         const response = await fetch(
             this.geoServer +
@@ -52,8 +59,8 @@ export class DigitalModelComponent extends Component{
                     styles: '',
                     format: 'image/png',
                     transparent: 'true',
-                    width: '256',
-                    height: '256',
+                    width,
+                    height,
                     crs: 'EPSG:3857',
                     bbox
                 }
@@ -68,7 +75,7 @@ export class DigitalModelComponent extends Component{
 
     async worker(node){
 
-        const extent = [-20839.008676500813, 6580357.758144216, 32338.31207544597, 6640614.986501137]
+        const extent = [50.76364653543253, -0.18406888502598157, 51.10528489161894, 0.11633851511680972]
         const bbox = `${extent.join(",")},EPSG:3857`
 
         const x = await this.retrieveModelData(bbox)
