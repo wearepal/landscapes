@@ -5,7 +5,8 @@ import ContextMenuPlugin from 'rete-context-menu-plugin'
 import MinimapPlugin from 'rete-minimap-plugin'
 import ReactRenderPlugin from 'rete-react-render-plugin'
 import { Data } from 'rete/types/core/data'
-import { TestComponent } from './modelling/components/test_component'
+import { createDefaultComponents } from './modelling/components'
+import { BaseComponent } from './modelling/components/base_component'
 
 import "./model_view.css"
 
@@ -38,18 +39,10 @@ export function ModelView({ initialTransform, setTransform, initialModel, setMod
     editor.use(ContextMenuPlugin, {
       searchBar: false, // Too buggy
       delay: 100,
-      rename: component => component.contextMenuName || component.name,
-      allocate: component => {
-        if (component.deprecated) {
-          return null
-        }
-        else {
-          return component.category ? [component.category] : []
-        }
-      },
+      allocate: (component: BaseComponent) => 
+        component.category ? [component.category] : [],
     })
-    const component = new TestComponent()
-    editor.register(component)
+    createDefaultComponents().forEach(component => editor.register(component))
     //const engine = new Engine("landscapes@1.0.0")
 
     if (initialModel !== null) {
