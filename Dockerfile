@@ -1,5 +1,5 @@
 FROM ruby:3.2.1-alpine AS base
-ENV RACK_ENV=production RAILS_ENV=production NODE_ENV=production
+ENV RACK_ENV=production RAILS_ENV=production NODE_ENV=production NODE_OPTIONS=--openssl-legacy-provider
 RUN apk add --no-cache bash imagemagick libpq postgresql-client redis tzdata vips zip
 RUN gem install bundler -v '~> 2.2'
 RUN bundle config set deployment 'true'
