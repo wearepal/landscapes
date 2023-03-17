@@ -5,6 +5,7 @@ import { PreviewControl } from '../controls/PreviewControl'
 import { fromArrayBuffer } from 'geotiff'
 import { getSize } from 'ol/extent'
 import { NumericTileGrid } from '../TileGrid'
+import { createXYZ } from "ol/tilegrid"
 
 export class DigitalModelComponent extends Component{
 
@@ -58,8 +59,6 @@ export class DigitalModelComponent extends Component{
         const [width, height] = this.calculateHeightWidth(extent, 20)
         const bbox = `${extent.join(",")},EPSG:3857`
 
-        //console.log(width,height)
-
         const response = await fetch(
             this.geoServer +
             new URLSearchParams(
@@ -101,43 +100,26 @@ export class DigitalModelComponent extends Component{
 
             const image = await geotiff.getImage()
 
-            console.log(extent)
-            console.log(image.getOrigin())
-
+            const tileGrid = createXYZ()
+            const outputTileRange = tileGrid.getTileRangeForExtentAndZ(extent, 20)
 
             const rasters = await geotiff.readRasters()
 
-            //set the x & y to actual coords and use variables instead of hard coded values
-            const out = editorNode.meta.output = outputs['dm'] = new NumericTileGrid(20, 0, 0, image.getWidth(), image.getHeight(), null)
-
-            //out.data = rasters[0]
-
-            console.log(rasters[0].length, image.getWidth(), image.getHeight())
+            const out = editorNode.meta.output = outputs['dm'] = new NumericTileGrid(20, outputTileRange.minX, outputTileRange.minY, outputTileRange.getWidth(), outputTileRange.getHeight(), null)
 
             for (let i = 0; i < rasters[0].length; i++) {
 
-                let x = Math.floor(i / image.getWidth())
-                let y = i % image.getWidth()
+                let y = (outputTileRange.minY + Math.floor(i / image.getWidth()))
+                let x = (outputTileRange.minX + i % image.getWidth())
 
 
-                //this might not be accurate, & we need to confirm the values.
-
-                out.set(y, x, rasters[0][i])
+                out.set(x, y, rasters[0][i])
                 
             }
-
-            console.log(out)
-
 
             out.name = node.data.name || 'dm'
 
             editorNode.controls.get('preview').update()
-
-
-
-
-    
-            // display numerical tile grid as preview.
         }
 
     }
