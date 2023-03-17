@@ -28,7 +28,7 @@ services:
     image: docker.osgeo.org/geoserver:2.21.2
     environment:
       - GEOSERVER_CSRF_WHITELIST=landscapes.wearepal.ai
-      - EXTRA_JAVA_OPTS="-Xms1g -Xmx10g"
+      - EXTRA_JAVA_OPTS=-Xmx10g
     volumes:
     - geoserver:/opt/geoserver_data
 
