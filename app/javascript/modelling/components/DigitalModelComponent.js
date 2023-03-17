@@ -46,17 +46,9 @@ export class DigitalModelComponent extends Component{
 
     }
 
-    calculateHeightWidth(extent, zoom){
+    async retrieveModelData(extent, source, tileRange){
 
-        let [width, height] = getSize(extent)
-
-        return [Math.floor(width/50), Math.floor(height/50)]
-
-    }
-
-    async retrieveModelData(extent, source){
-
-        const [width, height] = this.calculateHeightWidth(extent, 20)
+        const [width, height] = [tileRange.getWidth(), tileRange.getHeight()]
         const bbox = `${extent.join(",")},EPSG:3857`
 
         const response = await fetch(
@@ -95,17 +87,19 @@ export class DigitalModelComponent extends Component{
         if(digitalModel){
 
             const extent = [-20839.008676500813, 6579722.087031, 12889.487811, 6640614.986501137]
+
+            const zoom = 20
+
+            const tileGrid = createXYZ()
+            const outputTileRange = tileGrid.getTileRangeForExtentAndZ(extent, zoom)
     
-            const geotiff = await this.retrieveModelData(extent, digitalModel)
+            const geotiff = await this.retrieveModelData(extent, digitalModel, outputTileRange)
 
             const image = await geotiff.getImage()
 
-            const tileGrid = createXYZ()
-            const outputTileRange = tileGrid.getTileRangeForExtentAndZ(extent, 20)
-
             const rasters = await geotiff.readRasters()
 
-            const out = editorNode.meta.output = outputs['dm'] = new NumericTileGrid(20, outputTileRange.minX, outputTileRange.minY, outputTileRange.getWidth(), outputTileRange.getHeight(), null)
+            const out = editorNode.meta.output = outputs['dm'] = new NumericTileGrid(zoom, outputTileRange.minX, outputTileRange.minY, outputTileRange.getWidth(), outputTileRange.getHeight(), null)
 
             for (let i = 0; i < rasters[0].length; i++) {
 
