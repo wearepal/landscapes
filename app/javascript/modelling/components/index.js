@@ -25,10 +25,10 @@ export function createDefaultComponents({ label_schemas, regions }) {
     new SplitLabellingLayerComponent(label_schemas),
     new InputOverlayComponent(regions),
     new InputHabitatComponent(),
+    new DigitalModelComponent(),
     new BuildLabellingLayerComponent(label_schemas),
     new NumericConstantComponent(),
     new SaveLabellingComponent(regions),
-    new DigitalModelComponent(),
 
     new VariadicOpComponent('Union', '⋃', setSocket, setSocket, 'Set operations'),
     new VariadicOpComponent('Intersection', '⋂', setSocket, setSocket, 'Set operations'),

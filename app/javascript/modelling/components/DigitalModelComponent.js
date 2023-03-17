@@ -11,7 +11,7 @@ export class DigitalModelComponent extends Component{
 
     constructor(){
 
-        super("Digital model input")
+        super("Input digital model")
         this.category = "Inputs & Outputs"
         this.modelsList = [
             { 
