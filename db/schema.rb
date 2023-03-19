@@ -10,8 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_09_15_150131) do
-
+ActiveRecord::Schema[7.0].define(version: 2023_03_19_143450) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -20,7 +19,7 @@ ActiveRecord::Schema.define(version: 2022_09_15_150131) do
     t.string "record_type", null: false
     t.bigint "record_id", null: false
     t.bigint "blob_id", null: false
-    t.datetime "created_at", null: false
+    t.datetime "created_at", precision: nil, null: false
     t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
     t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
   end
@@ -31,8 +30,8 @@ ActiveRecord::Schema.define(version: 2022_09_15_150131) do
     t.string "content_type"
     t.text "metadata"
     t.bigint "byte_size", null: false
-    t.string "checksum", null: false
-    t.datetime "created_at", null: false
+    t.string "checksum"
+    t.datetime "created_at", precision: nil, null: false
     t.string "service_name", null: false
     t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
   end
@@ -45,8 +44,8 @@ ActiveRecord::Schema.define(version: 2022_09_15_150131) do
 
   create_table "label_schemas", force: :cascade do |t|
     t.string "name", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.bigint "team_id", null: false
     t.index ["team_id"], name: "index_label_schemas_on_team_id"
   end
@@ -55,8 +54,8 @@ ActiveRecord::Schema.define(version: 2022_09_15_150131) do
     t.bigint "region_id", null: false
     t.bigint "label_schema_id", null: false
     t.string "name", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.bigint "labelling_group_id"
     t.string "error_message"
     t.index ["label_schema_id"], name: "index_labelling_group_uploads_on_label_schema_id"
@@ -68,8 +67,8 @@ ActiveRecord::Schema.define(version: 2022_09_15_150131) do
     t.bigint "region_id", null: false
     t.bigint "label_schema_id", null: false
     t.string "name", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.integer "zoom"
     t.integer "x"
     t.integer "y"
@@ -81,8 +80,8 @@ ActiveRecord::Schema.define(version: 2022_09_15_150131) do
   end
 
   create_table "labellings", force: :cascade do |t|
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.bigint "labelling_group_id"
     t.bigint "map_tile_layer_id", null: false
     t.binary "data", null: false
@@ -96,8 +95,8 @@ ActiveRecord::Schema.define(version: 2022_09_15_150131) do
     t.integer "index", null: false
     t.string "label", null: false
     t.string "colour", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.string "name", null: false
     t.index ["label_schema_id", "index"], name: "index_labels_on_label_schema_id_and_index", unique: true
     t.index ["label_schema_id", "name"], name: "index_labels_on_label_schema_id_and_name", unique: true
@@ -108,8 +107,8 @@ ActiveRecord::Schema.define(version: 2022_09_15_150131) do
     t.bigint "region_id", null: false
     t.string "year"
     t.integer "zoom"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.float "progress", default: 0.0, null: false
     t.boolean "status"
     t.index ["region_id"], name: "index_map_tile_downloads_on_region_id"
@@ -118,8 +117,8 @@ ActiveRecord::Schema.define(version: 2022_09_15_150131) do
   create_table "map_tile_layers", force: :cascade do |t|
     t.bigint "region_id", null: false
     t.string "name", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["region_id", "name"], name: "index_map_tile_layers_on_region_id_and_name", unique: true
     t.index ["region_id"], name: "index_map_tile_layers_on_region_id"
   end
@@ -127,14 +126,14 @@ ActiveRecord::Schema.define(version: 2022_09_15_150131) do
   create_table "map_tile_uploads", force: :cascade do |t|
     t.bigint "region_id", null: false
     t.string "message"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["region_id"], name: "index_map_tile_uploads_on_region_id"
   end
 
   create_table "map_tiles", force: :cascade do |t|
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.integer "x", null: false
     t.integer "y", null: false
     t.integer "zoom", null: false
@@ -146,8 +145,8 @@ ActiveRecord::Schema.define(version: 2022_09_15_150131) do
   create_table "memberships", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "team_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["team_id"], name: "index_memberships_on_team_id"
     t.index ["user_id"], name: "index_memberships_on_user_id"
   end
@@ -155,16 +154,16 @@ ActiveRecord::Schema.define(version: 2022_09_15_150131) do
   create_table "metric_sets", force: :cascade do |t|
     t.bigint "label_schema_id", null: false
     t.string "name"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["label_schema_id"], name: "index_metric_sets_on_label_schema_id"
   end
 
   create_table "metrics", force: :cascade do |t|
     t.string "name", null: false
     t.string "formula", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.bigint "metric_set_id"
     t.integer "impact", default: 0, null: false
     t.index ["metric_set_id"], name: "index_metrics_on_metric_set_id"
@@ -173,8 +172,8 @@ ActiveRecord::Schema.define(version: 2022_09_15_150131) do
   create_table "models", force: :cascade do |t|
     t.string "name", null: false
     t.jsonb "source"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.integer "lock_version", default: 0, null: false
     t.bigint "team_id", null: false
     t.index ["team_id"], name: "index_models_on_team_id"
@@ -184,38 +183,38 @@ ActiveRecord::Schema.define(version: 2022_09_15_150131) do
     t.bigint "region_id", null: false
     t.string "name", null: false
     t.string "colour", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["region_id"], name: "index_overlays_on_region_id"
   end
 
   create_table "projects", force: :cascade do |t|
     t.bigint "team_id", null: false
     t.jsonb "source", default: {}, null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["team_id"], name: "index_projects_on_team_id"
   end
 
   create_table "regions", force: :cascade do |t|
     t.string "name", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.bigint "team_id", null: false
     t.index ["team_id"], name: "index_regions_on_team_id"
   end
 
   create_table "teams", force: :cascade do |t|
     t.string "name"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "training_data_downloads", force: :cascade do |t|
     t.bigint "labelling_group_id", null: false
     t.string "message"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["labelling_group_id"], name: "index_training_data_downloads_on_labelling_group_id"
   end
 
@@ -224,8 +223,8 @@ ActiveRecord::Schema.define(version: 2022_09_15_150131) do
     t.string "email", null: false
     t.string "password_digest", null: false
     t.string "token", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.boolean "admin", default: false, null: false
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["token"], name: "index_users_on_token", unique: true
