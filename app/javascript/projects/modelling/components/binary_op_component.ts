@@ -3,6 +3,7 @@ import { BooleanTileGrid } from '../tile_grid'
 import { workerPool } from '../../../modelling/workerPool'
 import { NodeData, WorkerInputs, WorkerOutputs } from 'rete/types/core/data'
 import { BaseComponent } from './base_component'
+import { PreviewControl } from '../controls/preview'
 
 export class BinaryOpComponent extends BaseComponent {
   operator: string
@@ -19,9 +20,9 @@ export class BinaryOpComponent extends BaseComponent {
   }
 
   async builder(node: Node) {
-    /*node.addControl(new PreviewControl(() => 
-      node.meta.output || new BooleanTileGrid(0, 0, 0, 1, 1)
-    ))*/
+    node.addControl(new PreviewControl(() => 
+      node.meta.output instanceof BooleanTileGrid ? node.meta.output : new BooleanTileGrid(0, 0, 0, 1, 1)
+    ))
     node.addInput(new Input('a', 'A', this.inputSocket))
     node.addInput(new Input('b', 'B', this.inputSocket))
     node.addOutput(new Output('out', `A ${this.operator} B`, this.outputSocket))
@@ -37,12 +38,13 @@ export class BinaryOpComponent extends BaseComponent {
     }
     else {
       delete editorNode.meta.errorMessage
-      const output: BooleanTileGrid = editorNode.meta.output = outputs['out'] = await workerPool.queue(async worker => 
+      editorNode.meta.output = outputs['out'] = await workerPool.queue(async worker => 
         worker.performOperation(this.name, inputs['a'][0], inputs['b'][0])
       )
-      console.log(output)
       //outputs['out'].name = node.data.name
-      //editorNode.controls.get('preview').update()
+      const control = editorNode.controls.get('preview') as any
+      console.log(control)
+      control.update()
     }
 
     editorNode.update()
