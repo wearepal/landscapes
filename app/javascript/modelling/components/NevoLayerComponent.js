@@ -5,6 +5,8 @@ import { createXYZ } from "ol/tilegrid"
 import { mapSocket } from "../sockets"
 import { NumericTileGrid } from "../TileGrid"
 import { PreviewControl } from "../controls/PreviewControl"
+import { getArea } from "ol/sphere"
+import { fromExtent } from "ol/geom/Polygon"
 
 
 export class NevoLayerComponent extends Component {
@@ -2085,10 +2087,13 @@ export class NevoLayerComponent extends Component {
             const val = feature.values_[code]
 
             const geom = feature.getGeometry()
+            
             const featureTileRange = tileGrid.getTileRangeForExtentAndZ(
                 geom.getExtent(),
                 z
             )
+
+            const featureArea = getArea(geom)
 
             for (
                 let x = Math.max(featureTileRange.minX, outputTileRange.minX);
@@ -2102,7 +2107,12 @@ export class NevoLayerComponent extends Component {
                 ) {
                   const tileExtent = tileGrid.getTileCoordExtent([z, x, y])
                   if (geom.intersectsExtent(tileExtent)) {
-                    result.set(x, y, val)
+
+                    const tileArea = getArea(fromExtent(tileExtent))
+
+                    const factor = tileArea / featureArea
+
+                    result.set(x, y, val * factor)
                   }
                 }
             }
