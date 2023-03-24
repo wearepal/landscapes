@@ -21,8 +21,10 @@ export interface ModelViewProps {
   setTransform: (transform: Transform) => void
   initialModel: Data | null
   setModel: (model: Data) => void
+  createOutputLayer: (id: number) => void
+  deleteOutputLayer: (id: number) => void
 }
-export function ModelView({ initialTransform, setTransform, initialModel, setModel }: ModelViewProps) {
+export function ModelView({ initialTransform, setTransform, initialModel, setModel, createOutputLayer, deleteOutputLayer }: ModelViewProps) {
   const ref = React.useRef<HTMLDivElement>(null)
   React.useEffect(() => {
     if (ref.current === null) return
@@ -41,6 +43,8 @@ export function ModelView({ initialTransform, setTransform, initialModel, setMod
       delay: 100,
       allocate: (component: BaseComponent) => 
         component.category ? [component.category] : [],
+      rename: (component: BaseComponent) =>
+        component.contextMenuName || component.name,
     })
     const engine = new Engine("landscapes@1.0.0")
     createDefaultComponents().forEach(component => {
@@ -53,9 +57,27 @@ export function ModelView({ initialTransform, setTransform, initialModel, setMod
       await engine.process(editor.toJSON())
     })
 
-    if (initialModel !== null) {
-      editor.fromJSON(initialModel)
+    const hookNodeCreation = () => {
+      editor.on("nodecreated", e => {
+        if (e.name === "Map layer") {
+          createOutputLayer(e.id)
+        }
+      })
+
+      editor.on("noderemoved", e => {
+        if (e.name === "Map layer") {
+          deleteOutputLayer(e.id)
+        }
+      })
     }
+
+    if (initialModel !== null) {
+      editor.fromJSON(initialModel).then(hookNodeCreation)
+    }
+    else {
+      hookNodeCreation()
+    }
+
 
     const save = () => {
       // Use JSON.stringify and JSON.parse to perform a deep copy

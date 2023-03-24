@@ -221,7 +221,7 @@ export const Sidebar = ({ state, selectLayer, mutateLayer, deleteLayer, setLayer
       }
     </div>
     <button
-      disabled={state.selectedLayer === undefined}
+      disabled={state.selectedLayer === undefined || state.project.layers[state.selectedLayer].type === "ModelOutputLayer"}
       className="btn btn-outline-danger rounded-0 border-left-0 border-right-0 border-bottom-0"
       onClick={
         () => state.selectedLayer !== undefined &&

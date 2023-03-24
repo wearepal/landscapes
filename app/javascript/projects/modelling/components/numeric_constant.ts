@@ -7,7 +7,7 @@ import { BaseComponent } from "./base_component"
 export class NumericConstantComponent extends BaseComponent {
   constructor() {
     super('Numeric constant')
-    this.category = 'Inputs & Outputs'
+    this.category = 'Inputs'
   }
   
   async builder(node: Node) {

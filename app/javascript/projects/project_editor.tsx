@@ -101,6 +101,25 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
             setTransform={setModelViewTransform}
             initialModel={state.project.model}
             setModel={(model: Data) => dispatch({ type: "SetModel", model })}
+            createOutputLayer={(nodeId: number) => dispatch({
+              type: "AddLayer",
+              layer: {
+                name: "Untitled",
+                visible: true,
+                opacity: 1,
+                type: "ModelOutputLayer",
+                nodeId
+              }
+            })}
+            deleteOutputLayer={(nodeId: number) => {
+              const id = state.project.allLayers.find(idx => {
+                const foo = state.project.layers[idx]
+                return foo.type === "ModelOutputLayer" && foo.nodeId === nodeId
+              })
+              if (id !== undefined) {
+                dispatch({ type: "DeleteLayer", id })
+              }
+            }}
           />
         </>}
       </div>

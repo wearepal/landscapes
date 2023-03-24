@@ -35,7 +35,12 @@ export interface CehLandCoverLayer extends BaseLayer {
   year: 2021 // TODO: allow the user to customise this
 }
 
-export type Layer = OsmLayer | MapTileLayer | OverlayLayer | NevoLayer | CehLandCoverLayer
+export interface ModelOutputLayer extends BaseLayer {
+  type: "ModelOutputLayer"
+  nodeId: number
+}
+
+export type Layer = OsmLayer | MapTileLayer | OverlayLayer | NevoLayer | CehLandCoverLayer | ModelOutputLayer
 
 export interface Project {
   name: string

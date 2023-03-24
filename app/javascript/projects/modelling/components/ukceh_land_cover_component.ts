@@ -14,12 +14,12 @@ interface Habitat {
   result?: BooleanTileGrid // TODO: remove me
 }
 
-export class InputUkcehComponent extends BaseComponent {
+export class UkcehLandCoverComponent extends BaseComponent {
   habitats: Habitat[]
 
   constructor() {
-    super("Input habitat")
-    this.category = "Inputs & Outputs"
+    super("UKCEH Land Cover")
+    this.category = "Inputs"
     this.habitats = [
       //TODO : move to a json or an alternative storage
       { agg: 1, AC: "Deciduous Woodland", mode: 1, LC: "Deciduous Woodland" },

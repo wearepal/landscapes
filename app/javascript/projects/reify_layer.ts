@@ -148,6 +148,10 @@ export const reifyLayer = (layer: Layer, dbModels: DBModels, map: Map): olBaseLa
       })
     }
 
+    case "ModelOutputLayer": {
+      return createEmptyLayer()
+    }
+
     default: {
       // Ensure this switch statement is exhaustive
       const unreachable: never = layerType
