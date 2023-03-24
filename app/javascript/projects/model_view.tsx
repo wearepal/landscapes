@@ -42,8 +42,16 @@ export function ModelView({ initialTransform, setTransform, initialModel, setMod
       allocate: (component: BaseComponent) => 
         component.category ? [component.category] : [],
     })
-    createDefaultComponents().forEach(component => editor.register(component))
-    //const engine = new Engine("landscapes@1.0.0")
+    const engine = new Engine("landscapes@1.0.0")
+    createDefaultComponents().forEach(component => {
+      editor.register(component)
+      engine.register(component)
+    })
+
+    editor.on(["nodecreated", "noderemoved", "connectioncreated", "connectionremoved"], async () => {
+      await engine.abort()
+      await engine.process(editor.toJSON())
+    })
 
     if (initialModel !== null) {
       editor.fromJSON(initialModel)
@@ -62,7 +70,7 @@ export function ModelView({ initialTransform, setTransform, initialModel, setMod
     return () => {
       save()
       editor.destroy()
-      //engine.destroy()
+      engine.destroy()
     }
   }, [ref])
 

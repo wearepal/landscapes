@@ -1,4 +1,5 @@
 import { Extent } from "ol/extent"
+import { registerSerializer } from "threads"
 
 function validateZoom(zoom: number) {
   if (!(
@@ -100,6 +101,43 @@ export class NumericTileGrid extends TileGrid {
     this.data[index] = value
   }
 }
+
+registerSerializer({
+  deserialize(message: any, defaultHandler) {
+    if (message && message.__type === "$$BooleanTileGrid") {
+      const { zoom, x, y, width, height, data } = message
+      const result = new BooleanTileGrid(zoom, x, y, width, height)
+      result.data = data
+      return result
+    }
+    else if (message && message.__type === "$$NumericTileGrid") {
+      const { zoom, x, y, width, height, data } = message
+      const result = new NumericTileGrid(zoom, x, y, width, height)
+      result.data = data
+      return result
+    }
+    else {
+      return defaultHandler(message)
+    }
+  },
+  serialize(thing, defaultHandler): any {
+    if (thing instanceof BooleanTileGrid) {
+      return {
+        ...thing,
+        __type: "$$BooleanTileGrid",
+      }
+    }
+    else if (thing instanceof NumericTileGrid) {
+      return {
+        ...thing,
+        __type: "$$NumericTileGrid",
+      }
+    }
+    else {
+      return defaultHandler(thing)
+    }
+  }
+})
 
 export function getExtent(grid: TileGrid, zoom: number): Extent {
   const scale = Math.pow(2, zoom - grid.zoom)
