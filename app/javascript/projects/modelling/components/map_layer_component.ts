@@ -4,12 +4,12 @@ import { dataSocket } from "../socketTypes"
 import { BooleanTileGrid, NumericTileGrid } from "../tile_grid"
 import { BaseComponent } from "./base_component"
 
-type Callback = (id: number, tileGrid: BooleanTileGrid | NumericTileGrid) => void
+export type SaveMapLayer = (id: number, tileGrid: BooleanTileGrid | NumericTileGrid) => void
 
 export class MapLayerComponent extends BaseComponent {
-  callback: Callback
+  callback: SaveMapLayer
 
-  constructor(callback: Callback) {
+  constructor(callback: SaveMapLayer) {
     super("Map layer")
     this.callback = callback
     this.category = "Outputs"

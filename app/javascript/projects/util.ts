@@ -19,7 +19,8 @@ export function iconForLayerType(type: Layer['type']) {
   }
 }
 
-export function mergeExtents(a: Extent, b: Extent): Extent {
+// TODO: Not really extents
+export function mergeExtents(a, b) {
   return [
     Math.min(a[0], b[0]),
     Math.min(a[1], b[1]),
@@ -28,7 +29,8 @@ export function mergeExtents(a: Extent, b: Extent): Extent {
   ]
 }
 
-export function intersectExtents(a: Extent, b: Extent): Extent {
+// TODO: Not really extents
+export function intersectExtents(a, b) {
   return [
     Math.max(a[0], b[0]),
     Math.max(a[1], b[1]),

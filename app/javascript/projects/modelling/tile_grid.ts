@@ -139,7 +139,8 @@ registerSerializer({
   }
 })
 
-export function getExtent(grid: TileGrid, zoom: number): Extent {
+// TODO: this doesn't actually return an OpenLayers extent(?)
+export function getExtent(grid: TileGrid, zoom: number) {
   const scale = Math.pow(2, zoom - grid.zoom)
   return [
     grid.x * scale,

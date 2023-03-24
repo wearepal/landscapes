@@ -7,6 +7,7 @@ import ReactRenderPlugin from 'rete-react-render-plugin'
 import { Data } from 'rete/types/core/data'
 import { createDefaultComponents } from './modelling/components'
 import { BaseComponent } from './modelling/components/base_component'
+import { SaveMapLayer } from './modelling/components/map_layer_component'
 
 import "./model_view.css"
 
@@ -23,8 +24,9 @@ export interface ModelViewProps {
   setModel: (model: Data) => void
   createOutputLayer: (id: number) => void
   deleteOutputLayer: (id: number) => void
+  saveMapLayer: SaveMapLayer
 }
-export function ModelView({ initialTransform, setTransform, initialModel, setModel, createOutputLayer, deleteOutputLayer }: ModelViewProps) {
+export function ModelView({ initialTransform, setTransform, initialModel, setModel, createOutputLayer, deleteOutputLayer, saveMapLayer }: ModelViewProps) {
   const ref = React.useRef<HTMLDivElement>(null)
   React.useEffect(() => {
     if (ref.current === null) return
@@ -47,7 +49,7 @@ export function ModelView({ initialTransform, setTransform, initialModel, setMod
         component.contextMenuName || component.name,
     })
     const engine = new Engine("landscapes@1.0.0")
-    createDefaultComponents().forEach(component => {
+    createDefaultComponents(saveMapLayer).forEach(component => {
       editor.register(component)
       engine.register(component)
     })

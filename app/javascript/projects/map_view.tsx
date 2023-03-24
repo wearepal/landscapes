@@ -8,6 +8,7 @@ import { createIconElement } from './util'
 import { Layer } from './state'
 import { reifyLayer } from './reify_layer'
 import { DBModels } from './db_models'
+import { BooleanTileGrid, NumericTileGrid } from './modelling/tile_grid'
 
 function getLayerExtent(layer: olBaseLayer) {
   if (layer instanceof VectorLayer) {
@@ -49,6 +50,8 @@ class FitViewControl extends Control {
   }
 }
 
+export type ModelOutputCache = Record<number, BooleanTileGrid | NumericTileGrid>
+
 interface MapViewProps {
   layers: Layer[]
   dbModels: DBModels
@@ -58,8 +61,10 @@ interface MapViewProps {
 
   initialCenter: [number, number]
   setCenter: (center: [number, number]) => void
+
+  modelOutputCache: ModelOutputCache
 }
-export const MapView = ({ layers, dbModels, initialZoom, setZoom, initialCenter, setCenter }: MapViewProps) => {
+export const MapView = ({ layers, dbModels, initialZoom, setZoom, initialCenter, setCenter, modelOutputCache }: MapViewProps) => {
   const mapRef = React.useRef<HTMLDivElement>()
   const [map, setMap] = React.useState<Map | null>(null)
   const [allLayersVisible, setAllLayersVisible] = React.useState(true)
@@ -104,7 +109,7 @@ export const MapView = ({ layers, dbModels, initialZoom, setZoom, initialCenter,
     }
   }, [])
 
-  React.useEffect(() => map?.setLayers(layers.map(l => reifyLayer(l, dbModels, map))), [map, layers])
+  React.useEffect(() => map?.setLayers(layers.map(l => reifyLayer(l, dbModels, map, modelOutputCache))), [map, layers])
 
   React.useEffect(() => {
     if (map === null) { return }

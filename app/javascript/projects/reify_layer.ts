@@ -18,6 +18,9 @@ import { Layer } from './state'
 import { Map } from 'ol'
 import VectorLayer from 'ol/layer/Vector'
 import TileWMS from 'ol/source/TileWMS'
+import { ModelOutputCache } from './map_view'
+import ImageLayer from 'ol/layer/Image'
+import { ModelOutputSource } from './model_output_source'
 
 const osmSource = new OSM({ transition: 0 })
 const createMapTileSource = memoize((id: number, minZoom: number, maxZoom: number) =>
@@ -50,7 +53,7 @@ const createCehSource = memoize(() => new TileWMS({
 }))
 const createEmptyLayer = () => new olTileLayer()
 
-export const reifyLayer = (layer: Layer, dbModels: DBModels, map: Map): olBaseLayer => {
+export const reifyLayer = (layer: Layer, dbModels: DBModels, map: Map, modelOutputCache: ModelOutputCache): olBaseLayer => {
   const layerType = layer.type
   switch (layerType) {
     case "OsmLayer": {
@@ -149,7 +152,17 @@ export const reifyLayer = (layer: Layer, dbModels: DBModels, map: Map): olBaseLa
     }
 
     case "ModelOutputLayer": {
-      return createEmptyLayer()
+      if (layer.nodeId in modelOutputCache) {
+        return new ImageLayer({
+          source: new ModelOutputSource(modelOutputCache[layer.nodeId]),
+          visible: layer.visible,
+          opacity: layer.opacity,
+          minZoom: 15,
+        })
+      }
+      else {
+        return createEmptyLayer()
+      }
     }
 
     default: {
