@@ -52,7 +52,12 @@ export class ModelOutputSource extends ImageCanvasSource {
 
 
           ctx.fillStyle = this.tileGrid.get(x, y) ? "#FFFFFF" : "#000000"
-          ctx.fillRect(tileX0, size[1] - tileY1, tileX1 - tileX0, tileY1 - tileY0)
+          ctx.fillRect(
+            Math.floor(tileX0),
+            Math.ceil(size[1] - tileY1),
+            Math.ceil(tileX1 - tileX0),
+            Math.floor(tileY1 - tileY0)
+          )
         }
       }
     )
