@@ -126,8 +126,8 @@ export class UkcehLandCoverComponent extends BaseComponent {
           y <= Math.min(featureTileRange.maxY, outputTileRange.maxY);
           ++y
         ) {
-          const tileExtent = tileGrid.getTileCoordExtent([z, x, y])
-          if (geom.intersectsExtent(tileExtent)) {
+          const center = tileGrid.getTileCoordCenter([z, x, y])
+          if (geom.intersectsCoordinate(center)) {
             results[index].set(x, y, true)
           }
         }
