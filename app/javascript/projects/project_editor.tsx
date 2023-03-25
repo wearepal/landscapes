@@ -34,6 +34,7 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
   const [mapViewCenter, setMapViewCenter] = React.useState<[number, number]>([0, 0])
   const [modelViewTransform, setModelViewTransform] = React.useState<Transform>({ x: 0, y: 0, k: 1 })
   const [modelOutputCache, setModelOutputCache] = React.useState<ModelOutputCache>({})
+  const [isProcessing, setProcessing] = React.useState(false)
 
   const saveProject = async () => {
     const method = 'PATCH'
@@ -64,6 +65,7 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
         saveProject={saveProject}
         currentTab={currentTab}
         setCurrentTab={setCurrentTab}
+        isProcessing={isProcessing}
       />
       <div className="flex-grow-1 d-flex">
         { currentTab == Tab.MapView && <>
@@ -128,6 +130,7 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
               cache[id] = tileGrid
               setModelOutputCache(cache)
             }}
+            setProcessing={setProcessing}
           />
         </>}
       </div>

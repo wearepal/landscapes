@@ -7,11 +7,12 @@ interface ToolbarProps {
   projectName: string
   hasUnsavedChanges: boolean
   currentTab: Tab
+  isProcessing: boolean
   setProjectName: (name: string) => void
   saveProject: () => void
   setCurrentTab: (tab: Tab) => void
 }
-export const Toolbar = ({ backButtonPath, projectName, hasUnsavedChanges, currentTab, setProjectName, saveProject, setCurrentTab }: ToolbarProps) => (
+export const Toolbar = ({ backButtonPath, projectName, hasUnsavedChanges, currentTab, isProcessing, setProjectName, saveProject, setCurrentTab }: ToolbarProps) => (
   <div className="btn-toolbar p-2 bg-light border-top">
     <div className="btn-group mr-2">
       <a className="btn btn-sm btn-outline-primary" href={backButtonPath}>
@@ -27,7 +28,7 @@ export const Toolbar = ({ backButtonPath, projectName, hasUnsavedChanges, curren
         <i className="fas fa-save"/> Save
       </button>
     </div>
-    <div className="btn-group">
+    <div className="btn-group mr-2">
       <button className={`btn btn-sm ${currentTab == Tab.MapView ? "btn-primary" : "btn-outline-primary"}`} onClick={() => setCurrentTab(Tab.MapView)}>
         <i className="fas fa-map-marked-alt"/> Map view
       </button>
@@ -35,5 +36,11 @@ export const Toolbar = ({ backButtonPath, projectName, hasUnsavedChanges, curren
         <i className="fas fa-project-diagram"/> Model view
       </button>
     </div>
+    {
+      isProcessing &&
+      <div className="d-flex align-items-center">
+        <div><i className="fas fa-circle-notch fa-spin"/> Processing...</div>
+      </div>
+    }
   </div>
 )

@@ -25,8 +25,9 @@ export interface ModelViewProps {
   createOutputLayer: (id: number) => void
   deleteOutputLayer: (id: number) => void
   saveMapLayer: SaveMapLayer
+  setProcessing: (processing: boolean) => void
 }
-export function ModelView({ initialTransform, setTransform, initialModel, setModel, createOutputLayer, deleteOutputLayer, saveMapLayer }: ModelViewProps) {
+export function ModelView({ initialTransform, setTransform, initialModel, setModel, createOutputLayer, deleteOutputLayer, saveMapLayer, setProcessing }: ModelViewProps) {
   const ref = React.useRef<HTMLDivElement>(null)
   React.useEffect(() => {
     if (ref.current === null) return
@@ -54,11 +55,6 @@ export function ModelView({ initialTransform, setTransform, initialModel, setMod
       engine.register(component)
     })
 
-    editor.on(["nodecreated", "noderemoved", "connectioncreated", "connectionremoved"], async () => {
-      await engine.abort()
-      await engine.process(editor.toJSON())
-    })
-
     const hookNodeCreation = () => {
       editor.on("nodecreated", e => {
         if (e.name === "Map layer") {
@@ -74,7 +70,16 @@ export function ModelView({ initialTransform, setTransform, initialModel, setMod
     }
 
     if (initialModel !== null) {
-      editor.fromJSON(initialModel).then(hookNodeCreation)
+      editor.fromJSON(initialModel).then(hookNodeCreation).then(() => {
+        const process = async () => {
+          setProcessing(true)
+          await engine.abort()
+          await engine.process(editor.toJSON())
+          setProcessing(false)
+        }
+        editor.on(["nodecreated", "noderemoved", "connectioncreated", "connectionremoved"], process)
+        process()
+      })
     }
     else {
       hookNodeCreation()
