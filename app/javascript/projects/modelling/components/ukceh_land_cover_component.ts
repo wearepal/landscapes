@@ -1,6 +1,6 @@
 import GeoJSON from "ol/format/GeoJSON"
 import { createXYZ } from "ol/tilegrid"
-import { Component, Node, Output } from "rete"
+import { Node, Output } from "rete"
 import { NodeData, WorkerInputs, WorkerOutputs } from "rete/types/core/data"
 import { booleanDataSocket } from "../socketTypes"
 import { BooleanTileGrid } from "../tile_grid"
@@ -11,7 +11,6 @@ interface Habitat {
   AC: string
   mode: number
   LC: string
-  result?: BooleanTileGrid // TODO: remove me
 }
 
 export class UkcehLandCoverComponent extends BaseComponent {
@@ -73,7 +72,6 @@ export class UkcehLandCoverComponent extends BaseComponent {
   }
 
   async worker(node: NodeData, inputs: WorkerInputs, outputs: WorkerOutputs, ...args: unknown[]) {
-    console.log("ukceh worker")
     // TODO: make this customisable, currently it covers a box between Crawley (NW) and Seaford (SE)
     // Crawley: -20839.008676500813, 6640614.986501137
     // Seaford: 12889.487811, 6579722.087031
@@ -94,8 +92,8 @@ export class UkcehLandCoverComponent extends BaseComponent {
     const tileGrid = createXYZ()
     const outputTileRange = tileGrid.getTileRangeForExtentAndZ(extent, z)
 
-    activeHabitats.forEach(ah =>
-      ah.result = new BooleanTileGrid(
+    const results = activeHabitats.map(ah =>
+      new BooleanTileGrid(
         z,
         outputTileRange.minX,
         outputTileRange.minY,
@@ -130,14 +128,14 @@ export class UkcehLandCoverComponent extends BaseComponent {
         ) {
           const tileExtent = tileGrid.getTileCoordExtent([z, x, y])
           if (geom.intersectsExtent(tileExtent)) {
-            activeHabitats[index].result?.set(x, y, true)
+            results[index].set(x, y, true)
           }
         }
       }
     }
 
-    activeHabitats.forEach(ah => {
-      outputs[ah.mode] = ah.result
+    activeHabitats.forEach((ah, i) => {
+      outputs[ah.mode] = results[i]
       //outputs[ah.mode].name = ah.LC
     })
   }
