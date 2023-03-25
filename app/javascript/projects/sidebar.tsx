@@ -227,6 +227,10 @@ export const Sidebar = ({ state, selectLayer, mutateLayer, deleteLayer, setLayer
         () => state.selectedLayer !== undefined &&
         deleteLayer(state.selectedLayer)
       }
+      title={
+        state.selectedLayer !== undefined && state.project.layers[state.selectedLayer].type === "ModelOutputLayer" ?
+          "You can't delete model outputs from this view; please switch to the model editor and delete the corresponding node." : undefined
+      }
     >
       Delete layer
     </button>
