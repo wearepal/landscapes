@@ -16,11 +16,10 @@ import { DBModels } from './db_models'
 import { minMaxByNevoLevelAndProperty, minZoomByNevoLevel, NevoLevel } from './nevo'
 import { Layer } from './state'
 import { Map } from 'ol'
-import VectorLayer from 'ol/layer/Vector'
 import TileWMS from 'ol/source/TileWMS'
 import { ModelOutputCache } from './map_view'
-import ImageLayer from 'ol/layer/Image'
-import { ModelOutputSource } from './model_output_source'
+import DataTileSource from 'ol/source/DataTile'
+import olWebGLTileLayer from 'ol/layer/WebGLTile'
 
 const osmSource = new OSM({ transition: 0 })
 const createMapTileSource = memoize((id: number, minZoom: number, maxZoom: number) =>
@@ -153,11 +152,35 @@ export const reifyLayer = (layer: Layer, dbModels: DBModels, map: Map, modelOutp
 
     case "ModelOutputLayer": {
       if (layer.nodeId in modelOutputCache) {
-        return new ImageLayer({
-          source: new ModelOutputSource(modelOutputCache[layer.nodeId]),
+        const tileLayer = modelOutputCache[layer.nodeId]
+        return new olWebGLTileLayer({
+          source: new DataTileSource({
+            loader: (z, x, y) => {
+              const image = new Float32Array(256 * 256)
+              for (let pixelX = 0; pixelX < 256; ++pixelX) {
+                for (let pixelY = 0; pixelY < 256; ++pixelY) {
+                  const tileX = (x + (pixelX / 256)) * Math.pow(2, tileLayer.zoom - z)
+                  const tileY = (y + (pixelY / 256)) * Math.pow(2, tileLayer.zoom - z)
+                  const val = tileLayer.get(tileX, tileY)
+                  image[pixelY * 256 + pixelX] = typeof val === "number" ? val : (val ? 1 : 0)
+                }
+              }
+              return image
+            },
+            maxZoom: tileLayer.zoom,
+            bandCount: 1,
+          }),
+          style: {
+            color: [
+              'array',
+              ['band', 1],
+              ['band', 1],
+              ['band', 1],
+              1
+            ],
+          },
           visible: layer.visible,
           opacity: layer.opacity,
-          minZoom: 15,
         })
       }
       else {
