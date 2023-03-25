@@ -27,14 +27,6 @@ export const Toolbar = ({ backButtonPath, projectName, hasUnsavedChanges, curren
         <i className="fas fa-save"/> Save
       </button>
     </div>
-    <div className="btn-group mr-2">
-      <button className="btn btn-sm btn-outline-primary" disabled>
-        <i className="fas fa-undo"/> Undo
-      </button>
-      <button className="btn btn-sm btn-outline-primary" disabled>
-        <i className="fas fa-redo"/> Redo
-      </button>
-    </div>
     <div className="btn-group">
       <button className={`btn btn-sm ${currentTab == Tab.MapView ? "btn-primary" : "btn-outline-primary"}`} onClick={() => setCurrentTab(Tab.MapView)}>
         <i className="fas fa-map-marked-alt"/> Map view
