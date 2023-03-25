@@ -129,6 +129,32 @@ export class NumericTileGrid extends TileGrid {
   }
 }
 
+export class CategoricalTileGrid extends TileGrid {
+  private data: Uint8Array
+  
+  constructor(zoom: number, x: number, y: number, width: number, height: number) {
+    super(zoom, x, y, width, height)
+    this.data = new Uint8Array(width * height).fill(255)
+  }
+
+  get(x: number, y: number, zoom = this.zoom): number {
+    if (zoom < this.zoom) {
+      throw new TypeError("invalid zoom level")
+    }
+    const scale = Math.pow(2, zoom - this.zoom)
+    const index = toIndex(this, Math.floor(x / scale), Math.floor(y / scale))
+    return (typeof index === 'undefined') ? 255 : this.data[index]
+  }
+
+  set(x: number, y: number, value: number) {
+    const index = toIndex(this, x, y)
+    if (typeof index === 'undefined') {
+      throw new TypeError('coordinate out of range')
+    }
+    this.data[index] = value
+  }
+}
+
 registerSerializer({
   deserialize(message: any, defaultHandler) {
     if (message && message.__type === "$$BooleanTileGrid") {
