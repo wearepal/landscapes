@@ -109,7 +109,7 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
             createOutputLayer={(nodeId: number) => dispatch({
               type: "AddLayer",
               layer: {
-                name: "Untitled",
+                name: "Untitled model output",
                 visible: true,
                 opacity: 1,
                 type: "ModelOutputLayer",
