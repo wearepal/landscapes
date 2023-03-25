@@ -116,15 +116,9 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
                 nodeId
               }
             })}
-            deleteOutputLayer={(nodeId: number) => {
-              const id = state.project.allLayers.find(idx => {
-                const foo = state.project.layers[idx]
-                return foo.type === "ModelOutputLayer" && foo.nodeId === nodeId
-              })
-              if (id !== undefined) {
-                dispatch({ type: "DeleteLayer", id })
-              }
-            }}
+            deleteOutputLayer={(nodeId: number) =>
+              dispatch({ type: "DeleteModelOutputLayer", nodeId })
+            }
             saveMapLayer={(id, tileGrid) => {
               const cache = modelOutputCache
               cache[id] = tileGrid

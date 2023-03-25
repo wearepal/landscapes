@@ -18,7 +18,20 @@ const reduceProject = (state: Project, action: Action): Project => {
     case "DeleteLayer": {
       const layers = cloneDeep(state.layers)
       delete layers[action.id]
-      return { ...state, layers, allLayers: state.allLayers.filter(e => e !== action.id) }
+      return { ...state, layers, allLayers: state.allLayers.filter(layerId => layerId !== action.id) }
+    }
+
+    case "DeleteModelOutputLayer": {
+      const id = state.allLayers.find(idx => {
+        const layer = state.layers[idx]
+        return layer.type === "ModelOutputLayer" && layer.nodeId === action.nodeId
+      })
+
+      const layers = cloneDeep(state.layers)
+      if (id !== undefined) {
+        delete layers[id]
+      }
+      return { ...state, layers, allLayers: state.allLayers.filter(layerId => layerId !== id) }
     }
 
     case "MutateLayer": {

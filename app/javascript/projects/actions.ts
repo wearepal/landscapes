@@ -21,6 +21,11 @@ interface DeleteLayer {
   id: number
 }
 
+interface DeleteModelOutputLayer {
+  type: "DeleteModelOutputLayer"
+  nodeId: number
+}
+
 interface MutateLayer {
   type: "MutateLayer"
   id: number
@@ -41,4 +46,4 @@ interface SetModel {
   model: Data
 }
 
-export type Action = SetProjectName | SelectLayer | AddLayer | DeleteLayer | MutateLayer | SetLayerOrder | FinishSave | SetModel
+export type Action = SetProjectName | SelectLayer | AddLayer | DeleteLayer | DeleteModelOutputLayer | MutateLayer | SetLayerOrder | FinishSave | SetModel
