@@ -4,6 +4,7 @@ import { workerPool } from '../../../modelling/workerPool'
 import { NodeData, WorkerInputs, WorkerOutputs } from 'rete/types/core/data'
 import { BaseComponent } from './base_component'
 import { PreviewControl } from '../controls/preview'
+import { isEqual } from 'lodash'
 
 export class BinaryOpComponent extends BaseComponent {
   operator: string
@@ -35,8 +36,12 @@ export class BinaryOpComponent extends BaseComponent {
     if (inputs['a'][0] === undefined || inputs['b'][0] === undefined) {
       editorNode.meta.errorMessage = 'Not enough inputs'
     }
+    else if (isEqual([inputs['a'][0], inputs['b'][0]], editorNode.meta.previousInputs)) {
+      outputs['out'] = editorNode.meta.output
+    }
     else {
       delete editorNode.meta.errorMessage
+      editorNode.meta.previousInputs = [inputs['a'][0], inputs['b'][0]]
       editorNode.meta.output = outputs['out'] = await workerPool.queue(async worker => 
         worker.performOperation(this.name, inputs['a'][0], inputs['b'][0])
       )

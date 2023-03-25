@@ -4,6 +4,7 @@ import { PreviewControl } from '../controls/preview'
 import { BooleanTileGrid } from '../tile_grid'
 import { workerPool } from '../../../modelling/workerPool'
 import { BaseComponent } from './base_component'
+import { isEqual } from 'lodash'
 
 export class VariadicOpComponent extends BaseComponent {
   operator: string
@@ -34,8 +35,12 @@ export class VariadicOpComponent extends BaseComponent {
     if (inputs['in'].length < 2) {
       editorNode.meta.errorMessage = 'Not enough inputs'
     }
+    else if (isEqual(inputs['in'], editorNode.meta.previousInputs)) {
+      outputs['out'] = editorNode.meta.output
+    }
     else {
       delete editorNode.meta.errorMessage
+      editorNode.meta.previousInputs = inputs['in']
       editorNode.meta.output = outputs['out'] = await workerPool.queue(async worker => 
         worker.performOperation(this.name, ...inputs['in'])
       )

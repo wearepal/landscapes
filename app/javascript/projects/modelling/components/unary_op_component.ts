@@ -49,8 +49,12 @@ export class UnaryOpComponent extends BaseComponent {
     if (inputs['a'].length === 0) {
       editorNode.meta.errorMessage = 'No input'
     }
+    else if (inputs['a'][0] === editorNode.meta.previousInput) {
+      outputs['out'] = editorNode.meta.output
+    }
     else {
       delete editorNode.meta.errorMessage
+      editorNode.meta.previousInput = inputs['a'][0]
       editorNode.meta.output = outputs['out'] = await workerPool.queue(async worker => 
         worker.performOperation(this.name, inputs['a'][0])
       )
