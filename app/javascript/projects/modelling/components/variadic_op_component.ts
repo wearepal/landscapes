@@ -1,11 +1,11 @@
 import { Input, Node, Output, Socket } from 'rete'
+import { NodeData, WorkerInputs, WorkerOutputs } from 'rete/types/core/data'
+import { PreviewControl } from '../controls/preview'
 import { BooleanTileGrid } from '../tile_grid'
 import { workerPool } from '../../../modelling/workerPool'
-import { NodeData, WorkerInputs, WorkerOutputs } from 'rete/types/core/data'
 import { BaseComponent } from './base_component'
-import { PreviewControl } from '../controls/preview'
 
-export class BinaryOpComponent extends BaseComponent {
+export class VariadicOpComponent extends BaseComponent {
   operator: string
   inputSocket: Socket
   outputSocket: Socket
@@ -23,22 +23,21 @@ export class BinaryOpComponent extends BaseComponent {
     node.addControl(new PreviewControl(() =>
       node.meta.output as any || new BooleanTileGrid(0, 0, 0, 1, 1)
     ))
-    node.addInput(new Input('a', 'A', this.inputSocket))
-    node.addInput(new Input('b', 'B', this.inputSocket))
-    node.addOutput(new Output('out', `A ${this.operator} B`, this.outputSocket))
+    node.addInput(new Input('in', 'Inputs', this.inputSocket, true))
+    node.addOutput(new Output('out', `${this.operator} Inputs`, this.outputSocket))
   }
 
   async worker(node: NodeData, inputs: WorkerInputs, outputs: WorkerOutputs, ...args: unknown[]) {
     const editorNode = this.editor?.nodes.find(n => n.id === node.id)
     if (editorNode === undefined) { return }
 
-    if (inputs['a'][0] === undefined || inputs['b'][0] === undefined) {
+    if (inputs['in'].length < 2) {
       editorNode.meta.errorMessage = 'Not enough inputs'
     }
     else {
       delete editorNode.meta.errorMessage
       editorNode.meta.output = outputs['out'] = await workerPool.queue(async worker => 
-        worker.performOperation(this.name, inputs['a'][0], inputs['b'][0])
+        worker.performOperation(this.name, ...inputs['in'])
       )
       //outputs['out'].name = node.data.name
       const previewControl: any = editorNode.controls.get('preview')
