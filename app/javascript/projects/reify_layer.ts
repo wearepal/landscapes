@@ -20,6 +20,7 @@ import TileWMS from 'ol/source/TileWMS'
 import { ModelOutputCache } from './map_view'
 import DataTileSource from 'ol/source/DataTile'
 import olWebGLTileLayer from 'ol/layer/WebGLTile'
+import { NumericTileGrid } from './modelling/tile_grid'
 
 const osmSource = new OSM({ transition: 0 })
 const createMapTileSource = memoize((id: number, minZoom: number, maxZoom: number) =>
@@ -156,13 +157,15 @@ export const reifyLayer = (layer: Layer, dbModels: DBModels, map: Map, modelOutp
         return new olWebGLTileLayer({
           source: new DataTileSource({
             loader: (z, x, y) => {
+              const [min, max] = tileLayer instanceof NumericTileGrid ? tileLayer.getMinMax() : [0, 1]
               const image = new Float32Array(256 * 256)
               for (let pixelX = 0; pixelX < 256; ++pixelX) {
                 for (let pixelY = 0; pixelY < 256; ++pixelY) {
                   const tileX = (x + (pixelX / 256)) * Math.pow(2, tileLayer.zoom - z)
                   const tileY = (y + (pixelY / 256)) * Math.pow(2, tileLayer.zoom - z)
-                  const val = tileLayer.get(tileX, tileY)
-                  image[pixelY * 256 + pixelX] = typeof val === "number" ? val : (val ? 1 : 0)
+                  const tile = tileLayer.get(tileX, tileY)
+                  const val = typeof tile === "number" ? tile : (tile ? 1 : 0)
+                  image[pixelY * 256 + pixelX] = (val - min) / (max - min)
                 }
               }
               return image

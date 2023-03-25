@@ -31,11 +31,11 @@ function toIndex(grid: TileGrid, x: number, y: number) {
 }
 
 abstract class TileGrid {
-  zoom: number
-  x: number
-  y: number
-  width: number
-  height: number
+  readonly zoom: number
+  readonly x: number
+  readonly y: number
+  readonly width: number
+  readonly height: number
   
   constructor(zoom: number, x: number, y: number, width: number, height: number) {
     validateZoom(zoom)
@@ -51,11 +51,16 @@ abstract class TileGrid {
 }
 
 export class BooleanTileGrid extends TileGrid {
-  data: Uint8Array
+  private data: Uint8Array
   
-  constructor(zoom: number, x: number, y: number, width: number, height: number) {
+  constructor(zoom: number, x: number, y: number, width: number, height: number, initialValue: boolean | Uint8Array = false) {
     super(zoom, x, y, width, height)
-    this.data = new Uint8Array(width * height)
+    if (initialValue instanceof Uint8Array) {
+      this.data = initialValue
+    }
+    else {
+      this.data = new Uint8Array(width * height).fill(initialValue ? 1 : 0)
+    }
   }
 
   get(x: number, y: number, zoom = this.zoom): boolean {
@@ -77,11 +82,18 @@ export class BooleanTileGrid extends TileGrid {
 }
 
 export class NumericTileGrid extends TileGrid {
-  data: Float32Array
+  private data: Float32Array
+  private minMax: [number, number] | null
 
-  constructor(zoom: number, x: number, y: number, width: number, height: number, initialValue = 0) {
+  constructor(zoom: number, x: number, y: number, width: number, height: number, initialValue: number | Float32Array = 0) {
     super(zoom, x, y, width, height)
-    this.data = new Float32Array(width * height).fill(initialValue)
+    if (initialValue instanceof Float32Array) {
+      this.data = initialValue
+    }
+    else {
+      this.data = new Float32Array(width * height).fill(initialValue)
+    }
+    this.minMax = null
   }
   
   get(x: number, y: number, zoom = this.zoom): number {
@@ -99,6 +111,21 @@ export class NumericTileGrid extends TileGrid {
       throw new TypeError('coordinate out of range')
     }
     this.data[index] = value
+    this.minMax = null
+  }
+
+  getMinMax() {
+    if (this.minMax == null) {
+      var min = Infinity, max = -Infinity
+      this.data.forEach(val => {
+        if (isFinite(val)) {
+          min = Math.min(val, min)
+          max = Math.max(val, max)
+        }
+      })
+      this.minMax = [min, max]
+    }
+    return this.minMax
   }
 }
 
@@ -106,14 +133,12 @@ registerSerializer({
   deserialize(message: any, defaultHandler) {
     if (message && message.__type === "$$BooleanTileGrid") {
       const { zoom, x, y, width, height, data } = message
-      const result = new BooleanTileGrid(zoom, x, y, width, height)
-      result.data = data
+      const result = new BooleanTileGrid(zoom, x, y, width, height, data)
       return result
     }
     else if (message && message.__type === "$$NumericTileGrid") {
       const { zoom, x, y, width, height, data } = message
-      const result = new NumericTileGrid(zoom, x, y, width, height)
-      result.data = data
+      const result = new NumericTileGrid(zoom, x, y, width, height, data)
       return result
     }
     else {

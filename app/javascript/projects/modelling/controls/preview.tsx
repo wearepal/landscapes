@@ -25,16 +25,7 @@ const Preview = ({ getTileGrid }: PreviewProps) => {
       }
     }
     else if (tileGrid instanceof NumericTileGrid) {
-      var min = Infinity, max = -Infinity
-      for (let x = tileGrid.x; x < tileGrid.x + tileGrid.width; ++x) {
-        for (let y = tileGrid.y; y < tileGrid.y + tileGrid.height; ++y) {
-          const val = tileGrid.get(x, y)
-          if (isFinite(val)) {
-            min = Math.min(val, min)
-            max = Math.max(val, max)
-          }
-        }
-      }
+      let [min, max] = tileGrid.getMinMax()
 
       for (let x = 0; x < tileGrid.width; ++x) {
         for (let y = 0; y < tileGrid.height; ++y) {
