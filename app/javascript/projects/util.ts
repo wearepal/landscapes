@@ -14,6 +14,8 @@ export function iconForLayerType(type: Layer['type']) {
       return "fa-image"
     case "OverlayLayer":
       return "fa-draw-polygon"
+    case "ModelOutputLayer":
+      return "fa-code"
     default:
       return "fa-layer-group"
   }
