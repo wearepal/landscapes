@@ -19,5 +19,6 @@ export class NumericConstantComponent extends BaseComponent {
   }
 
   worker(node: NodeData, inputs: WorkerInputs, outputs: WorkerOutputs, ...args: unknown[]) {
+    outputs['out'] = node.data.value
   }
 }
