@@ -109,7 +109,22 @@ export const MapView = ({ layers, dbModels, initialZoom, setZoom, initialCenter,
     }
   }, [])
 
-  React.useEffect(() => map?.setLayers(layers.map(l => reifyLayer(l, dbModels, map, modelOutputCache))), [map, layers])
+  React.useEffect(() => {
+    if (map === null) { return }
+    while (map.getLayers().getLength() > layers.length) {
+      map.getLayers().pop()
+    }
+    for (let i = 0; i < layers.length; ++i) {
+      const layer = layers[i]
+      const existingLayer = map.getLayers().getLength() > i ? map.getLayers().item(i) : null
+      const newLayer = reifyLayer(layer, existingLayer, dbModels, map, modelOutputCache)
+      newLayer.setVisible(layer.visible)
+      newLayer.setOpacity(layer.opacity)
+      if (existingLayer !== newLayer) {
+        map.getLayers().setAt(i, newLayer)
+      }
+    }
+  }, [map, layers])
 
   React.useEffect(() => {
     if (map === null) { return }
