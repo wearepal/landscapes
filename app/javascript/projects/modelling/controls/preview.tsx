@@ -37,26 +37,24 @@ const Preview = ({ getTileGrid }: PreviewProps) => {
     }
   })
 
-  return <div style={{width: "200px"}}>
-    <div style={{width: "200px", height: "200px", margin: "0px auto", backgroundColor: "rgba(0, 0, 0, 0.2)", textAlign: "center", lineHeight: "200px"}}>
-      <canvas
-        style={tileGrid.width > tileGrid.height ?
-        {
-          verticalAlign: 'middle',
-          width: '200px',
-          height: `${200 * tileGrid.height / tileGrid.width}px`,
-          imageRendering: 'pixelated',
-        } : {
-          verticalAlign: 'middle',
-          width: `${200 * tileGrid.width / tileGrid.height}px`,
-          height: '200px',
-          imageRendering: 'pixelated',
-        }}
-        width={tileGrid.width}
-        height={tileGrid.height}
-        ref={canvasRef as any}
-      ></canvas>
-    </div>
+  return <div style={{width: "200px", height: "200px", margin: "0px auto", backgroundColor: "rgba(0, 0, 0, 0.2)", textAlign: "center", lineHeight: "200px"}}>
+    <canvas
+      style={tileGrid.width > tileGrid.height ?
+      {
+        verticalAlign: 'middle',
+        width: '200px',
+        height: `${200 * tileGrid.height / tileGrid.width}px`,
+        imageRendering: 'pixelated',
+      } : {
+        verticalAlign: 'middle',
+        width: `${200 * tileGrid.width / tileGrid.height}px`,
+        height: '200px',
+        imageRendering: 'pixelated',
+      }}
+      width={tileGrid.width}
+      height={tileGrid.height}
+      ref={canvasRef as any}
+    ></canvas>
   </div>
 }
 
@@ -65,7 +63,7 @@ export class PreviewControl extends Control {
   component: (props: PreviewProps) => JSX.Element
   
   constructor(getTileGrid: () => BooleanTileGrid | NumericTileGrid) {
-    super("preview")
+    super("Preview")
     this.props = { getTileGrid }
     this.component = Preview
   }

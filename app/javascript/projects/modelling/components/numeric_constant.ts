@@ -11,14 +11,14 @@ export class NumericConstantComponent extends BaseComponent {
   }
   
   async builder(node: Node) {
-    if (!('value' in node.data)) {
+    if (!('Value' in node.data)) {
       node.data.value = "0"
     }
-    node.addControl(new TextControl(this.editor, 'value'))
+    node.addControl(new TextControl(this.editor, 'Value'))
     node.addOutput(new Output('out', this.name, numberSocket))
   }
 
   worker(node: NodeData, inputs: WorkerInputs, outputs: WorkerOutputs, ...args: unknown[]) {
-    outputs['out'] = node.data.value
+    outputs['out'] = node.data.Value
   }
 }

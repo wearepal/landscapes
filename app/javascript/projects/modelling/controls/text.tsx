@@ -13,6 +13,7 @@ const TextField = ({ getValue, setValue }: TextFieldProps) => {
 
   return <input
     type="text"
+    className="form-control"
     value={getValue()}
     onChange={e => {
       setValue(e.target.value)

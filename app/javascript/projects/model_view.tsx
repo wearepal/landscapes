@@ -9,8 +9,8 @@ import { Data } from 'rete/types/core/data'
 import { createDefaultComponents } from './modelling/components'
 import { BaseComponent } from './modelling/components/base_component'
 import { SaveMapLayer } from './modelling/components/map_layer_component'
-
-import "./model_view.css"
+import './model_view.css'
+import { NodeComponent } from './node_component'
 
 // Rete doesn't export `Transform`, so we have to re-define it ourselves
 export interface Transform {
@@ -43,7 +43,7 @@ export function ModelView({ visible, initialTransform, setTransform, initialMode
     editor.on("translated", () => updateTransform)
     editor.use(ConnectionPlugin)
     editor.use(MinimapPlugin)
-    editor.use(ReactRenderPlugin)
+    editor.use(ReactRenderPlugin, { component: NodeComponent })
     editor.use(ContextMenuPlugin, {
       searchBar: false, // Too buggy
       delay: 100,
@@ -114,5 +114,5 @@ export function ModelView({ visible, initialTransform, setTransform, initialMode
     editor?.nodes.forEach(node => editor.view?.updateConnections({ node }))
   }, [editor, visible])
 
-  return <div className={`flex-grow-1 ${!visible ? "d-none" : ""}`} ref={ref}></div>
+  return <div className={`model-editor bg-dark flex-grow-1 ${!visible ? "d-none" : ""}`} ref={ref}></div>
 }

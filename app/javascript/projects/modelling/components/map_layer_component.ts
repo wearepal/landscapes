@@ -20,7 +20,16 @@ export class MapLayerComponent extends BaseComponent {
   }
 
   async worker(node: NodeData, inputs: WorkerInputs, outputs: WorkerOutputs, ...args: unknown[]) {
-    const name = node.data.name as string | undefined
-    this.callback(node.id, inputs["in"][0] as BooleanTileGrid | NumericTileGrid)
+    const editorNode = this.editor?.nodes.find(n => n.id === node.id)
+    if (editorNode === undefined) { return }
+
+    if (inputs['in'].length === 0) {
+      editorNode.meta.errorMessage = 'No input'
+    }
+    else {
+      delete editorNode.meta.errorMessage
+      this.callback(node.id, inputs["in"][0] as BooleanTileGrid | NumericTileGrid)
+    }
+    editorNode.update()
   }
 }

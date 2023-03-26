@@ -50,6 +50,7 @@ export class UnaryOpComponent extends BaseComponent {
       editorNode.meta.errorMessage = 'No input'
     }
     else if (inputs['a'][0] === editorNode.meta.previousInput) {
+      delete editorNode.meta.errorMessage
       outputs['out'] = editorNode.meta.output
     }
     else {
@@ -59,7 +60,7 @@ export class UnaryOpComponent extends BaseComponent {
         worker.performOperation(this.name, inputs['a'][0])
       )
       //outputs['out'].name = node.data.name
-      const previewControl: any = editorNode.controls.get('preview')
+      const previewControl: any = editorNode.controls.get('Preview')
       previewControl.update()
     }
 

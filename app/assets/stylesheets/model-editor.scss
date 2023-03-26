@@ -15,20 +15,32 @@
   }
 
   .node {
+    .socket {
+      height: 1.2em;
+      width: 1.2em;
+    }
     .socket--layer {
       background: #b4a246;
     }
 
-    .socket--map {
+    .socket--map, .socket.numeric-dataset {
       background: #b44646;
     }
 
-    .socket--set {
+    .socket--set, .socket.boolean-dataset {
       background: steelblue;
     }
 
     .socket--number {
-      background: #46b44c;
+      background: #b47f46;
+    }
+
+    .socket.output.number {
+      background: linear-gradient(#b47f46 50%, #b44646 50%);
+    }
+
+    .socket.dataset {
+      background: linear-gradient(steelblue 50%, #b44646 50%);
     }
   }
 
@@ -45,15 +57,19 @@
     stroke: #b4a246;
   }
 
-  .connection.socket-input-set .main-path {
-    stroke: steelblue;
+  .connection.socket-input-set,
+  .connection.socket-input-boolean-dataset,
+  .connection.socket-output-boolean-dataset.socket-input-dataset {
+    .main-path {
+      stroke: steelblue;
+    }
   }
 
-  .connection.socket-input-map .main-path {
-    stroke: #b44646;
-  }
-
-  .connection.socket-input-number .main-path {
-    stroke: #46b44c;
+  .connection.socket-input-map,
+  .connection.socket-input-numeric-dataset,
+  .connection.socket-output-numeric-dataset.socket-input-dataset {
+    .main-path {
+      stroke: #b44646;
+    }
   }
 }

@@ -33,6 +33,7 @@ export class MaskNumericDataComponent extends BaseComponent {
       editorNode.meta.errorMessage = 'Not enough inputs'
     }
     else if (isEqual([inputs['num'][0], inputs['mask'][0]], editorNode.meta.previousInputs)) {
+      delete editorNode.meta.errorMessage
       outputs['out'] = editorNode.meta.output
     }
     else {
@@ -49,7 +50,7 @@ export class MaskNumericDataComponent extends BaseComponent {
 
       //out.name = node.data.name || 'Masked layer'
 
-      const previewControl: any = editorNode.controls.get('preview')
+      const previewControl: any = editorNode.controls.get('Preview')
       previewControl.update()
     }
 

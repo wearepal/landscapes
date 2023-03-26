@@ -37,6 +37,7 @@ export class BinaryOpComponent extends BaseComponent {
       editorNode.meta.errorMessage = 'Not enough inputs'
     }
     else if (isEqual([inputs['a'][0], inputs['b'][0]], editorNode.meta.previousInputs)) {
+      delete editorNode.meta.errorMessage
       outputs['out'] = editorNode.meta.output
     }
     else {
@@ -46,7 +47,7 @@ export class BinaryOpComponent extends BaseComponent {
         worker.performOperation(this.name, inputs['a'][0], inputs['b'][0])
       )
       //outputs['out'].name = node.data.name
-      const previewControl: any = editorNode.controls.get('preview')
+      const previewControl: any = editorNode.controls.get('Preview')
       previewControl.update()
     }
 
