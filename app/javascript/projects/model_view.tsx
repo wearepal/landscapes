@@ -57,7 +57,7 @@ export function ModelView({ visible, initialTransform, setTransform, initialMode
       engine.register(component)
     })
 
-    const hookNodeCreation = () => {
+    const addNodeSyncListeners = () => {
       editor.on("nodecreated", e => {
         if (e.name === "Map layer") {
           createOutputLayer(e.id)
@@ -81,27 +81,27 @@ export function ModelView({ visible, initialTransform, setTransform, initialMode
       })
     )
 
-    const save = () => {
+    const writeModel = () => {
       // Use JSON.stringify and JSON.parse to perform a deep copy
       setModel(JSON.parse(JSON.stringify(editor.toJSON())))
     }
+    const addWriteModelListener = () => editor.on(
+      ["nodecreated", "noderemoved", "connectioncreated", "connectionremoved", "nodetranslated", "nodedragged", "process"],
+      writeModel
+    )
 
     if (initialModel !== null) {
-      editor.fromJSON(initialModel).then(hookNodeCreation).then(() =>
-        editor.on(
-          ["nodecreated", "noderemoved", "connectioncreated", "connectionremoved", "nodetranslated", "nodedragged", "process"],
-          save
-        )
-      )
+      editor.fromJSON(initialModel).then(addNodeSyncListeners).then(addWriteModelListener)
     }
     else {
-      hookNodeCreation()
+      addNodeSyncListeners()
+      addWriteModelListener()
     }
 
     setEditor(editor)
 
     return () => {
-      save()
+      writeModel()
       editor.destroy()
       engine.destroy()
       setEditor(undefined)
