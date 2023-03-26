@@ -19,6 +19,7 @@ export interface Transform {
   y: number;
 }
 export interface ModelViewProps {
+  visible: boolean
   initialTransform: Transform
   setTransform: (transform: Transform) => void
   initialModel: Data | null
@@ -28,8 +29,9 @@ export interface ModelViewProps {
   saveMapLayer: SaveMapLayer
   setProcessing: (processing: boolean) => void
 }
-export function ModelView({ initialTransform, setTransform, initialModel, setModel, createOutputLayer, deleteOutputLayer, saveMapLayer, setProcessing }: ModelViewProps) {
+export function ModelView({ visible, initialTransform, setTransform, initialModel, setModel, createOutputLayer, deleteOutputLayer, saveMapLayer, setProcessing }: ModelViewProps) {
   const ref = React.useRef<HTMLDivElement>(null)
+  const [editor, setEditor] = React.useState<NodeEditor>()
   React.useEffect(() => {
     if (ref.current === null) return
 
@@ -98,12 +100,20 @@ export function ModelView({ initialTransform, setTransform, initialModel, setMod
       save
     )
 
+    setEditor(editor)
+
     return () => {
       save()
       editor.destroy()
       engine.destroy()
+      setEditor(undefined)
     }
   }, [ref])
 
-  return <div className="flex-grow-1" ref={ref}></div>
+  React.useEffect(() => {
+    // Fix bug where connectors appear in wrong place when user first switches to model view
+    editor?.nodes.forEach(node => editor.view?.updateConnections({ node }))
+  }, [editor, visible])
+
+  return <div className={`flex-grow-1 ${!visible ? "d-none" : ""}`} ref={ref}></div>
 }

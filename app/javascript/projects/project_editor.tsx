@@ -100,33 +100,32 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
             : <CollapsedSidebar show={() => setSidebarVisible(true)}/>
           }
         </>}
-        { currentTab == Tab.ModelView && <>
-          <ModelView
-            initialTransform={modelViewTransform}
-            setTransform={setModelViewTransform}
-            initialModel={state.project.model}
-            setModel={(model: Data) => dispatch({ type: "SetModel", model })}
-            createOutputLayer={(nodeId: number) => dispatch({
-              type: "AddLayer",
-              layer: {
-                name: "Untitled model output",
-                visible: true,
-                opacity: 1,
-                type: "ModelOutputLayer",
-                nodeId
-              }
-            })}
-            deleteOutputLayer={(nodeId: number) =>
-              dispatch({ type: "DeleteModelOutputLayer", nodeId })
+        <ModelView
+        visible={currentTab === Tab.ModelView}
+          initialTransform={modelViewTransform}
+          setTransform={setModelViewTransform}
+          initialModel={state.project.model}
+          setModel={(model: Data) => dispatch({ type: "SetModel", model })}
+          createOutputLayer={(nodeId: number) => dispatch({
+            type: "AddLayer",
+            layer: {
+              name: "Untitled model output",
+              visible: true,
+              opacity: 1,
+              type: "ModelOutputLayer",
+              nodeId
             }
-            saveMapLayer={(id, tileGrid) => {
-              const cache = modelOutputCache
-              cache[id] = tileGrid
-              setModelOutputCache(cache)
-            }}
-            setProcessing={setProcessing}
-          />
-        </>}
+          })}
+          deleteOutputLayer={(nodeId: number) =>
+            dispatch({ type: "DeleteModelOutputLayer", nodeId })
+          }
+          saveMapLayer={(id, tileGrid) => {
+            const cache = modelOutputCache
+            cache[id] = tileGrid
+            setModelOutputCache(cache)
+          }}
+          setProcessing={setProcessing}
+        />
       </div>
     </div>
   )
