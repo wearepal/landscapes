@@ -1,3 +1,4 @@
+import { debounce } from 'lodash'
 import * as React from 'react'
 import { Engine, NodeEditor } from 'rete'
 import ConnectionPlugin from 'rete-connection-plugin'
@@ -69,17 +70,18 @@ export function ModelView({ initialTransform, setTransform, initialModel, setMod
       })
     }
 
-    if (initialModel !== null) {
-      editor.fromJSON(initialModel).then(hookNodeCreation).then(() => {
-        const process = async () => {
-          setProcessing(true)
-          await engine.abort()
-          await engine.process(editor.toJSON())
-          setProcessing(false)
-        }
-        editor.on(["nodecreated", "noderemoved", "connectioncreated", "connectionremoved"], process)
-        process()
+    editor.on(
+      ["nodecreated", "noderemoved", "connectioncreated", "connectionremoved"],
+      debounce(async () => {
+        setProcessing(true)
+        await engine.abort()
+        await engine.process(editor.toJSON())
+        setProcessing(false)
       })
+    )
+
+    if (initialModel !== null) {
+      editor.fromJSON(initialModel).then(hookNodeCreation)
     }
     else {
       hookNodeCreation()
