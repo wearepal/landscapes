@@ -1,5 +1,7 @@
+import { debounce } from "lodash"
 import * as React from "react"
-import { Control } from "rete"
+import { Control, Emitter } from "rete"
+import { EventsTypes } from "rete/types/events"
 
 interface TextFieldProps {
   getValue: () => string
@@ -25,14 +27,18 @@ export class TextControl extends Control {
   props: TextFieldProps
   component: (props: TextFieldProps) => JSX.Element
   
-  constructor(key: string) {
+  constructor(emitter: Emitter<EventsTypes> | null, key: string) {
     super(key)
+    const process = debounce(() => emitter?.trigger("process"), 500)
     this.props = {
       getValue: () => {
         const value = this.getData(key)
         return typeof value === "string" ? value : ""
       },
-      setValue: value => this.putData(key, value),
+      setValue: value => {
+        this.putData(key, value)
+        process()
+      },
     }
     this.component = TextField
   }

@@ -73,7 +73,7 @@ export function ModelView({ visible, initialTransform, setTransform, initialMode
     }
 
     editor.on(
-      ["nodecreated", "noderemoved", "connectioncreated", "connectionremoved"],
+      ["nodecreated", "noderemoved", "connectioncreated", "connectionremoved", "process"],
       debounce(async () => {
         setProcessing(true)
         await engine.abort()

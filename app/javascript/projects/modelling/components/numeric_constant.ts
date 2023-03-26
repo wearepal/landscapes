@@ -14,7 +14,7 @@ export class NumericConstantComponent extends BaseComponent {
     if (!('value' in node.data)) {
       node.data.value = "0"
     }
-    node.addControl(new TextControl('value'))
+    node.addControl(new TextControl(this.editor, 'value'))
     node.addOutput(new Output('out', this.name, numberSocket))
   }
 
