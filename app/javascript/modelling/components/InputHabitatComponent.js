@@ -2,7 +2,7 @@ import GeoJSON from "ol/format/GeoJSON"
 import { createXYZ } from "ol/tilegrid"
 import { Component, Output } from "rete"
 import { setSocket } from "../sockets"
-import { BooleanTileGrid } from "../TileGrid"
+import { BooleanTileGrid } from "../../projects/modelling/tile_grid"
 
 export class InputHabitatComponent extends Component {
   constructor() {

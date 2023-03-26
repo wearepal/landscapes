@@ -3,7 +3,7 @@ import { NumberControl } from '../controls/NumberControl'
 import { PreviewControl } from '../controls/PreviewControl'
 import { SelectControl } from '../controls/SelectControl'
 import { setSocket } from '../sockets'
-import { BooleanTileGrid } from '../TileGrid'
+import { BooleanTileGrid } from '../../projects/modelling/tile_grid'
 import { workerPool } from '../workerPool'
 
 export class InputOverlayComponent extends Component {

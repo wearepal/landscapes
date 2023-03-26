@@ -1,6 +1,6 @@
 import { Component, Input, Output } from 'rete'
 import { PreviewControl } from '../controls/PreviewControl'
-import { BooleanTileGrid } from '../TileGrid'
+import { BooleanTileGrid } from '../../projects/modelling/tile_grid'
 import { workerPool } from '../workerPool'
 
 export class BinaryOpComponent extends Component {

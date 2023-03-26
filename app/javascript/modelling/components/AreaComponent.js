@@ -4,7 +4,7 @@ import { createXYZ } from 'ol/tilegrid'
 import { Component, Input, Output } from 'rete'
 import { LabelControl } from '../controls/LabelControl'
 import { mapSocket, setSocket } from '../sockets'
-import { NumericTileGrid } from '../TileGrid'
+import { NumericTileGrid } from '../../projects/modelling/tile_grid'
 
 export class AreaComponent extends Component {
   constructor() {

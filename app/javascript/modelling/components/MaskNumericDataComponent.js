@@ -1,6 +1,6 @@
 import { Component, Input, Output } from 'rete'
 import { PreviewControl } from '../controls/PreviewControl'
-import { NumericTileGrid } from '../TileGrid'
+import { NumericTileGrid } from '../../projects/modelling/tile_grid'
 import { setSocket, mapSocket } from '../sockets'
 
 export class MaskNumericDataComponent extends Component{
