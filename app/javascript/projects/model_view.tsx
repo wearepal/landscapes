@@ -82,23 +82,22 @@ export function ModelView({ visible, initialTransform, setTransform, initialMode
       })
     )
 
-    if (initialModel !== null) {
-      editor.fromJSON(initialModel).then(hookNodeCreation)
-    }
-    else {
-      hookNodeCreation()
-    }
-
-
     const save = () => {
       // Use JSON.stringify and JSON.parse to perform a deep copy
       setModel(JSON.parse(JSON.stringify(editor.toJSON())))
     }
 
-    editor.on(
-      ["nodecreated", "noderemoved", "connectioncreated", "connectionremoved", "nodetranslated", "nodedragged"],
-      save
-    )
+    if (initialModel !== null) {
+      editor.fromJSON(initialModel).then(hookNodeCreation).then(() =>
+        editor.on(
+          ["nodecreated", "noderemoved", "connectioncreated", "connectionremoved", "nodetranslated", "nodedragged", "process"],
+          save
+        )
+      )
+    }
+    else {
+      hookNodeCreation()
+    }
 
     setEditor(editor)
 
