@@ -1,6 +1,6 @@
 import { Input, Node } from "rete"
 import { NodeData, WorkerInputs, WorkerOutputs } from "rete/types/core/data"
-import { dataSocket } from "../socketTypes"
+import { dataSocket } from "../socket_types"
 import { BooleanTileGrid, NumericTileGrid } from "../tile_grid"
 import { BaseComponent } from "./base_component"
 

@@ -2,7 +2,7 @@ import { isEqual } from 'lodash'
 import { Input, Node, Output } from 'rete'
 import { NodeData, WorkerInputs, WorkerOutputs } from 'rete/types/core/data'
 import { PreviewControl } from '../controls/preview'
-import { booleanDataSocket, numericDataSocket } from '../socketTypes'
+import { booleanDataSocket, numericDataSocket } from '../socket_types'
 import { BooleanTileGrid, NumericTileGrid } from '../tile_grid'
 import { BaseComponent } from './base_component'
 

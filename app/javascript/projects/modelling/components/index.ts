@@ -1,4 +1,4 @@
-import { booleanDataSocket, numericDataSocket } from "../socketTypes"
+import { booleanDataSocket, numericDataSocket } from "../socket_types"
 import { BaseComponent } from "./base_component"
 import { BinaryOpComponent } from "./binary_op_component"
 import { UkcehLandCoverComponent } from "./ukceh_land_cover_component"

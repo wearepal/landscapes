@@ -1,7 +1,7 @@
 import { Node, Output } from "rete"
 import { NodeData, WorkerInputs, WorkerOutputs } from "rete/types/core/data"
 import { TextControl } from "../controls/text"
-import { numberSocket } from "../socketTypes"
+import { numberSocket } from "../socket_types"
 import { BaseComponent } from "./base_component"
 
 export class NumericConstantComponent extends BaseComponent {
