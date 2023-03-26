@@ -1,5 +1,5 @@
 import { kdTree } from 'kd-tree-javascript'
-import { NumericTileGrid } from '../TileGrid'
+import { NumericTileGrid } from "../../projects/modelling/tile_grid"
 
 export function generateDistanceMap(input) {
   const result = new NumericTileGrid(

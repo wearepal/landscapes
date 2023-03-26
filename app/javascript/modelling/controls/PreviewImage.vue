@@ -23,7 +23,8 @@
 </template>
 
 <script>
-import { BooleanTileGrid, LabelledTileGrid, NumericTileGrid } from '../TileGrid'
+import { BooleanTileGrid, NumericTileGrid } from "../../projects/modelling/tile_grid"
+import { LabelledTileGrid } from '../TileGrid'
 export default {
   props: ['getTileGrid'],
   methods: {

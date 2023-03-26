@@ -1,5 +1,3 @@
-import { registerSerializer } from 'threads'
-
 function validateZoom(zoom) {
   if (!(
     Number.isInteger(zoom) && zoom >= 0
@@ -56,43 +54,6 @@ class TileGrid {
   }
 }
 
-export class BooleanTileGrid extends TileGrid {
-  constructor(zoom, x, y, width, height) {
-    super(zoom, x, y, width, height)
-    this.data = new Uint8Array(width * height)
-  }
-
-  get(x, y, zoom = this.zoom) {
-    return (super.get(x, y, zoom) === 1) ? true : false
-  }
-
-  set(x, y, value) {
-    if (value !== true && value !== false) {
-      throw new TypeError("invalid value")
-    }
-    super.set(x, y, value ? 1 : 0)
-  }
-}
-
-export class NumericTileGrid extends TileGrid {
-  constructor(zoom, x, y, width, height, initialValue = 0) {
-    super(zoom, x, y, width, height)
-    this.data = new Float32Array(width * height).fill(initialValue)
-  }
-  
-  get(x, y, zoom = this.zoom) {
-    const value = super.get(x, y, zoom)
-    return typeof value === 'undefined' ? 0 : value
-  }
-
-  set(x, y, value) {
-    if (typeof value !== 'number') {
-      throw new TypeError("invalid value")
-    }
-    super.set(x, y, value)
-  }
-}
-
 export class LabelledTileGrid extends TileGrid {
   constructor(zoom, x, y, width, height, labelSchema) {
     super(zoom, x, y, width, height)
@@ -113,43 +74,6 @@ export class LabelledTileGrid extends TileGrid {
     super.set(x, y, value)
   }
 }
-
-registerSerializer({
-  deserialize(message, defaultHandler) {
-    if (message && message.__type === "$$BooleanTileGrid") {
-      const { zoom, x, y, width, height, data } = message
-      const result = new BooleanTileGrid(zoom, x, y, width, height)
-      result.data = data
-      return result
-    }
-    else if (message && message.__type === "$$NumericTileGrid") {
-      const { zoom, x, y, width, height, data } = message
-      const result = new NumericTileGrid(zoom, x, y, width, height)
-      result.data = data
-      return result
-    }
-    else {
-      return defaultHandler(message)
-    }
-  },
-  serialize(thing, defaultHandler) {
-    if (thing instanceof BooleanTileGrid) {
-      return {
-        ...thing,
-        __type: "$$BooleanTileGrid",
-      }
-    }
-    else if (thing instanceof NumericTileGrid) {
-      return {
-        ...thing,
-        __type: "$$NumericTileGrid",
-      }
-    }
-    else {
-      return defaultHandler(thing)
-    }
-  }
-})
 
 export function getExtent(grid, zoom) {
   const scale = Math.pow(2, zoom - grid.zoom)

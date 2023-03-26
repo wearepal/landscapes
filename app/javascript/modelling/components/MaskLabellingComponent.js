@@ -1,6 +1,7 @@
 import { Component, Input, Output } from 'rete'
 import { PreviewControl } from '../controls/PreviewControl'
-import { BooleanTileGrid, LabelledTileGrid } from '../TileGrid'
+import { BooleanTileGrid } from "../../projects/modelling/tile_grid"
+import { LabelledTileGrid } from '../TileGrid'
 import { layerSocket, setSocket } from '../sockets'
 
 export class MaskLabellingComponent extends Component {

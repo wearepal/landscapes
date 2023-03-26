@@ -2,7 +2,8 @@ import { Component, Input, Output } from 'rete'
 import { PreviewControl } from '../controls/PreviewControl'
 import { SelectControl } from '../controls/SelectControl'
 import { layerSocket, setSocket } from '../sockets'
-import { BooleanTileGrid, LabelledTileGrid } from '../TileGrid'
+import { BooleanTileGrid } from "../../projects/modelling/tile_grid"
+import { LabelledTileGrid } from '../TileGrid'
 
 export class SplitLabellingLayerComponent extends Component {
   constructor(labelSchemas) {

@@ -1,7 +1,7 @@
 import { createEmpty as createEmptyExtent, extend as extendExtent } from 'ol/extent'
 import GeoJSON from 'ol/format/GeoJSON'
 import { createXYZ } from 'ol/tilegrid'
-import { BooleanTileGrid } from '../TileGrid'
+import { BooleanTileGrid } from "../../projects/modelling/tile_grid"
 
 export async function rasteriseOverlay(overlayId, zoom) {
   const response = await fetch(`/overlays/${overlayId}`)

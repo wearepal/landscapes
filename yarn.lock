@@ -6900,6 +6900,11 @@ rete-minimap-plugin@^0.3.1:
   dependencies:
     vue "^2.5.17"
 
+rete-react-render-plugin@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/rete-react-render-plugin/-/rete-react-render-plugin-0.3.0.tgz#ee252f2d1d26b141813f5cab672b1a582cef79e1"
+  integrity sha512-iNEpJjqHO950WBE5CWw+WlFbV3D98Gx5tgnBp5y5ZniHEMzsqE0UuBjD9OdStVd+KmJfDEePoMiuOeFZPhEwHQ==
+
 rete-vue-render-plugin@^0.5.0:
   version "0.5.1"
   resolved "https://registry.yarnpkg.com/rete-vue-render-plugin/-/rete-vue-render-plugin-0.5.1.tgz#9a3bd212de76120ac9a247decb739e79cdbcc63b"

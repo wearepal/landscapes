@@ -1,3 +1,4 @@
+import { Data } from "rete/types/core/data"
 import { NevoLevel, NevoProperty } from "./nevo"
 
 interface BaseLayer {
@@ -34,12 +35,18 @@ export interface CehLandCoverLayer extends BaseLayer {
   year: 2021 // TODO: allow the user to customise this
 }
 
-export type Layer = OsmLayer | MapTileLayer | OverlayLayer | NevoLayer | CehLandCoverLayer
+export interface ModelOutputLayer extends BaseLayer {
+  type: "ModelOutputLayer"
+  nodeId: number
+}
+
+export type Layer = OsmLayer | MapTileLayer | OverlayLayer | NevoLayer | CehLandCoverLayer | ModelOutputLayer
 
 export interface Project {
   name: string
   layers: Record<number, Layer>
   allLayers: number[]
+  model: Data | null
 }
 
 export interface State {
@@ -53,5 +60,6 @@ export const defaultProject: Project = {
   layers: {
     1: { type: "OsmLayer", name: "OpenStreetMap", visible: true, opacity: 1 },
   },
-  allLayers: [1]
+  allLayers: [1],
+  model: null
 }

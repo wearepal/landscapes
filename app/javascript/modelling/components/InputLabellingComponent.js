@@ -1,7 +1,7 @@
 import { Component, Output } from 'rete'
 import { SelectControl } from '../controls/SelectControl'
 import { setSocket } from '../sockets'
-import { BooleanTileGrid } from '../TileGrid'
+import { BooleanTileGrid } from '../../projects/modelling/tile_grid'
 
 export class InputLabellingComponent extends Component {
   constructor(labelSchemas) {

@@ -1,7 +1,7 @@
 import { Component, Input, Output } from 'rete'
 import { PreviewControl } from '../controls/PreviewControl'
 import { setSocket, mapSocket } from '../sockets'
-import { NumericTileGrid } from '../TileGrid'
+import { NumericTileGrid } from '../../projects/modelling/tile_grid'
 import { workerPool } from '../workerPool'
 
 export class DistanceMapComponent extends Component {

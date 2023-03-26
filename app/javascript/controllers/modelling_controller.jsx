@@ -9,7 +9,6 @@ import _ from 'lodash'
 
 import { createDefaultComponents } from '../modelling/components'
 import NodeComponent from '../modelling/Node'
-import { BooleanTileGrid, NumericTileGrid } from '../modelling/TileGrid'
 import Inspector from '../modelling/Inspector'
 import React from 'react'
 import ReactDOM from 'react-dom'

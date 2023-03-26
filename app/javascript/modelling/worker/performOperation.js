@@ -1,9 +1,10 @@
 import {
-  BooleanTileGrid,
+  BooleanTileGrid, NumericTileGrid
+} from '../../projects/modelling/tile_grid'
+import {
   getExtent,
   intersectExtents,
   mergeExtents,
-  NumericTileGrid
 } from '../TileGrid'
 
 const operations = new Map()

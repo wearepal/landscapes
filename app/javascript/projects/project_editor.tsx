@@ -1,12 +1,19 @@
 import * as React from 'react'
+import { Data } from 'rete/types/core/data'
 import { DBModels } from './db_models'
 import { LayerPalette } from './layer_palette'
-import { MapView } from './map_view'
+import { MapView, ModelOutputCache } from './map_view'
+import { ModelView, Transform } from './model_view'
 import './project_editor.css'
 import { reduce } from './reducer'
 import { CollapsedSidebar, Sidebar } from './sidebar'
 import { defaultProject, Project } from './state'
 import { Toolbar } from './toolbar'
+
+export enum Tab {
+  MapView,
+  ModelView,
+}
 
 interface ProjectEditorProps {
   projectId: number
@@ -21,6 +28,12 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
   })
   const [sidebarVisible, setSidebarVisible] = React.useState(true)
   const [layerPaletteVisible, setLayerPaletteVisible] = React.useState(false)
+  const [currentTab, setCurrentTab] = React.useState(Tab.MapView)
+  const [mapViewZoom, setMapViewZoom] = React.useState(1)
+  const [mapViewCenter, setMapViewCenter] = React.useState<[number, number]>([0, 0])
+  const [modelViewTransform, setModelViewTransform] = React.useState<Transform>({ x: 0, y: 0, k: 1 })
+  const [modelOutputCache, setModelOutputCache] = React.useState<ModelOutputCache>({})
+  const [isProcessing, setProcessing] = React.useState(false)
 
   const saveProject = async () => {
     const method = 'PATCH'
@@ -49,30 +62,69 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
         hasUnsavedChanges={state.hasUnsavedChanges}
         setProjectName={name => dispatch({ type: "SetProjectName", name })}
         saveProject={saveProject}
+        currentTab={currentTab}
+        setCurrentTab={setCurrentTab}
+        isProcessing={isProcessing}
       />
       <div className="flex-grow-1 d-flex">
-        <MapView layers={state.project.allLayers.map(id => state.project.layers[id])} dbModels={dbModels}/>
-        {
-          layerPaletteVisible &&
-          <LayerPalette
-            hide={() => setLayerPaletteVisible(false)}
-            addLayer={layer => dispatch({ type: "AddLayer", layer })}
+        { currentTab == Tab.MapView && <>
+          <MapView
+            layers={state.project.allLayers.map(id => state.project.layers[id])}
             dbModels={dbModels}
+            initialZoom={mapViewZoom}
+            setZoom={setMapViewZoom}
+            initialCenter={mapViewCenter}
+            setCenter={setMapViewCenter}
+            modelOutputCache={modelOutputCache}
           />
-        }
-        {
-          sidebarVisible
-          ? <Sidebar
-              state={state}
-              selectLayer={id => dispatch({ type: "SelectLayer", id })}
-              mutateLayer={(id, data) => dispatch({ type: "MutateLayer", id, data })}
-              deleteLayer={id => dispatch({ type: "DeleteLayer", id })}
-              setLayerOrder={order => dispatch({ type: "SetLayerOrder", order })}
-              showLayerPalette={() => setLayerPaletteVisible(true)}
-              hide={() => setSidebarVisible(false)}
+          {
+            layerPaletteVisible &&
+            <LayerPalette
+              hide={() => setLayerPaletteVisible(false)}
+              addLayer={layer => dispatch({ type: "AddLayer", layer })}
+              dbModels={dbModels}
             />
-          : <CollapsedSidebar show={() => setSidebarVisible(true)}/>
-        }
+          }
+          {
+            sidebarVisible
+            ? <Sidebar
+                state={state}
+                selectLayer={id => dispatch({ type: "SelectLayer", id })}
+                mutateLayer={(id, data) => dispatch({ type: "MutateLayer", id, data })}
+                deleteLayer={id => dispatch({ type: "DeleteLayer", id })}
+                setLayerOrder={order => dispatch({ type: "SetLayerOrder", order })}
+                showLayerPalette={() => setLayerPaletteVisible(true)}
+                hide={() => setSidebarVisible(false)}
+              />
+            : <CollapsedSidebar show={() => setSidebarVisible(true)}/>
+          }
+        </>}
+        <ModelView
+          visible={currentTab === Tab.ModelView}
+          initialTransform={modelViewTransform}
+          setTransform={setModelViewTransform}
+          initialModel={state.project.model}
+          setModel={(model: Data) => dispatch({ type: "SetModel", model })}
+          createOutputLayer={(nodeId: number) => dispatch({
+            type: "AddLayer",
+            layer: {
+              name: "Untitled model output",
+              visible: true,
+              opacity: 1,
+              type: "ModelOutputLayer",
+              nodeId
+            }
+          })}
+          deleteOutputLayer={(nodeId: number) =>
+            dispatch({ type: "DeleteModelOutputLayer", nodeId })
+          }
+          saveMapLayer={(id, tileGrid) => {
+            const cache = modelOutputCache
+            cache[id] = tileGrid
+            setModelOutputCache(cache)
+          }}
+          setProcessing={setProcessing}
+        />
       </div>
     </div>
   )

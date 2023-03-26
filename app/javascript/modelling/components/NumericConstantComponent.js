@@ -1,7 +1,7 @@
 import { Component, Output } from 'rete'
 import { NumberControl } from '../controls/NumberControl'
 import { mapSocket } from '../sockets'
-import { NumericTileGrid } from '../TileGrid'
+import { NumericTileGrid } from '../../projects/modelling/tile_grid'
 
 export class NumericConstantComponent extends Component {
   constructor() {

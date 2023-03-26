@@ -8,6 +8,7 @@ import { createIconElement } from './util'
 import { Layer } from './state'
 import { reifyLayer } from './reify_layer'
 import { DBModels } from './db_models'
+import { BooleanTileGrid, NumericTileGrid } from './modelling/tile_grid'
 
 function getLayerExtent(layer: olBaseLayer) {
   if (layer instanceof VectorLayer) {
@@ -49,11 +50,21 @@ class FitViewControl extends Control {
   }
 }
 
+export type ModelOutputCache = Record<number, BooleanTileGrid | NumericTileGrid>
+
 interface MapViewProps {
   layers: Layer[]
   dbModels: DBModels
+  
+  initialZoom: number
+  setZoom: (zoom: number) => void
+
+  initialCenter: [number, number]
+  setCenter: (center: [number, number]) => void
+
+  modelOutputCache: ModelOutputCache
 }
-export const MapView = ({ layers, dbModels }: MapViewProps) => {
+export const MapView = ({ layers, dbModels, initialZoom, setZoom, initialCenter, setCenter, modelOutputCache }: MapViewProps) => {
   const mapRef = React.useRef<HTMLDivElement>()
   const [map, setMap] = React.useState<Map | null>(null)
   const [allLayersVisible, setAllLayersVisible] = React.useState(true)
@@ -70,8 +81,8 @@ export const MapView = ({ layers, dbModels }: MapViewProps) => {
   React.useEffect(() => {
     const newMap = new Map({
       view: new View({
-        center: [0, 0],
-        zoom: 1
+        center: initialCenter,
+        zoom: initialZoom
       }),
       controls: defaultControls({
         zoomOptions: {
@@ -84,6 +95,10 @@ export const MapView = ({ layers, dbModels }: MapViewProps) => {
 
     newMap.getView().on("change", e => {
       updateAllLayersVisible(newMap)
+      const zoom = newMap.getView().getZoom()
+      if (zoom !== undefined) { setZoom(zoom) }
+      const center = newMap.getView().getCenter()
+      if (center !== undefined) { setCenter(center as [number, number]) }
     })
 
     setMap(newMap)
@@ -94,7 +109,22 @@ export const MapView = ({ layers, dbModels }: MapViewProps) => {
     }
   }, [])
 
-  React.useEffect(() => map?.setLayers(layers.map(l => reifyLayer(l, dbModels, map))), [map, layers])
+  React.useEffect(() => {
+    if (map === null) { return }
+    while (map.getLayers().getLength() > layers.length) {
+      map.getLayers().pop()
+    }
+    for (let i = 0; i < layers.length; ++i) {
+      const layer = layers[i]
+      const existingLayer = map.getLayers().getLength() > i ? map.getLayers().item(i) : null
+      const newLayer = reifyLayer(layer, existingLayer, dbModels, map, modelOutputCache)
+      newLayer.setVisible(layer.visible)
+      newLayer.setOpacity(layer.opacity)
+      if (existingLayer !== newLayer) {
+        map.getLayers().setAt(i, newLayer)
+      }
+    }
+  }, [map, layers])
 
   React.useEffect(() => {
     if (map === null) { return }
