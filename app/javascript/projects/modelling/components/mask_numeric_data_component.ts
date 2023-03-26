@@ -48,11 +48,10 @@ export class MaskNumericDataComponent extends BaseComponent {
       }
 
       //out.name = node.data.name || 'Masked layer'
-
-      const previewControl: any = editorNode.controls.get('Preview')
-      previewControl.update()
     }
 
+    const previewControl: any = editorNode.controls.get('Preview')
+    previewControl.update()
     editorNode.update()
   }
 

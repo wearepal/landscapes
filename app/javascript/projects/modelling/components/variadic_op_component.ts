@@ -46,10 +46,10 @@ export class VariadicOpComponent extends BaseComponent {
         worker.performOperation(this.name, ...inputs['in'])
       )
       //outputs['out'].name = node.data.name
-      const previewControl: any = editorNode.controls.get('Preview')
-      previewControl.update()
     }
 
+    const previewControl: any = editorNode.controls.get('Preview')
+    previewControl.update()
     editorNode.update()
   }
 }

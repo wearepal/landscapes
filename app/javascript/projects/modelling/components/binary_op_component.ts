@@ -47,10 +47,10 @@ export class BinaryOpComponent extends BaseComponent {
         worker.performOperation(this.name, inputs['a'][0], inputs['b'][0])
       )
       //outputs['out'].name = node.data.name
-      const previewControl: any = editorNode.controls.get('Preview')
-      previewControl.update()
     }
 
+    const previewControl: any = editorNode.controls.get('Preview')
+    previewControl.update()
     editorNode.update()
   }
 }

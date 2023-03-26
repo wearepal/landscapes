@@ -3,7 +3,6 @@ import { Data } from 'rete/types/core/data'
 import { DBModels } from './db_models'
 import { LayerPalette } from './layer_palette'
 import { MapView, ModelOutputCache } from './map_view'
-import { BooleanTileGrid, NumericTileGrid } from './modelling/tile_grid'
 import { ModelView, Transform } from './model_view'
 import './project_editor.css'
 import { reduce } from './reducer'
@@ -101,7 +100,7 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
           }
         </>}
         <ModelView
-        visible={currentTab === Tab.ModelView}
+          visible={currentTab === Tab.ModelView}
           initialTransform={modelViewTransform}
           setTransform={setModelViewTransform}
           initialModel={state.project.model}
