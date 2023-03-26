@@ -26,7 +26,7 @@ export class MaskNumericDataComponent extends BaseComponent {
     const editorNode = this.editor?.nodes.find(n => n.id === node.id)
     if (editorNode === undefined) { return }
 
-    const num = inputs['num'][0] as NumericTileGrid | number
+    const num = inputs['num'][0] as NumericTileGrid
     const mask = inputs['mask'][0] as BooleanTileGrid
 
     if (num === undefined || mask === undefined) {
@@ -43,8 +43,7 @@ export class MaskNumericDataComponent extends BaseComponent {
       const out = editorNode.meta.output = outputs['out'] = new NumericTileGrid(mask.zoom, mask.x, mask.y, mask.width, mask.height)
       for (let x = mask.x; x < mask.x + mask.width; ++x) {
         for (let y = mask.y; y < mask.y + mask.height; ++y) {
-          const value = num instanceof NumericTileGrid ? num.get(x, y, mask.zoom) : num
-          out.set(x, y, mask.get(x, y) ? value : 0)
+          out.set(x, y, mask.get(x, y) ? num.get(x, y, mask.zoom) : 0)
         }
       }
 

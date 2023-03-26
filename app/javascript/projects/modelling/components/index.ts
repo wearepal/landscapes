@@ -7,6 +7,7 @@ import { NumericConstantComponent } from "./numeric_constant"
 import { UnaryOpComponent } from "./unary_op_component"
 import { VariadicOpComponent } from "./variadic_op_component"
 import { MaskNumericDataComponent } from "./mask_numeric_data_component"
+import { NumberToNumericDatasetComponent } from "./number_to_numeric_dataset_component"
 
 export function createDefaultComponents(saveMapLayer: SaveMapLayer): BaseComponent[] {
   return [
@@ -16,6 +17,9 @@ export function createDefaultComponents(saveMapLayer: SaveMapLayer): BaseCompone
 
     // Outputs
     new MapLayerComponent(saveMapLayer),
+
+    // Conversions
+    new NumberToNumericDatasetComponent(),
 
     // Set operations
     new VariadicOpComponent('Union', '⋃', booleanDataSocket, booleanDataSocket, 'Set operations'),

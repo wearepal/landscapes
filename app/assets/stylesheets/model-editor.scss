@@ -31,12 +31,8 @@
       background: steelblue;
     }
 
-    .socket--number {
-      background: #b47f46;
-    }
-
-    .socket.output.number {
-      background: linear-gradient(#b47f46 50%, #b44646 50%);
+    .socket--number, .socket.number {
+      background: #46b44c;
     }
 
     .socket.dataset {
@@ -57,19 +53,24 @@
     stroke: #b4a246;
   }
 
-  .connection.socket-input-set,
-  .connection.socket-input-boolean-dataset,
-  .connection.socket-output-boolean-dataset.socket-input-dataset {
+  .connection.socket-output-set,
+  .connection.socket-output-boolean-dataset {
     .main-path {
       stroke: steelblue;
     }
   }
 
-  .connection.socket-input-map,
-  .connection.socket-input-numeric-dataset,
-  .connection.socket-output-numeric-dataset.socket-input-dataset {
+  .connection.socket-output-map,
+  .connection.socket-output-numeric-dataset {
     .main-path {
       stroke: #b44646;
+    }
+  }
+
+  .connection.socket-output-number,
+  .connection.socket-output-number {
+    .main-path {
+      stroke: #46b44c;
     }
   }
 }

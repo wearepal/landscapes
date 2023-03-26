@@ -7,7 +7,6 @@ export class NodeComponent extends Node {
   state: any // TODO
   
   render() {
-    console.log(this.props)
     const { node, editor, bindSocket, bindControl } = this.props
     const { outputs, controls, inputs, selected } = this.state
 
