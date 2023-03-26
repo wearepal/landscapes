@@ -9,7 +9,6 @@ import { Data } from 'rete/types/core/data'
 import { createDefaultComponents } from './modelling/components'
 import { BaseComponent } from './modelling/components/base_component'
 import { SaveMapLayer } from './modelling/components/map_layer_component'
-import './model_view.css'
 import { NodeComponent } from './node_component'
 
 // Rete doesn't export `Transform`, so we have to re-define it ourselves
