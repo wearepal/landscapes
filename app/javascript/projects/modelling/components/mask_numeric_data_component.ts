@@ -16,7 +16,7 @@ export class MaskNumericDataComponent extends BaseComponent {
     node.addControl(new PreviewControl(() =>
       node.meta.output as any || new BooleanTileGrid(0, 0, 0, 1, 1)
     ))
-    node.addInput(new Input('num', 'Numeric', numericDataSocket))
+    node.addInput(new Input('num', 'Numeric dataset', numericDataSocket))
     node.addInput(new Input('mask', 'Mask', booleanDataSocket))
     node.addOutput(new Output('out', 'Masked layer', numericDataSocket))
   }
