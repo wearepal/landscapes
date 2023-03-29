@@ -15,7 +15,8 @@ import { BarChartComponent } from './BarChartComponent'
 import { SankeyComponent } from './SankeyComponent'
 import { MaskLabellingComponent } from './MaskLabellingComponent'
 import { MaskNumericDataComponent } from './MaskNumericDataComponent'
-import { InputHabitatComponent } from  './InputHabitatComponent'
+import { InputHabitatComponent } from './InputHabitatComponent'
+import { NevoLayerComponent } from './NevoLayerComponent'
 
 export function createDefaultComponents({ label_schemas, regions }) {
   return [
@@ -24,6 +25,7 @@ export function createDefaultComponents({ label_schemas, regions }) {
     new SplitLabellingLayerComponent(label_schemas),
     new InputOverlayComponent(regions),
     new InputHabitatComponent(),
+    new NevoLayerComponent(),
     new BuildLabellingLayerComponent(label_schemas),
     new NumericConstantComponent(),
     new SaveLabellingComponent(regions),
