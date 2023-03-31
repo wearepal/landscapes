@@ -33,7 +33,7 @@ class InspectorSource extends ImageCanvasSource {
       data: nodeOutput.data,
     })
 
-    this.minValue =  Infinity
+    this.minValue = Infinity
     this.maxValue = -Infinity
     nodeOutput.data.forEach(val => {
       if (isFinite(val)) {
@@ -58,7 +58,7 @@ class InspectorSource extends ImageCanvasSource {
         const y = coord[2]
         if (x >= this.x0 && x < this.x1 && y >= this.y0 && y < this.y1) {
           const value = this.data[(x - this.x0) * (this.y1 - this.y0) + (y - this.y0)]
-          
+
           const tileExtent = tileGrid.getTileCoordExtent([this.zoom, x, y])
 
           const tileX0 = (tileExtent[0] - extent[0]) / (extent[2] - extent[0]) * size[0]
@@ -124,7 +124,31 @@ function useFetchedArray(url) {
   return data
 }
 
-export default function({ teamId, nodeLabel, nodeOutput, close }) {
+function createMinMaxLegend(nodeOutput) {
+
+  let minValue = Infinity
+  let maxValue = -Infinity
+
+  nodeOutput.data.forEach(val => {
+    if (isFinite(val)) {
+      minValue = Math.min(val, minValue)
+      maxValue = Math.max(val, maxValue)
+    }
+  })
+
+  return (
+    <div>
+      <div style={{ height: '30px', margin: '10px', background: 'linear-gradient(90deg, #000000 0%, #FFFFFF 100%)' }}></div>
+      <div>
+        <span title={minValue} >{minValue === 0 ? minValue : minValue.toFixed(3)}</span>
+        <span title={maxValue} style={{ float: 'right' }} >{maxValue.toFixed(3)}</span>
+      </div>
+    </div>
+  )
+
+}
+
+export default function ({ teamId, nodeLabel, nodeOutput, close }) {
   const mapRef = useRef()
 
   const [map, setMap] = useState(null)
@@ -223,10 +247,10 @@ export default function({ teamId, nodeLabel, nodeOutput, close }) {
     <div>
       <div
         className="bg-dark"
-        style={{position: 'absolute', top: '3.5rem', left: '0rem', bottom: '0rem', right: '0rem'}}
+        style={{ position: 'absolute', top: '3.5rem', left: '0rem', bottom: '0rem', right: '0rem' }}
       >
         <div className="btn-toolbar bg-light p-2 border-top">
-          <div className="small" style={{lineHeight: '1.9375rem'}}>
+          <div className="small" style={{ lineHeight: '1.9375rem' }}>
             Inspecting <code>{nodeLabel}</code>
           </div>
           <button type="button" className="ml-auto btn btn-sm btn-outline-secondary" onClick={close}>
@@ -236,11 +260,11 @@ export default function({ teamId, nodeLabel, nodeOutput, close }) {
           </button>
         </div>
 
-        <div ref={mapRef} style={{width: 'calc(100% - 250px)', height: 'calc(100% - 3.0625rem)'}}></div>
+        <div ref={mapRef} style={{ width: 'calc(100% - 250px)', height: 'calc(100% - 3.0625rem)' }}></div>
 
         <div
           className="bg-light map__sidebar"
-          style={{top: '3.0625rem'}}
+          style={{ top: '3.0625rem' }}
         >
           <div className="map__sidebar-section">
             <a className="map__sidebar-section-heading collapsed" data-toggle="collapse" href="#sidebar-section-base-layers">
@@ -252,7 +276,7 @@ export default function({ teamId, nodeLabel, nodeOutput, close }) {
             <div id="sidebar-section-base-layers" className="collapse">
               <div className="map__sidebar-section-content">
                 <div className="custom-control custom-radio">
-                  <input type="radio" className="custom-control-input" id="layer-none" checked={selectedLayerId === null} onChange={() => setSelectedLayerId(null)}/>
+                  <input type="radio" className="custom-control-input" id="layer-none" checked={selectedLayerId === null} onChange={() => setSelectedLayerId(null)} />
                   <label className="custom-control-label" htmlFor="layer-none">No imagery</label>
                 </div>
                 {regions.map(region =>
@@ -274,9 +298,9 @@ export default function({ teamId, nodeLabel, nodeOutput, close }) {
                     )}
                   </details>
                 )}
-                <hr/>
+                <hr />
                 <div className="custom-control custom-checkbox">
-                  <input type="checkbox" className="custom-control-input" id="osm" checked={osmVisible} onChange={() => setOsmVisible(!osmVisible)}/>
+                  <input type="checkbox" className="custom-control-input" id="osm" checked={osmVisible} onChange={() => setOsmVisible(!osmVisible)} />
                   <label className="custom-control-label" htmlFor="osm">OpenStreetMap</label>
                 </div>
               </div>
@@ -314,7 +338,7 @@ export default function({ teamId, nodeLabel, nodeOutput, close }) {
                           }}
                         />
                         <label className="custom-control-label" htmlFor={`overlay-${overlay.id}`}>
-                          <div className="swatch" style={{backgroundColor: `#${overlay.colour}`}}/>
+                          <div className="swatch" style={{ backgroundColor: `#${overlay.colour}` }} />
                           &nbsp;
                           {overlay.name}
                         </label>
@@ -352,7 +376,7 @@ export default function({ teamId, nodeLabel, nodeOutput, close }) {
                           }}
                         />
                         <label className="custom-control-label" htmlFor={`label-${label.id}`}>
-                          <div className="swatch" style={{backgroundColor: `#${label.colour}`}}/>
+                          <div className="swatch" style={{ backgroundColor: `#${label.colour}` }} />
                           &nbsp;
                           {label.label}
                         </label>
@@ -373,11 +397,29 @@ export default function({ teamId, nodeLabel, nodeOutput, close }) {
             </a>
             <div id="sidebar-section-view-settings" className="collapse show">
               <div className="map__sidebar-section-content">
-                Opacity<br/>
-                <input type="range" className="custom-range" min="0" max="1" step="0.01" value={opacity} onChange={e => setOpacity(Number(e.target.value))}/>
+                Opacity<br />
+                <input type="range" className="custom-range" min="0" max="1" step="0.01" value={opacity} onChange={e => setOpacity(Number(e.target.value))} />
               </div>
             </div>
           </div>
+
+
+          <div className="map__sidebar-section">
+            <a className="map__sidebar-section-heading" data-toggle="collapse" href="#sidebar-section-legend-settings">
+              <i className="fas fa-caret-right accordion-toggle__indicator mr-2"></i>
+              <i className="fas fa-chart-bar fa-fw fa-lg align-middle"></i>
+              &nbsp;
+              Legend
+            </a>
+            <div id="sidebar-section-legend-settings" className="collapse show">
+              <div className="map__sidebar-section-content">
+                <div>
+                  {createMinMaxLegend(nodeOutput)}
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
