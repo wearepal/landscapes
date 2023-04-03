@@ -2,6 +2,12 @@ import { BaseComponent } from "./base_component"
 import { NodeData, WorkerInputs, WorkerOutputs } from 'rete/types/core/data'
 import { Node, Output } from 'rete'
 import { numericDataSocket } from "../socket_types"
+import { PreviewControl } from "../controls/preview"
+import { NumericTileGrid } from "../tile_grid"
+import GeoJSON from "ol/format/GeoJSON"
+import { createXYZ } from "ol/tilegrid"
+import { getArea } from "ol/extent"
+import { SelectControl } from "../controls/select"
 
 
 interface LayerProperty {
@@ -11,6 +17,10 @@ interface LayerProperty {
 }
 
 const geoServer = "https://geo.leep.exeter.ac.uk/geoserver/nevo/wfs?"
+const extent = [-20839.008676500813, 6579722.087031, 12889.487811, 6640614.986501137]
+const bbox = `${extent.join(",")},EPSG:3857`
+const zoom = 20
+
 
 export const LayerProperties: LayerProperty[] = [
     {
@@ -2017,14 +2027,113 @@ export class NevoLayerComponent extends BaseComponent {
 
         node.addOutput(new Output('out', 'Output', numericDataSocket))
 
-        //add select tool?
+        node.addControl(
+            new SelectControl(
+                this.editor,
+                'nevoLayerId',
+                () => LayerProperties,
+                () => [],
+                'Layer'
+            )
+        )
 
-
+        node.addControl(new PreviewControl(() =>
+            node.meta.output as any || new NumericTileGrid(0, 0, 0, 1, 1)
+        ))
 
     }
 
 
+
+    async retrieveLandCoverData(bbox: string): Promise<Object> {
+
+        const response = await fetch(
+            geoServer +
+            new URLSearchParams(
+                {
+                    outputFormat: 'application/json',
+                    request: 'GetFeature',
+                    typeName: 'nevo:explore_2km_rounded',
+                    srsName: 'EPSG:3857',
+                    bbox
+                }
+            )
+        )
+
+        if (!response.ok) throw new Error()
+
+        return await response.json()
+    }
+
+
     async worker(node: NodeData, inputs: WorkerInputs, outputs: WorkerOutputs, ...args: unknown[]) {
+
+        const editorNode = this.editor?.nodes.find(n => n.id === node.id)
+        if (editorNode === undefined) { return }
+
+        const json = await this.retrieveLandCoverData(bbox)
+
+        const features = new GeoJSON().readFeatures(json)
+        const tileGrid = createXYZ()
+
+        const outputTileRange = tileGrid.getTileRangeForExtentAndZ(extent, zoom)
+
+
+        const result = editorNode.meta.output = outputs['out'] = new NumericTileGrid(
+            zoom,
+            outputTileRange.minX,
+            outputTileRange.minY,
+            outputTileRange.getWidth(),
+            outputTileRange.getHeight()
+        )
+
+
+        let index = node.data.nevoLayerId as number
+        if (index === undefined) { index = 0 }
+
+        const code = LayerProperties[index].code
+
+
+        for (let feature of features) {
+
+            const val = feature.get(code)
+
+            const geom = feature.getGeometry()
+            if (geom === undefined) { continue }
+
+            const featureTileRange = tileGrid.getTileRangeForExtentAndZ(
+                geom.getExtent(),
+                zoom
+            )
+
+            const featureArea = getArea(geom.getExtent())
+
+            for (
+                let x = Math.max(featureTileRange.minX, outputTileRange.minX);
+                x <= Math.min(featureTileRange.maxX, outputTileRange.maxX);
+                ++x
+            ) {
+                for (
+                    let y = Math.max(featureTileRange.minY, outputTileRange.minY);
+                    y <= Math.min(featureTileRange.maxY, outputTileRange.maxY);
+                    ++y
+                ) {
+                    const tileExtent = tileGrid.getTileCoordExtent([zoom, x, y])
+                    if (geom.intersectsExtent(tileExtent)) {
+
+                        const tileArea = getArea(tileExtent)
+
+                        const factor = tileArea / featureArea
+
+                        result.set(x, y, val * factor)
+                    }
+                }
+            }
+        }
+
+        const previewControl: any = editorNode.controls.get('Preview')
+        previewControl.update()
+        editorNode.update()
 
     }
 }
