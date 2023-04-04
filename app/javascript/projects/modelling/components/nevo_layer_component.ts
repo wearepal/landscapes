@@ -8,6 +8,8 @@ import GeoJSON from "ol/format/GeoJSON"
 import { createXYZ } from "ol/tilegrid"
 import { getArea } from "ol/extent"
 import { SelectControl } from "../controls/select"
+import { Geometry } from "ol/geom"
+import { Feature } from "ol"
 
 
 interface LayerProperty {
@@ -21,6 +23,26 @@ const extent = [-20839.008676500813, 6579722.087031, 12889.487811, 6640614.98650
 const bbox = `${extent.join(",")},EPSG:3857`
 const zoom = 20
 
+
+async function retrieveLandCoverData(bbox: string): Promise<Object> {
+
+    const response = await fetch(
+        geoServer +
+        new URLSearchParams(
+            {
+                outputFormat: 'application/json',
+                request: 'GetFeature',
+                typeName: 'nevo:explore_2km_rounded',
+                srsName: 'EPSG:3857',
+                bbox
+            }
+        )
+    )
+
+    if (!response.ok) throw new Error()
+
+    return await response.json()
+}
 
 export const LayerProperties: LayerProperty[] = [
     {
@@ -2016,6 +2038,8 @@ export const LayerProperties: LayerProperty[] = [
 ]
 
 export class NevoLayerComponent extends BaseComponent {
+    nevoOutput: Feature<Geometry>[] | null
+    outputCache: Map<string, NumericTileGrid>
 
 
     constructor() {
@@ -2024,6 +2048,9 @@ export class NevoLayerComponent extends BaseComponent {
     }
 
     async builder(node: Node) {
+
+        this.nevoOutput = null
+        this.outputCache = new Map()
 
         node.addOutput(new Output('out', 'Output', numericDataSocket))
 
@@ -2043,49 +2070,21 @@ export class NevoLayerComponent extends BaseComponent {
 
     }
 
-
-
-    async retrieveLandCoverData(bbox: string): Promise<Object> {
-
-        const response = await fetch(
-            geoServer +
-            new URLSearchParams(
-                {
-                    outputFormat: 'application/json',
-                    request: 'GetFeature',
-                    typeName: 'nevo:explore_2km_rounded',
-                    srsName: 'EPSG:3857',
-                    bbox
-                }
-            )
-        )
-
-        if (!response.ok) throw new Error()
-
-        return await response.json()
-    }
-
-
     async worker(node: NodeData, inputs: WorkerInputs, outputs: WorkerOutputs, ...args: unknown[]) {
 
         const editorNode = this.editor?.nodes.find(n => n.id === node.id)
         if (editorNode === undefined) { return }
 
-        const json = await this.retrieveLandCoverData(bbox)
+        if (this.nevoOutput === null) {
+            const json = await retrieveLandCoverData(bbox)
+            this.nevoOutput = new GeoJSON().readFeatures(json)
+        }
 
-        const features = new GeoJSON().readFeatures(json)
+        const features = this.nevoOutput
+
         const tileGrid = createXYZ()
 
         const outputTileRange = tileGrid.getTileRangeForExtentAndZ(extent, zoom)
-
-
-        const result = editorNode.meta.output = outputs['out'] = new NumericTileGrid(
-            zoom,
-            outputTileRange.minX,
-            outputTileRange.minY,
-            outputTileRange.getWidth(),
-            outputTileRange.getHeight()
-        )
 
 
         let index = node.data.nevoLayerId as number
@@ -2093,43 +2092,62 @@ export class NevoLayerComponent extends BaseComponent {
 
         const code = LayerProperties[index].code
 
+        if (this.outputCache.has(code)) {
 
-        for (let feature of features) {
+            const result = editorNode.meta.output = outputs['out'] = this.outputCache.get(code)
 
-            const val = feature.get(code)
+        } else {
 
-            const geom = feature.getGeometry()
-            if (geom === undefined) { continue }
-
-            const featureTileRange = tileGrid.getTileRangeForExtentAndZ(
-                geom.getExtent(),
-                zoom
+            const result = editorNode.meta.output = outputs['out'] = new NumericTileGrid(
+                zoom,
+                outputTileRange.minX,
+                outputTileRange.minY,
+                outputTileRange.getWidth(),
+                outputTileRange.getHeight()
             )
 
-            const featureArea = getArea(geom.getExtent())
+            for (let feature of features) {
 
-            for (
-                let x = Math.max(featureTileRange.minX, outputTileRange.minX);
-                x <= Math.min(featureTileRange.maxX, outputTileRange.maxX);
-                ++x
-            ) {
+                const val = feature.get(code)
+
+                const geom = feature.getGeometry()
+                if (geom === undefined) { continue }
+
+                const featureTileRange = tileGrid.getTileRangeForExtentAndZ(
+                    geom.getExtent(),
+                    zoom
+                )
+
+                const featureArea = getArea(geom.getExtent())
+
                 for (
-                    let y = Math.max(featureTileRange.minY, outputTileRange.minY);
-                    y <= Math.min(featureTileRange.maxY, outputTileRange.maxY);
-                    ++y
+                    let x = Math.max(featureTileRange.minX, outputTileRange.minX);
+                    x <= Math.min(featureTileRange.maxX, outputTileRange.maxX);
+                    ++x
                 ) {
-                    const tileExtent = tileGrid.getTileCoordExtent([zoom, x, y])
-                    if (geom.intersectsExtent(tileExtent)) {
+                    for (
+                        let y = Math.max(featureTileRange.minY, outputTileRange.minY);
+                        y <= Math.min(featureTileRange.maxY, outputTileRange.maxY);
+                        ++y
+                    ) {
+                        const tileExtent = tileGrid.getTileCoordExtent([zoom, x, y])
+                        if (geom.intersectsExtent(tileExtent)) {
 
-                        const tileArea = getArea(tileExtent)
+                            const tileArea = getArea(tileExtent)
 
-                        const factor = tileArea / featureArea
+                            const factor = tileArea / featureArea
 
-                        result.set(x, y, val * factor)
+                            result.set(x, y, val * factor)
+                        }
                     }
                 }
             }
+
+            this.outputCache.set(code, result)
         }
+
+
+
 
         const previewControl: any = editorNode.controls.get('Preview')
         previewControl.update()
