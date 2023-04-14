@@ -7,6 +7,9 @@ import { SelectControl } from "../controls/select"
 import { PreviewControl } from "../controls/preview"
 import { Extent } from "ol/extent"
 import { createXYZ } from "ol/tilegrid"
+import * as proj4 from "proj4"
+import { Polygon } from "ol/geom"
+
 
 
 interface LandUseCategory {
@@ -15,49 +18,31 @@ interface LandUseCategory {
     id: number
 }
 
+interface OverpassCoord {
+    lat: number
+    lon: number
+}
+
+interface OverpassFeature {
+    type: string
+    id: number
+    bounds: object
+    tags: object
+    geometry: Array<OverpassCoord>
+}
+
 //ESPG:3857 bbox Crawley to Seaford
 const extent = [-20839.008676500813, 6579722.087031, 12889.487811, 6640614.986501137]
 
-//TODO place in another area as a helper function
-function ESPG3857to4326(originalExtent: Extent): Extent {
-
-    //https://stackoverflow.com/questions/37523872/converting-coordinates-from-epsg-3857-to-4326
-
-    const e = 2.7182818284
-    const X = 20037508.34
-
-    let newExtent = [0, 0, 0, 0]
-
-
-    for (let i = 0; i < originalExtent.length; i++) {
-
-        if (i % 2 == 0) {
-
-            //long
-            newExtent[i] = (originalExtent[i] * 180) / X
-
-        } else {
-
-            //Lat
-            newExtent[i] = originalExtent[i] / (X / 180)
-            const expon = (Math.PI / 180) * newExtent[i]
-
-            newExtent[i] = Math.atan(e ** expon)
-            newExtent[i] = (newExtent[i] / (Math.PI / 360)) - 90
-
-        }
-
-    }
-
-    return newExtent
-}
-
 async function retrieveLandUseData(extent: Extent, landuse: string): Promise<any> {
-    const extent_ESPG4326 = ESPG3857to4326(extent)
+
+    //const extent_ESPG4326 = ESPG3857to4326Extent(extent)
+
+    const [e0, e1] = [proj4.default('EPSG:3857', 'EPSG:4326', extent.slice(0, 2)), proj4.default('EPSG:3857', 'EPSG:4326', extent.slice(2, 4))]
 
     const query = `
         [out:json];
-        way(${extent_ESPG4326[1]}, ${extent_ESPG4326[0]}, ${extent_ESPG4326[3]}, ${extent_ESPG4326[2]})${landuse};
+        way(${e0[1]}, ${e0[0]}, ${e1[1]}, ${e1[0]})${landuse};
         out geom;
      `;
 
@@ -300,6 +285,8 @@ export class OSMLandUseComponent extends BaseComponent {
 
     async worker(node: NodeData, inputs: WorkerInputs, outputs: WorkerOutputs, ...args: unknown[]) {
 
+        const zoom = 20
+
 
         const editorNode = this.editor?.nodes.find(n => n.id === node.id)
         if (editorNode === undefined) { return }
@@ -312,11 +299,11 @@ export class OSMLandUseComponent extends BaseComponent {
 
         const json = await retrieveLandUseData(extent, code)
 
-        console.log(json)
+        const features = json.elements as Array<OverpassFeature>
 
         const tileGrid = createXYZ()
 
-        const outputTileRange = tileGrid.getTileRangeForExtentAndZ(extent, 20)
+        const outputTileRange = tileGrid.getTileRangeForExtentAndZ(extent, zoom)
 
 
         const result = editorNode.meta.output = outputs['out'] = new BooleanTileGrid(
@@ -328,6 +315,39 @@ export class OSMLandUseComponent extends BaseComponent {
         )
 
 
+        features.forEach((feature) => {
+
+            const geom = feature.geometry
+
+            const epsg3857_geometry = geom.map((e) => proj4.default('EPSG:4326', 'EPSG:3857', [e.lon, e.lat]))
+
+            const polygon = new Polygon([epsg3857_geometry])
+
+            const featureTileRange = tileGrid.getTileRangeForExtentAndZ(
+                polygon.getExtent(),
+                zoom
+            )
+
+            for (
+                let x = Math.max(featureTileRange.minX, outputTileRange.minX);
+                x <= Math.min(featureTileRange.maxX, outputTileRange.maxX);
+                ++x
+            ) {
+                for (
+                    let y = Math.max(featureTileRange.minY, outputTileRange.minY);
+                    y <= Math.min(featureTileRange.maxY, outputTileRange.maxY);
+                    ++y
+                ) {
+                    const tileExtent = tileGrid.getTileCoordExtent([zoom, x, y])
+                    if (polygon.intersectsExtent(tileExtent)) {
+
+                        result.set(x, y, true)
+                    }
+                }
+            }
+
+
+        })
 
         const previewControl: any = editorNode.controls.get('Preview')
         previewControl.update()
