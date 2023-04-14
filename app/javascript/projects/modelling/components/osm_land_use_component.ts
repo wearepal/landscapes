@@ -36,7 +36,6 @@ const extent = [-20839.008676500813, 6579722.087031, 12889.487811, 6640614.98650
 
 async function retrieveLandUseData(extent: Extent, landuse: string): Promise<any> {
 
-    //const extent_ESPG4326 = ESPG3857to4326Extent(extent)
 
     const [e0, e1] = [proj4.default('EPSG:3857', 'EPSG:4326', extent.slice(0, 2)), proj4.default('EPSG:3857', 'EPSG:4326', extent.slice(2, 4))]
 
@@ -307,7 +306,7 @@ export class OSMLandUseComponent extends BaseComponent {
 
 
         const result = editorNode.meta.output = outputs['out'] = new BooleanTileGrid(
-            20,
+            zoom,
             outputTileRange.minX,
             outputTileRange.minY,
             outputTileRange.getWidth(),
