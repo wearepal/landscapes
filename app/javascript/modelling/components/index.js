@@ -17,6 +17,7 @@ import { MaskLabellingComponent } from './MaskLabellingComponent'
 import { MaskNumericDataComponent } from './MaskNumericDataComponent'
 import { InputHabitatComponent } from './InputHabitatComponent'
 import { NevoLayerComponent } from './NevoLayerComponent'
+import { OSMLandUseComponent } from './OSMLandUseComponent'
 
 export function createDefaultComponents({ label_schemas, regions }) {
   return [
@@ -25,6 +26,7 @@ export function createDefaultComponents({ label_schemas, regions }) {
     new SplitLabellingLayerComponent(label_schemas),
     new InputOverlayComponent(regions),
     new InputHabitatComponent(),
+    new OSMLandUseComponent(),
     new NevoLayerComponent(),
     new BuildLabellingLayerComponent(label_schemas),
     new NumericConstantComponent(),

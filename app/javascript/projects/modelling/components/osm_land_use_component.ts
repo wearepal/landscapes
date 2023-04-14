@@ -2,7 +2,7 @@ import { BaseComponent } from "./base_component"
 import { NodeData, WorkerInputs, WorkerOutputs } from 'rete/types/core/data'
 import { Node, Output } from 'rete'
 import { BooleanTileGrid } from "../tile_grid"
-import { numericDataSocket } from "../socket_types"
+import { booleanDataSocket } from "../socket_types"
 import { SelectControl } from "../controls/select"
 import { PreviewControl } from "../controls/preview"
 import { Extent } from "ol/extent"
@@ -34,7 +34,7 @@ interface OverpassFeature {
 //ESPG:3857 bbox Crawley to Seaford
 const extent = [-20839.008676500813, 6579722.087031, 12889.487811, 6640614.986501137]
 
-async function retrieveLandUseData(extent: Extent, landuse: string): Promise<any> {
+export async function retrieveLandUseData(extent: Extent, landuse: string): Promise<any> {
 
 
     const [e0, e1] = [proj4.default('EPSG:3857', 'EPSG:4326', extent.slice(0, 2)), proj4.default('EPSG:3857', 'EPSG:4326', extent.slice(2, 4))]
@@ -265,7 +265,7 @@ export class OSMLandUseComponent extends BaseComponent {
         this.osmOutput = null
         this.outputCache = new Map()
 
-        node.addOutput(new Output('out', 'Output', numericDataSocket))
+        node.addOutput(new Output('out', 'Output', booleanDataSocket))
 
         node.addControl(
             new SelectControl(
@@ -286,7 +286,6 @@ export class OSMLandUseComponent extends BaseComponent {
 
         const zoom = 20
 
-
         const editorNode = this.editor?.nodes.find(n => n.id === node.id)
         if (editorNode === undefined) { return }
 
@@ -296,57 +295,63 @@ export class OSMLandUseComponent extends BaseComponent {
 
         const code = LandUseCategories[index].code
 
-        const json = await retrieveLandUseData(extent, code)
+        if (this.outputCache.has(code)) {
+            const result = editorNode.meta.output = outputs['out'] = this.outputCache.get(code)
+        } else {
 
-        const features = json.elements as Array<OverpassFeature>
+            const json = await retrieveLandUseData(extent, code)
 
-        const tileGrid = createXYZ()
+            const features = json.elements as Array<OverpassFeature>
 
-        const outputTileRange = tileGrid.getTileRangeForExtentAndZ(extent, zoom)
+            const tileGrid = createXYZ()
 
+            const outputTileRange = tileGrid.getTileRangeForExtentAndZ(extent, zoom)
 
-        const result = editorNode.meta.output = outputs['out'] = new BooleanTileGrid(
-            zoom,
-            outputTileRange.minX,
-            outputTileRange.minY,
-            outputTileRange.getWidth(),
-            outputTileRange.getHeight()
-        )
-
-
-        features.forEach((feature) => {
-
-            const geom = feature.geometry
-
-            const epsg3857_geometry = geom.map((e) => proj4.default('EPSG:4326', 'EPSG:3857', [e.lon, e.lat]))
-
-            const polygon = new Polygon([epsg3857_geometry])
-
-            const featureTileRange = tileGrid.getTileRangeForExtentAndZ(
-                polygon.getExtent(),
-                zoom
+            const result = editorNode.meta.output = outputs['out'] = new BooleanTileGrid(
+                zoom,
+                outputTileRange.minX,
+                outputTileRange.minY,
+                outputTileRange.getWidth(),
+                outputTileRange.getHeight()
             )
 
-            for (
-                let x = Math.max(featureTileRange.minX, outputTileRange.minX);
-                x <= Math.min(featureTileRange.maxX, outputTileRange.maxX);
-                ++x
-            ) {
-                for (
-                    let y = Math.max(featureTileRange.minY, outputTileRange.minY);
-                    y <= Math.min(featureTileRange.maxY, outputTileRange.maxY);
-                    ++y
-                ) {
-                    const tileExtent = tileGrid.getTileCoordExtent([zoom, x, y])
-                    if (polygon.intersectsExtent(tileExtent)) {
+            features.forEach((feature) => {
 
-                        result.set(x, y, true)
+                const geom = feature.geometry
+
+                const epsg3857_geometry = geom.map((e) => proj4.default('EPSG:4326', 'EPSG:3857', [e.lon, e.lat]))
+
+                const polygon = new Polygon([epsg3857_geometry])
+
+                const featureTileRange = tileGrid.getTileRangeForExtentAndZ(
+                    polygon.getExtent(),
+                    zoom
+                )
+
+                for (
+                    let x = Math.max(featureTileRange.minX, outputTileRange.minX);
+                    x <= Math.min(featureTileRange.maxX, outputTileRange.maxX);
+                    ++x
+                ) {
+                    for (
+                        let y = Math.max(featureTileRange.minY, outputTileRange.minY);
+                        y <= Math.min(featureTileRange.maxY, outputTileRange.maxY);
+                        ++y
+                    ) {
+                        const tileExtent = tileGrid.getTileCoordExtent([zoom, x, y])
+                        if (polygon.intersectsExtent(tileExtent)) {
+
+                            result.set(x, y, true)
+                        }
                     }
                 }
-            }
 
 
-        })
+            })
+
+            this.outputCache.set(code, result)
+        }
+
 
         const previewControl: any = editorNode.controls.get('Preview')
         previewControl.update()
