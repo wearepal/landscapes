@@ -10,6 +10,7 @@ import { MaskNumericDataComponent } from "./mask_numeric_data_component"
 import { NumberToNumericDatasetComponent } from "./number_to_numeric_dataset_component"
 import { NevoLayerComponent } from "./nevo_layer_component"
 import { OSMLandUseComponent } from "./osm_land_use_component"
+import { DigitalModelComponent } from "./digital_model_component"
 
 export function createDefaultComponents(saveMapLayer: SaveMapLayer): BaseComponent[] {
   return [
@@ -18,6 +19,7 @@ export function createDefaultComponents(saveMapLayer: SaveMapLayer): BaseCompone
     new NevoLayerComponent(),
     new OSMLandUseComponent(),
     new NumericConstantComponent(),
+    new DigitalModelComponent(),
 
     // Outputs
     new MapLayerComponent(saveMapLayer),
