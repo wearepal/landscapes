@@ -5,6 +5,7 @@ import DataTileSource from "ol/source/DataTile"
 import { ModelOutputCache } from "../map_view"
 import { BooleanTileGrid, NumericTileGrid } from "../modelling/tile_grid"
 import { ModelOutputLayer } from "../state"
+import Heatmap from 'ol/layer/Heatmap'
 
 class ModelOutputSource extends DataTileSource {
   readonly tileLayer: BooleanTileGrid | NumericTileGrid
@@ -33,12 +34,14 @@ class ModelOutputSource extends DataTileSource {
   }
 }
 
+
 export function reifyModelOutputLayer(layer: ModelOutputLayer, existingLayer: BaseLayer | null, modelOutputCache: ModelOutputCache) {
   if (!(layer.nodeId in modelOutputCache)) {
     return new TileLayer()
   }
 
   const tileLayer = modelOutputCache[layer.nodeId]
+
 
   if (existingLayer instanceof WebGLTileLayer) {
     const source = existingLayer.getSource()
@@ -47,16 +50,30 @@ export function reifyModelOutputLayer(layer: ModelOutputLayer, existingLayer: Ba
     }
   }
 
+  let color: any[] = []
+
+  if (layer.fill === "heatmap") {
+    color = [
+      'array',
+      ['band', 1],
+      ['band', 0],
+      ['band', 1],
+      1
+    ]
+  } else {
+    color = [
+      'array',
+      ['band', 1],
+      ['band', 1],
+      ['band', 1],
+      1
+    ]
+  }
+
   return new WebGLTileLayer({
     source: new ModelOutputSource(tileLayer),
     style: {
-      color: [ // TODO: add heatmap rendering option
-        'array',
-        ['band', 1],
-        ['band', 1],
-        ['band', 1],
-        1
-      ],
+      color,
     },
   })
 }

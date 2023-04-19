@@ -38,6 +38,7 @@ export interface CehLandCoverLayer extends BaseLayer {
 export interface ModelOutputLayer extends BaseLayer {
   type: "ModelOutputLayer"
   nodeId: number
+  fill: "greyscale" | "heatmap"
 }
 
 export type Layer = OsmLayer | MapTileLayer | OverlayLayer | NevoLayer | CehLandCoverLayer | ModelOutputLayer
