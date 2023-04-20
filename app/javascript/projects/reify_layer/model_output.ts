@@ -35,14 +35,14 @@ class ModelOutputSource extends DataTileSource {
 }
 
 function getColorStops(name: string, steps: number): any[] {
-  const delta = (0 - 1) / (steps - 1);
-  const stops = new Array(steps * 2);
+  const delta = (0 - 1) / (steps - 1)
+  const stops = new Array(steps * 2)
   const colors = colormap({ colormap: name, nshades: steps, format: 'rgba' }).reverse()
   for (let i = 0; i < steps; i++) {
-    stops[i * 2] = 1 + i * delta;
-    stops[i * 2 + 1] = colors[i];
+    stops[i * 2] = 1 + i * delta
+    stops[i * 2 + 1] = colors[i]
   }
-  return stops;
+  return stops
 }
 
 const styleOutputCache: Map<number, string> = new Map()
