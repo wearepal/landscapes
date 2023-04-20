@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { ReactSortable } from 'react-sortablejs'
 import { nevoLevelNames, nevoPropertyNames } from './nevo'
-import { Layer, NevoLayer, OverlayLayer, State } from './state'
+import { Layer, ModelOutputLayer, NevoLayer, OverlayLayer, State } from './state'
 import { iconForLayerType } from "./util"
 
 interface OverlayLayerSettingsProps {
@@ -18,7 +18,7 @@ const OverlayLayerSettings = ({ layer, mutate }: OverlayLayerSettingsProps) => (
         max="10"
         step="1"
         className="custom-range ml-3"
-        value={layer.strokeWidth} 
+        value={layer.strokeWidth}
         onChange={e => mutate({ strokeWidth: Number(e.target.value) })}
       />
     </div>
@@ -30,7 +30,7 @@ const OverlayLayerSettings = ({ layer, mutate }: OverlayLayerSettingsProps) => (
         max="1"
         step="0.1"
         className="custom-range ml-3"
-        value={layer.fillOpacity} 
+        value={layer.fillOpacity}
         onChange={e => mutate({ fillOpacity: Number(e.target.value) })}
       />
     </div>
@@ -79,30 +79,57 @@ const CehLandCoverLayerSettings = () => (
   <>
     <details className="mt-3">
       <summary>Legend</summary>
-      <span className="swatch" style={{backgroundColor: "rgb(255, 0, 0)"}}/> Broadleaved woodland<br/>
-      <span className="swatch" style={{backgroundColor: "rgb(0, 102, 0)"}}/> Coniferous woodland<br/>
-      <span className="swatch" style={{backgroundColor: "rgb(115, 38, 0)"}}/> Arable and horticulture<br/>
-      <span className="swatch" style={{backgroundColor: "rgb(0, 255, 0)"}}/> Improved grassland<br/>
-      <span className="swatch" style={{backgroundColor: "rgb(127, 229, 127)"}}/> Neutral grassland<br/>
-      <span className="swatch" style={{backgroundColor: "rgb(112, 168, 0)"}}/> Calcareous grassland<br/>
-      <span className="swatch" style={{backgroundColor: "rgb(153, 129, 0)"}}/> Acid grassland<br/>
-      <span className="swatch" style={{backgroundColor: "rgb(255, 255, 0)"}}/> Fen, marsh and swamp<br/>
-      <span className="swatch" style={{backgroundColor: "rgb(128, 26, 128)"}}/> Heather<br/>
-      <span className="swatch" style={{backgroundColor: "rgb(230, 140, 166)"}}/> Heather grassland<br/>
-      <span className="swatch" style={{backgroundColor: "rgb(0, 128, 115)"}}/> Bog<br/>
-      <span className="swatch" style={{backgroundColor: "rgb(210, 210, 255)"}}/> Inland rock<br/>
-      <span className="swatch" style={{backgroundColor: "rgb(0, 0, 128)"}}/> Saltwater<br/>
-      <span className="swatch" style={{backgroundColor: "rgb(0, 0, 255)"}}/> Freshwater<br/>
-      <span className="swatch" style={{backgroundColor: "rgb(204, 179, 0)"}}/> Supralittoral rock<br/>
-      <span className="swatch" style={{backgroundColor: "rgb(204, 179, 0)"}}/> Supralittoral sediment<br/>
-      <span className="swatch" style={{backgroundColor: "rgb(255, 255, 128)"}}/> Littoral rock<br/>
-      <span className="swatch" style={{backgroundColor: "rgb(255, 255, 128)"}}/> Littoral sediment<br/>
-      <span className="swatch" style={{backgroundColor: "rgb(128, 128, 255)"}}/> Saltmarsh<br/>
-      <span className="swatch" style={{backgroundColor: "rgb(0, 0, 0)"}}/> Urban<br/>
-      <span className="swatch" style={{backgroundColor: "rgb(128, 128, 128)"}}/> Suburban
+      <span className="swatch" style={{ backgroundColor: "rgb(255, 0, 0)" }} /> Broadleaved woodland<br />
+      <span className="swatch" style={{ backgroundColor: "rgb(0, 102, 0)" }} /> Coniferous woodland<br />
+      <span className="swatch" style={{ backgroundColor: "rgb(115, 38, 0)" }} /> Arable and horticulture<br />
+      <span className="swatch" style={{ backgroundColor: "rgb(0, 255, 0)" }} /> Improved grassland<br />
+      <span className="swatch" style={{ backgroundColor: "rgb(127, 229, 127)" }} /> Neutral grassland<br />
+      <span className="swatch" style={{ backgroundColor: "rgb(112, 168, 0)" }} /> Calcareous grassland<br />
+      <span className="swatch" style={{ backgroundColor: "rgb(153, 129, 0)" }} /> Acid grassland<br />
+      <span className="swatch" style={{ backgroundColor: "rgb(255, 255, 0)" }} /> Fen, marsh and swamp<br />
+      <span className="swatch" style={{ backgroundColor: "rgb(128, 26, 128)" }} /> Heather<br />
+      <span className="swatch" style={{ backgroundColor: "rgb(230, 140, 166)" }} /> Heather grassland<br />
+      <span className="swatch" style={{ backgroundColor: "rgb(0, 128, 115)" }} /> Bog<br />
+      <span className="swatch" style={{ backgroundColor: "rgb(210, 210, 255)" }} /> Inland rock<br />
+      <span className="swatch" style={{ backgroundColor: "rgb(0, 0, 128)" }} /> Saltwater<br />
+      <span className="swatch" style={{ backgroundColor: "rgb(0, 0, 255)" }} /> Freshwater<br />
+      <span className="swatch" style={{ backgroundColor: "rgb(204, 179, 0)" }} /> Supralittoral rock<br />
+      <span className="swatch" style={{ backgroundColor: "rgb(204, 179, 0)" }} /> Supralittoral sediment<br />
+      <span className="swatch" style={{ backgroundColor: "rgb(255, 255, 128)" }} /> Littoral rock<br />
+      <span className="swatch" style={{ backgroundColor: "rgb(255, 255, 128)" }} /> Littoral sediment<br />
+      <span className="swatch" style={{ backgroundColor: "rgb(128, 128, 255)" }} /> Saltmarsh<br />
+      <span className="swatch" style={{ backgroundColor: "rgb(0, 0, 0)" }} /> Urban<br />
+      <span className="swatch" style={{ backgroundColor: "rgb(128, 128, 128)" }} /> Suburban
     </details>
   </>
 )
+
+interface ModelOutputLayerSettingsProps {
+  layer: ModelOutputLayer
+  mutate: (data: any) => void
+}
+
+const ModelOutputLayerSettings = ({ layer, mutate }: ModelOutputLayerSettingsProps) => (
+  <div className="d-flex align-items-center mt-3">
+    Fill mode
+    <select className="custom-select ml-3" value={layer.fill} onChange={e => mutate({ fill: e.target.value })}>
+      <option value="greyscale">Greyscale</option>
+      <option value="heatmap">Heatmap</option>
+    </select>
+  </div>
+)
+
+
+interface ModelOutputLayerLegendProps {
+  layer: ModelOutputLayer
+  mutate: (data: any) => void
+}
+
+const ModelOutputLayerLegend = ({ layer, mutate }: ModelOutputLayerLegendProps) => (
+  <div className="d-flex align-items-center mt-3">
+  </div>
+)
+
 
 interface SidebarProps {
   state: State
@@ -118,8 +145,8 @@ export const Sidebar = ({ state, selectLayer, mutateLayer, deleteLayer, setLayer
   return <div className="d-flex flex-column" style={{ width: "300px" }}>
     <div className="px-3 py-2 border-top border-bottom d-flex align-items-center bg-light">
       <div className="flex-grow-1">Layers</div>
-      <i className="ml-2 fas fa-plus fa-fw" style={{ cursor: "pointer" }} onClick={showLayerPalette}/>
-      <i className="ml-2 fas fa-angle-double-right" style={{ cursor: "pointer" }} onClick={hide}/>
+      <i className="ml-2 fas fa-plus fa-fw" style={{ cursor: "pointer" }} onClick={showLayerPalette} />
+      <i className="ml-2 fas fa-angle-double-right" style={{ cursor: "pointer" }} onClick={hide} />
     </div>
     <div
       className="flex-grow-1 bg-white"
@@ -128,7 +155,7 @@ export const Sidebar = ({ state, selectLayer, mutateLayer, deleteLayer, setLayer
     >
       <ReactSortable
         list={Array.from(state.project.allLayers).reverse().map(id => ({ id }))}
-        setList={(list: {id: number}[]) => { setLayerOrder(list.map(item => item.id).reverse()) }}
+        setList={(list: { id: number }[]) => { setLayerOrder(list.map(item => item.id).reverse()) }}
       >
         {
           Array.from(state.project.allLayers).reverse().map(id =>
@@ -141,9 +168,9 @@ export const Sidebar = ({ state, selectLayer, mutateLayer, deleteLayer, setLayer
                 selectLayer(id === state.selectedLayer ? undefined : id)
               }}
             >
-              <div><i className={`fas fa-fw ${iconForLayerType(state.project.layers[id].type)}`}/></div>
+              <div><i className={`fas fa-fw ${iconForLayerType(state.project.layers[id].type)}`} /></div>
               <span className="ml-2 mr-3 flex-grow-1" style={{ overflowX: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                { state.project.layers[id].name }
+                {state.project.layers[id].name}
               </span>
               <span
                 onClick={(e) => {
@@ -153,8 +180,8 @@ export const Sidebar = ({ state, selectLayer, mutateLayer, deleteLayer, setLayer
               >
                 {
                   state.project.layers[id].visible ?
-                    <i className="fas fa-fw fa-eye"/> :
-                    <i className="fas fa-fw fa-eye-slash"/>
+                    <i className="fas fa-fw fa-eye" /> :
+                    <i className="fas fa-fw fa-eye-slash" />
                 }
               </span>
             </div>
@@ -162,6 +189,22 @@ export const Sidebar = ({ state, selectLayer, mutateLayer, deleteLayer, setLayer
         }
       </ReactSortable>
     </div>
+    {/*
+      selectedLayer?.type == "ModelOutputLayer" && 
+      (
+        <div className="px-3 py-2 border-top border-bottom bg-light">Layer legend</div>
+      )
+    */}
+    {/*
+      selectedLayer?.type == "ModelOutputLayer" &&
+      <ModelOutputLayerLegend
+        layer={selectedLayer}
+        mutate={
+          data => state.selectedLayer !== undefined &&
+            mutateLayer(state.selectedLayer, data)
+        }
+      />
+    */}
     <div className="px-3 py-2 border-top border-bottom bg-light">Layer settings</div>
     <div className="p-3 bg-white text-nowrap" style={{ maxHeight: "50vh", overflowY: "auto" }}>
       {
@@ -174,7 +217,7 @@ export const Sidebar = ({ state, selectLayer, mutateLayer, deleteLayer, setLayer
               value={selectedLayer.name}
               onChange={
                 e => state.selectedLayer !== undefined &&
-                mutateLayer(state.selectedLayer, { name: e.target.value })
+                  mutateLayer(state.selectedLayer, { name: e.target.value })
               }
             />
             <div className="d-flex align-items-center mt-3">
@@ -185,10 +228,10 @@ export const Sidebar = ({ state, selectLayer, mutateLayer, deleteLayer, setLayer
                 max="1"
                 step="0.1"
                 className="custom-range ml-3"
-                value={selectedLayer.opacity} 
+                value={selectedLayer.opacity}
                 onChange={
                   e => state.selectedLayer !== undefined &&
-                  mutateLayer(state.selectedLayer, { opacity: Number(e.target.value) })
+                    mutateLayer(state.selectedLayer, { opacity: Number(e.target.value) })
                 }
               />
             </div>
@@ -198,7 +241,7 @@ export const Sidebar = ({ state, selectLayer, mutateLayer, deleteLayer, setLayer
                 layer={selectedLayer}
                 mutate={
                   data => state.selectedLayer !== undefined &&
-                  mutateLayer(state.selectedLayer, data)
+                    mutateLayer(state.selectedLayer, data)
                 }
               />
             }
@@ -208,13 +251,23 @@ export const Sidebar = ({ state, selectLayer, mutateLayer, deleteLayer, setLayer
                 layer={selectedLayer}
                 mutate={
                   data => state.selectedLayer !== undefined &&
-                  mutateLayer(state.selectedLayer, data)
+                    mutateLayer(state.selectedLayer, data)
+                }
+              />
+            }
+            {
+              selectedLayer?.type == "ModelOutputLayer" &&
+              <ModelOutputLayerSettings
+                layer={selectedLayer}
+                mutate={
+                  data => state.selectedLayer !== undefined &&
+                    mutateLayer(state.selectedLayer, data)
                 }
               />
             }
             {
               selectedLayer?.type == "CehLandCoverLayer" &&
-              <CehLandCoverLayerSettings/>
+              <CehLandCoverLayerSettings />
             }
           </> :
           <em>No layer selected</em>
@@ -225,7 +278,7 @@ export const Sidebar = ({ state, selectLayer, mutateLayer, deleteLayer, setLayer
       className="btn btn-outline-danger rounded-0 border-left-0 border-right-0 border-bottom-0"
       onClick={
         () => state.selectedLayer !== undefined &&
-        deleteLayer(state.selectedLayer)
+          deleteLayer(state.selectedLayer)
       }
       title={
         state.selectedLayer !== undefined && state.project.layers[state.selectedLayer].type === "ModelOutputLayer" ?
@@ -243,7 +296,7 @@ interface CollapsedSidebarProps {
 export const CollapsedSidebar = ({ show }: CollapsedSidebarProps) => (
   <div className="bg-light">
     <div className="px-3 py-2 border-top border-bottom">
-      <i className="fas fa-angle-double-left" style={{ cursor: "pointer" }} onClick={show}/>
+      <i className="fas fa-angle-double-left" style={{ cursor: "pointer" }} onClick={show} />
     </div>
   </div>
 )

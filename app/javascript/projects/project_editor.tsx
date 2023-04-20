@@ -67,7 +67,7 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
         isProcessing={isProcessing}
       />
       <div className="flex-grow-1 d-flex">
-        { currentTab == Tab.MapView && <>
+        {currentTab == Tab.MapView && <>
           <MapView
             layers={state.project.allLayers.map(id => state.project.layers[id])}
             dbModels={dbModels}
@@ -87,7 +87,7 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
           }
           {
             sidebarVisible
-            ? <Sidebar
+              ? <Sidebar
                 state={state}
                 selectLayer={id => dispatch({ type: "SelectLayer", id })}
                 mutateLayer={(id, data) => dispatch({ type: "MutateLayer", id, data })}
@@ -96,7 +96,7 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
                 showLayerPalette={() => setLayerPaletteVisible(true)}
                 hide={() => setSidebarVisible(false)}
               />
-            : <CollapsedSidebar show={() => setSidebarVisible(true)}/>
+              : <CollapsedSidebar show={() => setSidebarVisible(true)} />
           }
         </>}
         <ModelView
@@ -112,7 +112,8 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
               visible: true,
               opacity: 1,
               type: "ModelOutputLayer",
-              nodeId
+              nodeId,
+              fill: "greyscale"
             }
           })}
           deleteOutputLayer={(nodeId: number) =>
