@@ -113,8 +113,8 @@ const ModelOutputLayerSettings = ({ layer, mutate }: ModelOutputLayerSettingsPro
   <div className="d-flex align-items-center mt-3">
     Fill mode
     <select className="custom-select ml-3" value={layer.fill} onChange={e => mutate({ fill: e.target.value })}>
-      <option value="heatmap">Heatmap</option>
       <option value="greyscale">Greyscale</option>
+      <option value="heatmap">Heatmap</option>
     </select>
   </div>
 )
@@ -189,13 +189,13 @@ export const Sidebar = ({ state, selectLayer, mutateLayer, deleteLayer, setLayer
         }
       </ReactSortable>
     </div>
-    {
-      selectedLayer?.type == "ModelOutputLayer" &&
+    {/*
+      selectedLayer?.type == "ModelOutputLayer" && 
       (
         <div className="px-3 py-2 border-top border-bottom bg-light">Layer legend</div>
       )
-    }
-    {
+    */}
+    {/*
       selectedLayer?.type == "ModelOutputLayer" &&
       <ModelOutputLayerLegend
         layer={selectedLayer}
@@ -204,7 +204,7 @@ export const Sidebar = ({ state, selectLayer, mutateLayer, deleteLayer, setLayer
             mutateLayer(state.selectedLayer, data)
         }
       />
-    }
+    */}
     <div className="px-3 py-2 border-top border-bottom bg-light">Layer settings</div>
     <div className="p-3 bg-white text-nowrap" style={{ maxHeight: "50vh", overflowY: "auto" }}>
       {

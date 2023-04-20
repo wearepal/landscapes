@@ -5,7 +5,7 @@ import DataTileSource from "ol/source/DataTile"
 import { ModelOutputCache } from "../map_view"
 import { BooleanTileGrid, NumericTileGrid } from "../modelling/tile_grid"
 import { ModelOutputLayer } from "../state"
-import Heatmap from 'ol/layer/Heatmap'
+import colormap from "colormap"
 
 class ModelOutputSource extends DataTileSource {
   readonly tileLayer: BooleanTileGrid | NumericTileGrid
@@ -34,6 +34,18 @@ class ModelOutputSource extends DataTileSource {
   }
 }
 
+function getColorStops(name: string, steps: number): any[] {
+  const delta = (0 - 1) / (steps - 1);
+  const stops = new Array(steps * 2);
+  const colors = colormap({ colormap: name, nshades: steps, format: 'rgba' }).reverse()
+  for (let i = 0; i < steps; i++) {
+    stops[i * 2] = 1 + i * delta;
+    stops[i * 2 + 1] = colors[i];
+  }
+  return stops;
+}
+
+const styleOutputCache: Map<number, string> = new Map()
 
 export function reifyModelOutputLayer(layer: ModelOutputLayer, existingLayer: BaseLayer | null, modelOutputCache: ModelOutputCache) {
   if (!(layer.nodeId in modelOutputCache)) {
@@ -45,20 +57,22 @@ export function reifyModelOutputLayer(layer: ModelOutputLayer, existingLayer: Ba
 
   if (existingLayer instanceof WebGLTileLayer) {
     const source = existingLayer.getSource()
-    if (source instanceof ModelOutputSource && source.tileLayer === tileLayer) {
+
+    if (source instanceof ModelOutputSource && source.tileLayer === tileLayer && styleOutputCache.get(layer.nodeId) === layer.fill) {
       return existingLayer
     }
   }
+
+  styleOutputCache.set(layer.nodeId, layer.fill)
 
   let color: any[] = []
 
   if (layer.fill === "heatmap") {
     color = [
-      'array',
+      'interpolate',
+      ['linear'],
       ['band', 1],
-      ['band', 0],
-      ['band', 1],
-      1
+      ...getColorStops('jet', 11)
     ]
   } else {
     color = [
