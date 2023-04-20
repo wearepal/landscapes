@@ -7,7 +7,7 @@ interface SelectControlProps {
     getId: () => string | undefined
     setId: (x: string) => {}
     getOptions: () => Array<SelectControlOptions>
-    change: () => {}
+    change: () => void
     label: string | undefined
 }
 
@@ -55,7 +55,7 @@ export class SelectControl extends Control {
     props: SelectControlProps
     component: (props: SelectControlProps) => JSX.Element
 
-    constructor(emitter: Emitter<EventsTypes> | null, key: string, getOptions: () => Array<SelectControlOptions>, change: () => {}, label: string | undefined = undefined) {
+    constructor(emitter: Emitter<EventsTypes> | null, key: string, getOptions: () => Array<SelectControlOptions>, change: () => void, label: string | undefined = undefined) {
         super(key)
 
         this.props = {

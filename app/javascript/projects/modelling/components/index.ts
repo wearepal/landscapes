@@ -11,6 +11,7 @@ import { NumberToNumericDatasetComponent } from "./number_to_numeric_dataset_com
 import { NevoLayerComponent } from "./nevo_layer_component"
 import { OSMLandUseComponent } from "./osm_land_use_component"
 import { DigitalModelComponent } from "./digital_model_component"
+import { ExpressionComponent } from "./expression_component"
 
 export function createDefaultComponents(saveMapLayer: SaveMapLayer): BaseComponent[] {
   return [
@@ -36,6 +37,7 @@ export function createDefaultComponents(saveMapLayer: SaveMapLayer): BaseCompone
 
     // Arithmetic
     new MaskNumericDataComponent(),
+    new ExpressionComponent(),
     new VariadicOpComponent('Sum', '∑', numericDataSocket, numericDataSocket, 'Arithmetic'),
     new VariadicOpComponent('Product', '∏', numericDataSocket, numericDataSocket, 'Arithmetic'),
     new BinaryOpComponent('Add', '+', numericDataSocket, numericDataSocket, 'Arithmetic'),
