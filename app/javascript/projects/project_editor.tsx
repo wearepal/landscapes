@@ -9,6 +9,7 @@ import { reduce } from './reducer'
 import { CollapsedSidebar, Sidebar } from './sidebar'
 import { defaultProject, Project } from './state'
 import { Toolbar } from './toolbar'
+import { NumericTileGrid } from './modelling/tile_grid'
 
 export enum Tab {
   MapView,
@@ -95,6 +96,17 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
                 setLayerOrder={order => dispatch({ type: "SetLayerOrder", order })}
                 showLayerPalette={() => setLayerPaletteVisible(true)}
                 hide={() => setSidebarVisible(false)}
+                getLayerData={id => {
+
+                  //TODO - this is a little messy, refactor soon.
+
+                  const m = modelOutputCache[id]
+                  if (!m) {
+                    return [0, 0]
+                  }
+                  const [min, max] = m instanceof NumericTileGrid ? m.getMinMax() : [0, 1]
+                  return [min, max]
+                }}
               />
               : <CollapsedSidebar show={() => setSidebarVisible(true)} />
           }

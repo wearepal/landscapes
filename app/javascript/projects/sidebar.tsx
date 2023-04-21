@@ -1,8 +1,10 @@
 import * as React from 'react'
+import './sidebar.css'
 import { ReactSortable } from 'react-sortablejs'
 import { nevoLevelNames, nevoPropertyNames } from './nevo'
 import { Layer, ModelOutputLayer, NevoLayer, OverlayLayer, State } from './state'
 import { iconForLayerType } from "./util"
+import { getColorStops } from './reify_layer/model_output'
 
 interface OverlayLayerSettingsProps {
   layer: OverlayLayer
@@ -122,14 +124,45 @@ const ModelOutputLayerSettings = ({ layer, mutate }: ModelOutputLayerSettingsPro
 
 interface ModelOutputLayerLegendProps {
   layer: ModelOutputLayer
-  mutate: (data: any) => void
+  getLayerData: (id: number) => number[]
 }
 
-const ModelOutputLayerLegend = ({ layer, mutate }: ModelOutputLayerLegendProps) => (
-  <div className="d-flex align-items-center mt-3">
-  </div>
-)
+function ColorBar({ colors, minValue, maxValue }) {
 
+  const mean = ((maxValue - minValue) / 2)
+
+  return (
+    <div className="color-bar-container">
+      <div className="color-bar">
+        {colors.map((color) => (
+          <div
+            key={color.join(",")}
+            style={{ backgroundColor: `rgb(${color.join(",")})` }}
+            className="color-bar-item"
+          />
+        ))}
+      </div>
+      <div className="color-bar-legend">
+        <div title={minValue.toString()} >{minValue.toFixed(3)}</div>
+        <div title={mean.toString()} >{mean.toFixed(3)}</div>
+        <div title={maxValue.toString()} >{maxValue.toFixed(3)}</div>
+      </div>
+    </div>
+  );
+}
+
+function ModelOutputLayerLegend({ layer, getLayerData }: ModelOutputLayerLegendProps) {
+
+  const vals = getLayerData(layer.nodeId)
+
+  const colors = getColorStops((layer.fill == "greyscale" ? "greys" : "jet"), 50).filter(c => typeof c !== "number").reverse()
+
+  return (
+    <div>
+      <ColorBar colors={colors} minValue={vals[0]} maxValue={vals[1]} />
+    </div>
+  )
+}
 
 interface SidebarProps {
   state: State
@@ -139,8 +172,10 @@ interface SidebarProps {
   setLayerOrder: (ids: number[]) => void
   showLayerPalette: () => void
   hide: () => void
+  getLayerData: (id: number) => number[]
 }
-export const Sidebar = ({ state, selectLayer, mutateLayer, deleteLayer, setLayerOrder, showLayerPalette, hide }: SidebarProps) => {
+
+export const Sidebar = ({ state, selectLayer, mutateLayer, deleteLayer, setLayerOrder, showLayerPalette, hide, getLayerData }: SidebarProps) => {
   const selectedLayer = state.selectedLayer === undefined ? null : state.project.layers[state.selectedLayer]
   return <div className="d-flex flex-column" style={{ width: "300px" }}>
     <div className="px-3 py-2 border-top border-bottom d-flex align-items-center bg-light">
@@ -189,22 +224,19 @@ export const Sidebar = ({ state, selectLayer, mutateLayer, deleteLayer, setLayer
         }
       </ReactSortable>
     </div>
-    {/*
-      selectedLayer?.type == "ModelOutputLayer" && 
+    {
+      selectedLayer?.type == "ModelOutputLayer" &&
       (
         <div className="px-3 py-2 border-top border-bottom bg-light">Layer legend</div>
       )
-    */}
-    {/*
+    }
+    {
       selectedLayer?.type == "ModelOutputLayer" &&
       <ModelOutputLayerLegend
         layer={selectedLayer}
-        mutate={
-          data => state.selectedLayer !== undefined &&
-            mutateLayer(state.selectedLayer, data)
-        }
+        getLayerData={getLayerData}
       />
-    */}
+    }
     <div className="px-3 py-2 border-top border-bottom bg-light">Layer settings</div>
     <div className="p-3 bg-white text-nowrap" style={{ maxHeight: "50vh", overflowY: "auto" }}>
       {

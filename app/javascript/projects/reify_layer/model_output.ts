@@ -34,15 +34,15 @@ class ModelOutputSource extends DataTileSource {
   }
 }
 
-function getColorStops(name: string, steps: number): any[] {
-  const delta = (0 - 1) / (steps - 1);
-  const stops = new Array(steps * 2);
+export function getColorStops(name: string, steps: number): any[] {
+  const delta = (0 - 1) / (steps - 1)
+  const stops = new Array(steps * 2)
   const colors = colormap({ colormap: name, nshades: steps, format: 'rgba' }).reverse()
   for (let i = 0; i < steps; i++) {
-    stops[i * 2] = 1 + i * delta;
-    stops[i * 2 + 1] = colors[i];
+    stops[i * 2] = 1 + i * delta
+    stops[i * 2 + 1] = colors[i]
   }
-  return stops;
+  return stops
 }
 
 const styleOutputCache: Map<number, string> = new Map()
@@ -72,7 +72,7 @@ export function reifyModelOutputLayer(layer: ModelOutputLayer, existingLayer: Ba
       'interpolate',
       ['linear'],
       ['band', 1],
-      ...getColorStops('jet', 11)
+      ...getColorStops('jet', 50)
     ]
   } else {
     color = [
