@@ -34,7 +34,7 @@ class ModelOutputSource extends DataTileSource {
   }
 }
 
-function getColorStops(name: string, steps: number): any[] {
+export function getColorStops(name: string, steps: number): any[] {
   const delta = (0 - 1) / (steps - 1)
   const stops = new Array(steps * 2)
   const colors = colormap({ colormap: name, nshades: steps, format: 'rgba' }).reverse()
@@ -72,7 +72,7 @@ export function reifyModelOutputLayer(layer: ModelOutputLayer, existingLayer: Ba
       'interpolate',
       ['linear'],
       ['band', 1],
-      ...getColorStops('jet', 11)
+      ...getColorStops('jet', 50)
     ]
   } else {
     color = [

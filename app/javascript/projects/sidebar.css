@@ -1,0 +1,24 @@
+.color-bar {
+    display: flex;
+    flex-direction: row;
+    padding-top: 10px;
+    padding-left: 25px;
+    padding-right: 25px;
+}
+
+.color-bar-item {
+    height: 30px;
+    flex-grow: 1;
+}
+
+
+.color-bar-legend {
+    padding-left: 15px;
+    padding-right: 15px;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 500px;
+    margin-top: 10px;
+    padding-bottom: 15px;
+}
