@@ -1,9 +1,10 @@
 .color-bar {
     display: flex;
     flex-direction: row;
-    padding-top: 10px;
-    padding-left: 25px;
-    padding-right: 25px;
+    margin-top: 10px;
+    margin-left: 25px;
+    margin-right: 25px;
+    border: 1px solid black;
 }
 
 .color-bar-item {
@@ -21,4 +22,40 @@
     max-width: 500px;
     margin-top: 10px;
     padding-bottom: 15px;
+}
+
+.color-bar-container-cat {
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+}
+
+
+.color-bar-item-cat {
+    flex: 1;
+}
+
+.color-bar-legend-cat {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-right: 10px;
+}
+
+.color-bar-label {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.color-bar-color-cat {
+    height: 15px;
+    width: 15px;
+    margin-right: 5px;
+    border-radius: 10px;
+    border: 1px solid;
+}
+
+.color-bar-label-text {
+    text-align: left;
 }
