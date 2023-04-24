@@ -5,6 +5,7 @@ import { nevoLevelNames, nevoPropertyNames } from './nevo'
 import { Layer, ModelOutputLayer, NevoLayer, OverlayLayer, State } from './state'
 import { iconForLayerType } from "./util"
 import { getColorStops } from './reify_layer/model_output'
+import { tileGridStats } from './modelling/tile_grid'
 
 interface OverlayLayerSettingsProps {
   layer: OverlayLayer
@@ -121,49 +122,72 @@ const ModelOutputLayerSettings = ({ layer, mutate }: ModelOutputLayerSettingsPro
   </div>
 )
 
-
 interface ModelOutputLayerLegendProps {
   layer: ModelOutputLayer
-  getLayerData: (id: number) => number[]
+  getLayerData: (id: number) => tileGridStats
 }
 
-function ColorBar({ colors, minValue, maxValue }) {
+export function Legend({ colors, minValue, maxValue, type }) {
 
-  if (maxValue == minValue) {
+  if (type === undefined) {
+    // if layer is still loading stats will be unavailable.
     return <div></div>
+  } else if (type === "BooleanTileGrid") {
+    colors = [colors[0], colors[colors.length - 1]]
+
+    const data = [{ color: colors[0], label: "False" }, { color: colors[colors.length - 1], label: "True" }]
+
+    return (
+      <div className="color-bar-container-cat">
+        <div className="color-bar-legend-cat">
+          {data.map(({ color, label }) => (
+            <div key={label} className="color-bar-label">
+              <div
+                style={{ backgroundColor: `rgb(${color.join(",")})` }}
+                className="color-bar-color-cat"
+              />
+              <div className="color-bar-label-text">{label}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    )
+
+  } else {
+
+    const mean = ((maxValue - minValue) / 2)
+
+    return (
+      <div className="color-bar-container">
+        <div className="color-bar">
+          {colors.map((color) => (
+            <div
+              key={color.join(",")}
+              style={{ backgroundColor: `rgb(${color.join(",")})` }}
+              className="color-bar-item"
+            />
+          ))}
+        </div>
+        <div className="color-bar-legend">
+          <div title={minValue.toString()} >{minValue.toFixed(3)}</div>
+          <div title={mean.toString()} >{mean.toFixed(3)}</div>
+          <div title={maxValue.toString()} >{maxValue.toFixed(3)}</div>
+        </div>
+      </div>
+    )
   }
 
-  const mean = ((maxValue - minValue) / 2)
-
-  return (
-    <div className="color-bar-container">
-      <div className="color-bar">
-        {colors.map((color) => (
-          <div
-            key={color.join(",")}
-            style={{ backgroundColor: `rgb(${color.join(",")})` }}
-            className="color-bar-item"
-          />
-        ))}
-      </div>
-      <div className="color-bar-legend">
-        <div title={minValue.toString()} >{minValue.toFixed(3)}</div>
-        <div title={mean.toString()} >{mean.toFixed(3)}</div>
-        <div title={maxValue.toString()} >{maxValue.toFixed(3)}</div>
-      </div>
-    </div>
-  );
 }
 
 function ModelOutputLayerLegend({ layer, getLayerData }: ModelOutputLayerLegendProps) {
 
-  const vals = getLayerData(layer.nodeId)
+  const stats = getLayerData(layer.nodeId)
 
   const colors = getColorStops((layer.fill == "greyscale" ? "greys" : "jet"), 50).filter(c => typeof c !== "number").reverse()
 
   return (
     <div>
-      <ColorBar colors={colors} minValue={vals[0]} maxValue={vals[1]} />
+      <Legend colors={colors} minValue={stats.min} maxValue={stats.max} type={stats.type} />
     </div>
   )
 }
@@ -176,7 +200,7 @@ interface SidebarProps {
   setLayerOrder: (ids: number[]) => void
   showLayerPalette: () => void
   hide: () => void
-  getLayerData: (id: number) => number[]
+  getLayerData: (id: number) => tileGridStats
 }
 
 export const Sidebar = ({ state, selectLayer, mutateLayer, deleteLayer, setLayerOrder, showLayerPalette, hide, getLayerData }: SidebarProps) => {

@@ -30,6 +30,13 @@ function toIndex(grid: TileGrid, x: number, y: number) {
   }
 }
 
+export interface tileGridStats {
+  min: number
+  max: number
+  type: "BooleanTileGrid" | "NumericTileGrid" | undefined
+
+}
+
 abstract class TileGrid {
   readonly zoom: number
   readonly x: number
@@ -80,8 +87,12 @@ export class BooleanTileGrid extends TileGrid {
     this.data[index] = value ? 1 : 0
   }
 
-  getStats() {
-    return [0, 1]
+  getStats(): tileGridStats {
+    return {
+      min: 0,
+      max: 1,
+      type: "BooleanTileGrid"
+    }
   }
 }
 
@@ -132,8 +143,15 @@ export class NumericTileGrid extends TileGrid {
     return this.minMax
   }
 
-  getStats() {
-    return this.getMinMax()
+  getStats(): tileGridStats {
+
+    const [min, max] = this.getMinMax()
+
+    return {
+      min: min,
+      max: max,
+      type: "NumericTileGrid"
+    }
   }
 }
 

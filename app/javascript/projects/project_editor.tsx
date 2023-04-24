@@ -96,7 +96,7 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
                 setLayerOrder={order => dispatch({ type: "SetLayerOrder", order })}
                 showLayerPalette={() => setLayerPaletteVisible(true)}
                 hide={() => setSidebarVisible(false)}
-                getLayerData={id => modelOutputCache[id] ? modelOutputCache[id].getStats() : [0, 0]
+                getLayerData={id => modelOutputCache[id] ? modelOutputCache[id].getStats() : { min: 0, max: 0, type: undefined }
                 }
               />
               : <CollapsedSidebar show={() => setSidebarVisible(true)} />
