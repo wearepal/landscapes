@@ -129,6 +129,10 @@ interface ModelOutputLayerLegendProps {
 
 function ColorBar({ colors, minValue, maxValue }) {
 
+  if (maxValue == minValue) {
+    return <div></div>
+  }
+
   const mean = ((maxValue - minValue) / 2)
 
   return (

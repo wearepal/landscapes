@@ -36,7 +36,7 @@ abstract class TileGrid {
   readonly y: number
   readonly width: number
   readonly height: number
-  
+
   constructor(zoom: number, x: number, y: number, width: number, height: number) {
     validateZoom(zoom)
     validateAxisExtent(zoom, x, width)
@@ -52,7 +52,7 @@ abstract class TileGrid {
 
 export class BooleanTileGrid extends TileGrid {
   private data: Uint8Array
-  
+
   constructor(zoom: number, x: number, y: number, width: number, height: number, initialValue: boolean | Uint8Array = false) {
     super(zoom, x, y, width, height)
     if (initialValue instanceof Uint8Array) {
@@ -79,6 +79,10 @@ export class BooleanTileGrid extends TileGrid {
     }
     this.data[index] = value ? 1 : 0
   }
+
+  getStats() {
+    return [0, 1]
+  }
 }
 
 export class NumericTileGrid extends TileGrid {
@@ -95,7 +99,7 @@ export class NumericTileGrid extends TileGrid {
     }
     this.minMax = null
   }
-  
+
   get(x: number, y: number, zoom = this.zoom): number {
     if (zoom < this.zoom) {
       throw new TypeError("invalid zoom level")
@@ -127,11 +131,15 @@ export class NumericTileGrid extends TileGrid {
     }
     return this.minMax
   }
+
+  getStats() {
+    return this.getMinMax()
+  }
 }
 
 export class CategoricalTileGrid extends TileGrid {
   private data: Uint8Array
-  
+
   constructor(zoom: number, x: number, y: number, width: number, height: number) {
     super(zoom, x, y, width, height)
     this.data = new Uint8Array(width * height).fill(255)
