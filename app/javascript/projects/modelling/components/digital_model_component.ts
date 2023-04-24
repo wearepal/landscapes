@@ -31,10 +31,12 @@ const ModelList: Array<DigitalModel> = [
 const geoserver = "https://landscapes.wearepal.ai/geoserver/wms?"
 
 export class DigitalModelComponent extends BaseComponent {
+    outputCache: Map<string, NumericTileGrid>
 
     constructor() {
         super("Digital Model")
         this.category = "Inputs"
+        this.outputCache = new Map()
     }
 
     async builder(node: Node) {
@@ -106,30 +108,38 @@ export class DigitalModelComponent extends BaseComponent {
 
         if (digitalModel) {
 
-            const extent = [-20839.008676500813, 6579722.087031, 12889.487811, 6640614.986501137]
+            if (this.outputCache.has(digitalModel)) {
+                const out = editorNode.meta.output = outputs['dm'] = this.outputCache.get(digitalModel)
+            } else {
+                const extent = [-20839.008676500813, 6579722.087031, 12889.487811, 6640614.986501137]
 
-            const zoom = 20
+                const zoom = 20
 
-            const tileGrid = createXYZ()
-            const outputTileRange = tileGrid.getTileRangeForExtentAndZ(extent, zoom)
+                const tileGrid = createXYZ()
+                const outputTileRange = tileGrid.getTileRangeForExtentAndZ(extent, zoom)
 
-            const geotiff = await this.retrieveModelData(extent, digitalModel, outputTileRange)
+                const geotiff = await this.retrieveModelData(extent, digitalModel, outputTileRange)
 
-            const image = await geotiff.getImage()
+                const image = await geotiff.getImage()
 
-            const rasters = await geotiff.readRasters()
+                const rasters = await geotiff.readRasters()
 
-            const out = editorNode.meta.output = outputs['dm'] = new NumericTileGrid(zoom, outputTileRange.minX, outputTileRange.minY, outputTileRange.getWidth(), outputTileRange.getHeight(), undefined)
+                const out = editorNode.meta.output = outputs['dm'] = new NumericTileGrid(zoom, outputTileRange.minX, outputTileRange.minY, outputTileRange.getWidth(), outputTileRange.getHeight(), undefined)
 
-            for (let i = 0; i < rasters[0].length; i++) {
+                for (let i = 0; i < rasters[0].length; i++) {
 
-                let y = (outputTileRange.minY + Math.floor(i / image.getWidth()))
-                let x = (outputTileRange.minX + i % image.getWidth())
+                    let y = (outputTileRange.minY + Math.floor(i / image.getWidth()))
+                    let x = (outputTileRange.minX + i % image.getWidth())
 
 
-                out.set(x, y, rasters[0][i])
+                    out.set(x, y, rasters[0][i])
+
+                }
+
+                this.outputCache.set(digitalModel, out)
 
             }
+
 
             const previewControl: any = editorNode.controls.get('Preview')
             previewControl.update()
