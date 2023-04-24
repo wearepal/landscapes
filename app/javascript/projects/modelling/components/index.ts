@@ -10,6 +10,7 @@ import { MaskNumericDataComponent } from "./mask_numeric_data_component"
 import { NumberToNumericDatasetComponent } from "./number_to_numeric_dataset_component"
 import { NevoLayerComponent } from "./nevo_layer_component"
 import { OSMLandUseComponent } from "./osm_land_use_component"
+import { AreaComponent } from "./area_component"
 
 export function createDefaultComponents(saveMapLayer: SaveMapLayer): BaseComponent[] {
   return [
@@ -24,6 +25,9 @@ export function createDefaultComponents(saveMapLayer: SaveMapLayer): BaseCompone
 
     // Conversions
     new NumberToNumericDatasetComponent(),
+
+    // Calculations
+    new AreaComponent(),
 
     // Set operations
     new VariadicOpComponent('Union', '⋃', booleanDataSocket, booleanDataSocket, 'Set operations'),
