@@ -11,6 +11,7 @@ import { NumberToNumericDatasetComponent } from "./number_to_numeric_dataset_com
 import { NevoLayerComponent } from "./nevo_layer_component"
 import { OSMLandUseComponent } from "./osm_land_use_component"
 import { AreaComponent } from "./area_component"
+import { BarChartComponent } from "./bar_chart_component"
 
 export function createDefaultComponents(saveMapLayer: SaveMapLayer): BaseComponent[] {
   return [
@@ -28,6 +29,9 @@ export function createDefaultComponents(saveMapLayer: SaveMapLayer): BaseCompone
 
     // Calculations
     new AreaComponent(),
+
+    // Charts
+    new BarChartComponent(),
 
     // Set operations
     new VariadicOpComponent('Union', '⋃', booleanDataSocket, booleanDataSocket, 'Set operations'),

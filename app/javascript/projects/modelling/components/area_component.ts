@@ -29,21 +29,25 @@ export class AreaComponent extends BaseComponent {
         let editorNode = this.editor?.nodes.find(n => n.id === node.id)
         if (editorNode === undefined) { return }
 
-        const tileGrid = createXYZ()
-
-        const input = inputs['in'][0] as BooleanTileGrid
 
         let totalArea: number = 0
 
-        for (let x = input.x; x < input.x + input.width; ++x) {
-            for (let y = input.y; y < input.y + input.height; ++y) {
-                totalArea += input.get(x, y) ? getArea(fromExtent(tileGrid.getTileCoordExtent([input.zoom, x, y]))) : 0
+        if (inputs['in'][0]) {
+
+            const tileGrid = createXYZ()
+
+            const input = inputs['in'][0] as BooleanTileGrid
+
+            for (let x = input.x; x < input.x + input.width; ++x) {
+                for (let y = input.y; y < input.y + input.height; ++y) {
+                    totalArea += input.get(x, y) ? getArea(fromExtent(tileGrid.getTileCoordExtent([input.zoom, x, y]))) : 0
+                }
             }
+            totalArea /= 1000000
         }
-        totalArea /= 1000000
-        outputs['out'] = totalArea
 
         node.data.summary = `${totalArea.toLocaleString()} km²`
+        outputs['out'] = totalArea
 
         const summaryControl: any = editorNode.controls.get('summary')
 
