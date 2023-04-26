@@ -3,13 +3,14 @@ import { NodeData, WorkerInputs, WorkerOutputs } from "rete/types/core/data"
 import { TextControl } from "../controls/text"
 import { numberSocket } from "../socket_types"
 import { BaseComponent } from "./base_component"
+import { NumericConstant } from "../numeric_constant"
 
 export class NumericConstantComponent extends BaseComponent {
   constructor() {
     super('Numeric constant')
     this.category = 'Inputs'
   }
-  
+
   async builder(node: Node) {
     if (!('Value' in node.data)) {
       node.data.Value = "0"
@@ -19,6 +20,11 @@ export class NumericConstantComponent extends BaseComponent {
   }
 
   worker(node: NodeData, inputs: WorkerInputs, outputs: WorkerOutputs, ...args: unknown[]) {
-    outputs['out'] = Number(node.data.Value)
+
+    const editorNode = this.editor?.nodes.find(n => n.id === node.id)
+    if (editorNode === undefined) { return }
+
+    outputs['out'] = new NumericConstant(Number(node.data.Value), editorNode.data.name as string)
+
   }
 }

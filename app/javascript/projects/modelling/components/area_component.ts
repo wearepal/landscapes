@@ -7,6 +7,8 @@ import { createXYZ } from 'ol/tilegrid'
 import { BooleanTileGrid } from '../tile_grid'
 import { getArea } from 'ol/sphere'
 import { fromExtent } from 'ol/geom/Polygon'
+import { NumericConstant } from '../numeric_constant'
+import { string } from 'prop-types'
 
 export class AreaComponent extends BaseComponent {
 
@@ -47,7 +49,8 @@ export class AreaComponent extends BaseComponent {
         }
 
         node.data.summary = `${totalArea.toLocaleString()} km²`
-        outputs['out'] = totalArea
+
+        outputs['out'] = new NumericConstant(totalArea, editorNode.data.name as string)
 
         const summaryControl: any = editorNode.controls.get('summary')
 
