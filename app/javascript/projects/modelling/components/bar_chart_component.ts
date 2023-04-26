@@ -45,7 +45,7 @@ export class BarChartComponent extends BaseComponent {
         const barChartControl: any = editorNode.controls.get('bar-chart')
 
         barChartControl.setTitle(editorNode.data.name)
-        barChartControl.setVariables(chartVariables)
+        barChartControl.setVariables(chartVariables.sort((a, b) => b.value - a.value))
 
         barChartControl.update()
 
