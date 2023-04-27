@@ -24,9 +24,12 @@ interface XAxisProps {
 
 interface BarsProps {
     variables: BarChartVariable[]
-    width: number
     scaleX: XAxisProps["scale"]
     scaleY: YAxisProps["scale"]
+}
+
+interface BarChartLabelsProps {
+
 }
 
 function YAxis({ scale, transform }: YAxisProps) {
@@ -34,11 +37,11 @@ function YAxis({ scale, transform }: YAxisProps) {
 
     React.useEffect(() => {
         if (ref.current) {
-            d3.select(ref.current).call(d3.axisLeft(scale))
+            d3.select(ref.current).call(d3.axisLeft(scale)).style("font-size", "14px").style("font-weight", "500")
         }
     }, [scale])
 
-    return <g ref={ref} transform={transform} fontWeight={500} />
+    return <g ref={ref} transform={transform} />
 }
 
 function XAxis({ scale, transform }: XAxisProps) {
@@ -46,25 +49,37 @@ function XAxis({ scale, transform }: XAxisProps) {
 
     React.useEffect(() => {
         if (ref.current) {
-            d3.select(ref.current).call(d3.axisBottom(scale))
+            d3.select(ref.current).call(d3.axisBottom(scale)).style("font-size", "14px")
         }
     }, [scale])
-
-    console.log(transform)
 
     return <g ref={ref} transform={transform} />
 }
 
-function Bars({ variables, width, scaleX, scaleY }: BarsProps) {
+function Bars({ variables, scaleX, scaleY }: BarsProps) {
     return (
         <>
             {variables.map(({ value, label }) => (
-                <rect
-                    key={`bar-${label}`}
-                    width={width - scaleX(value)}
-                    height={scaleY.bandwidth()}
-                    fill="teal"
-                />
+                <>
+                    <rect
+                        key={`bar-${label}`}
+                        width={scaleX(value)}
+                        height={scaleY.bandwidth() / 2}
+                        x={0}
+                        y={Number(scaleY(label)) + (scaleY.bandwidth() * .25)}
+                        fill={d3.schemeSet3[value > 0 ? 0 : 3]}
+                    />
+                    <text
+                        key={`text-${label}`}
+                        x={scaleX(value) + Math.sign(value) * 4}
+                        y={Number(scaleY(label)) + (scaleY.bandwidth() * .50)}
+                        dy={"0.35em"}
+                        fontSize="14"
+                        fontWeight="500"
+                    >
+                        {value.toLocaleString(undefined, { maximumSignificantDigits: 3 })}
+                    </text>
+                </>
             ))}
         </>
     )
@@ -73,11 +88,13 @@ function Bars({ variables, width, scaleX, scaleY }: BarsProps) {
 
 const BarChart = ({ variables, title }: BarChartProps) => {
 
+    if (variables.length === 0) { return (<div></div>) }
+
     if (!title) title = ""
 
     const labelPadding = Math.max(...variables.map(v => v.label.length)) * 3.5
     const margin = { top: 10, right: 10, bottom: 20, left: 45 + labelPadding }
-    const width = 500 - margin.left - margin.right
+    const width = 500 - margin.left - margin.right + (labelPadding / 2)
     const height = (80 + (variables.length * 50)) - margin.top - margin.bottom //calc height based on n 
 
     const scaleY = d3.scaleBand()
@@ -86,7 +103,7 @@ const BarChart = ({ variables, title }: BarChartProps) => {
 
 
     const scaleX = d3.scaleLinear()
-        .domain([Math.max(...variables.map(({ value }) => value)), 0])
+        .domain([Math.max(...variables.map(({ value }) => value)) * 1.1, 0])
         .range([width, 0]);
 
 
@@ -98,15 +115,19 @@ const BarChart = ({ variables, title }: BarChartProps) => {
                 height={height + margin.top + margin.bottom}
             >
                 <g transform={`translate(${margin.left}, ${margin.top})`}>
+                    <Bars variables={variables} scaleX={scaleX} scaleY={scaleY} />
                     <YAxis scale={scaleY} transform={`translate(0, 0)`} />
                     <XAxis scale={scaleX} transform={`translate(0, ${height})`} />
-
                 </g>
 
             </svg>
             <figcaption className="text-center mt-3" >{title}</figcaption>
         </figure >
     )
+}
+
+const BarChartLabels = ({ }: BarChartLabelsProps) => {
+
 }
 
 export class BarChartControl extends Control {
