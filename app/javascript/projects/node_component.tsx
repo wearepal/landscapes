@@ -3,9 +3,27 @@ import { Control, Node, Socket } from 'rete-react-render-plugin'
 import $ from 'jquery'
 
 export class NodeComponent extends Node {
+  private inputDebounceTimer: any
   props: any // TODO
   state: any // TODO
-  
+
+
+  handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+
+    const { node, editor } = this.props
+
+    node.data.name = e.target.value
+
+    const t: any = this // TODO: a little hacky to appease typescript, I'd prefer something a little cleaner 
+    t.setState({})
+
+    clearTimeout(this.inputDebounceTimer)
+
+    this.inputDebounceTimer = setTimeout(() => {
+      editor.trigger("process")
+    }, 500)
+  }
+
   render() {
     const { node, editor, bindSocket, bindControl } = this.props
     const { outputs, controls, inputs, selected } = this.state
@@ -26,14 +44,14 @@ export class NodeComponent extends Node {
         position: "relative",
         userSelect: "none",
       }}>
-        <div style={{padding: "calc(.5rem - 3px)"}} className="d-flex align-items-center">
+        <div style={{ padding: "calc(.5rem - 3px)" }} className="d-flex align-items-center">
           <input
             type="text"
             className="form-control bg-dark text-light border-0"
-            style={{boxShadow: "none", width: "0px", flexGrow: "1"}}
+            style={{ boxShadow: "none", width: "0px", flexGrow: "1" }}
             placeholder={node.name}
             value={node.data.name}
-            onChange={e => node.data.name = e.target.value}
+            onChange={this.handleInputChange}
             onPointerDown={e => e.stopPropagation()}
             onDoubleClick={e => e.stopPropagation()}
           />
@@ -45,7 +63,7 @@ export class NodeComponent extends Node {
             />
           }
         </div>
-        <div style={{display: "flex", justifyContent: "space-between"}}>
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
           <div>
             {inputs.map(input => (
               <div className="input" key={input.key}>

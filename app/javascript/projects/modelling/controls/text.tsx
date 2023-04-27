@@ -27,7 +27,7 @@ const TextField = ({ getValue, setValue }: TextFieldProps) => {
 export class TextControl extends Control {
   props: TextFieldProps
   component: (props: TextFieldProps) => JSX.Element
-  
+
   constructor(emitter: Emitter<EventsTypes> | null, key: string) {
     super(key)
     const process = debounce(() => emitter?.trigger("process"), 500)
