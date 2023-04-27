@@ -28,10 +28,6 @@ interface BarsProps {
     scaleY: YAxisProps["scale"]
 }
 
-interface BarChartLabelsProps {
-
-}
-
 function YAxis({ scale, transform }: YAxisProps) {
     const ref = React.useRef<SVGGElement>(null)
 
@@ -124,10 +120,6 @@ const BarChart = ({ variables, title }: BarChartProps) => {
             <figcaption className="text-center mt-3" >{title}</figcaption>
         </figure >
     )
-}
-
-const BarChartLabels = ({ }: BarChartLabelsProps) => {
-
 }
 
 export class BarChartControl extends Control {
