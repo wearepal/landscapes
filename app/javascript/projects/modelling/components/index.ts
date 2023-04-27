@@ -12,6 +12,7 @@ import { NevoLayerComponent } from "./nevo_layer_component"
 import { OSMLandUseComponent } from "./osm_land_use_component"
 import { AreaComponent } from "./area_component"
 import { BarChartComponent } from "./bar_chart_component"
+import { DistanceMapComponent } from "./distance_map_component"
 
 export function createDefaultComponents(saveMapLayer: SaveMapLayer): BaseComponent[] {
   return [
@@ -29,6 +30,7 @@ export function createDefaultComponents(saveMapLayer: SaveMapLayer): BaseCompone
 
     // Calculations
     new AreaComponent(),
+    new DistanceMapComponent(),
 
     // Charts
     new BarChartComponent(),
