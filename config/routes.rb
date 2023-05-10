@@ -13,7 +13,9 @@ Rails.application.routes.draw do
       resources :duplicates, model_name: "Model"
     end
 
-    resources :projects
+    resources :projects do 
+      resources :duplicates, model_name: "Project"
+    end
 
     resources :regions do
       resources :labelling_group_uploads

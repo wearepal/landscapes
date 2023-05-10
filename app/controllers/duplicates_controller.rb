@@ -2,13 +2,15 @@ class DuplicatesController < ApplicationController
   def create
     authorize_for! model.team
     duplicate = model.duplicate
-    if duplicate.has_attribute?(:name)
-      # TODO: what if "{name} (copy)" is already taken?
-      duplicate.name = "#{duplicate.name} (copy)"
-    end
+    duplicate.name = "#{duplicate.name} (copy)"
     duplicate.save!
-    flash.notice = "Created duplicate #{human_model_name} named '#{duplicate.name}'."
-    redirect_to duplicate
+
+    unless model_name == "Project"
+      flash.notice = "Created duplicate #{human_model_name} named '#{duplicate.name}'."    
+      redirect_to duplicate
+    else
+      redirect_to team_projects_url(model.team)
+    end
   end
 
   private
@@ -27,5 +29,9 @@ class DuplicatesController < ApplicationController
 
     def model
       model_class.find(params[foreign_key_name])
+    end
+    
+    def model_name
+      params[:model_name]
     end
 end
