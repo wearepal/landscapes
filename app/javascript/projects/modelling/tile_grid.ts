@@ -157,10 +157,12 @@ export class NumericTileGrid extends TileGrid {
 
 export class CategoricalTileGrid extends TileGrid {
   private data: Uint8Array
+  labels: Map<number, string>
 
   constructor(zoom: number, x: number, y: number, width: number, height: number) {
     super(zoom, x, y, width, height)
     this.data = new Uint8Array(width * height).fill(255)
+    this.labels = new Map()
   }
 
   get(x: number, y: number, zoom = this.zoom): number {
@@ -179,6 +181,15 @@ export class CategoricalTileGrid extends TileGrid {
     }
     this.data[index] = value
   }
+
+  setLabels(labels: Map<number, string>) {
+    this.labels = labels
+  }
+
+  getAsLabel(x: number, y: number, zoom = this.zoom): string | undefined {
+    return this.labels.size > 0 ? undefined : this.labels.get(this.get(x, y, zoom = this.zoom))
+  }
+
 }
 
 registerSerializer({
