@@ -10,4 +10,8 @@ class Project < ApplicationRecord
   def name=(name)
     source["name"] = name
   end
+
+  def duplicate    
+    dup
+  end
 end
