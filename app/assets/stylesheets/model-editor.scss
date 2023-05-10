@@ -1,6 +1,6 @@
 .model-editor {
   height: 100%;
-  
+
   .context-menu {
     width: auto !important;
 
@@ -20,24 +20,29 @@
       width: 1em;
       border: none;
     }
-    .socket--layer {
+
+    .socket--layer,
+    .socket.categorical-dataset {
       background: #b4a246;
     }
 
-    .socket--map, .socket.numeric-dataset {
+    .socket--map,
+    .socket.numeric-dataset {
       background: #b44646;
     }
 
-    .socket--set, .socket.boolean-dataset {
+    .socket--set,
+    .socket.boolean-dataset {
       background: steelblue;
     }
 
-    .socket--number, .socket.number {
+    .socket--number,
+    .socket.number {
       background: #46b44c;
     }
 
     .socket.dataset {
-      background: linear-gradient(steelblue 50%, #b44646 50%);
+      background: linear-gradient(steelblue 25%, #b4a246 50%, #b44646 75%);
     }
   }
 
@@ -52,6 +57,12 @@
 
   .connection.socket-input-layer .main-path {
     stroke: #b4a246;
+  }
+
+  .connection.socket-output-categorical-dataset {
+    .main-path {
+      stroke: #b4a246;
+    }
   }
 
   .connection.socket-output-set,

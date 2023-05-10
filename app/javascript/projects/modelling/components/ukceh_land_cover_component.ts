@@ -2,7 +2,7 @@ import GeoJSON from "ol/format/GeoJSON"
 import { createXYZ } from "ol/tilegrid"
 import { Node, Output } from "rete"
 import { NodeData, WorkerInputs, WorkerOutputs } from "rete/types/core/data"
-import { booleanDataSocket } from "../socket_types"
+import { booleanDataSocket, categoricalDataSocket } from "../socket_types"
 import { BooleanTileGrid, CategoricalTileGrid } from "../tile_grid"
 import { BaseComponent } from "./base_component"
 
@@ -118,6 +118,7 @@ export class UkcehLandCoverComponent extends BaseComponent {
     habitats.forEach(hab =>
       node.addOutput(new Output(hab["mode"].toString(), hab["LC"], booleanDataSocket))
     )
+    node.addOutput(new Output("all", "All", categoricalDataSocket))
   }
 
   async worker(node: NodeData, inputs: WorkerInputs, outputs: WorkerOutputs, ...args: unknown[]) {
