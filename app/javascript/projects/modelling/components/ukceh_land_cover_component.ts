@@ -2,7 +2,7 @@ import GeoJSON from "ol/format/GeoJSON"
 import { createXYZ } from "ol/tilegrid"
 import { Node, Output } from "rete"
 import { NodeData, WorkerInputs, WorkerOutputs } from "rete/types/core/data"
-import { booleanDataSocket } from "../socket_types"
+import { booleanDataSocket, categoricalDataSocket } from "../socket_types"
 import { BooleanTileGrid, CategoricalTileGrid } from "../tile_grid"
 import { BaseComponent } from "./base_component"
 
@@ -43,6 +43,7 @@ const habitats: Habitat[] = [
   { agg: 9, AC: "Coastal", mode: 19, LC: "Saltmarsh" },
   { agg: 10, AC: "Built-up areas and gardens", mode: 20, LC: "Urban" },
   { agg: 10, AC: "Built-up areas and gardens", mode: 21, LC: "Suburban" },
+  { agg: 0, AC: "All", mode: 0, LC: "All" }
 ]
 
 async function renderCategoricalData() {
@@ -73,6 +74,15 @@ async function renderCategoricalData() {
     outputTileRange.getWidth(),
     outputTileRange.getHeight()
   )
+
+
+  const map: Map<number, string> = new Map()
+
+  habitats.forEach(hab => {
+    if (hab.mode !== 0) map.set(hab.mode, hab.LC)
+  })
+
+  result.setLabels(map)
 
   for (let feature of features) {
     const geom = feature.getGeometry()
@@ -116,7 +126,7 @@ export class UkcehLandCoverComponent extends BaseComponent {
 
   async builder(node: Node) {
     habitats.forEach(hab =>
-      node.addOutput(new Output(hab["mode"].toString(), hab["LC"], booleanDataSocket))
+      hab.AC === "All" ? node.addOutput(new Output(hab["mode"].toString(), hab["LC"], categoricalDataSocket)) : node.addOutput(new Output(hab["mode"].toString(), hab["LC"], booleanDataSocket))
     )
   }
 
@@ -129,17 +139,25 @@ export class UkcehLandCoverComponent extends BaseComponent {
     habitats.filter(
       habitat => node.outputs[habitat.mode].connections.length > 0
     ).forEach(habitat => {
-      if (this.outputCache.has(habitat.mode)) {
-        outputs[habitat.mode] = this.outputCache.get(habitat.mode)
-      }
-      else {
-        const out = outputs[habitat.mode] = new BooleanTileGrid(categoricalData.zoom, categoricalData.x, categoricalData.y, categoricalData.width, categoricalData.height)
-        for (let x = categoricalData.x; x < categoricalData.x + categoricalData.width; ++x) {
-          for (let y = categoricalData.y; y < categoricalData.y + categoricalData.height; ++y) {
-            out.set(x, y, categoricalData.get(x, y) === habitat.mode)
-          }
+      if (habitat.mode === 0) {
+
+        outputs[habitat.mode] = this.categoricalData
+
+      } else {
+        if (this.outputCache.has(habitat.mode)) {
+          outputs[habitat.mode] = this.outputCache.get(habitat.mode)
         }
-        this.outputCache.set(habitat.mode, out)
+        else {
+          const out = outputs[habitat.mode] = new BooleanTileGrid(categoricalData.zoom, categoricalData.x, categoricalData.y, categoricalData.width, categoricalData.height)
+          out.name = habitat.LC
+
+          for (let x = categoricalData.x; x < categoricalData.x + categoricalData.width; ++x) {
+            for (let y = categoricalData.y; y < categoricalData.y + categoricalData.height; ++y) {
+              out.set(x, y, categoricalData.get(x, y) === habitat.mode)
+            }
+          }
+          this.outputCache.set(habitat.mode, out)
+        }
       }
     })
   }

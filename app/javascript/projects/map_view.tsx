@@ -8,7 +8,7 @@ import { createIconElement } from './util'
 import { Layer } from './state'
 import { reifyLayer } from './reify_layer'
 import { DBModels } from './db_models'
-import { BooleanTileGrid, NumericTileGrid } from './modelling/tile_grid'
+import { BooleanTileGrid, CategoricalTileGrid, NumericTileGrid } from './modelling/tile_grid'
 
 function getLayerExtent(layer: olBaseLayer) {
   if (layer instanceof VectorLayer) {
@@ -50,12 +50,12 @@ class FitViewControl extends Control {
   }
 }
 
-export type ModelOutputCache = Record<number, BooleanTileGrid | NumericTileGrid>
+export type ModelOutputCache = Record<number, BooleanTileGrid | NumericTileGrid | CategoricalTileGrid>
 
 interface MapViewProps {
   layers: Layer[]
   dbModels: DBModels
-  
+
   initialZoom: number
   setZoom: (zoom: number) => void
 
@@ -134,12 +134,12 @@ export const MapView = ({ layers, dbModels, initialZoom, setZoom, initialCenter,
   })
 
   return <div className="flex-grow-1 position-relative">
-    <div className="bg-dark" style={{ width: "100%", height: "100%" }} ref={mapRef as any}/>
+    <div className="bg-dark" style={{ width: "100%", height: "100%" }} ref={mapRef as any} />
     {
       !allLayersVisible &&
-        <div className="bg-dark text-light rounded-sm px-3 py-2 position-absolute" style={{ bottom: "1em", left: "50%", transform: "translateX(-50%)" }}>
-          <i className="fas fa-info-circle"/> Zoom in further to see all layers
-        </div>
+      <div className="bg-dark text-light rounded-sm px-3 py-2 position-absolute" style={{ bottom: "1em", left: "50%", transform: "translateX(-50%)" }}>
+        <i className="fas fa-info-circle" /> Zoom in further to see all layers
+      </div>
     }
   </div>
 }

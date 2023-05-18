@@ -3,17 +3,21 @@ import TileLayer from "ol/layer/Tile"
 import WebGLTileLayer from "ol/layer/WebGLTile"
 import DataTileSource from "ol/source/DataTile"
 import { ModelOutputCache } from "../map_view"
-import { BooleanTileGrid, NumericTileGrid } from "../modelling/tile_grid"
+import { BooleanTileGrid, CategoricalTileGrid, NumericTileGrid } from "../modelling/tile_grid"
 import { ModelOutputLayer } from "../state"
 import colormap from "colormap"
+import distinctColors from "distinct-colors"
 
 class ModelOutputSource extends DataTileSource {
-  readonly tileLayer: BooleanTileGrid | NumericTileGrid
+  readonly tileLayer: BooleanTileGrid | NumericTileGrid | CategoricalTileGrid
 
-  constructor(tileLayer: BooleanTileGrid | NumericTileGrid) {
+  constructor(tileLayer: BooleanTileGrid | NumericTileGrid | CategoricalTileGrid) {
     super({
       loader: (z, x, y) => {
-        const [min, max] = tileLayer instanceof NumericTileGrid ? tileLayer.getMinMax() : [0, 1]
+
+        const cat = tileLayer instanceof CategoricalTileGrid
+        const [min, max] = (tileLayer instanceof NumericTileGrid || tileLayer instanceof CategoricalTileGrid) ? tileLayer.getMinMax() : [0, 1]
+
         const image = new Float32Array(256 * 256)
         for (let pixelX = 0; pixelX < 256; ++pixelX) {
           for (let pixelY = 0; pixelY < 256; ++pixelY) {
@@ -21,7 +25,15 @@ class ModelOutputSource extends DataTileSource {
             const tileY = (y + (pixelY / 256)) * Math.pow(2, tileLayer.zoom - z)
             const tile = tileLayer.get(tileX, tileY)
             const val = typeof tile === "number" ? tile : (tile ? 1 : 0)
-            image[pixelY * 256 + pixelX] = (val - min) / (max - min)
+            if (cat) {
+              if (val > max) {
+                image[pixelY * 256 + pixelX] = 0
+              } else {
+                image[pixelY * 256 + pixelX] = val
+              }
+            } else {
+              image[pixelY * 256 + pixelX] = (val - min) / (max - min)
+            }
           }
         }
         return image
@@ -33,19 +45,43 @@ class ModelOutputSource extends DataTileSource {
     this.tileLayer = tileLayer
   }
 }
-
 export function getColorStops(name: string, steps: number): any[] {
+
   const delta = (0 - 1) / (steps - 1)
-  const stops = new Array(steps * 2)
+  const stops: Array<any> = []
   const colors = colormap({ colormap: name, nshades: steps, format: 'rgba' }).reverse()
+
+
   for (let i = 0; i < steps; i++) {
-    stops[i * 2] = 1 + i * delta
-    stops[i * 2 + 1] = colors[i]
+    stops.push(1 + i * delta)
+    stops.push(colors[i])
   }
+
   return stops
 }
 
+export function getCatColorStops(palette: [number, number, number, number][] | undefined, n: number): any[] {
+
+  const arr: Array<any> = []
+
+  arr.push('case')
+
+  for (let key = n; key >= 1; key--) {
+    arr.push(['>=', ['band', 1], key])
+
+    let rgba = palette ? palette[key - 1] : [0, 0, 0, 0]
+
+    arr.push(rgba)
+
+  }
+  arr.push([0, 0, 0, 0])
+
+  return arr
+
+}
+
 const styleOutputCache: Map<number, string> = new Map()
+const catOutputCache: Map<number, [number, number, number, number][] | undefined> = new Map()
 
 export function reifyModelOutputLayer(layer: ModelOutputLayer, existingLayer: BaseLayer | null, modelOutputCache: ModelOutputCache) {
   if (!(layer.nodeId in modelOutputCache)) {
@@ -54,34 +90,55 @@ export function reifyModelOutputLayer(layer: ModelOutputLayer, existingLayer: Ba
 
   const tileLayer = modelOutputCache[layer.nodeId]
 
+  if (tileLayer instanceof CategoricalTileGrid) {
+
+    //if first time loading or n of variables has changed, update layer.colors.
+
+    //if custom colors are added, add logic here to ensure these are not deleted
+
+    if (layer.colors?.length !== tileLayer.getMinMax()[1]) {
+      layer.colors = distinctColors({
+        count: tileLayer.getMinMax()[1]
+      }).map(e => e.rgba())
+
+    }
+
+  }
 
   if (existingLayer instanceof WebGLTileLayer) {
     const source = existingLayer.getSource()
 
-    if (source instanceof ModelOutputSource && source.tileLayer === tileLayer && styleOutputCache.get(layer.nodeId) === layer.fill) {
+    if (source instanceof ModelOutputSource && source.tileLayer === tileLayer && styleOutputCache.get(layer.nodeId) === layer.fill && catOutputCache.get(layer.nodeId)?.toString() === layer.colors?.toString()) {
       return existingLayer
     }
   }
 
   styleOutputCache.set(layer.nodeId, layer.fill)
+  catOutputCache.set(layer.nodeId, layer.colors)
 
   let color: any[] = []
 
-  if (layer.fill === "heatmap") {
-    color = [
-      'interpolate',
-      ['linear'],
-      ['band', 1],
-      ...getColorStops('jet', 50)
-    ]
+  if (tileLayer instanceof CategoricalTileGrid) {
+
+    color = getCatColorStops(layer.colors, tileLayer.getMinMax()[1])
+
   } else {
+
+
+    const [min, max] = (tileLayer instanceof NumericTileGrid) ? tileLayer.getMinMax() : [0, 1]
+    const v0 = (0 - min) / (max - min)
+
     color = [
-      'array',
-      ['band', 1],
-      ['band', 1],
-      ['band', 1],
-      1
+      'case',
+      ['==', ['band', 1], v0],
+      [0, 0, 0, 0],
+      ['interpolate',
+        ['linear'],
+        ['band', 1],
+        ...getColorStops(layer.fill === "heatmap" ? "jet" : (layer.fill === "greyscale" ? "greys" : layer.fill), 100)]
     ]
+
+
   }
 
   return new WebGLTileLayer({

@@ -1,10 +1,10 @@
 import { Input, Node } from "rete"
 import { NodeData, WorkerInputs, WorkerOutputs } from "rete/types/core/data"
 import { dataSocket } from "../socket_types"
-import { BooleanTileGrid, NumericTileGrid } from "../tile_grid"
+import { BooleanTileGrid, CategoricalTileGrid, NumericTileGrid } from "../tile_grid"
 import { BaseComponent } from "./base_component"
 
-export type SaveMapLayer = (id: number, tileGrid: BooleanTileGrid | NumericTileGrid) => void
+export type SaveMapLayer = (id: number, tileGrid: BooleanTileGrid | NumericTileGrid | CategoricalTileGrid) => void
 
 export class MapLayerComponent extends BaseComponent {
   callback: SaveMapLayer
@@ -28,7 +28,7 @@ export class MapLayerComponent extends BaseComponent {
     }
     else {
       delete editorNode.meta.errorMessage
-      this.callback(node.id, inputs["in"][0] as BooleanTileGrid | NumericTileGrid)
+      this.callback(node.id, inputs["in"][0] as BooleanTileGrid | NumericTileGrid | CategoricalTileGrid)
     }
     editorNode.update()
   }

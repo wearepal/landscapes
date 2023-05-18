@@ -116,7 +116,8 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
               opacity: 1,
               type: "ModelOutputLayer",
               nodeId,
-              fill: "greyscale"
+              fill: "greyscale",
+              colors: []
             }
           })}
           deleteOutputLayer={(nodeId: number) =>

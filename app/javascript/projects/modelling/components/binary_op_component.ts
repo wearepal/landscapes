@@ -8,12 +8,14 @@ import { isEqual } from 'lodash'
 
 export class BinaryOpComponent extends BaseComponent {
   operator: string
+  operation: string
   inputSocket: Socket
   outputSocket: Socket
 
   constructor(operation: string, operator: string, inputSocket: Socket, outputSocket: Socket, category: string) {
     super(operation)
     this.operator = operator
+    this.operation = operation
     this.inputSocket = inputSocket
     this.outputSocket = outputSocket
     this.category = category
@@ -43,11 +45,14 @@ export class BinaryOpComponent extends BaseComponent {
     else {
       delete editorNode.meta.errorMessage
       editorNode.meta.previousInputs = [inputs['a'][0], inputs['b'][0]]
-      editorNode.meta.output = outputs['out'] = await workerPool.queue(async worker => 
+      editorNode.meta.output = outputs['out'] = await workerPool.queue(async worker =>
         worker.performOperation(this.name, inputs['a'][0], inputs['b'][0])
       )
-      //outputs['out'].name = node.data.name
     }
+
+
+    if (outputs['out'] instanceof BooleanTileGrid) outputs['out'].name = (editorNode.data.name as string !== undefined && editorNode.data.name as string !== "") ? editorNode.data.name as string : `${this.operation} data`
+
 
     const previewControl: any = editorNode.controls.get('Preview')
     previewControl.update()
