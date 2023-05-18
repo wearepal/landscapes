@@ -185,9 +185,10 @@ function ModelOutputLayerSettings({ layer, mutate, layerType }: ModelOutputLayer
 interface ModelOutputLayerLegendProps {
   layer: ModelOutputLayer
   getLayerData: (id: number) => tileGridStats
+  mutateColors: (color: chroma.Color[]) => void
 }
 
-export function Legend({ colors, minValue, maxValue, type, labels }) {
+export function Legend({ colors, minValue, maxValue, type, labels, mutateColors }) {
 
   if (type === undefined) {
     // if layer is still loading stats will be unavailable.
@@ -219,16 +220,27 @@ export function Legend({ colors, minValue, maxValue, type, labels }) {
 
       if (!colors) return (<div></div>)
 
-      const data = labels.map(obj => ({ label: obj.value, color: colors.length < obj.name ? distinctColors({ count: maxValue })[obj.name - 1].rgb() : colors[obj.name - 1].rgb(), key: obj.name }))
+      const updateColour = (event, key) => {
+        const checked = event.target.checked;
+        const updatedColors = colors.map((color, index) => {
+          if (index + 1 === key) {
+            return checked ? color.alpha(1) : color.alpha(0);
+          }
+          return color;
+        });
+        mutateColors(updatedColors);
+      };
+
+      const data = labels.map(obj => ({ label: obj.value, color: colors.length < obj.name ? distinctColors({ count: maxValue })[obj.name - 1] : colors[obj.name - 1], key: obj.name }))
 
       return (
         <div className="color-bar-container-cat">
           <div className="color-bar-legend-cat">
             {data.map(({ color, label, key }) => (
               <div key={label} className="color-bar-label">
-                <input type="checkbox" checked name={key} onChange={() => console.log(key)} />
+                <input type="checkbox" checked={color.alpha()} name={key} onChange={(event) => updateColour(event, key)} />
                 <div
-                  style={{ backgroundColor: `rgb(${color.join(",")})`, marginLeft: 4.5 }}
+                  style={{ backgroundColor: `rgb(${color.rgb().join(",")})`, marginLeft: 4.5 }}
                   className="color-bar-color-cat"
                 />
                 <div className="color-bar-label-text">{label}</div>
@@ -269,7 +281,7 @@ export function Legend({ colors, minValue, maxValue, type, labels }) {
 
 }
 
-function ModelOutputLayerLegend({ layer, getLayerData }: ModelOutputLayerLegendProps) {
+function ModelOutputLayerLegend({ layer, getLayerData, mutateColors }: ModelOutputLayerLegendProps) {
 
   const stats = getLayerData(layer.nodeId)
 
@@ -277,7 +289,7 @@ function ModelOutputLayerLegend({ layer, getLayerData }: ModelOutputLayerLegendP
 
   return (
     <div>
-      <Legend colors={colors} minValue={stats.min} maxValue={stats.max} type={stats.type} labels={stats.labels} />
+      <Legend colors={colors} minValue={stats.min} maxValue={stats.max} type={stats.type} labels={stats.labels} mutateColors={mutateColors} />
     </div>
   )
 }
@@ -353,6 +365,7 @@ export const Sidebar = ({ state, selectLayer, mutateLayer, deleteLayer, setLayer
       <ModelOutputLayerLegend
         layer={selectedLayer}
         getLayerData={getLayerData}
+        mutateColors={colors => state.selectedLayer !== undefined && mutateLayer(state.selectedLayer, { colors })}
       />
     }
     <div className="px-3 py-2 border-top border-bottom bg-light">Layer settings</div>

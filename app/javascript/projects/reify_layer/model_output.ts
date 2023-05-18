@@ -69,20 +69,19 @@ export function getCatColorStops(palette: chroma.Color[] | undefined, n: number)
   for (let key = n; key >= 1; key--) {
     arr.push(['>=', ['band', 1], key])
 
-    let rgba = palette ? palette[key - 1].rgba() : [0, 0, 0, 0]    // retreve colour based on key and style option, custom colours? 
-
-    if (false) rgba[3] = 0            // if unchecked set A value to 0
+    let rgba = palette ? palette[key - 1].rgba() : [0, 0, 0, 0]
 
     arr.push(rgba)
 
   }
-  arr.push([0, 0, 0, 0])              // for cat data, 0 == no value,  hence fully opaque
+  arr.push([0, 0, 0, 0])
 
   return arr
 
 }
 
 const styleOutputCache: Map<number, string> = new Map()
+const catOutputCache: Map<number, chroma.Color[] | undefined> = new Map()
 
 export function reifyModelOutputLayer(layer: ModelOutputLayer, existingLayer: BaseLayer | null, modelOutputCache: ModelOutputCache) {
   if (!(layer.nodeId in modelOutputCache)) {
@@ -92,21 +91,23 @@ export function reifyModelOutputLayer(layer: ModelOutputLayer, existingLayer: Ba
   const tileLayer = modelOutputCache[layer.nodeId]
 
   if (tileLayer instanceof CategoricalTileGrid && layer.colors?.length !== tileLayer.getMinMax()[1]) {
+
     layer.colors = distinctColors({
       count: tileLayer.getMinMax()[1]
     })
-  }
 
+  }
 
   if (existingLayer instanceof WebGLTileLayer) {
     const source = existingLayer.getSource()
 
-    if (source instanceof ModelOutputSource && source.tileLayer === tileLayer && styleOutputCache.get(layer.nodeId) === layer.fill) {
+    if (source instanceof ModelOutputSource && source.tileLayer === tileLayer && styleOutputCache.get(layer.nodeId) === layer.fill && catOutputCache.get(layer.nodeId) === layer.colors) {
       return existingLayer
     }
   }
 
   styleOutputCache.set(layer.nodeId, layer.fill)
+  catOutputCache.set(layer.nodeId, layer.colors)
 
   let color: any[] = []
 
