@@ -60,7 +60,7 @@ export function getColorStops(name: string, steps: number): any[] {
   return stops
 }
 
-export function getCatColorStops(palette: chroma.Color[] | undefined, n: number): any[] {
+export function getCatColorStops(palette: [number, number, number, number][] | undefined, n: number): any[] {
 
   const arr: Array<any> = []
 
@@ -69,7 +69,7 @@ export function getCatColorStops(palette: chroma.Color[] | undefined, n: number)
   for (let key = n; key >= 1; key--) {
     arr.push(['>=', ['band', 1], key])
 
-    let rgba = palette ? palette[key - 1].rgba() : [0, 0, 0, 0]
+    let rgba = palette ? palette[key - 1] : [0, 0, 0, 0]
 
     arr.push(rgba)
 
@@ -81,7 +81,7 @@ export function getCatColorStops(palette: chroma.Color[] | undefined, n: number)
 }
 
 const styleOutputCache: Map<number, string> = new Map()
-const catOutputCache: Map<number, chroma.Color[] | undefined> = new Map()
+const catOutputCache: Map<number, [number, number, number, number][] | undefined> = new Map()
 
 export function reifyModelOutputLayer(layer: ModelOutputLayer, existingLayer: BaseLayer | null, modelOutputCache: ModelOutputCache) {
   if (!(layer.nodeId in modelOutputCache)) {
@@ -90,18 +90,25 @@ export function reifyModelOutputLayer(layer: ModelOutputLayer, existingLayer: Ba
 
   const tileLayer = modelOutputCache[layer.nodeId]
 
-  if (tileLayer instanceof CategoricalTileGrid && layer.colors?.length !== tileLayer.getMinMax()[1]) {
+  if (tileLayer instanceof CategoricalTileGrid) {
 
-    layer.colors = distinctColors({
-      count: tileLayer.getMinMax()[1]
-    })
+    //if first time loading or n of variables has changed, update layer.colors.
+
+    //if custom colors are added, add logic here to ensure these are not deleted
+
+    if (layer.colors?.length !== tileLayer.getMinMax()[1]) {
+      layer.colors = distinctColors({
+        count: tileLayer.getMinMax()[1]
+      }).map(e => e.rgba())
+
+    }
 
   }
 
   if (existingLayer instanceof WebGLTileLayer) {
     const source = existingLayer.getSource()
 
-    if (source instanceof ModelOutputSource && source.tileLayer === tileLayer && styleOutputCache.get(layer.nodeId) === layer.fill && catOutputCache.get(layer.nodeId) === layer.colors) {
+    if (source instanceof ModelOutputSource && source.tileLayer === tileLayer && styleOutputCache.get(layer.nodeId) === layer.fill && catOutputCache.get(layer.nodeId)?.toString() === layer.colors?.toString()) {
       return existingLayer
     }
   }

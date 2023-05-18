@@ -185,7 +185,7 @@ function ModelOutputLayerSettings({ layer, mutate, layerType }: ModelOutputLayer
 interface ModelOutputLayerLegendProps {
   layer: ModelOutputLayer
   getLayerData: (id: number) => tileGridStats
-  mutateColors: (color: chroma.Color[]) => void
+  mutateColors: (color: [number, number, number, number][]) => void
 }
 
 export function Legend({ colors, minValue, maxValue, type, labels, mutateColors }) {
@@ -221,26 +221,33 @@ export function Legend({ colors, minValue, maxValue, type, labels, mutateColors 
       if (!colors) return (<div></div>)
 
       const updateColour = (event, key) => {
-        const checked = event.target.checked;
+        const checked = event.target.checked
         const updatedColors = colors.map((color, index) => {
           if (index + 1 === key) {
-            return checked ? color.alpha(1) : color.alpha(0);
+            return [color[0], color[1], color[3], checked ? 1 : 0]
           }
-          return color;
+          return color
         });
-        mutateColors(updatedColors);
+        mutateColors(updatedColors)
       };
 
-      const data = labels.map(obj => ({ label: obj.value, color: colors.length < obj.name ? distinctColors({ count: maxValue })[obj.name - 1] : colors[obj.name - 1], key: obj.name }))
+      const data = labels.map(obj => ({
+        label: obj.value,
+        color:
+          colors.length < obj.name ?
+            distinctColors({ count: maxValue })[obj.name - 1].rgba() :
+            colors[obj.name - 1],
+        key: obj.name
+      }))
 
       return (
         <div className="color-bar-container-cat">
           <div className="color-bar-legend-cat">
             {data.map(({ color, label, key }) => (
               <div key={label} className="color-bar-label">
-                <input type="checkbox" checked={color.alpha()} name={key} onChange={(event) => updateColour(event, key)} />
+                <input type="checkbox" checked={color[3]} name={key} onChange={(event) => updateColour(event, key)} />
                 <div
-                  style={{ backgroundColor: `rgb(${color.rgb().join(",")})`, marginLeft: 4.5 }}
+                  style={{ marginLeft: 4.5, backgroundColor: `rgb(${color[0]}, ${color[1]}, ${color[2]})` }}
                   className="color-bar-color-cat"
                 />
                 <div className="color-bar-label-text">{label}</div>
