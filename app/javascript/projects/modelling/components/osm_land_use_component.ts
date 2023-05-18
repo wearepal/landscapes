@@ -294,6 +294,7 @@ export class OSMLandUseComponent extends BaseComponent {
         if (index === undefined) { index = 0 }
 
         const code = LandUseCategories[index].code
+        const name = LandUseCategories[index].name
 
         if (this.outputCache.has(code)) {
             const result = editorNode.meta.output = outputs['out'] = this.outputCache.get(code)
@@ -314,6 +315,7 @@ export class OSMLandUseComponent extends BaseComponent {
                 outputTileRange.getWidth(),
                 outputTileRange.getHeight()
             )
+            result.name = name
 
             features.forEach((feature) => {
 

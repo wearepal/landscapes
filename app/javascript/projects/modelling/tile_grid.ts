@@ -33,8 +33,8 @@ function toIndex(grid: TileGrid, x: number, y: number) {
 export interface tileGridStats {
   min: number
   max: number
-  type: "BooleanTileGrid" | "NumericTileGrid" | undefined
-
+  type: "BooleanTileGrid" | "NumericTileGrid" | "CategoricalTileGrid" | undefined
+  labels?: Array<any>
 }
 
 abstract class TileGrid {
@@ -59,6 +59,7 @@ abstract class TileGrid {
 
 export class BooleanTileGrid extends TileGrid {
   private data: Uint8Array
+  name: string | undefined
 
   constructor(zoom: number, x: number, y: number, width: number, height: number, initialValue: boolean | Uint8Array = false) {
     super(zoom, x, y, width, height)
@@ -98,6 +99,7 @@ export class BooleanTileGrid extends TileGrid {
 
 export class NumericTileGrid extends TileGrid {
   private data: Float32Array
+  name: string | undefined
   private minMax: [number, number] | null
 
   constructor(zoom: number, x: number, y: number, width: number, height: number, initialValue: number | Float32Array = 0) {
@@ -157,6 +159,7 @@ export class NumericTileGrid extends TileGrid {
 
 export class CategoricalTileGrid extends TileGrid {
   private data: Uint8Array
+  private minMax: [number, number] | null
   labels: Map<number, string>
 
   constructor(zoom: number, x: number, y: number, width: number, height: number) {
@@ -184,10 +187,44 @@ export class CategoricalTileGrid extends TileGrid {
 
   setLabels(labels: Map<number, string>) {
     this.labels = labels
+
+    this.minMax = [0, this.labels.size]
+  }
+
+  getMinMax() {
+    if (this.minMax == null) {
+      //no labels given.
+      this.minMax = [0, 0]
+    }
+    return this.minMax
+  }
+
+  applyCategoryFromBooleanGrid(boolGrid: BooleanTileGrid, key: number) {
+    const { x, y, width, height } = this
+
+    for (let i = x; i < x + width; i++) {
+      for (let j = y; j < y + height; j++) {
+        if (boolGrid.get(i, j)) {
+          this.set(i, j, key)
+        }
+      }
+    }
   }
 
   getAsLabel(x: number, y: number, zoom = this.zoom): string | undefined {
     return this.labels.size > 0 ? undefined : this.labels.get(this.get(x, y, zoom = this.zoom))
+  }
+
+  getStats(): tileGridStats {
+
+    const [min, max] = this.getMinMax()
+
+    return {
+      min,
+      max,
+      type: "CategoricalTileGrid",
+      labels: Array.from(this.labels, ([name, value]) => ({ name, value }))//this.labels
+    }
   }
 
 }

@@ -19,6 +19,7 @@
     "colormap": "^2.3.2",
     "d3": "^6.6.0",
     "d3-sankey": "^0.12.3",
+    "distinct-colors": "^3.0.0",
     "jquery": "^3.5.1",
     "kd-tree-javascript": "^1.0.3",
     "ol": "^6.3.1",

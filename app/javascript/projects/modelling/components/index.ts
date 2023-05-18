@@ -13,6 +13,7 @@ import { OSMLandUseComponent } from "./osm_land_use_component"
 import { AreaComponent } from "./area_component"
 import { BarChartComponent } from "./bar_chart_component"
 import { DistanceMapComponent } from "./distance_map_component"
+import { CategoricalComponent } from "./categorical_component"
 
 export function createDefaultComponents(saveMapLayer: SaveMapLayer): BaseComponent[] {
   return [
@@ -27,6 +28,7 @@ export function createDefaultComponents(saveMapLayer: SaveMapLayer): BaseCompone
 
     // Conversions
     new NumberToNumericDatasetComponent(),
+    new CategoricalComponent(),
 
     // Calculations
     new AreaComponent(),

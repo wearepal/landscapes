@@ -149,6 +149,8 @@ export class UkcehLandCoverComponent extends BaseComponent {
         }
         else {
           const out = outputs[habitat.mode] = new BooleanTileGrid(categoricalData.zoom, categoricalData.x, categoricalData.y, categoricalData.width, categoricalData.height)
+          out.name = habitat.LC
+
           for (let x = categoricalData.x; x < categoricalData.x + categoricalData.width; ++x) {
             for (let y = categoricalData.y; y < categoricalData.y + categoricalData.height; ++y) {
               out.set(x, y, categoricalData.get(x, y) === habitat.mode)

@@ -9,6 +9,7 @@ type Affix = 'prefix' | 'postfix'
 
 export class UnaryOpComponent extends BaseComponent {
   operator: string
+  operation: string
   affix: Affix
   inputSocket: Socket
   outputSocket: Socket
@@ -16,6 +17,7 @@ export class UnaryOpComponent extends BaseComponent {
   constructor(operation: string, operator: string, affix: Affix, inputSocket: Socket, outputSocket: Socket, category: string) {
     super(operation)
     this.operator = operator
+    this.operation = operation
     this.affix = affix
     this.inputSocket = inputSocket
     this.outputSocket = outputSocket
@@ -52,15 +54,18 @@ export class UnaryOpComponent extends BaseComponent {
     else if (inputs['a'][0] === editorNode.meta.previousInput) {
       delete editorNode.meta.errorMessage
       outputs['out'] = editorNode.meta.output
+
     }
     else {
       delete editorNode.meta.errorMessage
       editorNode.meta.previousInput = inputs['a'][0]
-      editorNode.meta.output = outputs['out'] = await workerPool.queue(async worker => 
+      editorNode.meta.output = outputs['out'] = await workerPool.queue(async worker =>
         worker.performOperation(this.name, inputs['a'][0])
       )
-      //outputs['out'].name = node.data.name
+
     }
+
+    if (outputs['out'] instanceof BooleanTileGrid) outputs['out'].name = (editorNode.data.name as string !== undefined && editorNode.data.name as string !== "") ? editorNode.data.name as string : `${this.operation} data`
 
     const previewControl: any = editorNode.controls.get('Preview')
     previewControl.update()

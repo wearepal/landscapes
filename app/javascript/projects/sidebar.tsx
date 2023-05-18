@@ -6,6 +6,7 @@ import { Layer, ModelOutputLayer, NevoLayer, OverlayLayer, State } from './state
 import { iconForLayerType } from "./util"
 import { getColorStops } from './reify_layer/model_output'
 import { tileGridStats } from './modelling/tile_grid'
+import distinctColors from 'distinct-colors'
 
 interface OverlayLayerSettingsProps {
   layer: OverlayLayer
@@ -110,24 +111,83 @@ const CehLandCoverLayerSettings = () => (
 interface ModelOutputLayerSettingsProps {
   layer: ModelOutputLayer
   mutate: (data: any) => void
+  layerType: string | undefined
 }
 
-const ModelOutputLayerSettings = ({ layer, mutate }: ModelOutputLayerSettingsProps) => (
-  <div className="d-flex align-items-center mt-3">
-    Fill mode
-    <select className="custom-select ml-3" value={layer.fill} onChange={e => mutate({ fill: e.target.value })}>
-      <option value="greyscale">Greyscale</option>
-      <option value="heatmap">Heatmap</option>
-    </select>
-  </div>
-)
+function ModelOutputLayerSettings({ layer, mutate, layerType }: ModelOutputLayerSettingsProps) {
+
+
+  if (layer.fill == "heatmap") {
+    layer.fill = "jet"
+  }
+
+  if (layerType === "CategoricalTileGrid") {
+    return (
+      <div>
+      </div>
+    )
+  } else {
+
+    return (
+      <div className="d-flex align-items-center mt-3">
+        Fill mode
+        <select className="custom-select ml-3" value={layer.fill} onChange={e => mutate({ fill: e.target.value })}>
+          <optgroup label="Greyscale"></optgroup>
+          <option value="greyscale">Greyscale</option>
+          <optgroup label="Heatmap"></optgroup>
+          <option value="jet">Jet</option>
+          <option value="hsv">HSV</option>
+          <option value="hot">Hot</option>
+          <option value="cool">Cool</option>
+          <option value="spring">Spring</option>
+          <option value="summer">Summer</option>
+          <option value="autumn">Autumn</option>
+          <option value="winter">Winter</option>
+          <option value="copper">Copper</option>
+          <option value="YIGnBu">YIGnBu</option>
+          <option value="greens">Greens</option>
+          <option value="YIOrRd">YIOrRd</option>
+          <option value="bluered">Bluered</option>
+          <option value="RdBu">RdBu</option>
+          <option value="picnic">Picnic</option>
+          <option value="rainbow">Rainbow</option>
+          <option value="portland">Portland</option>
+          <option value="blackbody">Blackbody</option>
+          <option value="earth">Earth</option>
+          <option value="electric">Electric</option>
+          <option value="viridis">Viridis</option>
+          <option value="inferno">Inferno</option>
+          <option value="magma">Magma</option>
+          <option value="plasma">Plasma</option>
+          <option value="warm">Warm</option>
+          <option value="rainbow-soft">Rainbow-soft</option>
+          <option value="bathymetry">Bathymetry</option>
+          <option value="cdom">Cdom</option>
+          <option value="chlorophyll">Chlorophyll</option>
+          <option value="density">Density</option>
+          <option value="freesurface-blue">Freesurface-Blue</option>
+          <option value="freesurface-red">Freesurface-Red</option>
+          <option value="oxygen">Oxygen</option>
+          <option value="par">Par</option>
+          <option value="phase">Phase</option>
+          <option value="salinity">Salinity</option>
+          <option value="temperature">Temperature</option>
+          <option value="turbidity">Turbidity</option>
+          <option value="velocity-blue">Velocity-Blue</option>
+          <option value="velocity-green">Velocity-Green</option>
+          <option value="cubehelix">Cubehelix</option>
+        </select>
+      </div>
+    )
+  }
+}
 
 interface ModelOutputLayerLegendProps {
   layer: ModelOutputLayer
   getLayerData: (id: number) => tileGridStats
 }
 
-export function Legend({ colors, minValue, maxValue, type }) {
+export function Legend({ colors, minValue, maxValue, type, labels }) {
 
   if (type === undefined) {
     // if layer is still loading stats will be unavailable.
@@ -153,9 +213,39 @@ export function Legend({ colors, minValue, maxValue, type }) {
       </div>
     )
 
+  } else if (type === "CategoricalTileGrid") {
+
+    if (labels) {
+
+      if (!colors) return (<div></div>)
+
+      const data = labels.map(obj => ({ label: obj.value, color: colors.length < obj.name ? distinctColors({ count: maxValue })[obj.name - 1].rgb() : colors[obj.name - 1].rgb(), key: obj.name }))
+
+      return (
+        <div className="color-bar-container-cat">
+          <div className="color-bar-legend-cat">
+            {data.map(({ color, label, key }) => (
+              <div key={label} className="color-bar-label">
+                <input type="checkbox" checked name={key} onChange={() => console.log(key)} />
+                <div
+                  style={{ backgroundColor: `rgb(${color.join(",")})`, marginLeft: 4.5 }}
+                  className="color-bar-color-cat"
+                />
+                <div className="color-bar-label-text">{label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )
+
+    } else {
+      return <div></div>
+    }
+
+
   } else {
 
-    const mean = ((maxValue - minValue) / 2)
+    const mean = minValue + (((maxValue) - (minValue)) * .5)
 
     return (
       <div className="color-bar-container">
@@ -183,11 +273,11 @@ function ModelOutputLayerLegend({ layer, getLayerData }: ModelOutputLayerLegendP
 
   const stats = getLayerData(layer.nodeId)
 
-  const colors = getColorStops((layer.fill == "greyscale" ? "greys" : "jet"), 50).filter(c => typeof c !== "number").reverse()
+  const colors = stats.type === "CategoricalTileGrid" ? layer.colors : getColorStops((layer.fill == "greyscale" ? "greys" : (layer.fill === "heatmap" ? "jet" : layer.fill)), 50).filter(c => typeof c !== "number").reverse()
 
   return (
     <div>
-      <Legend colors={colors} minValue={stats.min} maxValue={stats.max} type={stats.type} />
+      <Legend colors={colors} minValue={stats.min} maxValue={stats.max} type={stats.type} labels={stats.labels} />
     </div>
   )
 }
@@ -322,6 +412,9 @@ export const Sidebar = ({ state, selectLayer, mutateLayer, deleteLayer, setLayer
                 mutate={
                   data => state.selectedLayer !== undefined &&
                     mutateLayer(state.selectedLayer, data)
+                }
+                layerType={
+                  getLayerData(selectedLayer.nodeId).type
                 }
               />
             }
