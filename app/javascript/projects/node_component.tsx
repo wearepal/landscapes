@@ -21,7 +21,7 @@ export class NodeComponent extends Node {
 
     this.inputDebounceTimer = setTimeout(() => {
       editor.trigger("process")
-    }, 500)
+    }, 1000)
   }
 
   render() {
