@@ -30,7 +30,8 @@ export class TextControl extends Control {
 
   constructor(emitter: Emitter<EventsTypes> | null, key: string) {
     super(key)
-    const process = debounce(() => emitter?.trigger("process"), 500)
+
+    const process = debounce(() => emitter?.trigger("process"), 1000)
     this.props = {
       getValue: () => {
         const value = this.getData(key)

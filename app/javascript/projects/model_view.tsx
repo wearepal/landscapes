@@ -46,7 +46,7 @@ export function ModelView({ visible, initialTransform, setTransform, initialMode
     editor.use(ContextMenuPlugin, {
       searchBar: false, // Too buggy
       delay: 100,
-      allocate: (component: BaseComponent) => 
+      allocate: (component: BaseComponent) =>
         component.category ? [component.category] : [],
       rename: (component: BaseComponent) =>
         component.contextMenuName || component.name,
@@ -72,7 +72,7 @@ export function ModelView({ visible, initialTransform, setTransform, initialMode
     }
 
     editor.on(
-      ["nodecreated", "noderemoved", "connectioncreated", "connectionremoved", "process"],
+      ["noderemoved", "connectioncreated", "connectionremoved", "process"],
       debounce(async () => {
         setProcessing(true)
         await engine.abort()
