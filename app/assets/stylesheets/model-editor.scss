@@ -44,6 +44,10 @@
     .socket.dataset {
       background: linear-gradient(steelblue 25%, #b4a246 50%, #b44646 75%);
     }
+
+    .socket.number-or-numeric-dataset {
+      background: linear-gradient(#b44646 50%, #46b44c 50%);
+    }
   }
 
   .connection .main-path {

@@ -9,3 +9,8 @@ export const dataSocket = new Socket('Dataset')
 booleanDataSocket.combineWith(dataSocket)
 numericDataSocket.combineWith(dataSocket)
 categoricalDataSocket.combineWith(dataSocket)
+
+
+export const numericNumberDataSocket = new Socket('Number or Numeric dataset')
+numberSocket.combineWith(numericNumberDataSocket)
+numericDataSocket.combineWith(numericNumberDataSocket)
