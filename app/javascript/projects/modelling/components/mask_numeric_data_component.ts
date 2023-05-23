@@ -5,6 +5,7 @@ import { booleanDataSocket, numericDataSocket, numericNumberDataSocket } from '.
 import { BooleanTileGrid, NumericTileGrid } from '../tile_grid'
 import { BaseComponent } from './base_component'
 import { NumericConstant } from '../numeric_constant'
+import { isEqual } from 'lodash'
 
 export class MaskNumericDataComponent extends BaseComponent {
   constructor() {
@@ -24,16 +25,16 @@ export class MaskNumericDataComponent extends BaseComponent {
 
   async worker(node: NodeData, inputs: WorkerInputs, outputs: WorkerOutputs, ...args: unknown[]) {
 
-
     const editorNode = this.editor?.nodes.find(n => n.id === node.id)
     if (editorNode === undefined) { return }
+
 
 
     if (inputs['num'][0] === undefined || inputs['mask'][0] === undefined) {
       editorNode.meta.errorMessage = 'Not enough inputs'
     }
 
-    else if (inputs['num'][0] !== editorNode.meta.previousInputs?.[0] || inputs['mask'][0] !== editorNode.meta.previousInputs?.[1]) {
+    else if (!isEqual(inputs['num'][0], editorNode.meta.previousInputs?.[0]) || !isEqual(inputs['mask'][0], editorNode.meta.previousInputs?.[1])) {
 
       delete editorNode.meta.errorMessage
 
