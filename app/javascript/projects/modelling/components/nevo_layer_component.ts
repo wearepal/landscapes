@@ -11,6 +11,8 @@ import { SelectControl } from "../controls/select"
 import { Geometry } from "ol/geom"
 import { Feature } from "ol"
 
+import { currentBbox as bbox, currentExtent as extent } from "../bounding_box"
+
 
 interface LayerProperty {
     code: string
@@ -19,8 +21,6 @@ interface LayerProperty {
 }
 
 const geoServer = "https://geo.leep.exeter.ac.uk/geoserver/nevo/wfs?"
-const extent = [-20839.008676500813, 6579722.087031, 12889.487811, 6640614.986501137]
-const bbox = `${extent.join(",")},EPSG:3857`
 const zoom = 20
 
 

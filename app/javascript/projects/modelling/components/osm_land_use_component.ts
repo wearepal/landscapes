@@ -10,6 +10,8 @@ import { createXYZ } from "ol/tilegrid"
 import * as proj4 from "proj4"
 import { Polygon } from "ol/geom"
 
+import { currentExtent as extent } from "../bounding_box"
+
 
 
 interface LandUseCategory {
@@ -31,8 +33,6 @@ interface OverpassFeature {
     geometry: Array<OverpassCoord>
 }
 
-//ESPG:3857 bbox Crawley to Seaford
-const extent = [-20839.008676500813, 6579722.087031, 12889.487811, 6640614.986501137]
 
 export async function retrieveLandUseData(extent: Extent, landuse: string): Promise<any> {
 
