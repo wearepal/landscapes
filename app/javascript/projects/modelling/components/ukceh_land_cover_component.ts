@@ -5,12 +5,8 @@ import { NodeData, WorkerInputs, WorkerOutputs } from "rete/types/core/data"
 import { booleanDataSocket, categoricalDataSocket } from "../socket_types"
 import { BooleanTileGrid, CategoricalTileGrid } from "../tile_grid"
 import { BaseComponent } from "./base_component"
+import { currentBbox as bbox, currentExtent as extent } from "../bounding_box"
 
-// TODO: make this customisable, currently it covers a box between Crawley (NW) and Seaford (SE)
-// Crawley: -20839.008676500813, 6640614.986501137
-// Seaford: 12889.487811, 6579722.087031
-const extent = [-20839.008676500813, 6579722.087031, 12889.487811, 6640614.986501137]
-const bbox = `${extent.join(",")},EPSG:3857`
 const zoom = 20
 
 interface Habitat {
@@ -48,6 +44,7 @@ const habitats: Habitat[] = [
 
 async function renderCategoricalData() {
   // When testing locally, disable CORS in browser settings
+
   const response = await fetch(
     "https://landscapes.wearepal.ai/geoserver/wfs?" +
     new URLSearchParams(
