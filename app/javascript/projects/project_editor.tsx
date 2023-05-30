@@ -9,7 +9,6 @@ import { reduce } from './reducer'
 import { CollapsedSidebar, Sidebar } from './sidebar'
 import { defaultProject, Project } from './state'
 import { Toolbar } from './toolbar'
-import { NumericTileGrid } from './modelling/tile_grid'
 
 export enum Tab {
   MapView,
@@ -70,7 +69,10 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
         isProcessing={isProcessing}
         autoProcessing={state.autoProcessing}
         setAutoProcessing={autoprocessing => dispatch({ type: "SetAutoprocessing", autoprocessing })}
-        manualProcessing={() => { setProcess(true) }}
+        manualProcessing={() => {
+          setProcessing(true)
+          setProcess(true)
+        }}
       />
       <div className="flex-grow-1 d-flex">
         {currentTab == Tab.MapView && <>

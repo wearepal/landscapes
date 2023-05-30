@@ -77,18 +77,6 @@ export function ModelView({ visible, initialTransform, setTransform, initialMode
       })
     }
 
-    editor.on(
-      ["noderemoved", "connectioncreated", "connectionremoved", "process"],
-      debounce(async () => {
-        if (autoProcessing) {
-          setProcessing(true)
-          await engine.abort()
-          await engine.process(editor.toJSON())
-          setProcessing(false)
-        }
-      })
-    )
-
     const writeModel = () => {
       // Use JSON.stringify and JSON.parse to perform a deep copy
       setModel(JSON.parse(JSON.stringify(editor.toJSON())))
@@ -119,7 +107,44 @@ export function ModelView({ visible, initialTransform, setTransform, initialMode
   }, [ref])
 
   React.useEffect(() => {
-    // manual processing trigger
+
+    // TOGGLES MANUAL/AUTOMATIC RECALCULATION
+
+    // a little messy but hopefully i'll think up a better solution. TODO: change this. 
+
+    editor?.events.noderemoved.forEach((e, i, o) => {
+      if (e.name === "debounced") o.splice(i, 1)
+    })
+    editor?.events.connectioncreated.forEach((e, i, o) => {
+      if (e.name === "debounced") o.splice(i, 1)
+    })
+    editor?.events.connectionremoved.forEach((e, i, o) => {
+      if (e.name === "debounced") o.splice(i, 1)
+    })
+    editor?.events.process.forEach((e, i, o) => {
+      if (e.name === "debounced") o.splice(i, 1)
+    })
+
+    editor?.on(
+      ["noderemoved", "connectioncreated", "connectionremoved", "process"],
+      debounce(async () => {
+        if (autoProcessing) {
+          setProcessing(true)
+          await engine?.abort()
+          await engine?.process(editor.toJSON())
+          setProcessing(false)
+        }
+      })
+    )
+
+    console.log(editor)
+
+  }, [editor, engine, autoProcessing])
+
+  React.useEffect(() => {
+
+    // MANUAL RECALCULATION TRIGGER
+
     const processManual = async () => {
 
       if (engine && editor && process) {
