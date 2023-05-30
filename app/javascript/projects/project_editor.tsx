@@ -25,13 +25,16 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
   const [state, dispatch] = React.useReducer(reduce, {
     project: { ...defaultProject, ...projectSource },
     hasUnsavedChanges: false,
-    autoProcessing: true
+    autoProcessing: false
   })
   const [sidebarVisible, setSidebarVisible] = React.useState(true)
   const [layerPaletteVisible, setLayerPaletteVisible] = React.useState(false)
   const [currentTab, setCurrentTab] = React.useState(Tab.MapView)
-  const [mapViewZoom, setMapViewZoom] = React.useState(0)
-  const [mapViewCenter, setMapViewCenter] = React.useState<[number, number]>([0, 0])
+
+  //hardcoded to the UK, perhaps later base this on the bounding box?
+  const [mapViewZoom, setMapViewZoom] = React.useState(6)
+  const [mapViewCenter, setMapViewCenter] = React.useState<[number, number]>([-1.992249, 53.992836])
+
   const [modelViewTransform, setModelViewTransform] = React.useState<Transform>({ x: 0, y: 0, k: 1 })
   const [modelOutputCache, setModelOutputCache] = React.useState<ModelOutputCache>({})
   const [isProcessing, setProcessing] = React.useState(false)

@@ -110,7 +110,7 @@ export function ModelView({ visible, initialTransform, setTransform, initialMode
 
     // TOGGLES MANUAL/AUTOMATIC RECALCULATION
 
-    // a little messy but hopefully i'll think up a better solution. TODO: change this. 
+    // a little messy and hacky but hopefully i'll think up a better solution. TODO: change this, please. 
 
     editor?.events.noderemoved.forEach((e, i, o) => {
       if (e.name === "debounced") o.splice(i, 1)
@@ -136,8 +136,6 @@ export function ModelView({ visible, initialTransform, setTransform, initialMode
         }
       })
     )
-
-    console.log(editor)
 
   }, [editor, engine, autoProcessing])
 
