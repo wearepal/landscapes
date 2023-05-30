@@ -25,16 +25,18 @@ interface ProjectEditorProps {
 export function ProjectEditor({ projectId, projectSource, backButtonPath, dbModels }: ProjectEditorProps) {
   const [state, dispatch] = React.useReducer(reduce, {
     project: { ...defaultProject, ...projectSource },
-    hasUnsavedChanges: false
+    hasUnsavedChanges: false,
+    autoProcessing: true
   })
   const [sidebarVisible, setSidebarVisible] = React.useState(true)
   const [layerPaletteVisible, setLayerPaletteVisible] = React.useState(false)
   const [currentTab, setCurrentTab] = React.useState(Tab.MapView)
-  const [mapViewZoom, setMapViewZoom] = React.useState(1)
+  const [mapViewZoom, setMapViewZoom] = React.useState(0)
   const [mapViewCenter, setMapViewCenter] = React.useState<[number, number]>([0, 0])
   const [modelViewTransform, setModelViewTransform] = React.useState<Transform>({ x: 0, y: 0, k: 1 })
   const [modelOutputCache, setModelOutputCache] = React.useState<ModelOutputCache>({})
   const [isProcessing, setProcessing] = React.useState(false)
+  const [process, setProcess] = React.useState(false)
 
   const saveProject = async () => {
     const method = 'PATCH'
@@ -66,6 +68,9 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
         currentTab={currentTab}
         setCurrentTab={setCurrentTab}
         isProcessing={isProcessing}
+        autoProcessing={state.autoProcessing}
+        setAutoProcessing={autoprocessing => dispatch({ type: "SetAutoprocessing", autoprocessing })}
+        manualProcessing={() => { setProcess(true) }}
       />
       <div className="flex-grow-1 d-flex">
         {currentTab == Tab.MapView && <>
@@ -129,6 +134,9 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
             setModelOutputCache(cache)
           }}
           setProcessing={setProcessing}
+          autoProcessing={state.autoProcessing}
+          process={process}
+          setProcess={setProcess}
         />
       </div>
     </div>

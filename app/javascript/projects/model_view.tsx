@@ -1,4 +1,4 @@
-import { debounce } from 'lodash'
+import { debounce, every } from 'lodash'
 import * as React from 'react'
 import { Engine, NodeEditor } from 'rete'
 import ConnectionPlugin from 'rete-connection-plugin'
@@ -27,10 +27,15 @@ export interface ModelViewProps {
   deleteOutputLayer: (id: number) => void
   saveMapLayer: SaveMapLayer
   setProcessing: (processing: boolean) => void
+  autoProcessing: boolean
+  process: boolean
+  setProcess: (process: boolean) => void
 }
-export function ModelView({ visible, initialTransform, setTransform, initialModel, setModel, createOutputLayer, deleteOutputLayer, saveMapLayer, setProcessing }: ModelViewProps) {
+export function ModelView({ visible, initialTransform, setTransform, initialModel, setModel, createOutputLayer, deleteOutputLayer, saveMapLayer, setProcessing, autoProcessing, process, setProcess }: ModelViewProps) {
   const ref = React.useRef<HTMLDivElement>(null)
   const [editor, setEditor] = React.useState<NodeEditor>()
+  const [engine, setEngine] = React.useState<Engine>()
+
   React.useEffect(() => {
     if (ref.current === null) return
 
@@ -51,6 +56,7 @@ export function ModelView({ visible, initialTransform, setTransform, initialMode
       rename: (component: BaseComponent) =>
         component.contextMenuName || component.name,
     })
+
     const engine = new Engine("landscapes@1.0.0")
     createDefaultComponents(saveMapLayer).forEach(component => {
       editor.register(component)
@@ -74,10 +80,12 @@ export function ModelView({ visible, initialTransform, setTransform, initialMode
     editor.on(
       ["noderemoved", "connectioncreated", "connectionremoved", "process"],
       debounce(async () => {
-        setProcessing(true)
-        await engine.abort()
-        await engine.process(editor.toJSON())
-        setProcessing(false)
+        if (autoProcessing) {
+          setProcessing(true)
+          await engine.abort()
+          await engine.process(editor.toJSON())
+          setProcessing(false)
+        }
       })
     )
 
@@ -98,6 +106,7 @@ export function ModelView({ visible, initialTransform, setTransform, initialMode
       addWriteModelListener()
     }
 
+    setEngine(engine)
     setEditor(editor)
 
     return () => {
@@ -105,8 +114,26 @@ export function ModelView({ visible, initialTransform, setTransform, initialMode
       editor.destroy()
       engine.destroy()
       setEditor(undefined)
+      setEngine(undefined)
     }
   }, [ref])
+
+  React.useEffect(() => {
+    // manual processing trigger
+    const processManual = async () => {
+
+      if (engine && editor && process) {
+        setProcessing(true)
+        await engine.abort()
+        await engine.process(editor.toJSON())
+        setProcessing(false)
+        setProcess(false)
+      }
+    };
+
+    processManual();
+
+  }, [process])
 
   React.useEffect(() => {
     // Fix bug where connectors appear in wrong place when user first switches to model view

@@ -55,6 +55,7 @@ export interface State {
   project: Project
   selectedLayer?: number
   hasUnsavedChanges: boolean
+  autoProcessing: boolean
 }
 
 export const defaultProject: Project = {

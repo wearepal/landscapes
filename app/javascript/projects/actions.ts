@@ -46,4 +46,9 @@ interface SetModel {
   model: Data
 }
 
-export type Action = SetProjectName | SelectLayer | AddLayer | DeleteLayer | DeleteModelOutputLayer | MutateLayer | SetLayerOrder | FinishSave | SetModel
+interface SetAutoprocessing {
+  type: "SetAutoprocessing"
+  autoprocessing: boolean
+}
+
+export type Action = SetProjectName | SelectLayer | AddLayer | DeleteLayer | DeleteModelOutputLayer | MutateLayer | SetLayerOrder | FinishSave | SetModel | SetAutoprocessing
