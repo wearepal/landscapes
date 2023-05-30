@@ -129,9 +129,9 @@ export function ModelView({ visible, initialTransform, setTransform, initialMode
         setProcessing(false)
         setProcess(false)
       }
-    };
+    }
 
-    processManual();
+    processManual()
 
   }, [process])
 
