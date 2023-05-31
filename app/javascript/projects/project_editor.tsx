@@ -32,8 +32,10 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
   const [currentTab, setCurrentTab] = React.useState(Tab.MapView)
 
   //hardcoded to the UK, perhaps later base this on the bounding box?
+
   const [mapViewZoom, setMapViewZoom] = React.useState(6)
-  const [mapViewCenter, setMapViewCenter] = React.useState<[number, number]>([-1.992249, 53.992836])
+  const [mapViewCenter, setMapViewCenter] = React.useState<[number, number]>([-254382.430133, 7083572.285244])
+
 
   const [modelViewTransform, setModelViewTransform] = React.useState<Transform>({ x: 0, y: 0, k: 1 })
   const [modelOutputCache, setModelOutputCache] = React.useState<ModelOutputCache>({})
