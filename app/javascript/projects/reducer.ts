@@ -69,6 +69,7 @@ export const reduce = (state: State, action: Action): State => {
   return {
     project: newProjectState,
     selectedLayer: reduceSelectedLayer(state.selectedLayer, action),
-    hasUnsavedChanges: action.type !== "FinishSave" && (state.hasUnsavedChanges || !isEqual(state.project, newProjectState))
+    hasUnsavedChanges: action.type !== "FinishSave" && (state.hasUnsavedChanges || !isEqual(state.project, newProjectState)),
+    autoProcessing: action.type !== "SetAutoprocessing" ? state.autoProcessing : !state.autoProcessing
   }
 }

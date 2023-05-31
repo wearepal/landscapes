@@ -9,7 +9,6 @@ import { reduce } from './reducer'
 import { CollapsedSidebar, Sidebar } from './sidebar'
 import { defaultProject, Project } from './state'
 import { Toolbar } from './toolbar'
-import { NumericTileGrid } from './modelling/tile_grid'
 
 export enum Tab {
   MapView,
@@ -25,16 +24,21 @@ interface ProjectEditorProps {
 export function ProjectEditor({ projectId, projectSource, backButtonPath, dbModels }: ProjectEditorProps) {
   const [state, dispatch] = React.useReducer(reduce, {
     project: { ...defaultProject, ...projectSource },
-    hasUnsavedChanges: false
+    hasUnsavedChanges: false,
+    autoProcessing: false
   })
   const [sidebarVisible, setSidebarVisible] = React.useState(true)
   const [layerPaletteVisible, setLayerPaletteVisible] = React.useState(false)
   const [currentTab, setCurrentTab] = React.useState(Tab.MapView)
-  const [mapViewZoom, setMapViewZoom] = React.useState(1)
-  const [mapViewCenter, setMapViewCenter] = React.useState<[number, number]>([0, 0])
+
+  //hardcoded to the UK, perhaps later base this on the bounding box?
+  const [mapViewZoom, setMapViewZoom] = React.useState(6)
+  const [mapViewCenter, setMapViewCenter] = React.useState<[number, number]>([-1.992249, 53.992836])
+
   const [modelViewTransform, setModelViewTransform] = React.useState<Transform>({ x: 0, y: 0, k: 1 })
   const [modelOutputCache, setModelOutputCache] = React.useState<ModelOutputCache>({})
   const [isProcessing, setProcessing] = React.useState(false)
+  const [process, setProcess] = React.useState(false)
 
   const saveProject = async () => {
     const method = 'PATCH'
@@ -66,6 +70,12 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
         currentTab={currentTab}
         setCurrentTab={setCurrentTab}
         isProcessing={isProcessing}
+        autoProcessing={state.autoProcessing}
+        setAutoProcessing={autoprocessing => dispatch({ type: "SetAutoprocessing", autoprocessing })}
+        manualProcessing={() => {
+          setProcessing(true)
+          setProcess(true)
+        }}
       />
       <div className="flex-grow-1 d-flex">
         {currentTab == Tab.MapView && <>
@@ -129,6 +139,9 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
             setModelOutputCache(cache)
           }}
           setProcessing={setProcessing}
+          autoProcessing={state.autoProcessing}
+          process={process}
+          setProcess={setProcess}
         />
       </div>
     </div>

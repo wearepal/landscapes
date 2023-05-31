@@ -9,6 +9,7 @@ import { Layer } from './state'
 import { reifyLayer } from './reify_layer'
 import { DBModels } from './db_models'
 import { BooleanTileGrid, CategoricalTileGrid, NumericTileGrid } from './modelling/tile_grid'
+import { useGeographic } from 'ol/proj'
 
 function getLayerExtent(layer: olBaseLayer) {
   if (layer instanceof VectorLayer) {
@@ -79,6 +80,7 @@ export const MapView = ({ layers, dbModels, initialZoom, setZoom, initialCenter,
   }
 
   React.useEffect(() => {
+    useGeographic()
     const newMap = new Map({
       view: new View({
         center: initialCenter,

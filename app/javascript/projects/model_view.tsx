@@ -1,4 +1,4 @@
-import { debounce } from 'lodash'
+import { debounce, every } from 'lodash'
 import * as React from 'react'
 import { Engine, NodeEditor } from 'rete'
 import ConnectionPlugin from 'rete-connection-plugin'
@@ -27,10 +27,15 @@ export interface ModelViewProps {
   deleteOutputLayer: (id: number) => void
   saveMapLayer: SaveMapLayer
   setProcessing: (processing: boolean) => void
+  autoProcessing: boolean
+  process: boolean
+  setProcess: (process: boolean) => void
 }
-export function ModelView({ visible, initialTransform, setTransform, initialModel, setModel, createOutputLayer, deleteOutputLayer, saveMapLayer, setProcessing }: ModelViewProps) {
+export function ModelView({ visible, initialTransform, setTransform, initialModel, setModel, createOutputLayer, deleteOutputLayer, saveMapLayer, setProcessing, autoProcessing, process, setProcess }: ModelViewProps) {
   const ref = React.useRef<HTMLDivElement>(null)
   const [editor, setEditor] = React.useState<NodeEditor>()
+  const [engine, setEngine] = React.useState<Engine>()
+
   React.useEffect(() => {
     if (ref.current === null) return
 
@@ -51,6 +56,7 @@ export function ModelView({ visible, initialTransform, setTransform, initialMode
       rename: (component: BaseComponent) =>
         component.contextMenuName || component.name,
     })
+
     const engine = new Engine("landscapes@1.0.0")
     createDefaultComponents(saveMapLayer).forEach(component => {
       editor.register(component)
@@ -71,16 +77,6 @@ export function ModelView({ visible, initialTransform, setTransform, initialMode
       })
     }
 
-    editor.on(
-      ["noderemoved", "connectioncreated", "connectionremoved", "process"],
-      debounce(async () => {
-        setProcessing(true)
-        await engine.abort()
-        await engine.process(editor.toJSON())
-        setProcessing(false)
-      })
-    )
-
     const writeModel = () => {
       // Use JSON.stringify and JSON.parse to perform a deep copy
       setModel(JSON.parse(JSON.stringify(editor.toJSON())))
@@ -98,6 +94,7 @@ export function ModelView({ visible, initialTransform, setTransform, initialMode
       addWriteModelListener()
     }
 
+    setEngine(engine)
     setEditor(editor)
 
     return () => {
@@ -105,8 +102,61 @@ export function ModelView({ visible, initialTransform, setTransform, initialMode
       editor.destroy()
       engine.destroy()
       setEditor(undefined)
+      setEngine(undefined)
     }
   }, [ref])
+
+  React.useEffect(() => {
+
+    // TOGGLES MANUAL/AUTOMATIC RECALCULATION
+
+    // a little messy and hacky but hopefully i'll think up a better solution. TODO: change this, please. 
+
+    editor?.events.noderemoved.forEach((e, i, o) => {
+      if (e.name === "debounced") o.splice(i, 1)
+    })
+    editor?.events.connectioncreated.forEach((e, i, o) => {
+      if (e.name === "debounced") o.splice(i, 1)
+    })
+    editor?.events.connectionremoved.forEach((e, i, o) => {
+      if (e.name === "debounced") o.splice(i, 1)
+    })
+    editor?.events.process.forEach((e, i, o) => {
+      if (e.name === "debounced") o.splice(i, 1)
+    })
+
+    editor?.on(
+      ["noderemoved", "connectioncreated", "connectionremoved", "process"],
+      debounce(async () => {
+        if (autoProcessing) {
+          setProcessing(true)
+          await engine?.abort()
+          await engine?.process(editor.toJSON())
+          setProcessing(false)
+        }
+      })
+    )
+
+  }, [editor, engine, autoProcessing])
+
+  React.useEffect(() => {
+
+    // MANUAL RECALCULATION TRIGGER
+
+    const processManual = async () => {
+
+      if (engine && editor && process) {
+        setProcessing(true)
+        await engine.abort()
+        await engine.process(editor.toJSON())
+        setProcessing(false)
+        setProcess(false)
+      }
+    }
+
+    processManual()
+
+  }, [process])
 
   React.useEffect(() => {
     // Fix bug where connectors appear in wrong place when user first switches to model view
