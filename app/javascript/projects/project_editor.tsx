@@ -9,6 +9,7 @@ import { reduce } from './reducer'
 import { CollapsedSidebar, Sidebar } from './sidebar'
 import { defaultProject, Project } from './state'
 import { Toolbar } from './toolbar'
+import { debounce } from 'lodash'
 
 export enum Tab {
   MapView,
@@ -76,7 +77,10 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
         setAutoProcessing={autoprocessing => dispatch({ type: "SetAutoprocessing", autoprocessing })}
         manualProcessing={() => {
           setProcessing(true)
-          setProcess(true)
+          const staggeredProcess = debounce(() => {
+            setProcess(true)
+          }, 750)
+          staggeredProcess()
         }}
       />
       <div className="flex-grow-1 d-flex">
