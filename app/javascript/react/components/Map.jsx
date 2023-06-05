@@ -4,7 +4,7 @@ import * as ol from 'ol'
 import { asArray } from 'ol/color'
 import { defaults as defaultControls, ZoomToExtent } from 'ol/control'
 import { GeoJSON } from 'ol/format'
-import { Image as olImageLayer, Tile as olTileLayer, Vector as olVectorLayer } from 'ol/layer'
+import { Image, Tile, Vector } from 'ol/layer'
 import ImageStatic from 'ol/source/ImageStatic'
 import VectorSource from 'ol/source/Vector'
 import OSM from 'ol/source/OSM'
@@ -55,8 +55,8 @@ export const Map = ({ extent, children }) => {
   }, [map, extent[0], extent[1], extent[2], extent[3]])
 
   return <MapContext.Provider value={map}>
-    <div ref={mapRef} style={{ width: "100%", height: "100%" }}/>
-    { children }
+    <div ref={mapRef} style={{ width: "100%", height: "100%" }} />
+    {children}
   </MapContext.Provider>
 }
 
@@ -65,7 +65,7 @@ export const OSMLayer = ({ visible }) => {
   const [layer, setLayer] = useState(null)
 
   useEffect(() => {
-    setLayer(new olTileLayer({ source: new OSM(), visible }))
+    setLayer(new Tile({ source: new OSM(), visible }))
     return () => setLayer(null)
   }, [])
 
@@ -86,7 +86,7 @@ export const OverlayLayer = ({ visible, id, colour, strokeWidth, backgroundOpaci
   const [layer, setLayer] = useState(null)
 
   useEffect(() => {
-    setLayer(new olVectorLayer({
+    setLayer(new Vector({
       source: new VectorSource({ url: `/overlays/${id}`, format: new GeoJSON() }),
       style: (feature) => {
         if (feature.getGeometry() instanceof Point && !feature.get('name')) {
@@ -129,7 +129,7 @@ export const TileLayer = ({ opacity, visible, mapTileLayer }) => {
   const [layer, setLayer] = useState(null)
 
   useEffect(() => {
-    setLayer(new olTileLayer({ opacity, visible }))
+    setLayer(new Tile({ opacity, visible }))
     return () => setLayer(null)
   }, [])
 
@@ -170,7 +170,7 @@ export const ImageLayer = ({ url, imageExtent, opacity, visible }) => {
   const [layer, setLayer] = useState(null)
 
   useEffect(() => {
-    setLayer(new olImageLayer({ opacity, visible }))
+    setLayer(new Image({ opacity, visible }))
     return () => setLayer(null)
   }, [])
 
