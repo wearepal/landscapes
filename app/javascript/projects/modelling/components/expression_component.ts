@@ -1,11 +1,11 @@
 import { NodeData, WorkerInputs, WorkerOutputs } from "rete/types/core/data"
 import { BaseComponent } from "./base_component"
 import { Input, Node, Output } from 'rete'
-import { PreviewControl } from "../controls/preview"
 import { NumericTileGrid } from "../tile_grid"
 import { SelectControl } from "../controls/select"
-import { numericDataSocket } from "../socket_types"
+import { numericDataSocket, numericNumberDataSocket } from "../socket_types"
 import { exp, isSymbolNode, parse, parser } from 'mathjs'
+import { PreviewControl } from "../controls/preview"
 
 
 interface Expression {
@@ -14,11 +14,7 @@ interface Expression {
 }
 
 const ExpressionList: Array<Expression> = [
-    { id: 1, name: `(x * y) / 3i + y` },
-    { id: 2, name: `(x * y) / 4i + y` },
-    { id: 3, name: `x ^ y` },
-    { id: 4, name: `(x ^ 3y) - 2k` },
-    { id: 5, name: `height * scale + error` }
+    { id: 1, name: `height * scale + error` }
 ]
 
 export class ExpressionComponent extends BaseComponent {
@@ -48,6 +44,11 @@ export class ExpressionComponent extends BaseComponent {
 
         node.addOutput(new Output('out', 'Output', numericDataSocket))
 
+        node.addControl(new PreviewControl(() =>
+            node.meta.output as any || new NumericTileGrid(0, 0, 0, 1, 1)
+        ))
+
+
     }
 
 
@@ -62,14 +63,16 @@ export class ExpressionComponent extends BaseComponent {
     calculateVariables(node: Node): void {
         const expression = this.getExpression(node.data.expressionId as number) as string
 
-        const uniqueSymbols = new Set(
+        const uniqueSymbols = new Set<String>(
             parse(expression)
                 .filter(isSymbolNode)
-                .map(n => n.name)
+                .map(n => (n as any).name)
         )
 
-        for (let symbol of uniqueSymbols) {
-            node.addInput(new Input(symbol, symbol, numericDataSocket))
+        const symbolArray = Array.from(uniqueSymbols)
+
+        for (let symbol of symbolArray) {
+            node.addInput(new Input(symbol as string, symbol as string, numericNumberDataSocket))
         }
     }
 
@@ -96,7 +99,7 @@ export class ExpressionComponent extends BaseComponent {
 
     async worker(node: NodeData, inputs: WorkerInputs, outputs: WorkerOutputs, ...args: unknown[]) {
 
-        console.log(inputs)
+        console.log("worker")
 
         const editorNode = this.editor?.nodes.find(n => n.id === node.id)
         if (editorNode === undefined) { return }
@@ -104,45 +107,40 @@ export class ExpressionComponent extends BaseComponent {
 
         let variables: string[] = []
 
-        let errorMsg: null | string = null;
+        let errorMsg: null | string = null
 
         for (const input in inputs) {
-            inputs[input][0] === undefined ? errorMsg = "" : null;
+            inputs[input][0] === undefined ? errorMsg = "" : null
             variables.push(input)
         }
 
         if (errorMsg) {
             editorNode.meta.errorMessage = errorMsg
+
         } else {
+
+            console.log("worker 2")
+
 
             delete editorNode.meta.errorMessage
 
             const p = parser()
 
-            let v = inputs[variables[0]][0] as NumericTileGrid
+            const v = inputs[variables[0]][0] as NumericTileGrid
 
             const out = editorNode.meta.output = outputs['out'] = new NumericTileGrid(v.zoom, v.x, v.y, v.width, v.height, 0)
+
+            const expression = this.getExpression(editorNode.data.expressionId as string) as string
 
             for (let x = v.x; x < v.x + v.width; ++x) {
                 for (let y = v.y; y < v.y + v.height; ++y) {
 
                     variables.forEach((i) => {
-
-                        const variableSource = inputs[i][0] as NumericTileGrid
-
-                        if (variableSource.width === 1) {
-                            //NUMERIC CONSTANTS NOT WORKING, WILL NEED TO FIX LATER. tHIS IS A BANDAID SOLUTION FOR NOW
-                            p.set(i, variableSource.get(0, 0))
-                        } else {
-                            p.set(i, variableSource.get(x, y));
-                        }
+                        const variableSource: any = inputs[i][0]
+                        p.set(i, variableSource.get(x, y))
                     })
 
-                    let expression = this.getExpression(editorNode.data.expressionId as string);
-
-                    //console.log(expression)
-
-                    let r = p.evaluate(expression as string)
+                    let r = p.evaluate(expression)
 
 
                     if (!isNaN(r)) {
@@ -154,8 +152,8 @@ export class ExpressionComponent extends BaseComponent {
             }
         }
 
-        //const previewControl: any = editorNode.controls.get('Preview')
-        //previewControl.update()
+        const previewControl: any = editorNode.controls.get('Preview')
+        previewControl.update()
         editorNode.update()
 
 

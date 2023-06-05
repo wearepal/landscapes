@@ -8,6 +8,7 @@ import { numericDataSocket } from "../socket_types"
 import { fromArrayBuffer } from "geotiff"
 import { createXYZ } from "ol/tilegrid"
 import { currentExtent as extent } from "../bounding_box"
+import { TypedArray } from "d3"
 
 interface DigitalModel {
     id: number
@@ -97,7 +98,6 @@ export class DigitalModelComponent extends BaseComponent {
 
     async worker(node: NodeData, inputs: WorkerInputs, outputs: WorkerOutputs, ...args: unknown[]) {
 
-
         const editorNode = this.editor?.nodes.find(n => n.id === node.id)
         if (editorNode === undefined) { return }
 
@@ -122,13 +122,12 @@ export class DigitalModelComponent extends BaseComponent {
 
                 const rasters = await geotiff.readRasters()
 
-                const out = editorNode.meta.output = outputs['dm'] = new NumericTileGrid(zoom, outputTileRange.minX, outputTileRange.minY, outputTileRange.getWidth(), outputTileRange.getHeight(), undefined)
+                const out = editorNode.meta.output = outputs['dm'] = new NumericTileGrid(zoom, outputTileRange.minX, outputTileRange.minY, outputTileRange.getWidth(), outputTileRange.getHeight())
 
-                for (let i = 0; i < rasters[0].length; i++) {
+                for (let i = 0; i < (rasters[0] as TypedArray).length; i++) {
 
-                    let y = (outputTileRange.minY + Math.floor(i / image.getWidth()))
                     let x = (outputTileRange.minX + i % image.getWidth())
-
+                    let y = (outputTileRange.minY + Math.floor(i / image.getWidth()))
 
                     out.set(x, y, rasters[0][i])
 

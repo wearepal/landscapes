@@ -1593,6 +1593,13 @@
   resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.184.tgz#23f96cd2a21a28e106dc24d825d4aa966de7a9fe"
   integrity sha512-RoZphVtHbxPZizt4IcILciSWiC6dcn+eZ8oX9IWEYfDMcocdd42f7NPI6fQj+6zI8y4E0L7gu2pcZKLGTRaV9Q==
 
+"@types/mathjs@^9.4.2":
+  version "9.4.2"
+  resolved "https://registry.yarnpkg.com/@types/mathjs/-/mathjs-9.4.2.tgz#beec20340d768171fed8331b08fb321d218ec6e1"
+  integrity sha512-GF5g1vJmvKdWIWsE53XX7EDAyCaZ9p6gaYm1xhlXn5JjrY/NJrOfJN3fBxS3wyZpVh3QqKoMkS2WjFwxWMHOTw==
+  dependencies:
+    mathjs "*"
+
 "@types/minimatch@*":
   version "3.0.5"
   resolved "https://registry.yarnpkg.com/@types/minimatch/-/minimatch-3.0.5.tgz#1001cc5e6a3704b83c236027e77f2f58ea010f40"
@@ -5275,7 +5282,7 @@ mapbox-to-css-font@^2.4.1:
   resolved "https://registry.yarnpkg.com/mapbox-to-css-font/-/mapbox-to-css-font-2.4.1.tgz#41bf38faed36b7dab069828aa3654e4bd91a1eda"
   integrity sha512-QQ/iKiM43DM9+aujTL45Iz5o7gDeSFmy4LPl3HZmNcwCE++NxGazf+yFpY+wCb+YS23sDa1ghpo3zrNFOcHlow==
 
-mathjs@^11.8.0:
+mathjs@*, mathjs@^11.8.0:
   version "11.8.0"
   resolved "https://registry.yarnpkg.com/mathjs/-/mathjs-11.8.0.tgz#b02e66461ec068fadf1e90c221121704dc14d8f5"
   integrity sha512-I7r8HCoqUGyEiHQdeOCF2m2k9N+tcOHO3cZQ3tyJkMMBQMFqMR7dMQEboBMJAiFW2Um3PEItGPwcOc4P6KRqwg==

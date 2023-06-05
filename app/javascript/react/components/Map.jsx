@@ -4,7 +4,7 @@ import * as ol from 'ol'
 import { asArray } from 'ol/color'
 import { defaults as defaultControls, ZoomToExtent } from 'ol/control'
 import { GeoJSON } from 'ol/format'
-import { Image, Tile, Vector } from 'ol/layer'
+import { Image as olImageLayer, Tile as olTileLayer, Vector as olVectorLayer } from 'ol/layer'
 import ImageStatic from 'ol/source/ImageStatic'
 import VectorSource from 'ol/source/Vector'
 import OSM from 'ol/source/OSM'
@@ -65,7 +65,7 @@ export const OSMLayer = ({ visible }) => {
   const [layer, setLayer] = useState(null)
 
   useEffect(() => {
-    setLayer(new Tile({ source: new OSM(), visible }))
+    setLayer(new olTileLayer({ source: new OSM(), visible }))
     return () => setLayer(null)
   }, [])
 
@@ -86,7 +86,7 @@ export const OverlayLayer = ({ visible, id, colour, strokeWidth, backgroundOpaci
   const [layer, setLayer] = useState(null)
 
   useEffect(() => {
-    setLayer(new Vector({
+    setLayer(new olVectorLayer({
       source: new VectorSource({ url: `/overlays/${id}`, format: new GeoJSON() }),
       style: (feature) => {
         if (feature.getGeometry() instanceof Point && !feature.get('name')) {
@@ -129,7 +129,7 @@ export const TileLayer = ({ opacity, visible, mapTileLayer }) => {
   const [layer, setLayer] = useState(null)
 
   useEffect(() => {
-    setLayer(new Tile({ opacity, visible }))
+    setLayer(new olTileLayer({ opacity, visible }))
     return () => setLayer(null)
   }, [])
 
@@ -170,7 +170,7 @@ export const ImageLayer = ({ url, imageExtent, opacity, visible }) => {
   const [layer, setLayer] = useState(null)
 
   useEffect(() => {
-    setLayer(new Image({ opacity, visible }))
+    setLayer(new olImageLayer({ opacity, visible }))
     return () => setLayer(null)
   }, [])
 
