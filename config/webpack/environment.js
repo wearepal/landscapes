@@ -5,6 +5,4 @@ const vue = require('./loaders/vue')
 environment.plugins.prepend('VueLoaderPlugin', new VueLoaderPlugin())
 environment.loaders.prepend('vue', vue)
 
-environment.externals = { '@petamoriken/float16': 'Float16' }
-
 module.exports = environment
