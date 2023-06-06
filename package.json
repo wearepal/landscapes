@@ -20,7 +20,6 @@
     "d3": "^6.6.0",
     "d3-sankey": "^0.12.3",
     "distinct-colors": "^3.0.0",
-    "geotiff": "^2.0.7",
     "jquery": "^3.5.1",
     "kd-tree-javascript": "^1.0.3",
     "mathjs": "^11.8.0",
