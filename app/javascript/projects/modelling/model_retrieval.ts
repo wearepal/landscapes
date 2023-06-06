@@ -1,7 +1,6 @@
 
 
-
-import { fromArrayBuffer } from "geotiff"
+import * as GeoTIFF from 'geotiff/dist-browser/geotiff'
 
 export async function retrieveModelData(extent: any, source: string, tileRange: any) {
 
@@ -29,7 +28,7 @@ export async function retrieveModelData(extent: any, source: string, tileRange: 
     )
 
     const arrayBuffer = await response.arrayBuffer()
-    const tiff = await fromArrayBuffer(arrayBuffer)
+    const tiff = await GeoTIFF.fromArrayBuffer(arrayBuffer)
 
 
     return tiff
