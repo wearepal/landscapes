@@ -6,6 +6,7 @@ import { SelectControl } from "../controls/select"
 import { numericDataSocket, numericNumberDataSocket } from "../socket_types"
 import { exp, isSymbolNode, parse, parser } from 'mathjs'
 import { PreviewControl } from "../controls/preview"
+import { isEqual } from "lodash"
 
 
 interface Expression {
@@ -99,11 +100,10 @@ export class ExpressionComponent extends BaseComponent {
 
     async worker(node: NodeData, inputs: WorkerInputs, outputs: WorkerOutputs, ...args: unknown[]) {
 
-        console.log("worker")
-
         const editorNode = this.editor?.nodes.find(n => n.id === node.id)
         if (editorNode === undefined) { return }
 
+        const expression = this.getExpression(editorNode.data.expressionId as string) as string
 
         let variables: string[] = []
 
@@ -117,10 +117,10 @@ export class ExpressionComponent extends BaseComponent {
         if (errorMsg) {
             editorNode.meta.errorMessage = errorMsg
 
-        } else {
-
-            console.log("worker 2")
-
+        } else if (isEqual(editorNode.data.previousInputs, [inputs, expression])) {
+            const out = editorNode.meta.output = outputs['out'] = editorNode.data.previewsOutput
+        }
+        else {
 
             delete editorNode.meta.errorMessage
 
@@ -129,8 +129,6 @@ export class ExpressionComponent extends BaseComponent {
             const v = inputs[variables[0]][0] as NumericTileGrid
 
             const out = editorNode.meta.output = outputs['out'] = new NumericTileGrid(v.zoom, v.x, v.y, v.width, v.height, 0)
-
-            const expression = this.getExpression(editorNode.data.expressionId as string) as string
 
             for (let x = v.x; x < v.x + v.width; ++x) {
                 for (let y = v.y; y < v.y + v.height; ++y) {
@@ -150,6 +148,9 @@ export class ExpressionComponent extends BaseComponent {
                     p.clear();
                 }
             }
+
+            editorNode.data.previousInputs = [inputs, expression]
+            editorNode.data.previewsOutput = out
         }
 
         const previewControl: any = editorNode.controls.get('Preview')
