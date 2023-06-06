@@ -24,7 +24,7 @@ export function createDefaultComponents(saveMapLayer: SaveMapLayer): BaseCompone
     new NevoLayerComponent(),
     new OSMLandUseComponent(),
     new NumericConstantComponent(),
-    //new DigitalModelComponent(),
+    new DigitalModelComponent(),
 
     // Outputs
     new MapLayerComponent(saveMapLayer),
