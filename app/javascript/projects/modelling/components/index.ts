@@ -14,6 +14,8 @@ import { AreaComponent } from "./area_component"
 import { BarChartComponent } from "./bar_chart_component"
 import { DistanceMapComponent } from "./distance_map_component"
 import { CategoricalComponent } from "./categorical_component"
+import { DigitalModelComponent } from "./digital_model_component"
+import { ExpressionComponent } from "./expression_component"
 
 export function createDefaultComponents(saveMapLayer: SaveMapLayer): BaseComponent[] {
   return [
@@ -22,6 +24,7 @@ export function createDefaultComponents(saveMapLayer: SaveMapLayer): BaseCompone
     new NevoLayerComponent(),
     new OSMLandUseComponent(),
     new NumericConstantComponent(),
+    new DigitalModelComponent(),
 
     // Outputs
     new MapLayerComponent(saveMapLayer),
@@ -46,6 +49,7 @@ export function createDefaultComponents(saveMapLayer: SaveMapLayer): BaseCompone
 
     // Arithmetic
     new MaskNumericDataComponent(),
+    new ExpressionComponent(),
     new VariadicOpComponent('Sum', '∑', numericDataSocket, numericDataSocket, 'Arithmetic'),
     new VariadicOpComponent('Product', '∏', numericDataSocket, numericDataSocket, 'Arithmetic'),
     new BinaryOpComponent('Add', '+', numericDataSocket, numericDataSocket, 'Arithmetic'),

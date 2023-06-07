@@ -22,6 +22,7 @@
     "distinct-colors": "^3.0.0",
     "jquery": "^3.5.1",
     "kd-tree-javascript": "^1.0.3",
+    "mathjs": "^11.8.0",
     "ol": "^6.3.1",
     "popper.js": "^1.16.0",
     "proj4": "^2.9.0",
@@ -51,6 +52,7 @@
   "devDependencies": {
     "@types/d3": "^7.4.0",
     "@types/lodash": "^4.14.182",
+    "@types/mathjs": "^9.4.2",
     "@types/proj4": "^2.5.2",
     "@types/sortablejs": "^1.13.0",
     "fork-ts-checker-webpack-plugin": "^6.2.6",

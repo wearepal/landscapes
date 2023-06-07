@@ -55,8 +55,8 @@ export const Map = ({ extent, children }) => {
   }, [map, extent[0], extent[1], extent[2], extent[3]])
 
   return <MapContext.Provider value={map}>
-    <div ref={mapRef} style={{ width: "100%", height: "100%" }}/>
-    { children }
+    <div ref={mapRef} style={{ width: "100%", height: "100%" }} />
+    {children}
   </MapContext.Provider>
 }
 
