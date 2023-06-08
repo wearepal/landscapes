@@ -155,6 +155,10 @@ export class NumericTileGrid extends TileGrid {
       type: "NumericTileGrid"
     }
   }
+
+  getTotal(): number {
+    return this.data.reduce((a, b) => a + b, 0)
+  }
 }
 
 export class CategoricalTileGrid extends TileGrid {

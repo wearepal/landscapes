@@ -16,6 +16,7 @@ import { DistanceMapComponent } from "./distance_map_component"
 import { CategoricalComponent } from "./categorical_component"
 import { DigitalModelComponent } from "./digital_model_component"
 import { ExpressionComponent } from "./expression_component"
+import { NumericDatasetToNumberComponent } from "./numeric_dataset_to_numeric_component"
 
 export function createDefaultComponents(saveMapLayer: SaveMapLayer): BaseComponent[] {
   return [
@@ -31,6 +32,7 @@ export function createDefaultComponents(saveMapLayer: SaveMapLayer): BaseCompone
 
     // Conversions
     new NumberToNumericDatasetComponent(),
+    new NumericDatasetToNumberComponent(),
     new CategoricalComponent(),
 
     // Calculations
