@@ -1,4 +1,4 @@
-import { booleanDataSocket, numericDataSocket } from "../socket_types"
+import { booleanDataSocket, numericDataSocket, numericNumberDataSocket } from "../socket_types"
 import { BaseComponent } from "./base_component"
 import { BinaryOpComponent } from "./binary_op_component"
 import { UkcehLandCoverComponent } from "./ukceh_land_cover_component"
@@ -52,11 +52,11 @@ export function createDefaultComponents(saveMapLayer: SaveMapLayer): BaseCompone
     new ExpressionComponent(),
     new VariadicOpComponent('Sum', '∑', numericDataSocket, numericDataSocket, 'Arithmetic'),
     new VariadicOpComponent('Product', '∏', numericDataSocket, numericDataSocket, 'Arithmetic'),
-    new BinaryOpComponent('Add', '+', numericDataSocket, numericDataSocket, 'Arithmetic'),
-    new BinaryOpComponent('Subtract', '−', numericDataSocket, numericDataSocket, 'Arithmetic'),
-    new BinaryOpComponent('Multiply', '×', numericDataSocket, numericDataSocket, 'Arithmetic'),
-    new BinaryOpComponent('Divide', '÷', numericDataSocket, numericDataSocket, 'Arithmetic'),
-    new BinaryOpComponent('Power', '^', numericDataSocket, numericDataSocket, 'Arithmetic'),
+    new BinaryOpComponent('Add', '+', numericNumberDataSocket, numericNumberDataSocket, 'Arithmetic'),
+    new BinaryOpComponent('Subtract', '−', numericNumberDataSocket, numericNumberDataSocket, 'Arithmetic'),
+    new BinaryOpComponent('Multiply', '×', numericNumberDataSocket, numericNumberDataSocket, 'Arithmetic'),
+    new BinaryOpComponent('Divide', '÷', numericNumberDataSocket, numericNumberDataSocket, 'Arithmetic'),
+    new BinaryOpComponent('Power', '^', numericNumberDataSocket, numericNumberDataSocket, 'Arithmetic'),
     new UnaryOpComponent('Negate', '−', 'prefix', numericDataSocket, numericDataSocket, 'Arithmetic'),
     new UnaryOpComponent('Reciprocal', '⁻¹', 'postfix', numericDataSocket, numericDataSocket, 'Arithmetic'),
     new BinaryOpComponent('Less', '<', numericDataSocket, booleanDataSocket, 'Arithmetic'),
