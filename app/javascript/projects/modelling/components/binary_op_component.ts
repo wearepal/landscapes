@@ -5,6 +5,8 @@ import { NodeData, WorkerInputs, WorkerOutputs } from 'rete/types/core/data'
 import { BaseComponent } from './base_component'
 import { PreviewControl } from '../controls/preview'
 import { isEqual } from 'lodash'
+import { NumericConstant } from '../numeric_constant'
+import { numericNumberDataSocket } from '../socket_types'
 
 export class BinaryOpComponent extends BaseComponent {
   operator: string
@@ -45,13 +47,24 @@ export class BinaryOpComponent extends BaseComponent {
     else {
       delete editorNode.meta.errorMessage
       editorNode.meta.previousInputs = [inputs['a'][0], inputs['b'][0]]
-      editorNode.meta.output = outputs['out'] = await workerPool.queue(async worker =>
-        worker.performOperation(this.name, inputs['a'][0], inputs['b'][0])
-      )
+
+
+      if (inputs['a'][0] instanceof NumericConstant && inputs['b'][0] instanceof NumericConstant && this.outputSocket === numericNumberDataSocket) {
+
+        editorNode.meta.output = outputs['out'] = new NumericConstant(inputs['a'][0].performCalculation(this.name, inputs['b'][0]), undefined)
+
+      } else {
+
+        if (inputs['a'][0] instanceof NumericConstant) inputs['a'][0].asNumericTileGrid()
+        if (inputs['b'][0] instanceof NumericConstant) inputs['b'][0].asNumericTileGrid()
+
+        editorNode.meta.output = outputs['out'] = await workerPool.queue(async worker =>
+          worker.performOperation(this.name, inputs['a'][0], inputs['b'][0])
+        )
+      }
     }
 
-
-    if (outputs['out'] instanceof BooleanTileGrid) outputs['out'].name = (editorNode.data.name as string !== undefined && editorNode.data.name as string !== "") ? editorNode.data.name as string : `${this.operation} data`
+    if (outputs['out'] instanceof BooleanTileGrid || outputs['out'] instanceof NumericConstant) outputs['out'].name = (editorNode.data.name as string !== undefined && editorNode.data.name as string !== "") ? editorNode.data.name as string : `${this.operation} data`
 
 
     const previewControl: any = editorNode.controls.get('Preview')
