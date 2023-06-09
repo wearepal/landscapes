@@ -18,4 +18,5 @@ numericDataSocket.combineWith(numericNumberDataSocket)
 
 numericNumberDataSocket.combineWith(numberSocket)
 numericNumberDataSocket.combineWith(numericDataSocket)
+numericNumberDataSocket.combineWith(dataSocket)
 

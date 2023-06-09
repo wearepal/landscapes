@@ -55,8 +55,8 @@ export class BinaryOpComponent extends BaseComponent {
 
       } else {
 
-        if (inputs['a'][0] instanceof NumericConstant) inputs['a'][0].asNumericTileGrid()
-        if (inputs['b'][0] instanceof NumericConstant) inputs['b'][0].asNumericTileGrid()
+        if (inputs['a'][0] instanceof NumericConstant) inputs['a'][0] = inputs['a'][0].asNumericTileGrid()
+        if (inputs['b'][0] instanceof NumericConstant) inputs['b'][0] = inputs['b'][0].asNumericTileGrid()
 
         editorNode.meta.output = outputs['out'] = await workerPool.queue(async worker =>
           worker.performOperation(this.name, inputs['a'][0], inputs['b'][0])
