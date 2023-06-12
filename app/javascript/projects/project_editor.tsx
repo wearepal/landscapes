@@ -133,7 +133,9 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
               type: "ModelOutputLayer",
               nodeId,
               fill: "greyscale",
-              colors: []
+              colors: [],
+              overrideBounds: false,
+              bounds: undefined
             }
           })}
           deleteOutputLayer={(nodeId: number) =>
