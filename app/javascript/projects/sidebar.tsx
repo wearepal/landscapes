@@ -186,9 +186,10 @@ interface ModelOutputLayerLegendProps {
   layer: ModelOutputLayer
   getLayerData: (id: number) => tileGridStats
   mutateColors: (color: [number, number, number, number][]) => void
+  updateBounds: (overrideBounds: boolean, bounds: [min: number, max: number]) => void
 }
 
-export function Legend({ colors, minValue, maxValue, type, labels, mutateColors }) {
+export function Legend({ colors, minValue, maxValue, type, labels, mutateColors, updateBounds, overrideBounds, bounds }) {
 
   if (type === undefined) {
     // if layer is still loading stats will be unavailable.
@@ -264,7 +265,36 @@ export function Legend({ colors, minValue, maxValue, type, labels, mutateColors 
 
   } else {
 
-    const mean = minValue + (((maxValue) - (minValue)) * .5)
+    const min = overrideBounds ? bounds[0] : minValue
+    const max = overrideBounds ? bounds[1] : maxValue
+    const mean = min + (((max) - (min)) * .5)
+
+    const toggleBounds = () => {
+
+      if (!bounds) {
+        bounds = [minValue, maxValue]
+      }
+
+      if (!overrideBounds && bounds[0] === null) {
+        bounds = [minValue, maxValue]
+      }
+
+      updateBounds(!overrideBounds, bounds)
+    }
+
+    const handleMinChange = (e) => {
+      const val = +(e.target.value as string)
+      if (!isNaN(val) && val < bounds[1]) {
+        updateBounds(overrideBounds, [val, bounds[1]])
+      }
+    }
+
+    const handleMaxChange = (e) => {
+      const val = +(e.target.value as string)
+      if (!isNaN(val) && val > bounds[0]) {
+        updateBounds(overrideBounds, [bounds[0], val])
+      }
+    }
 
     return (
       <div className="color-bar-container">
@@ -278,17 +308,57 @@ export function Legend({ colors, minValue, maxValue, type, labels, mutateColors 
           ))}
         </div>
         <div className="color-bar-legend">
-          <div title={minValue.toString()} >{minValue.toFixed(3)}</div>
+          <div title={min.toString()} >{min.toFixed(3)}</div>
           <div title={mean.toString()} >{mean.toFixed(3)}</div>
-          <div title={maxValue.toString()} >{maxValue.toFixed(3)}</div>
+          <div title={max.toString()} >{max.toFixed(3)}</div>
         </div>
+        <div style={{ padding: 15, paddingTop: 0, paddingLeft: 35 }} className="form-check form-switch">
+          <input
+            className="form-check-input"
+            type="checkbox"
+            id="overrideToggle"
+            checked={overrideBounds}
+            onChange={toggleBounds}
+          />
+          <label className="form-check-label" htmlFor="overrideToggle">
+            Set custom bounds
+          </label>
+        </div>
+        {overrideBounds && (
+          <div style={{ padding: 15, paddingTop: 0 }} className="row override-inputs">
+            <div className="col">
+              <label htmlFor="minOverrideInput" className="form-label">
+                Min
+              </label>
+              <input
+                type="number"
+                className="form-control"
+                id="minOverrideInput"
+                value={bounds[0]}
+                onChange={handleMinChange}
+              />
+            </div>
+            <div className="col">
+              <label htmlFor="maxOverrideInput" className="form-label">
+                Max
+              </label>
+              <input
+                type="number"
+                className="form-control"
+                id="maxOverrideInput"
+                value={bounds[1]}
+                onChange={handleMaxChange}
+              />
+            </div>
+          </div>
+        )}
       </div>
     )
   }
 
 }
 
-function ModelOutputLayerLegend({ layer, getLayerData, mutateColors }: ModelOutputLayerLegendProps) {
+function ModelOutputLayerLegend({ layer, getLayerData, mutateColors, updateBounds }: ModelOutputLayerLegendProps) {
 
   const stats = getLayerData(layer.nodeId)
 
@@ -296,7 +366,7 @@ function ModelOutputLayerLegend({ layer, getLayerData, mutateColors }: ModelOutp
 
   return (
     <div>
-      <Legend colors={colors} minValue={stats.min} maxValue={stats.max} type={stats.type} labels={stats.labels} mutateColors={mutateColors} />
+      <Legend colors={colors} minValue={stats.min} maxValue={stats.max} type={stats.type} labels={stats.labels} mutateColors={mutateColors} updateBounds={updateBounds} overrideBounds={layer.overrideBounds} bounds={layer.bounds} />
     </div>
   )
 }
@@ -373,6 +443,7 @@ export const Sidebar = ({ state, selectLayer, mutateLayer, deleteLayer, setLayer
         layer={selectedLayer}
         getLayerData={getLayerData}
         mutateColors={colors => state.selectedLayer !== undefined && mutateLayer(state.selectedLayer, { colors })}
+        updateBounds={(overrideBounds, bounds) => state.selectedLayer !== undefined && mutateLayer(state.selectedLayer, { overrideBounds, bounds })}
       />
     }
     <div className="px-3 py-2 border-top border-bottom bg-light">Layer settings</div>

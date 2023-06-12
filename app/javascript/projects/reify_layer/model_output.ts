@@ -11,12 +11,19 @@ import distinctColors from "distinct-colors"
 class ModelOutputSource extends DataTileSource {
   readonly tileLayer: BooleanTileGrid | NumericTileGrid | CategoricalTileGrid
 
-  constructor(tileLayer: BooleanTileGrid | NumericTileGrid | CategoricalTileGrid) {
+  constructor(tileLayer: BooleanTileGrid | NumericTileGrid | CategoricalTileGrid, bounds: [number, number] | null) {
     super({
       loader: (z, x, y) => {
 
+
         const cat = tileLayer instanceof CategoricalTileGrid
-        const [min, max] = (tileLayer instanceof NumericTileGrid || tileLayer instanceof CategoricalTileGrid) ? tileLayer.getMinMax() : [0, 1]
+        let [min, max] = [0, 0]
+
+        if (tileLayer instanceof CategoricalTileGrid) {
+          [min, max] = tileLayer.getMinMax()
+        } else if (tileLayer instanceof NumericTileGrid) {
+          [min, max] = bounds !== null ? bounds : tileLayer.getMinMax()
+        }
 
         const image = new Float32Array(256 * 256)
         for (let pixelX = 0; pixelX < 256; ++pixelX) {
@@ -24,7 +31,7 @@ class ModelOutputSource extends DataTileSource {
             const tileX = (x + (pixelX / 256)) * Math.pow(2, tileLayer.zoom - z)
             const tileY = (y + (pixelY / 256)) * Math.pow(2, tileLayer.zoom - z)
             const tile = tileLayer.get(tileX, tileY)
-            const val = typeof tile === "number" ? tile : (tile ? 1 : 0)
+            let val = typeof tile === "number" ? tile : (tile ? 1 : 0)
             if (cat) {
               if (val > max) {
                 image[pixelY * 256 + pixelX] = 0
@@ -32,6 +39,12 @@ class ModelOutputSource extends DataTileSource {
                 image[pixelY * 256 + pixelX] = val
               }
             } else {
+
+              if (bounds) {
+                if (val > max) val = max
+                if (val < min) val = min
+              }
+
               image[pixelY * 256 + pixelX] = (val - min) / (max - min)
             }
           }
@@ -82,6 +95,7 @@ export function getCatColorStops(palette: [number, number, number, number][] | u
 
 const styleOutputCache: Map<number, string> = new Map()
 const catOutputCache: Map<number, [number, number, number, number][] | undefined> = new Map()
+const boundsCache: Map<number, [boolean, [number, number] | undefined]> = new Map()
 
 export function reifyModelOutputLayer(layer: ModelOutputLayer, existingLayer: BaseLayer | null, modelOutputCache: ModelOutputCache) {
   if (!(layer.nodeId in modelOutputCache)) {
@@ -108,13 +122,18 @@ export function reifyModelOutputLayer(layer: ModelOutputLayer, existingLayer: Ba
   if (existingLayer instanceof WebGLTileLayer) {
     const source = existingLayer.getSource()
 
-    if (source instanceof ModelOutputSource && source.tileLayer === tileLayer && styleOutputCache.get(layer.nodeId) === layer.fill && catOutputCache.get(layer.nodeId)?.toString() === layer.colors?.toString()) {
+    if (source instanceof ModelOutputSource &&
+      source.tileLayer === tileLayer &&
+      styleOutputCache.get(layer.nodeId) === layer.fill &&
+      catOutputCache.get(layer.nodeId)?.toString() === layer.colors?.toString() &&
+      boundsCache.get(layer.nodeId)?.toString() === [layer.overrideBounds, layer.bounds].toString()) {
       return existingLayer
     }
   }
 
   styleOutputCache.set(layer.nodeId, layer.fill)
   catOutputCache.set(layer.nodeId, layer.colors)
+  boundsCache.set(layer.nodeId, [layer.overrideBounds, layer.bounds])
 
   let color: any[] = []
 
@@ -123,7 +142,6 @@ export function reifyModelOutputLayer(layer: ModelOutputLayer, existingLayer: Ba
     color = getCatColorStops(layer.colors, tileLayer.getMinMax()[1])
 
   } else {
-
 
     const [min, max] = (tileLayer instanceof NumericTileGrid) ? tileLayer.getMinMax() : [0, 1]
     const v0 = (0 - min) / (max - min)
@@ -141,8 +159,9 @@ export function reifyModelOutputLayer(layer: ModelOutputLayer, existingLayer: Ba
 
   }
 
+
   return new WebGLTileLayer({
-    source: new ModelOutputSource(tileLayer),
+    source: new ModelOutputSource(tileLayer, (layer.overrideBounds && layer.bounds) ? layer.bounds : null),
     style: {
       color,
     },
