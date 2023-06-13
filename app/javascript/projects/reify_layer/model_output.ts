@@ -143,7 +143,7 @@ export function reifyModelOutputLayer(layer: ModelOutputLayer, existingLayer: Ba
 
   } else {
 
-    const [min, max] = (tileLayer instanceof NumericTileGrid) ? tileLayer.getMinMax() : [0, 1]
+    const [min, max] = (tileLayer instanceof NumericTileGrid) ? ((layer.overrideBounds && layer.bounds) ? layer.bounds : tileLayer.getMinMax()) : [0, 1]
     const v0 = (0 - min) / (max - min)
 
     color = [
