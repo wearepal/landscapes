@@ -14,18 +14,26 @@ interface DigitalModel {
     id: number
     name: string
     source: string
+    min: number
+    max: number
 }
 
+//TODO: hardcoded scale factors, find an effective way of retrieving them from the geoserver?
 const ModelList: Array<DigitalModel> = [
     {
         id: 0,
         name: 'Digital Surface Model',
-        source: 'lidar:116807-4_DSM'
+        source: 'lidar:116807-4_DSM',
+        min: 0,
+        max: 259.170013
     },
+
     {
         id: 1,
         name: 'Digital Terrian Model',
-        source: 'lidar:116807-5_DTM'
+        source: 'lidar:116807-5_DTM',
+        min: 0,
+        max: 244.979996
     }
 ]
 
@@ -67,19 +75,19 @@ export class DigitalModelComponent extends BaseComponent {
         let index = node.data.sourceId
         if (index === undefined) { index = 0 }
 
-        let digitalModel = ModelList.find(a => a.id == index)?.source
+        let digitalModel = ModelList.find(a => a.id == index)
 
-        if (digitalModel) {
+        if (digitalModel?.source) {
 
-            if (this.outputCache.has(digitalModel)) {
-                const out = editorNode.meta.output = outputs['dm'] = this.outputCache.get(digitalModel)
+            if (this.outputCache.has(digitalModel.source)) {
+                const out = editorNode.meta.output = outputs['dm'] = this.outputCache.get(digitalModel.source)
             } else {
                 const zoom = 20
 
                 const tileGrid = createXYZ()
                 const outputTileRange = tileGrid.getTileRangeForExtentAndZ(extent, zoom)
 
-                const geotiff = await retrieveModelData(extent, digitalModel, outputTileRange)
+                const geotiff = await retrieveModelData(extent, digitalModel.source, outputTileRange)
 
                 const image = await geotiff.getImage()
 
@@ -87,16 +95,18 @@ export class DigitalModelComponent extends BaseComponent {
 
                 const out = editorNode.meta.output = outputs['dm'] = new NumericTileGrid(zoom, outputTileRange.minX, outputTileRange.minY, outputTileRange.getWidth(), outputTileRange.getHeight())
 
+                const scale = (digitalModel.max - digitalModel.min) / 255
+
                 for (let i = 0; i < (rasters[0] as TypedArray).length; i++) {
 
                     let x = (outputTileRange.minX + i % image.getWidth())
                     let y = (outputTileRange.minY + Math.floor(i / image.getWidth()))
 
-                    out.set(x, y, rasters[0][i])
+                    out.set(x, y, rasters[0][i] * scale)
 
                 }
 
-                this.outputCache.set(digitalModel, out)
+                this.outputCache.set(digitalModel.source, out)
 
             }
             const previewControl: any = editorNode.controls.get('Preview')
