@@ -48,6 +48,9 @@ export class DigitalModelComponent extends BaseComponent {
 
     async builder(node: Node) {
 
+        node.meta.toolTip = "Component is still in testing phase! This component uses LIDAR data (Digital Surface and Terrian Models) to generate a numeric dataset. Coverage is limited, areas with missing data will be set to 0."
+
+
         node.addControl(
             new SelectControl(
                 this.editor,
