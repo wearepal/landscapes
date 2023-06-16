@@ -56,6 +56,16 @@ export class NodeComponent extends Node {
             onDoubleClick={e => e.stopPropagation()}
           />
           {
+            node.meta.toolTip &&
+            <i
+              className="fas fa-question-circle text-secondary"
+              style={{ marginLeft: -26, paddingRight: 10 }}
+              onClick={() => { node.meta.toolTipLink ? window.open(node.meta.toolTipLink) : null }}
+              title={node.meta.toolTip}
+            />
+          }
+
+          {
             node.meta.errorMessage &&
             <i
               className="fas fa-exclamation-triangle ml-2 mb-1 text-danger"
