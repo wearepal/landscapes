@@ -122,6 +122,11 @@ export class UkcehLandCoverComponent extends BaseComponent {
   }
 
   async builder(node: Node) {
+
+    node.meta.toolTip = "The UKCEH land cover dataset offers detailed geospatial information on various land cover types across the United Kingdom, aiding environmental research, land management, and policy-making. For more information about this dataset's methodology, applications, and access, visit the UKCEH website [click here for more info]."
+
+    node.meta.toolTipLink = "https://www.ceh.ac.uk/data/ukceh-land-cover-maps"
+
     habitats.forEach(hab =>
       hab.AC === "All" ? node.addOutput(new Output(hab["mode"].toString(), hab["LC"], categoricalDataSocket)) : node.addOutput(new Output(hab["mode"].toString(), hab["LC"], booleanDataSocket))
     )

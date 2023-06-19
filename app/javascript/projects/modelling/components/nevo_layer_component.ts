@@ -2049,6 +2049,11 @@ export class NevoLayerComponent extends BaseComponent {
 
     async builder(node: Node) {
 
+
+        node.meta.toolTip = "The NEVO dataset by the University of Exeter is a combination of models covering subjects such as agriculture, forestry, and recreation. This component uses their 2KM grid models, values are adjusted to reflect each pixel. Further, more indepth, technical documentation can be found on their website. [click here for more info]."
+        node.meta.toolTipLink = "https://www.leep.exeter.ac.uk/nevo/documentation/"
+
+
         this.nevoOutput = null
         this.outputCache = new Map()
 

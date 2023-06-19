@@ -262,6 +262,11 @@ export class OSMLandUseComponent extends BaseComponent {
 
     async builder(node: Node) {
 
+
+        node.meta.toolTip = "This component uses OpenStreetMap API to generate boolean datasets for specific land use types. Further information about the land use types can be found on their wiki. [click here for more info]"
+        node.meta.toolTipLink = "https://wiki.openstreetmap.org/wiki/Key:landuse"
+
+
         this.osmOutput = null
         this.outputCache = new Map()
 
