@@ -10,6 +10,8 @@ import { CollapsedSidebar, Sidebar } from './sidebar'
 import { defaultProject, Project } from './state'
 import { Toolbar } from './toolbar'
 import { debounce } from 'lodash'
+import { AnalysisPanel } from './analysis_panel'
+import { Extent } from 'ol/extent'
 
 export enum Tab {
   MapView,
@@ -42,6 +44,7 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
   const [modelOutputCache, setModelOutputCache] = React.useState<ModelOutputCache>({})
   const [isProcessing, setProcessing] = React.useState(false)
   const [process, setProcess] = React.useState(false)
+  const [selectedArea, setSelectedArea] = React.useState<Extent|null>(null)
 
   const saveProject = async () => {
     const method = 'PATCH'
@@ -93,6 +96,8 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
             initialCenter={mapViewCenter}
             setCenter={setMapViewCenter}
             modelOutputCache={modelOutputCache}
+            selectedArea={selectedArea}
+            setSelectedArea={setSelectedArea}
           />
           {
             layerPaletteVisible &&
@@ -100,6 +105,13 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
               hide={() => setLayerPaletteVisible(false)}
               addLayer={layer => dispatch({ type: "AddLayer", layer })}
               dbModels={dbModels}
+            />
+          }
+          { 
+            selectedArea !== null && 
+            <AnalysisPanel 
+              selectedArea={selectedArea}
+              setSelectedArea={setSelectedArea}
             />
           }
           {
