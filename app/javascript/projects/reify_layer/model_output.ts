@@ -17,7 +17,7 @@ class ModelOutputSource extends DataTileSource {
 
 
         const cat = tileLayer instanceof CategoricalTileGrid
-        let [min, max] = [0, 0]
+        let [min, max] = [0, 1]
 
         if (tileLayer instanceof CategoricalTileGrid) {
           [min, max] = tileLayer.getMinMax()
