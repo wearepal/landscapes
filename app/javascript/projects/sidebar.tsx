@@ -380,10 +380,12 @@ interface SidebarProps {
   showLayerPalette: () => void
   hide: () => void
   getLayerData: (id: number) => tileGridStats
+  selectedLayer: Layer | null
+  setSelectedLayer: (layer: Layer | null) => void
 }
 
-export const Sidebar = ({ state, selectLayer, mutateLayer, deleteLayer, setLayerOrder, showLayerPalette, hide, getLayerData }: SidebarProps) => {
-  const selectedLayer = state.selectedLayer === undefined ? null : state.project.layers[state.selectedLayer]
+export const Sidebar = ({ state, selectLayer, mutateLayer, deleteLayer, setLayerOrder, showLayerPalette, hide, getLayerData, setSelectedLayer, selectedLayer }: SidebarProps) => {
+  setSelectedLayer(state.selectedLayer === undefined ? null : state.project.layers[state.selectedLayer])
   return <div className="d-flex flex-column" style={{ width: "300px" }}>
     <div className="px-3 py-2 border-top border-bottom d-flex align-items-center bg-light">
       <div className="flex-grow-1">Layers</div>

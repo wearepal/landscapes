@@ -1,38 +1,42 @@
-import * as React from 'react'
-import * as d3 from 'd3'
-
-interface PieData {
-  label: string;
-  value: number;
-}
+import * as React from 'react';
+import * as d3 from 'd3';
 
 interface PieChartProps {
-  data: PieData[];
+  data: Map<any, number>;
   width: number;
   height: number;
+  colors?: Map<any, [number, number, number, number]>;
 }
 
-const PieChart: React.FC<PieChartProps> = ({ data, width, height }) => {
-  const chartRef = React.useRef<SVGSVGElement>(null);
+const PieChart: React.FC<PieChartProps> = ({ data, width, height, colors }) => {
+    const chartRef = React.useRef<SVGSVGElement | null>(null);
+    const legendRef = React.useRef<SVGElement | null>(null);
 
   React.useEffect(() => {
     const svg = d3.select(chartRef.current)
       .attr('width', width)
       .attr('height', height);
 
-    const pie = d3.pie<PieData>()
-      .value(d => d.value);
+    const legend = d3.select(legendRef.current)
+      .attr('width', width)
+      .attr('height', 30);
 
-    const arc = d3.arc<d3.PieArcDatum<PieData>>()
+    const pie = d3.pie<number>()
+      .value(d => d);
+
+    const arc = d3.arc<d3.PieArcDatum<number>>()
       .innerRadius(0)
       .outerRadius(Math.min(width, height) / 2 - 10);
 
+    const defaultColors = d3.schemeCategory10;
     const color = d3.scaleOrdinal<string>()
-      .domain(data.map(d => d.label))
-      .range(d3.schemeCategory10);
+      .domain(Array.from(data.keys()))
+      .range(colors ? Array.from(colors.values()).map(rgba => `rgba(${rgba.join(',')})`) : defaultColors);
 
-    const arcs = svg.selectAll<SVGGElement, d3.PieArcDatum<PieData>>('g.arc')
-      .data(pie(data))
+    const pieData = Array.from(data.values());
+
+    const arcs = svg.selectAll<SVGGElement, d3.PieArcDatum<number>>('g.arc')
+      .data(pie(pieData))
       .enter()
       .append('g')
       .attr('class', 'arc')
@@ -41,14 +45,13 @@ const PieChart: React.FC<PieChartProps> = ({ data, width, height }) => {
     arcs.append('path')
       .attr('d', arc)
       .attr('fill', (d, i) => color(i.toString()));
+  }, [data, width, height, colors]);
 
-    arcs.append('text')
-      .attr('transform', d => `translate(${arc.centroid(d)})`)
-      .attr('dy', '0.35em')
-      .text(d => d.data.label);
-  }, [data, width, height]);
-
-  return <svg ref={chartRef}></svg>;
-};
+  return (
+    <div>
+      <svg ref={chartRef}></svg>
+    </div>
+  )
+}
 
 export default PieChart;

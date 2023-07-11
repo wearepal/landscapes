@@ -7,7 +7,7 @@ import { ModelView, Transform } from './model_view'
 import './project_editor.css'
 import { reduce } from './reducer'
 import { CollapsedSidebar, Sidebar } from './sidebar'
-import { defaultProject, Project } from './state'
+import { defaultProject, Layer, Project } from './state'
 import { Toolbar } from './toolbar'
 import { debounce } from 'lodash'
 import { AnalysisPanel } from './analysis_panel'
@@ -44,6 +44,8 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
   const [modelOutputCache, setModelOutputCache] = React.useState<ModelOutputCache>({})
   const [isProcessing, setProcessing] = React.useState(false)
   const [process, setProcess] = React.useState(false)
+
+  const [selectedLayer, setSelectedLayer] = React.useState<Layer|null>(null)
   const [selectedArea, setSelectedArea] = React.useState<Extent|null>(null)
 
   const saveProject = async () => {
@@ -112,6 +114,8 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
             <AnalysisPanel 
               selectedArea={selectedArea}
               setSelectedArea={setSelectedArea}
+              selectedLayer={selectedLayer}
+              modelOutputCache={modelOutputCache}
             />
           }
           {
@@ -124,8 +128,9 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
                 setLayerOrder={order => dispatch({ type: "SetLayerOrder", order })}
                 showLayerPalette={() => setLayerPaletteVisible(true)}
                 hide={() => setSidebarVisible(false)}
-                getLayerData={id => modelOutputCache[id] ? modelOutputCache[id].getStats() : { min: 0, max: 0, type: undefined }
-                }
+                getLayerData={id => modelOutputCache[id] ? modelOutputCache[id].getStats() : { min: 0, max: 0, type: undefined }}
+                setSelectedLayer={setSelectedLayer}
+                selectedLayer={selectedLayer}
               />
               : <CollapsedSidebar show={() => setSidebarVisible(true)} />
           }

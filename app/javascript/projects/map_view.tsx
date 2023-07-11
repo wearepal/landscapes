@@ -147,8 +147,8 @@ export const MapView = ({ layers, dbModels, initialZoom, setZoom, initialCenter,
             color: 'rgba(100, 100, 100, 0.25)'
           }),
           stroke: new Stroke({
-            color: 'black',
-            width: 4
+            color: 'red',
+            width: 5
           })
         })
       })
