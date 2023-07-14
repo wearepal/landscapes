@@ -10,6 +10,7 @@ import { createDefaultComponents } from './modelling/components'
 import { BaseComponent } from './modelling/components/base_component'
 import { SaveMapLayer } from './modelling/components/map_layer_component'
 import { NodeComponent } from './node_component'
+import { SaveModel } from './modelling/components/save_model_component'
 
 // Rete doesn't export `Transform`, so we have to re-define it ourselves
 export interface Transform {
@@ -30,8 +31,9 @@ export interface ModelViewProps {
   autoProcessing: boolean
   process: boolean
   setProcess: (process: boolean) => void
+  saveModel: SaveModel
 }
-export function ModelView({ visible, initialTransform, setTransform, initialModel, setModel, createOutputLayer, deleteOutputLayer, saveMapLayer, setProcessing, autoProcessing, process, setProcess }: ModelViewProps) {
+export function ModelView({ visible, initialTransform, setTransform, initialModel, setModel, createOutputLayer, deleteOutputLayer, saveMapLayer, setProcessing, autoProcessing, process, setProcess, saveModel }: ModelViewProps) {
   const ref = React.useRef<HTMLDivElement>(null)
   const [editor, setEditor] = React.useState<NodeEditor>()
   const [engine, setEngine] = React.useState<Engine>()
@@ -58,7 +60,7 @@ export function ModelView({ visible, initialTransform, setTransform, initialMode
     })
 
     const engine = new Engine("landscapes@1.0.0")
-    createDefaultComponents(saveMapLayer).forEach(component => {
+    createDefaultComponents(saveMapLayer, saveModel).forEach(component => {
       editor.register(component)
       engine.register(component)
     })

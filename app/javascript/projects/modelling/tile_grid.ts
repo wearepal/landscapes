@@ -48,6 +48,7 @@ export interface TileGridJSON {
 }
 
 export function fromJSON(json: TileGridJSON): TileGrid {
+
   if (json.type === "BooleanTileGrid") {
     return new BooleanTileGrid(json.zoom, json.x, json.y, json.width, json.height, json.data as Uint8Array)
   } else if (json.type === "NumericTileGrid") {

@@ -10,6 +10,8 @@ import { CollapsedSidebar, Sidebar } from './sidebar'
 import { defaultProject, Project } from './state'
 import { Toolbar } from './toolbar'
 import { debounce } from 'lodash'
+import { saveModelOutput } from './saved_dataset'
+import { TileGridJSON } from './modelling/tile_grid'
 
 export enum Tab {
   MapView,
@@ -150,6 +152,15 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
           autoProcessing={state.autoProcessing}
           process={process}
           setProcess={setProcess}
+          saveModel={(name: string, json: TileGridJSON) => {
+
+            const match = backButtonPath.match(/\/(\d+)\//)
+            if (match) {
+              const teamId = match[1]
+              saveModelOutput(name, json, +teamId)
+            }
+          }
+          }
         />
       </div>
     </div>
