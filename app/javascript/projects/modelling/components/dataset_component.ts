@@ -17,15 +17,18 @@ async function fetchDataset(datasetId: number, teamId: number) {
 export type getDatasets = () => Promise<CompiledDatasetRecord[]>
 
 export class PrecompiledModelComponent extends BaseComponent {
+    modelSource: getDatasets
     models: CompiledDatasetRecord[]
 
     constructor(getDatasets: getDatasets) {
         super("Load Dataset")
         this.category = "Inputs"
-        getDatasets().then(models => this.models = models)
+        this.modelSource = getDatasets
     }
 
     async builder(node: Node) {
+
+        this.models = await this.modelSource()
 
         node.meta.toolTip = "This node loads a precompiled dataset from the server."
 
@@ -68,33 +71,26 @@ export class PrecompiledModelComponent extends BaseComponent {
             return;
         }
 
+        let dataId = node.data.DatasetId ? (node.data.DatasetId as number) : this.models[0].id;
 
-        const response = await fetchDataset(4, 1);
+        const dataset = this.models.find((a) => a.id == dataId);
 
-        console.log(response.out)
-        outputs['out'] = editorNode.meta.output = response.out;
+        delete editorNode.meta.errorMessage;
 
-        // let dataId = node.data.DatasetId ? (node.data.DatasetId as number) : this.models[0].id;
-        // const dataset = this.models.find((a) => a.id === dataId);
-
-        // delete editorNode.meta.errorMessage;
-
-        // console.log(dataId, dataset, this.models)
-
-        // if (dataset) {
-        //     try {
-        //         const response = await fetchDataset(dataset.id, dataset.team_id);
-        //         if (response.error) {
-        //             editorNode.meta.errorMessage = response.error.message;
-        //         } else {
-        //             outputs['out'] = editorNode.meta.output = response.out;
-        //         }
-        //     } catch (error) {
-        //         editorNode.meta.errorMessage = error.message;
-        //     }
-        // } else {
-        //     editorNode.meta.errorMessage = "Unable to retrieve valid model data";
-        // }
+        if (dataset) {
+            try {
+                const response = await fetchDataset(dataset.id, dataset.team_id);
+                if (response.error) {
+                    editorNode.meta.errorMessage = response.error.message;
+                } else {
+                    outputs['out'] = editorNode.meta.output = response.out;
+                }
+            } catch (error) {
+                editorNode.meta.errorMessage = error.message;
+            }
+        } else {
+            editorNode.meta.errorMessage = "Unable to retrieve valid model data";
+        }
 
         editorNode.update();
 

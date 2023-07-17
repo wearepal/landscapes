@@ -44,7 +44,7 @@ export interface TileGridJSON {
   width: number
   height: number
   data: Uint8Array | Float32Array
-  labels?: Map<number, string>
+  labels?: object
 }
 
 export function fromJSON(json: TileGridJSON): NumericTileGrid | BooleanTileGrid | CategoricalTileGrid | null {
@@ -57,8 +57,13 @@ export function fromJSON(json: TileGridJSON): NumericTileGrid | BooleanTileGrid 
     case "NumericTileGrid":
       return new NumericTileGrid(json.zoom, json.x, json.y, json.width, json.height, Float32Array.from(arraydata, value => value))
     case "CategoricalTileGrid":
-      console.log(json.labels)
-      return new CategoricalTileGrid(json.zoom, json.x, json.y, json.width, json.height, Uint8Array.from(arraydata, value => value), json.labels)
+      const labels = json.labels || {}
+      const map = new Map<number, string>()
+
+      for (const [key, value] of Object.entries(labels)) {
+        map.set(parseInt(key), value)
+      }
+      return new CategoricalTileGrid(json.zoom, json.x, json.y, json.width, json.height, Uint8Array.from(arraydata, value => value), map)
     default:
       throw new Error("Invalid tile grid JSON");
   }
@@ -294,7 +299,7 @@ export class CategoricalTileGrid extends TileGrid {
       width: this.width,
       height: this.height,
       data: this.data,
-      labels: this.labels
+      labels: Object.fromEntries(this.labels)
     }
   }
 
