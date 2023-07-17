@@ -4,7 +4,7 @@ Rails.application.routes.draw do
     resources :memberships
     resources :overlays, only: [:index]
 
-    resources :datasets, only: [:create, :show]
+    resources :datasets, only: [:index, :create, :show]
 
     resources :label_schemas do
       resources :duplicates, model_name: "LabelSchema"

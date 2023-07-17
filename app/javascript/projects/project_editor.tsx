@@ -10,7 +10,7 @@ import { CollapsedSidebar, Sidebar } from './sidebar'
 import { defaultProject, Project } from './state'
 import { Toolbar } from './toolbar'
 import { debounce } from 'lodash'
-import { saveModelOutput } from './saved_dataset'
+import { getDataset, getDatasets, saveModelOutput } from './saved_dataset'
 import { TileGridJSON } from './modelling/tile_grid'
 
 export enum Tab {
@@ -30,10 +30,13 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
     hasUnsavedChanges: false,
     autoProcessing: false
   })
+
+  const match = backButtonPath.match(/\/(\d+)\//)
+  const teamId = match ? parseInt(match[1]) : 0
+
   const [sidebarVisible, setSidebarVisible] = React.useState(true)
   const [layerPaletteVisible, setLayerPaletteVisible] = React.useState(false)
   const [currentTab, setCurrentTab] = React.useState(Tab.MapView)
-
   //hardcoded to the UK, perhaps later base this on the bounding box?
 
   const [mapViewZoom, setMapViewZoom] = React.useState(6)
@@ -152,15 +155,8 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
           autoProcessing={state.autoProcessing}
           process={process}
           setProcess={setProcess}
-          saveModel={(name: string, json: TileGridJSON) => {
-
-            const match = backButtonPath.match(/\/(\d+)\//)
-            if (match) {
-              const teamId = match[1]
-              saveModelOutput(name, json, +teamId)
-            }
-          }
-          }
+          saveModel={(name: string, json: TileGridJSON) => saveModelOutput(name, json, teamId)}
+          getDatasets={() => getDatasets(teamId)}
         />
       </div>
     </div>

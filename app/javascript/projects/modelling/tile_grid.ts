@@ -47,18 +47,23 @@ export interface TileGridJSON {
   labels?: Map<number, string>
 }
 
-export function fromJSON(json: TileGridJSON): TileGrid {
+export function fromJSON(json: TileGridJSON): NumericTileGrid | BooleanTileGrid | CategoricalTileGrid | null {
+  const type = json.type;
+  const arraydata = Object.values(json.data);
 
-  if (json.type === "BooleanTileGrid") {
-    return new BooleanTileGrid(json.zoom, json.x, json.y, json.width, json.height, json.data as Uint8Array)
-  } else if (json.type === "NumericTileGrid") {
-    return new NumericTileGrid(json.zoom, json.x, json.y, json.width, json.height, json.data as Float32Array)
-  } else if (json.type === "CategoricalTileGrid") {
-    return new CategoricalTileGrid(json.zoom, json.x, json.y, json.width, json.height, json.data as Uint8Array, json.labels)
-  } else {
-    throw new Error("Invalid tile grid JSON");
+  switch (type) {
+    case "BooleanTileGrid":
+      return new BooleanTileGrid(json.zoom, json.x, json.y, json.width, json.height, Uint8Array.from(arraydata, value => value))
+    case "NumericTileGrid":
+      return new NumericTileGrid(json.zoom, json.x, json.y, json.width, json.height, Float32Array.from(arraydata, value => value))
+    case "CategoricalTileGrid":
+      console.log(json.labels)
+      return new CategoricalTileGrid(json.zoom, json.x, json.y, json.width, json.height, Uint8Array.from(arraydata, value => value), json.labels)
+    default:
+      throw new Error("Invalid tile grid JSON");
   }
 }
+
 
 abstract class TileGrid {
   readonly zoom: number

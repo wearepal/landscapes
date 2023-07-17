@@ -13,7 +13,7 @@ class DatasetsController < ApplicationController
             name = generate_unique_name(name)
         end
             
-        @dataset = @team.datasets.new(:name => name, :file => params[:file])
+        @dataset = @team.datasets.new(:name => name, :file => params[:file], :gridtype => params[:gridtype])
 
         if @dataset.save
             render json: @compiled, status: :created
@@ -21,6 +21,11 @@ class DatasetsController < ApplicationController
             render json: @compiled.errors, status: :unprocessable_entity
         end
 
+    end
+
+    def index
+        datasets = @team.datasets
+        render json: datasets
     end
 
     def show
