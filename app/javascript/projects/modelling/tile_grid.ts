@@ -228,7 +228,7 @@ export class CategoricalTileGrid extends TileGrid {
   constructor(zoom: number, x: number, y: number, width: number, height: number, initialValue?: Uint8Array, labels?: Map<number, string>) {
     super(zoom, x, y, width, height)
     this.data = initialValue ? initialValue : new Uint8Array(width * height).fill(255)
-    this.labels = labels ? labels : new Map()
+    if (labels) this.setLabels(labels)
   }
 
   get(x: number, y: number, zoom = this.zoom): number {
