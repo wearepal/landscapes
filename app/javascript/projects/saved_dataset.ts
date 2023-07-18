@@ -29,7 +29,7 @@ export function saveModelOutput(name: string, model: TileGridJSON, teamId: numbe
 export function getDatasets(teamId: number): Promise<Array<CompiledDatasetRecord>> {
     return new Promise((resolve, reject) => {
         const request = new XMLHttpRequest()
-        request.open('GET', `/teams/${teamId}/datasets`)
+        request.open('GET', `/teams/${teamId}/datasets?json=true`)
         request.setRequestHeader('X-CSRF-Token', (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement).content)
         request.onload = () => {
             if (request.status === 200) {

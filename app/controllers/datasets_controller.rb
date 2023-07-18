@@ -1,7 +1,5 @@
 class DatasetsController < ApplicationController
-
-
-    before_action :set_team
+    before_action :set_team, only: [:index, :new, :create]
 
     def create
                 
@@ -23,9 +21,30 @@ class DatasetsController < ApplicationController
 
     end
 
+    def update
+        @dataset = Dataset.find(params[:id])
+        @team = @dataset.team
+        authorize_for! @team
+
+        puts params
+    end
+
+    def destroy
+        @dataset = Dataset.find(params[:id])
+        @team = @dataset.team
+        authorize_for! @team
+        @dataset.destroy
+        redirect_to team_datasets_url(@team)
+    end
+
     def index
         datasets = @team.datasets
-        render json: datasets
+        
+        if params[:json].present?
+            render json: datasets
+        else
+            render layout: "team"
+        end
     end
 
     def show
