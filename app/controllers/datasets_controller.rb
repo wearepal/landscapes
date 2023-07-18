@@ -1,5 +1,5 @@
 class DatasetsController < ApplicationController
-    before_action :set_team, only: [:index, :new, :create]
+    before_action :set_team, only: [:index, :new, :create, :show]
 
     def create
                 
