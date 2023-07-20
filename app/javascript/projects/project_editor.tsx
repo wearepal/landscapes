@@ -7,7 +7,7 @@ import { ModelView, Transform } from './model_view'
 import './project_editor.css'
 import { reduce } from './reducer'
 import { CollapsedSidebar, Sidebar } from './sidebar'
-import { defaultProject, Project } from './state'
+import { DatasetLayer, defaultProject, ModelOutputLayer, Project } from './state'
 import { Toolbar } from './toolbar'
 import { debounce } from 'lodash'
 import { getDataset, getDatasets, saveModelOutput } from './saved_dataset'
@@ -136,8 +136,11 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
                 setLayerOrder={order => dispatch({ type: "SetLayerOrder", order })}
                 showLayerPalette={() => setLayerPaletteVisible(true)}
                 hide={() => setSidebarVisible(false)}
-                getLayerData={id => modelOutputCache[id] ? modelOutputCache[id].getStats() : { min: 0, max: 0, type: undefined }
-                }
+                getLayerData={(layer: ModelOutputLayer | DatasetLayer) => {
+                  const cache = layer.type === "ModelOutputLayer" ? modelOutputCache : datasetOutputCache
+                  const id = layer.type === "ModelOutputLayer" ? layer.nodeId : layer.id
+                  return cache[id] ? cache[id].getStats() : { min: 0, max: 0, type: undefined }
+                }}
               />
               : <CollapsedSidebar show={() => setSidebarVisible(true)} />
           }

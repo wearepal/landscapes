@@ -2,7 +2,7 @@ import * as React from 'react'
 import './sidebar.css'
 import { ReactSortable } from 'react-sortablejs'
 import { nevoLevelNames, nevoPropertyNames } from './nevo'
-import { Layer, ModelOutputLayer, NevoLayer, OverlayLayer, State } from './state'
+import { DatasetLayer, Layer, ModelOutputLayer, NevoLayer, OverlayLayer, State } from './state'
 import { iconForLayerType } from "./util"
 import { getColorStops } from './reify_layer/model_output'
 import { tileGridStats } from './modelling/tile_grid'
@@ -109,7 +109,7 @@ const CehLandCoverLayerSettings = () => (
 )
 
 interface ModelOutputLayerSettingsProps {
-  layer: ModelOutputLayer
+  layer: ModelOutputLayer | DatasetLayer
   mutate: (data: any) => void
   layerType: string | undefined
 }
@@ -183,8 +183,8 @@ function ModelOutputLayerSettings({ layer, mutate, layerType }: ModelOutputLayer
 }
 
 interface ModelOutputLayerLegendProps {
-  layer: ModelOutputLayer
-  getLayerData: (id: number) => tileGridStats
+  layer: ModelOutputLayer | DatasetLayer
+  getLayerData: (layer: DatasetLayer | ModelOutputLayer) => tileGridStats
   mutateColors: (color: [number, number, number, number][]) => void
   updateBounds: (overrideBounds: boolean, bounds: [min: number, max: number]) => void
 }
@@ -360,7 +360,7 @@ export function Legend({ colors, minValue, maxValue, type, labels, mutateColors,
 
 function ModelOutputLayerLegend({ layer, getLayerData, mutateColors, updateBounds }: ModelOutputLayerLegendProps) {
 
-  const stats = getLayerData(layer.nodeId)
+  const stats = getLayerData(layer)
 
   const colors = stats.type === "CategoricalTileGrid" ? layer.colors : getColorStops((layer.fill == "greyscale" ? "greys" : (layer.fill === "heatmap" ? "jet" : layer.fill)), 50).filter(c => typeof c !== "number").reverse()
 
@@ -379,7 +379,7 @@ interface SidebarProps {
   setLayerOrder: (ids: number[]) => void
   showLayerPalette: () => void
   hide: () => void
-  getLayerData: (id: number) => tileGridStats
+  getLayerData: (layer: DatasetLayer | ModelOutputLayer) => tileGridStats
 }
 
 export const Sidebar = ({ state, selectLayer, mutateLayer, deleteLayer, setLayerOrder, showLayerPalette, hide, getLayerData }: SidebarProps) => {
@@ -432,13 +432,13 @@ export const Sidebar = ({ state, selectLayer, mutateLayer, deleteLayer, setLayer
       </ReactSortable>
     </div>
     {
-      selectedLayer?.type == "ModelOutputLayer" &&
+      (selectedLayer?.type == "ModelOutputLayer" || selectedLayer?.type == "DatasetLayer") &&
       (
         <div className="px-3 py-2 border-top border-bottom bg-light">Layer legend</div>
       )
     }
     {
-      selectedLayer?.type == "ModelOutputLayer" &&
+      (selectedLayer?.type == "ModelOutputLayer" || selectedLayer?.type == "DatasetLayer") &&
       <ModelOutputLayerLegend
         layer={selectedLayer}
         getLayerData={getLayerData}
@@ -497,7 +497,7 @@ export const Sidebar = ({ state, selectLayer, mutateLayer, deleteLayer, setLayer
               />
             }
             {
-              selectedLayer?.type == "ModelOutputLayer" &&
+              (selectedLayer?.type == "ModelOutputLayer" || selectedLayer?.type == "DatasetLayer") &&
               <ModelOutputLayerSettings
                 layer={selectedLayer}
                 mutate={
@@ -505,7 +505,7 @@ export const Sidebar = ({ state, selectLayer, mutateLayer, deleteLayer, setLayer
                     mutateLayer(state.selectedLayer, data)
                 }
                 layerType={
-                  getLayerData(selectedLayer.nodeId).type
+                  getLayerData(selectedLayer).type
                 }
               />
             }
