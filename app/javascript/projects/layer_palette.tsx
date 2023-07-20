@@ -38,10 +38,9 @@ interface LayerPaletteProps {
   hide: () => void
   dbModels: DBModels
   getTeamDatasets: () => Promise<Array<CompiledDatasetRecord>>
-  loadTeamDataset: (id: number) => void
 }
 
-export const LayerPalette = ({ addLayer, hide, dbModels, getTeamDatasets, loadTeamDataset }: LayerPaletteProps) => {
+export const LayerPalette = ({ addLayer, hide, dbModels, getTeamDatasets }: LayerPaletteProps) => {
 
   const [teamDatasets, setTeamDatasets] = React.useState<CompiledDatasetRecord[]>([])
 
@@ -70,7 +69,7 @@ export const LayerPalette = ({ addLayer, hide, dbModels, getTeamDatasets, loadTe
           {teamDatasets.map((dataset) => (
             <AddLayerButton
               key={dataset.id}
-              addLayer={(Layer: any) => { loadTeamDataset(dataset.id); addLayer(Layer) }}
+              addLayer={addLayer}
               prototype={{
                 type: "DatasetLayer",
                 id: dataset.id,

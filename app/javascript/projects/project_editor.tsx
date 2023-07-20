@@ -112,7 +112,7 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
                   datasetOutputCache[datasetId] = out
                   setLoading(false)
                 }
-                else console.log(err); setLoading(false)
+                else console.error(err); setLoading(false)
               })
             }}
 
@@ -124,16 +124,6 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
               addLayer={layer => dispatch({ type: "AddLayer", layer })}
               dbModels={dbModels}
               getTeamDatasets={() => getDatasets(teamId)}
-              loadTeamDataset={(datasetId: number) => {
-                setLoading(true)
-                getDataset(datasetId, teamId, (err, out) => {
-                  if (out && !err) {
-                    datasetOutputCache[datasetId] = out
-                    setLoading(false)
-                  }
-                  else console.log(err); setLoading(false)
-                })
-              }}
             />
           }
           {
