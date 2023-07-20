@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Data } from 'rete/types/core/data'
 import { DBModels } from './db_models'
 import { LayerPalette } from './layer_palette'
-import { MapView, ModelOutputCache } from './map_view'
+import { DatasetCache, MapView, ModelOutputCache } from './map_view'
 import { ModelView, Transform } from './model_view'
 import './project_editor.css'
 import { reduce } from './reducer'
@@ -45,7 +45,10 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
 
   const [modelViewTransform, setModelViewTransform] = React.useState<Transform>({ x: 0, y: 0, k: 1 })
   const [modelOutputCache, setModelOutputCache] = React.useState<ModelOutputCache>({})
+  const [datasetOutputCache, setDatasetOutputCache] = React.useState<DatasetCache>({})
+
   const [isProcessing, setProcessing] = React.useState(false)
+  const [isLoading, setLoading] = React.useState(false)
   const [process, setProcess] = React.useState(false)
 
   const saveProject = async () => {
@@ -78,6 +81,7 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
         currentTab={currentTab}
         setCurrentTab={setCurrentTab}
         isProcessing={isProcessing}
+        isLoading={isLoading}
         autoProcessing={state.autoProcessing}
         setAutoProcessing={autoprocessing => dispatch({ type: "SetAutoprocessing", autoprocessing })}
         manualProcessing={() => {
@@ -98,6 +102,20 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
             initialCenter={mapViewCenter}
             setCenter={setMapViewCenter}
             modelOutputCache={modelOutputCache}
+            datasetCache={datasetOutputCache}
+            loadTeamDataset={(datasetId: number) => {
+              if (isLoading) return // prevent spamming the server
+
+              setLoading(true)
+              getDataset(datasetId, teamId, (err, out) => {
+                if (out && !err) {
+                  datasetOutputCache[datasetId] = out
+                  setLoading(false)
+                }
+                else console.log(err); setLoading(false)
+              })
+            }}
+
           />
           {
             layerPaletteVisible &&
@@ -105,6 +123,17 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
               hide={() => setLayerPaletteVisible(false)}
               addLayer={layer => dispatch({ type: "AddLayer", layer })}
               dbModels={dbModels}
+              getTeamDatasets={() => getDatasets(teamId)}
+              loadTeamDataset={(datasetId: number) => {
+                setLoading(true)
+                getDataset(datasetId, teamId, (err, out) => {
+                  if (out && !err) {
+                    datasetOutputCache[datasetId] = out
+                    setLoading(false)
+                  }
+                  else console.log(err); setLoading(false)
+                })
+              }}
             />
           }
           {

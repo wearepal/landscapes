@@ -51,6 +51,7 @@ class FitViewControl extends Control {
 }
 
 export type ModelOutputCache = Record<number, BooleanTileGrid | NumericTileGrid | CategoricalTileGrid>
+export type DatasetCache = Record<number, BooleanTileGrid | NumericTileGrid | CategoricalTileGrid>
 
 interface MapViewProps {
   layers: Layer[]
@@ -63,8 +64,11 @@ interface MapViewProps {
   setCenter: (center: [number, number]) => void
 
   modelOutputCache: ModelOutputCache
+  datasetCache: DatasetCache
+
+  loadTeamDataset: (id: number) => void
 }
-export const MapView = ({ layers, dbModels, initialZoom, setZoom, initialCenter, setCenter, modelOutputCache }: MapViewProps) => {
+export const MapView = ({ layers, dbModels, initialZoom, setZoom, initialCenter, setCenter, modelOutputCache, datasetCache, loadTeamDataset }: MapViewProps) => {
   const mapRef = React.useRef<HTMLDivElement>()
   const [map, setMap] = React.useState<Map | null>(null)
   const [allLayersVisible, setAllLayersVisible] = React.useState(true)
@@ -119,7 +123,7 @@ export const MapView = ({ layers, dbModels, initialZoom, setZoom, initialCenter,
     for (let i = 0; i < layers.length; ++i) {
       const layer = layers[i]
       const existingLayer = map.getLayers().getLength() > i ? map.getLayers().item(i) : null
-      const newLayer = reifyLayer(layer, existingLayer, dbModels, map, modelOutputCache)
+      const newLayer = reifyLayer(layer, existingLayer, dbModels, map, modelOutputCache, datasetCache, loadTeamDataset)
       newLayer.setVisible(layer.visible)
       newLayer.setOpacity(layer.opacity)
       if (existingLayer !== newLayer) {

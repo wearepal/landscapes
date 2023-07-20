@@ -7,6 +7,8 @@ interface BaseLayer {
   opacity: number
 }
 
+type fillType = "greyscale" | "heatmap" | "jet" | "hsv" | "hot" | "cool" | "spring" | "summer" | "autumn" | "winter" | "copper" | "WIGnBu" | "greens" | "YIOrRd" | "bluered" | "RdBu" | "picnic" | "rainbow" | "portland" | "blackbody" | "earth" | "electric" | "viridis" | "inferno" | "magma" | "plasma" | "warm" | "cool" | "rainbow-soft" | "bathymetry" | "cdom" | "chlorophyll" | "density" | "freesurface-blue" | "freesurface-red" | "oxygen" | "par" | "phase" | "salinity" | "temperature" | "turbidity" | "velocity-blue" | "velocity-green" | "cubehelix"
+
 export interface OsmLayer extends BaseLayer {
   type: "OsmLayer"
 }
@@ -38,13 +40,22 @@ export interface CehLandCoverLayer extends BaseLayer {
 export interface ModelOutputLayer extends BaseLayer {
   type: "ModelOutputLayer"
   nodeId: number
-  fill: "greyscale" | "heatmap" | "jet" | "hsv" | "hot" | "cool" | "spring" | "summer" | "autumn" | "winter" | "copper" | "WIGnBu" | "greens" | "YIOrRd" | "bluered" | "RdBu" | "picnic" | "rainbow" | "portland" | "blackbody" | "earth" | "electric" | "viridis" | "inferno" | "magma" | "plasma" | "warm" | "cool" | "rainbow-soft" | "bathymetry" | "cdom" | "chlorophyll" | "density" | "freesurface-blue" | "freesurface-red" | "oxygen" | "par" | "phase" | "salinity" | "temperature" | "turbidity" | "velocity-blue" | "velocity-green" | "cubehelix"
+  fill: fillType
   colors?: Array<[number, number, number, number]>
   overrideBounds: boolean
   bounds: [min: number, max: number] | undefined
 }
 
-export type Layer = OsmLayer | MapTileLayer | OverlayLayer | NevoLayer | CehLandCoverLayer | ModelOutputLayer
+export interface DatasetLayer extends BaseLayer {
+  type: "DatasetLayer"
+  id: number
+  fill: fillType
+  colors?: Array<[number, number, number, number]>
+  overrideBounds: boolean
+  bounds: [min: number, max: number] | undefined
+}
+
+export type Layer = OsmLayer | MapTileLayer | OverlayLayer | NevoLayer | CehLandCoverLayer | ModelOutputLayer | DatasetLayer
 
 export interface Project {
   name: string

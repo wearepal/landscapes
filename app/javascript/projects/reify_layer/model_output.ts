@@ -2,9 +2,9 @@ import BaseLayer from "ol/layer/Base"
 import TileLayer from "ol/layer/Tile"
 import WebGLTileLayer from "ol/layer/WebGLTile"
 import DataTileSource from "ol/source/DataTile"
-import { ModelOutputCache } from "../map_view"
+import { DatasetCache, ModelOutputCache } from "../map_view"
 import { BooleanTileGrid, CategoricalTileGrid, NumericTileGrid } from "../modelling/tile_grid"
-import { ModelOutputLayer } from "../state"
+import { DatasetLayer, Layer, ModelOutputLayer } from "../state"
 import colormap from "colormap"
 import distinctColors from "distinct-colors"
 
@@ -93,16 +93,27 @@ export function getCatColorStops(palette: [number, number, number, number][] | u
 
 }
 
+
 const styleOutputCache: Map<number, string> = new Map()
 const catOutputCache: Map<number, [number, number, number, number][] | undefined> = new Map()
 const boundsCache: Map<number, [boolean, [number, number] | undefined]> = new Map()
 
-export function reifyModelOutputLayer(layer: ModelOutputLayer, existingLayer: BaseLayer | null, modelOutputCache: ModelOutputCache) {
-  if (!(layer.nodeId in modelOutputCache)) {
+export function reifyModelOutputLayer(layer: ModelOutputLayer | DatasetLayer, existingLayer: BaseLayer | null, outputCache: ModelOutputCache | DatasetCache, loadteamDataset: (id: number) => void) {
+
+  // to avoid conflicts between model output and dataset layers, we use negative ids for model output layers
+  const [ModelId, CacheId] = layer.type === "ModelOutputLayer" ? [layer.nodeId, layer.nodeId] : [layer.id, -layer.id]
+
+  if (!(ModelId in outputCache)) {
+
+    // in scenario that layers are saved and loaded, we need to ensure that the layer is loaded
+    if (layer.type === "DatasetLayer") {
+      loadteamDataset(layer.id)
+    }
+
     return new TileLayer()
   }
 
-  const tileLayer = modelOutputCache[layer.nodeId]
+  const tileLayer = outputCache[ModelId]
 
   if (tileLayer instanceof CategoricalTileGrid) {
 
@@ -124,16 +135,16 @@ export function reifyModelOutputLayer(layer: ModelOutputLayer, existingLayer: Ba
 
     if (source instanceof ModelOutputSource &&
       source.tileLayer === tileLayer &&
-      styleOutputCache.get(layer.nodeId) === layer.fill &&
-      catOutputCache.get(layer.nodeId)?.toString() === layer.colors?.toString() &&
-      boundsCache.get(layer.nodeId)?.toString() === [layer.overrideBounds, layer.bounds].toString()) {
+      styleOutputCache.get(CacheId) === layer.fill &&
+      catOutputCache.get(CacheId)?.toString() === layer.colors?.toString() &&
+      boundsCache.get(CacheId)?.toString() === [layer.overrideBounds, layer.bounds].toString()) {
       return existingLayer
     }
   }
 
-  styleOutputCache.set(layer.nodeId, layer.fill)
-  catOutputCache.set(layer.nodeId, layer.colors)
-  boundsCache.set(layer.nodeId, [layer.overrideBounds, layer.bounds])
+  styleOutputCache.set(CacheId, layer.fill)
+  catOutputCache.set(CacheId, layer.colors)
+  boundsCache.set(CacheId, [layer.overrideBounds, layer.bounds])
 
   let color: any[] = []
 
