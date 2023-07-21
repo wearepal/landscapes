@@ -2,8 +2,8 @@
 
 one:
   team: one
-  name: MyString
+  name: RandomString
 
 two:
   team: two
-  name: MyString
+  name: RandomString
