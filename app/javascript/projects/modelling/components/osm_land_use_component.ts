@@ -36,8 +36,7 @@ interface OverpassFeature {
 
 export async function retrieveLandUseData(extent: Extent, landuse: string): Promise<any> {
 
-
-    const [e0, e1] = [proj4.default('EPSG:3857', 'EPSG:4326', extent.slice(0, 2)), proj4.default('EPSG:3857', 'EPSG:4326', extent.slice(2, 4))]
+    const [e0, e1] = [(proj4 as any).default('EPSG:3857', 'EPSG:4326', extent.slice(0, 2)), (proj4 as any).default('EPSG:3857', 'EPSG:4326', extent.slice(2, 4))]
 
     const query = `
         [out:json];
@@ -326,7 +325,7 @@ export class OSMLandUseComponent extends BaseComponent {
 
                 const geom = feature.geometry
 
-                const epsg3857_geometry = geom.map((e) => proj4.default('EPSG:4326', 'EPSG:3857', [e.lon, e.lat]))
+                const epsg3857_geometry = geom.map((e) => (proj4 as any).default('EPSG:4326', 'EPSG:3857', [e.lon, e.lat]))
 
                 const polygon = new Polygon([epsg3857_geometry])
 
