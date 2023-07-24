@@ -3,7 +3,7 @@ import BaseLayer from 'ol/layer/Base'
 import TileLayer from 'ol/layer/Tile'
 import { DBModels } from '../db_models'
 import { DatasetCache, ModelOutputCache } from '../map_view'
-import { Layer } from '../state'
+import { DatasetLayer, Layer } from '../state'
 import { reifyCehLandCoverLayer } from './ceh_land_cover'
 import { reifyMapTileLayer } from './map_tile_layer'
 import { reifyModelOutputLayer } from './model_output'
@@ -11,7 +11,7 @@ import { reifyNevoLayer } from './nevo'
 import { reifyOsmLayer } from './osm'
 import { reifyOverlayLayer } from './overlay'
 
-export const reifyLayer = (layer: Layer, existingLayer: BaseLayer | null, dbModels: DBModels, map: Map, modelOutputCache: ModelOutputCache, DatasetCache: DatasetCache, loadteamDataset: (id: number) => void): BaseLayer => {
+export const reifyLayer = (layer: Layer, existingLayer: BaseLayer | null, dbModels: DBModels, map: Map, modelOutputCache: ModelOutputCache, DatasetCache: DatasetCache, loadteamDataset: (layer: DatasetLayer) => void): BaseLayer => {
   const layerType = layer.type
   switch (layerType) {
     case "OsmLayer": return reifyOsmLayer(existingLayer)

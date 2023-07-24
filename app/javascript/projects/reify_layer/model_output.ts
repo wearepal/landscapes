@@ -98,7 +98,7 @@ const styleOutputCache: Map<number, string> = new Map()
 const catOutputCache: Map<number, [number, number, number, number][] | undefined> = new Map()
 const boundsCache: Map<number, [boolean, [number, number] | undefined]> = new Map()
 
-export function reifyModelOutputLayer(layer: ModelOutputLayer | DatasetLayer, existingLayer: BaseLayer | null, outputCache: ModelOutputCache | DatasetCache, loadteamDataset: (id: number) => void) {
+export function reifyModelOutputLayer(layer: ModelOutputLayer | DatasetLayer, existingLayer: BaseLayer | null, outputCache: ModelOutputCache | DatasetCache, loadteamDataset: (layer: DatasetLayer) => void) {
 
   // to avoid conflicts between model output and dataset layers, we use negative ids for model output layers
   const [ModelId, CacheId] = layer.type === "ModelOutputLayer" ? [layer.nodeId, layer.nodeId] : [layer.id, -layer.id]
@@ -107,7 +107,7 @@ export function reifyModelOutputLayer(layer: ModelOutputLayer | DatasetLayer, ex
 
     // in scenario that layers are saved and loaded, we need to ensure that the layer is loaded
     if (layer.type === "DatasetLayer") {
-      loadteamDataset(layer.id)
+      loadteamDataset(layer)
     }
 
     return new TileLayer()

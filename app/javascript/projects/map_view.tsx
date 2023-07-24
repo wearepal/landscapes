@@ -5,7 +5,7 @@ import { createEmpty as createEmptyExtent, extend, isEmpty } from 'ol/extent'
 import olBaseLayer from 'ol/layer/Base'
 import VectorLayer from 'ol/layer/Vector'
 import { createIconElement } from './util'
-import { Layer } from './state'
+import { DatasetLayer, Layer } from './state'
 import { reifyLayer } from './reify_layer'
 import { DBModels } from './db_models'
 import { BooleanTileGrid, CategoricalTileGrid, NumericTileGrid } from './modelling/tile_grid'
@@ -66,7 +66,7 @@ interface MapViewProps {
   modelOutputCache: ModelOutputCache
   datasetCache: DatasetCache
 
-  loadTeamDataset: (id: number) => void
+  loadTeamDataset: (layer: DatasetLayer) => void
 }
 export const MapView = ({ layers, dbModels, initialZoom, setZoom, initialCenter, setCenter, modelOutputCache, datasetCache, loadTeamDataset }: MapViewProps) => {
   const mapRef = React.useRef<HTMLDivElement>()

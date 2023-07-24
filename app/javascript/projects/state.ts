@@ -53,6 +53,7 @@ export interface DatasetLayer extends BaseLayer {
   colors?: Array<[number, number, number, number]>
   overrideBounds: boolean
   bounds: [min: number, max: number] | undefined
+  deleted?: boolean
 }
 
 export type Layer = OsmLayer | MapTileLayer | OverlayLayer | NevoLayer | CehLandCoverLayer | ModelOutputLayer | DatasetLayer

@@ -103,16 +103,21 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
             setCenter={setMapViewCenter}
             modelOutputCache={modelOutputCache}
             datasetCache={datasetOutputCache}
-            loadTeamDataset={(datasetId: number) => {
+            loadTeamDataset={(layer: DatasetLayer) => {
               if (isLoading) return // prevent spamming the server
+              if (layer.deleted) return // prevent loading deleted layers
 
               setLoading(true)
-              getDataset(datasetId, teamId, (err, out) => {
+              getDataset(layer.id, teamId, (err, out) => {
                 if (out && !err) {
-                  datasetOutputCache[datasetId] = out
+                  datasetOutputCache[layer.id] = out
                   setLoading(false)
                 }
-                else console.error(err); setLoading(false)
+                else {
+
+                  layer.deleted = true
+                  setLoading(false)
+                }
               })
             }}
 

@@ -400,33 +400,40 @@ export const Sidebar = ({ state, selectLayer, mutateLayer, deleteLayer, setLayer
         setList={(list: { id: number }[]) => { setLayerOrder(list.map(item => item.id).reverse()) }}
       >
         {
-          Array.from(state.project.allLayers).reverse().map(id =>
-            <div
-              key={id}
-              className={id === state.selectedLayer ? "d-flex align-items-center bg-primary text-white px-3 py-2" : "align-items-center d-flex px-3 py-2"}
-              style={{ cursor: "pointer" }}
-              onClick={(e) => {
-                e.stopPropagation()
-                selectLayer(id === state.selectedLayer ? undefined : id)
-              }}
-            >
-              <div><i className={`fas fa-fw ${iconForLayerType(state.project.layers[id].type)}`} /></div>
-              <span className="ml-2 mr-3 flex-grow-1" style={{ overflowX: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                {state.project.layers[id].name}
-              </span>
-              <span
+          Array.from(state.project.allLayers).reverse().map(id => {
+            const layer = state.project.layers[id]
+            const isDeleted = layer.type == "DatasetLayer" && layer.deleted === true
+
+            return (
+              <div
+                key={id}
+                className={id === state.selectedLayer ? "d-flex align-items-center bg-primary text-white px-3 py-2" : "align-items-center d-flex px-3 py-2"}
+                style={{ cursor: "pointer", color: isDeleted ? "red" : "inherit", textDecoration: isDeleted ? "line-through" : "none" }}
+                title={isDeleted ? 'Dataset is unavailable.' : ""}
                 onClick={(e) => {
                   e.stopPropagation()
-                  mutateLayer(id, { visible: !state.project.layers[id].visible })
+                  selectLayer(id === state.selectedLayer ? undefined : id)
                 }}
               >
-                {
-                  state.project.layers[id].visible ?
-                    <i className="fas fa-fw fa-eye" /> :
-                    <i className="fas fa-fw fa-eye-slash" />
-                }
-              </span>
-            </div>
+                <div><i className={`fas fa-fw ${iconForLayerType(state.project.layers[id].type)}`} /></div>
+                <span className="ml-2 mr-3 flex-grow-1" style={{ overflowX: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                  {state.project.layers[id].name}
+                </span>
+                <span
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    mutateLayer(id, { visible: !state.project.layers[id].visible })
+                  }}
+                >
+                  {
+                    state.project.layers[id].visible ?
+                      <i className="fas fa-fw fa-eye" /> :
+                      <i className="fas fa-fw fa-eye-slash" />
+                  }
+                </span>
+              </div>
+            )
+          }
           )
         }
       </ReactSortable>
