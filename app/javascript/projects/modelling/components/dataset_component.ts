@@ -30,7 +30,7 @@ export class PrecompiledModelComponent extends BaseComponent {
 
         this.models = await this.modelSource()
 
-        node.meta.toolTip = "This node loads a precompiled dataset from the server."
+        node.meta.toolTip = "Load a precompiled dataset. These can be created from the 'Save Dataset' component."
 
         node.addControl(new SelectControl(
             this.editor,
