@@ -1,0 +1,39 @@
+<div class="card">
+  <div class="card-header d-flex align-items-center justify-content-between">
+    Datasets
+  </div>
+
+  <div class="list-group list-group-flush" data-controller="filter">
+    <div class="list-group-item list-group-item-light">
+      <input placeholder="Search" class="form-control" data-action="input->filter#update" autofocus>
+    </div>
+
+    <% @team.datasets.order(:name).each do |dataset| %>
+      <div class="list-group-item">
+        <div class="d-flex align-items-center justify-content-between">
+          <div>
+            <% if dataset.gridtype == 'BooleanTileGrid' %>
+                <span class="badge badge-primary">Boolean</span>
+            <% elsif dataset.gridtype == 'NumericTileGrid' %>
+                <span class="badge badge-danger">Numeric</span>
+            <% else %>
+                <span class="badge badge-warning">Categorical</span>
+            <% end %>
+
+            
+            <%= dataset.name %>
+            <span class="text-muted fs-5">
+            (<%= dataset.created_at.strftime("%d/%m/%Y")  %>)
+            </span>
+          </div>
+          <div>
+
+            <%= link_to dataset_path(dataset), method: :delete, data: { confirm: "Are you sure you want to delete '#{dataset.name}'? \n \nIf this is currently used on a project, it will become unavailable." }, class: "px-3 py-2 text-danger" do %>
+                <i class="fas fa-trash-alt"></i>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

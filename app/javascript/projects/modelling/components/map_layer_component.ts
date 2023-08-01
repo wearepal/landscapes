@@ -16,7 +16,8 @@ export class MapLayerComponent extends BaseComponent {
   }
 
   async builder(node: Node) {
-    node.addInput(new Input("in", "Input", dataSocket))
+    node.meta.toolTip = "Output a model to the map view."
+    node.addInput(new Input("in", "Output", dataSocket))
   }
 
   async worker(node: NodeData, inputs: WorkerInputs, outputs: WorkerOutputs, ...args: unknown[]) {

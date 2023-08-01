@@ -17,8 +17,10 @@ import { CategoricalComponent } from "./categorical_component"
 import { DigitalModelComponent } from "./digital_model_component"
 import { ExpressionComponent } from "./expression_component"
 import { NumericDatasetToNumberComponent } from "./numeric_dataset_to_numeric_component"
+import { SaveModelOutputComponent, SaveModel } from "./save_model_component"
+import { PrecompiledModelComponent, getDatasets } from "./dataset_component"
 
-export function createDefaultComponents(saveMapLayer: SaveMapLayer): BaseComponent[] {
+export function createDefaultComponents(saveMapLayer: SaveMapLayer, saveModel: SaveModel, getDatasets: getDatasets): BaseComponent[] {
   return [
     // Inputs
     new UkcehLandCoverComponent(),
@@ -26,9 +28,11 @@ export function createDefaultComponents(saveMapLayer: SaveMapLayer): BaseCompone
     new OSMLandUseComponent(),
     new NumericConstantComponent(),
     new DigitalModelComponent(),
+    new PrecompiledModelComponent(getDatasets),
 
     // Outputs
     new MapLayerComponent(saveMapLayer),
+    new SaveModelOutputComponent(saveModel),
 
     // Conversions
     new NumberToNumericDatasetComponent(),

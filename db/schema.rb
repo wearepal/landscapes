@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_09_15_150131) do
+ActiveRecord::Schema.define(version: 2023_07_17_102907) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -41,6 +41,16 @@ ActiveRecord::Schema.define(version: 2022_09_15_150131) do
     t.bigint "blob_id", null: false
     t.string "variation_digest", null: false
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
+
+  create_table "datasets", force: :cascade do |t|
+    t.bigint "team_id", null: false
+    t.string "name"
+    t.string "gridtype"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["name"], name: "index_datasets_on_name", unique: true
+    t.index ["team_id"], name: "index_datasets_on_team_id"
   end
 
   create_table "label_schemas", force: :cascade do |t|
@@ -233,6 +243,7 @@ ActiveRecord::Schema.define(version: 2022_09_15_150131) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "datasets", "teams"
   add_foreign_key "label_schemas", "teams"
   add_foreign_key "labelling_group_uploads", "label_schemas"
   add_foreign_key "labelling_group_uploads", "labelling_groups"

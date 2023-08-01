@@ -1,4 +1,3 @@
-import { Extent } from "ol/extent"
 import { registerSerializer } from "threads"
 
 function validateZoom(zoom: number) {
@@ -37,12 +36,48 @@ export interface tileGridStats {
   labels?: Array<any>
 }
 
+export interface TileGridJSON {
+  type: "BooleanTileGrid" | "NumericTileGrid" | "CategoricalTileGrid"
+  zoom: number
+  x: number
+  y: number
+  width: number
+  height: number
+  data: Uint8Array | Float32Array
+  labels?: object
+}
+
+export function fromJSON(json: TileGridJSON): NumericTileGrid | BooleanTileGrid | CategoricalTileGrid | null {
+  const type = json.type;
+  const arraydata = Object.values(json.data);
+
+  switch (type) {
+    case "BooleanTileGrid":
+      return new BooleanTileGrid(json.zoom, json.x, json.y, json.width, json.height, Uint8Array.from(arraydata, value => value))
+    case "NumericTileGrid":
+      return new NumericTileGrid(json.zoom, json.x, json.y, json.width, json.height, Float32Array.from(arraydata, value => value))
+    case "CategoricalTileGrid":
+      const labels = json.labels || {}
+      const map = new Map<number, string>()
+
+      for (const [key, value] of Object.entries(labels)) {
+        map.set(parseInt(key), value)
+      }
+      return new CategoricalTileGrid(json.zoom, json.x, json.y, json.width, json.height, Uint8Array.from(arraydata, value => value), map)
+    default:
+      throw new Error("Invalid tile grid JSON");
+  }
+}
+
+
 abstract class TileGrid {
   readonly zoom: number
   readonly x: number
   readonly y: number
   readonly width: number
   readonly height: number
+
+  abstract toJSON(): TileGridJSON
 
   constructor(zoom: number, x: number, y: number, width: number, height: number) {
     validateZoom(zoom)
@@ -93,6 +128,18 @@ export class BooleanTileGrid extends TileGrid {
       min: 0,
       max: 1,
       type: "BooleanTileGrid"
+    }
+  }
+
+  toJSON(): TileGridJSON {
+    return {
+      type: 'BooleanTileGrid',
+      zoom: this.zoom,
+      x: this.x,
+      y: this.y,
+      width: this.width,
+      height: this.height,
+      data: this.data
     }
   }
 }
@@ -159,6 +206,18 @@ export class NumericTileGrid extends TileGrid {
   getTotal(): number {
     return this.data.reduce((a, b) => a + b, 0)
   }
+
+  toJSON(): TileGridJSON {
+    return {
+      type: 'NumericTileGrid',
+      zoom: this.zoom,
+      x: this.x,
+      y: this.y,
+      width: this.width,
+      height: this.height,
+      data: this.data
+    }
+  }
 }
 
 export class CategoricalTileGrid extends TileGrid {
@@ -166,10 +225,10 @@ export class CategoricalTileGrid extends TileGrid {
   private minMax: [number, number] | null
   labels: Map<number, string>
 
-  constructor(zoom: number, x: number, y: number, width: number, height: number) {
+  constructor(zoom: number, x: number, y: number, width: number, height: number, initialValue?: Uint8Array, labels?: Map<number, string>) {
     super(zoom, x, y, width, height)
-    this.data = new Uint8Array(width * height).fill(255)
-    this.labels = new Map()
+    this.data = initialValue ? initialValue : new Uint8Array(width * height).fill(255)
+    if (labels) this.setLabels(labels)
   }
 
   get(x: number, y: number, zoom = this.zoom): number {
@@ -228,6 +287,19 @@ export class CategoricalTileGrid extends TileGrid {
       max,
       type: "CategoricalTileGrid",
       labels: Array.from(this.labels, ([name, value]) => ({ name, value }))//this.labels
+    }
+  }
+
+  toJSON(): TileGridJSON {
+    return {
+      type: 'CategoricalTileGrid',
+      zoom: this.zoom,
+      x: this.x,
+      y: this.y,
+      width: this.width,
+      height: this.height,
+      data: this.data,
+      labels: Object.fromEntries(this.labels)
     }
   }
 

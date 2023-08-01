@@ -2,14 +2,16 @@ import * as React from 'react'
 import { Data } from 'rete/types/core/data'
 import { DBModels } from './db_models'
 import { LayerPalette } from './layer_palette'
-import { MapView, ModelOutputCache } from './map_view'
+import { DatasetCache, MapView, ModelOutputCache } from './map_view'
 import { ModelView, Transform } from './model_view'
 import './project_editor.css'
 import { reduce } from './reducer'
 import { CollapsedSidebar, Sidebar } from './sidebar'
-import { defaultProject, Project } from './state'
+import { DatasetLayer, defaultProject, ModelOutputLayer, Project } from './state'
 import { Toolbar } from './toolbar'
 import { debounce } from 'lodash'
+import { getDataset, getDatasets, saveModelOutput } from './saved_dataset'
+import { TileGridJSON } from './modelling/tile_grid'
 
 export enum Tab {
   MapView,
@@ -28,10 +30,13 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
     hasUnsavedChanges: false,
     autoProcessing: false
   })
+
+  const match = backButtonPath.match(/\/(\d+)\//)
+  const teamId = match ? parseInt(match[1]) : 0
+
   const [sidebarVisible, setSidebarVisible] = React.useState(true)
   const [layerPaletteVisible, setLayerPaletteVisible] = React.useState(false)
   const [currentTab, setCurrentTab] = React.useState(Tab.MapView)
-
   //hardcoded to the UK, perhaps later base this on the bounding box?
 
   const [mapViewZoom, setMapViewZoom] = React.useState(6)
@@ -40,7 +45,10 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
 
   const [modelViewTransform, setModelViewTransform] = React.useState<Transform>({ x: 0, y: 0, k: 1 })
   const [modelOutputCache, setModelOutputCache] = React.useState<ModelOutputCache>({})
+  const [datasetOutputCache, setDatasetOutputCache] = React.useState<DatasetCache>({})
+
   const [isProcessing, setProcessing] = React.useState(false)
+  const [isLoading, setLoading] = React.useState(false)
   const [process, setProcess] = React.useState(false)
 
   const saveProject = async () => {
@@ -73,6 +81,7 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
         currentTab={currentTab}
         setCurrentTab={setCurrentTab}
         isProcessing={isProcessing}
+        isLoading={isLoading}
         autoProcessing={state.autoProcessing}
         setAutoProcessing={autoprocessing => dispatch({ type: "SetAutoprocessing", autoprocessing })}
         manualProcessing={() => {
@@ -93,6 +102,25 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
             initialCenter={mapViewCenter}
             setCenter={setMapViewCenter}
             modelOutputCache={modelOutputCache}
+            datasetCache={datasetOutputCache}
+            loadTeamDataset={(layer: DatasetLayer) => {
+              if (isLoading) return // prevent spamming the server
+              if (layer.deleted) return // prevent loading deleted layers
+
+              setLoading(true)
+              getDataset(layer.id, teamId, (err, out) => {
+                if (out && !err) {
+                  datasetOutputCache[layer.id] = out
+                  setLoading(false)
+                }
+                else {
+
+                  layer.deleted = true
+                  setLoading(false)
+                }
+              })
+            }}
+
           />
           {
             layerPaletteVisible &&
@@ -100,6 +128,7 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
               hide={() => setLayerPaletteVisible(false)}
               addLayer={layer => dispatch({ type: "AddLayer", layer })}
               dbModels={dbModels}
+              getTeamDatasets={() => getDatasets(teamId)}
             />
           }
           {
@@ -112,8 +141,11 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
                 setLayerOrder={order => dispatch({ type: "SetLayerOrder", order })}
                 showLayerPalette={() => setLayerPaletteVisible(true)}
                 hide={() => setSidebarVisible(false)}
-                getLayerData={id => modelOutputCache[id] ? modelOutputCache[id].getStats() : { min: 0, max: 0, type: undefined }
-                }
+                getLayerData={(layer: ModelOutputLayer | DatasetLayer) => {
+                  const cache = layer.type === "ModelOutputLayer" ? modelOutputCache : datasetOutputCache
+                  const id = layer.type === "ModelOutputLayer" ? layer.nodeId : layer.id
+                  return cache[id] ? cache[id].getStats() : { min: 0, max: 0, type: undefined }
+                }}
               />
               : <CollapsedSidebar show={() => setSidebarVisible(true)} />
           }
@@ -150,6 +182,8 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
           autoProcessing={state.autoProcessing}
           process={process}
           setProcess={setProcess}
+          saveModel={(name: string, json: TileGridJSON) => saveModelOutput(name, json, teamId)}
+          getDatasets={() => getDatasets(teamId)}
         />
       </div>
     </div>
