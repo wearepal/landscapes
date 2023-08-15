@@ -45,7 +45,7 @@ function XAxis({ scale, transform }: XAxisProps) {
 
     React.useEffect(() => {
         if (ref.current) {
-            d3.select(ref.current).call(d3.axisBottom(scale)).style("font-size", "14px")
+            d3.select(ref.current).call(d3.axisBottom(scale.nice())).style("font-size", "14px")
         }
     }, [scale])
 
@@ -70,8 +70,8 @@ function Bars({ variables, scaleX, scaleY }: BarsProps) {
                         x={scaleX(value) + Math.sign(value) * 4}
                         y={Number(scaleY(label)) + (scaleY.bandwidth() * .50)}
                         dy={"0.35em"}
-                        fontSize="14"
-                        fontWeight="500"
+                        fontSize="12"
+                        fontWeight="300"
                     >
                         {value.toLocaleString(undefined, { maximumSignificantDigits: 3 })}
                     </text>
@@ -88,9 +88,9 @@ const BarChart = ({ variables, title }: BarChartProps) => {
 
     if (!title) title = ""
 
-    const labelPadding = Math.max(...variables.map(v => v.label.length)) * 3.5
-    const margin = { top: 10, right: 10, bottom: 20, left: 45 + labelPadding }
-    const width = 500 - margin.left - margin.right + (labelPadding / 2)
+    const labelPadding = Math.max(...variables.map(v => v.label.length)) * 7
+    const margin = { top: 10, right: 50, bottom: 20, left: 45 + labelPadding }
+    const width = 600 - margin.left - margin.right + (labelPadding / 2)
     const height = (80 + (variables.length * 50)) - margin.top - margin.bottom //calc height based on n 
 
     const scaleY = d3.scaleBand()
