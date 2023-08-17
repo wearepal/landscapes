@@ -46,7 +46,7 @@ function XAxis({ scale, transform }: XAxisProps) {
     React.useEffect(() => {
         if (ref.current) {
 
-            const axis = d3.axisBottom(scale.nice())
+            const axis = d3.axisBottom(scale)
             const tickCount = 6
             axis.ticks(tickCount)
 
@@ -79,7 +79,7 @@ function Bars({ variables, scaleX, scaleY }: BarsProps) {
                         fontSize="12"
                         fontWeight="300"
                     >
-                        {value.toLocaleString(undefined, { maximumSignificantDigits: 3 })}
+                        {value}
                     </text>
                 </>
             ))}
