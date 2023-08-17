@@ -45,7 +45,13 @@ function XAxis({ scale, transform }: XAxisProps) {
 
     React.useEffect(() => {
         if (ref.current) {
-            d3.select(ref.current).call(d3.axisBottom(scale.nice())).style("font-size", "14px")
+
+            const axis = d3.axisBottom(scale.nice())
+            const tickCount = 6
+            axis.ticks(tickCount)
+
+            d3.select(ref.current)
+                .call(axis).style("font-size", "14px")
         }
     }, [scale])
 
@@ -82,6 +88,20 @@ function Bars({ variables, scaleX, scaleY }: BarsProps) {
 
 }
 
+function downloadAsCsv(csvContent: string, filename: string) {
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" })
+    const url = URL.createObjectURL(blob)
+
+    const link = document.createElement("a")
+    link.href = url
+    link.download = filename
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+
+    URL.revokeObjectURL(url)
+}
+
 const BarChart = ({ variables, title }: BarChartProps) => {
 
     if (variables.length === 0) { return (<div></div>) }
@@ -103,22 +123,68 @@ const BarChart = ({ variables, title }: BarChartProps) => {
         .range([width, 0]);
 
 
-    return (
-        <figure
-            className='bg-white text-dark p-4'>
-            <svg
-                width={width + margin.left + margin.right}
-                height={height + margin.top + margin.bottom}
-            >
-                <g transform={`translate(${margin.left}, ${margin.top})`}>
-                    <Bars variables={variables} scaleX={scaleX} scaleY={scaleY} />
-                    <YAxis scale={scaleY} transform={`translate(0, 0)`} />
-                    <XAxis scale={scaleX} transform={`translate(0, ${height})`} />
-                </g>
+    const svgRef = React.useRef<SVGSVGElement>(null);
 
-            </svg>
-            <figcaption className="text-center mt-3" >{title}</figcaption>
-        </figure >
+    const downloadPng = () => {
+        if (svgRef.current) {
+            const svgElement = svgRef.current
+            const svgContent = new XMLSerializer().serializeToString(svgElement)
+
+            const canvas = document.createElement("canvas")
+            const context = canvas.getContext("2d")
+
+            const svgImage = new Image()
+            svgImage.src = "data:image/svg+xml;base64," + btoa(svgContent)
+
+            svgImage.onload = () => {
+                canvas.width = svgImage.width
+                canvas.height = svgImage.height
+                context?.drawImage(svgImage, 0, 0)
+
+                const url = canvas.toDataURL("image/png")
+
+                const link = document.createElement("a")
+                link.href = url
+                link.download = "bar_chart.png"
+                document.body.appendChild(link)
+                link.click()
+                document.body.removeChild(link)
+            }
+        }
+    }
+
+    const downloadCsv = () => {
+        const csvData = variables.map(variable => `${variable.label},${variable.value}`).join("\n")
+        const filename = "bar_chart_data.csv"
+        downloadAsCsv("label,value\n" + csvData, filename)
+    }
+
+    return (
+        <>
+            <figure
+                className='bg-white text-dark p-4'>
+
+                <svg
+                    ref={svgRef}
+                    width={width + margin.left + margin.right}
+                    height={height + margin.top + margin.bottom}
+                >
+                    <g transform={`translate(${margin.left}, ${margin.top})`}>
+                        <Bars variables={variables} scaleX={scaleX} scaleY={scaleY} />
+                        <YAxis scale={scaleY} transform={`translate(0, 0)`} />
+                        <XAxis scale={scaleX} transform={`translate(0, ${height})`} />
+                    </g>
+
+                </svg>
+                <figcaption className="text-center mt-3" >{title}</figcaption>
+
+            </figure >
+
+            <div className="text-right">
+                <button onClick={downloadPng} className="mr-3 btn btn-primary"><i className="fa fa-download" aria-hidden="true" /> PNG </button>
+                <button onClick={downloadCsv} className="btn btn-success"><i className="fa fa-download" aria-hidden="true" /> CSV </button>
+            </div>
+        </>
     )
 }
 
