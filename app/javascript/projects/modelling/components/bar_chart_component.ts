@@ -4,7 +4,18 @@ import { NodeData, WorkerInputs, WorkerOutputs } from 'rete/types/core/data'
 import { numberSocket } from '../socket_types'
 import { BarChartControl, BarChartVariable } from '../controls/barchart'
 import { NumericConstant } from '../numeric_constant'
-import { string } from 'prop-types'
+
+function findUniqueLabel(chartVariables: BarChartVariable[], label: string, count: number): string {
+
+    // Recursively checks for duplicate labels, duplicates are renamed with a counter (ex: name (n))
+
+    const newLabel = count !== 0 ? `${label} (${count})` : label
+
+    if (chartVariables.some(variable => variable.label === newLabel)) return findUniqueLabel(chartVariables, label, count + 1)
+
+    return newLabel
+}
+
 
 export class BarChartComponent extends BaseComponent {
 
@@ -32,7 +43,7 @@ export class BarChartComponent extends BaseComponent {
         inputs['in'].forEach((v, i) => {
             if (v instanceof NumericConstant) {
 
-                const label = v.name === "" ? `[Category ${i + 1}]` : v.name
+                let label = v.name === "" ? `[Category ${i + 1}]` : findUniqueLabel(chartVariables, v.name, 0)
 
                 chartVariables.push({
                     label: label,
