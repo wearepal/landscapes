@@ -6,7 +6,6 @@ import { DatasetLayer, Layer, ModelOutputLayer, NevoLayer, OverlayLayer, State }
 import { iconForLayerType } from "./util"
 import { getColorStops } from './reify_layer/model_output'
 import { tileGridStats } from './modelling/tile_grid'
-import distinctColors from 'distinct-colors'
 
 interface OverlayLayerSettingsProps {
   layer: OverlayLayer
@@ -225,7 +224,7 @@ export function Legend({ colors, minValue, maxValue, type, labels, mutateColors,
         const checked = event.target.checked
         const updatedColors = colors.map((color, index) => {
           if (index + 1 === key) {
-            return [color[0], color[1], color[3], checked ? 1 : 0]
+            return [color[0], color[1], color[2], checked ? 1 : 0]
           }
           return color
         });
@@ -234,10 +233,7 @@ export function Legend({ colors, minValue, maxValue, type, labels, mutateColors,
 
       const data = labels.map(obj => ({
         label: obj.value,
-        color:
-          colors.length < obj.name ?
-            distinctColors({ count: maxValue })[obj.name - 1].rgba() :
-            colors[obj.name - 1],
+        color: colors[obj.name - 1] ?? [0, 0, 0, 0],
         key: obj.name
       }))
 
@@ -462,7 +458,7 @@ export const Sidebar = ({ state, selectLayer, mutateLayer, deleteLayer, setLayer
               type="text"
               className="form-control"
               placeholder="Layer name"
-              value={selectedLayer.name}
+              value={selectedLayer?.name}
               onChange={
                 e => state.selectedLayer !== undefined &&
                   mutateLayer(state.selectedLayer, { name: e.target.value })
