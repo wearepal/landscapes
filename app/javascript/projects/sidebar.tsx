@@ -223,7 +223,7 @@ export function Legend({ colors, minValue, maxValue, type, labels, mutateColors,
       const updateColour = (event, key) => {
         const checked = event.target.checked
         const updatedColors = colors.map((color, index) => {
-          if (index + 1 === key) {
+          if (index + 1 === key || key === -1) {
             return [color[0], color[1], color[2], checked ? 1 : 0]
           }
           return color
@@ -237,9 +237,22 @@ export function Legend({ colors, minValue, maxValue, type, labels, mutateColors,
         key: obj.name
       }))
 
+      const colors_unchecked = () => {
+        for (const innerArray of colors) {
+          if (innerArray[3] !== 1) {
+            return false;
+          }
+        }
+        return true
+      }
+
       return (
         <div className="color-bar-container-cat">
           <div className="color-bar-legend-cat">
+            <div className='color-bar-label'>
+              <input type="checkbox" checked={colors_unchecked()} name={"All"} onChange={(event) => updateColour(event, -1)} />
+              <div className="color-bar-label-text ml-1">Select/Unselect All</div>
+            </div>
             {data.map(({ color, label, key }) => (
               <div key={label} className="color-bar-label">
                 <input type="checkbox" checked={color[3]} name={key} onChange={(event) => updateColour(event, key)} />
