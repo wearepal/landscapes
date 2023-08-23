@@ -122,9 +122,14 @@ export function reifyModelOutputLayer(layer: ModelOutputLayer | DatasetLayer, ex
     //if custom colors are added, add logic here to ensure these are not deleted
 
     if (layer.colors?.length !== tileLayer.getMinMax()[1]) {
-      layer.colors = distinctColors({
-        count: tileLayer.getMinMax()[1]
-      }).map(e => e.rgba())
+
+      const cols = distinctColors({ count: tileLayer.getMinMax()[1] }).map(e => e.rgba())
+
+      if (layer.colors === undefined) layer.colors = []
+
+      for (let x = 0; x < tileLayer.getMinMax()[1]; x++) {
+        layer.colors[x] = layer.colors[x] ?? cols[x]
+      }
 
     }
 
