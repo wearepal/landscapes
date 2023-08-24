@@ -276,13 +276,13 @@ export function Legend({ colors, minValue, maxValue, type, labels, mutateColors,
                   style={{
                     marginLeft: 4.5,
                     backgroundColor: `rgb(${color[0]}, ${color[1]}, ${color[2]})`,
-                    border: '0px',
+                    border: 'none',
                     width: '20px',
                     height: '20px',
                     padding: '0',
-                    cursor: 'pointer'
+                    cursor: 'pointer',
+                    marginRight: '5px'
                   }}
-                  className="color-bar-color-cat"
                   onChange={(event) => handleColorChange(event, key)}
                 />
                 <div className="color-bar-label-text">{label}</div>
