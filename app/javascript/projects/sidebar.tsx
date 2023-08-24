@@ -220,16 +220,30 @@ export function Legend({ colors, minValue, maxValue, type, labels, mutateColors,
 
       if (!colors) return (<div></div>)
 
-      const updateColour = (event, key) => {
+      const updateColour = (event: React.ChangeEvent<HTMLInputElement>, key: number) => {
         const checked = event.target.checked
-        const updatedColors = colors.map((color, index) => {
-          if (index + 1 === key) {
+        const updatedColors = colors.map((color: [number, number, number, number], index: number) => {
+          if (index + 1 === key || key === -1) {
             return [color[0], color[1], color[2], checked ? 1 : 0]
           }
           return color
-        });
+        })
         mutateColors(updatedColors)
-      };
+      }
+
+      const handleColorChange = (event: React.ChangeEvent<HTMLInputElement>, key: number) => {
+        const newColor = event.target.value
+        const r = parseInt(newColor.slice(1, 3), 16)
+        const g = parseInt(newColor.slice(3, 5), 16)
+        const b = parseInt(newColor.slice(5, 7), 16)
+
+        const updatedColors = colors.map((color: [number, number, number, number], index: number) => {
+          if (index + 1 === key) return [r, g, b, color[3]]
+          return color
+        })
+
+        mutateColors(updatedColors)
+      }
 
       const data = labels.map(obj => ({
         label: obj.value,
@@ -237,15 +251,39 @@ export function Legend({ colors, minValue, maxValue, type, labels, mutateColors,
         key: obj.name
       }))
 
+      const colors_unchecked = () => {
+        for (const innerArray of colors) {
+          if (innerArray[3] !== 1) {
+            return false;
+          }
+        }
+        return true
+      }
+
       return (
         <div className="color-bar-container-cat">
           <div className="color-bar-legend-cat">
+            <div className='color-bar-label'>
+              <input type="checkbox" checked={colors_unchecked()} name={"All"} onChange={(event) => updateColour(event, -1)} />
+              <div className="color-bar-label-text ml-1">Select/Unselect All</div>
+            </div>
             {data.map(({ color, label, key }) => (
               <div key={label} className="color-bar-label">
                 <input type="checkbox" checked={color[3]} name={key} onChange={(event) => updateColour(event, key)} />
-                <div
-                  style={{ marginLeft: 4.5, backgroundColor: `rgb(${color[0]}, ${color[1]}, ${color[2]})` }}
-                  className="color-bar-color-cat"
+                <input
+                  type="color"
+                  value={`#${color[0].toString(16).padStart(2, '0')}${color[1].toString(16).padStart(2, '0')}${color[2].toString(16).padStart(2, '0')}`}
+                  style={{
+                    marginLeft: 4.5,
+                    backgroundColor: `rgb(${color[0]}, ${color[1]}, ${color[2]})`,
+                    border: 'none',
+                    width: '20px',
+                    height: '20px',
+                    padding: '0',
+                    cursor: 'pointer',
+                    marginRight: '5px'
+                  }}
+                  onChange={(event) => handleColorChange(event, key)}
                 />
                 <div className="color-bar-label-text">{label}</div>
               </div>
