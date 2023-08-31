@@ -6,6 +6,8 @@ import { booleanDataSocket, categoricalDataSocket } from "../socket_types"
 import { BooleanTileGrid, CategoricalTileGrid } from "../tile_grid"
 import { BaseComponent } from "./base_component"
 import { currentBbox as bbox, currentExtent as extent } from "../bounding_box"
+import { retrieveModelData } from "../model_retrieval"
+import { TypedArray } from "d3"
 
 const zoom = 20
 
@@ -45,32 +47,13 @@ const habitats: Habitat[] = [
 async function renderCategoricalData() {
   // When testing locally, disable CORS in browser settings
 
-  const response = await fetch(
-    "https://landscapes.wearepal.ai/geoserver/wfs?" +
-    new URLSearchParams(
-      {
-        outputFormat: 'application/json',
-        request: 'GetFeature',
-        typeName: 'ukceh:lcm_2021',
-        srsName: 'EPSG:3857',
-        bbox
-      }
-    )
-  )
-
-  if (!response.ok) throw new Error()
-
-  const features = new GeoJSON().readFeatures(await response.json())
-
   const tileGrid = createXYZ()
   const outputTileRange = tileGrid.getTileRangeForExtentAndZ(extent, zoom)
-  const result = new CategoricalTileGrid(
-    zoom,
-    outputTileRange.minX,
-    outputTileRange.minY,
-    outputTileRange.getWidth(),
-    outputTileRange.getHeight()
-  )
+
+  const geotiff = await retrieveModelData(extent, 'ukceh:gblcm10m2021', outputTileRange)
+
+  const rasters = await geotiff.readRasters()
+  const image = await geotiff.getImage()
 
 
   const map: Map<number, string> = new Map()
@@ -79,33 +62,24 @@ async function renderCategoricalData() {
     if (hab.mode !== 0) map.set(hab.mode, hab.LC)
   })
 
-  result.setLabels(map)
+  const result = new CategoricalTileGrid(
+    zoom,
+    outputTileRange.minX,
+    outputTileRange.minY,
+    outputTileRange.getWidth(),
+    outputTileRange.getHeight()
+  )
 
-  for (let feature of features) {
-    const geom = feature.getGeometry()
-    if (geom === undefined) { continue }
+  for (let i = 0; i < (rasters[0] as TypedArray).length; i++) {
 
-    const featureTileRange = tileGrid.getTileRangeForExtentAndZ(
-      geom.getExtent(),
-      zoom
-    )
-    for (
-      let x = Math.max(featureTileRange.minX, outputTileRange.minX);
-      x <= Math.min(featureTileRange.maxX, outputTileRange.maxX);
-      ++x
-    ) {
-      for (
-        let y = Math.max(featureTileRange.minY, outputTileRange.minY);
-        y <= Math.min(featureTileRange.maxY, outputTileRange.maxY);
-        ++y
-      ) {
-        const center = tileGrid.getTileCoordCenter([zoom, x, y])
-        if (geom.intersectsCoordinate(center)) {
-          result.set(x, y, feature.get("_mode"))
-        }
-      }
-    }
+    let x = (outputTileRange.minX + i % image.getWidth())
+    let y = (outputTileRange.minY + Math.floor(i / image.getWidth()))
+
+    result.set(x, y, rasters[0][i])
+
   }
+
+  result.setLabels(map)
 
   return result
 }
