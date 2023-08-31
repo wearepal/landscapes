@@ -1,7 +1,6 @@
 import { booleanDataSocket, numericDataSocket, numericNumberDataSocket } from "../socket_types"
 import { BaseComponent } from "./base_component"
 import { BinaryOpComponent } from "./binary_op_component"
-import { UkcehLandCoverComponent } from "./ukceh_land_cover_component"
 import { MapLayerComponent, SaveMapLayer } from "./map_layer_component"
 import { NumericConstantComponent } from "./numeric_constant_component"
 import { UnaryOpComponent } from "./unary_op_component"
@@ -19,6 +18,7 @@ import { ExpressionComponent } from "./expression_component"
 import { NumericDatasetToNumberComponent } from "./numeric_dataset_to_numeric_component"
 import { SaveModelOutputComponent, SaveModel } from "./save_model_component"
 import { PrecompiledModelComponent, getDatasets } from "./dataset_component"
+import { UkcehLandCoverComponent } from "./ukceh_land_cover_component"
 
 export function createDefaultComponents(saveMapLayer: SaveMapLayer, saveModel: SaveModel, getDatasets: getDatasets): BaseComponent[] {
   return [
