@@ -2,7 +2,7 @@ import * as React from 'react'
 import './sidebar.css'
 import { ReactSortable } from 'react-sortablejs'
 import { nevoLevelNames, nevoPropertyNames } from './nevo'
-import { DatasetLayer, Layer, ModelOutputLayer, NevoLayer, OverlayLayer, State } from './state'
+import { CropMapLayer, DatasetLayer, Layer, ModelOutputLayer, NevoLayer, OverlayLayer, State } from './state'
 import { iconForLayerType } from "./util"
 import { getColorStops } from './reify_layer/model_output'
 import { tileGridStats } from './modelling/tile_grid'
@@ -75,6 +75,19 @@ const NevoLayerSettings = ({ layer, mutate }: NevoLayerSettingsProps) => (
         }
       </select>
     </div>
+  </>
+)
+
+interface CropMapLayerSettingsProps {
+  layer: CropMapLayer
+}
+
+const CropMapLayerSettings = ({ layer }: CropMapLayerSettingsProps) => (
+  <>
+    <details className="mt-3">
+      <summary>Legend</summary>
+      <img src={`https://environment.data.gov.uk/spatialdata/crop-map-of-england-${layer.year}/wms?request=GetLegendGraphic%26version=1.3.0%26format=image/png%26layer=Crop_Map_Of_England_${layer.year}`} />
+    </details>
   </>
 )
 
@@ -553,6 +566,10 @@ export const Sidebar = ({ state, selectLayer, mutateLayer, deleteLayer, setLayer
             {
               selectedLayer?.type == "CehLandCoverLayer" &&
               <CehLandCoverLayerSettings />
+            }
+            {
+              selectedLayer?.type == "CropMapLayer" &&
+              <CropMapLayerSettings layer={selectedLayer} />
             }
           </> :
           <em>No layer selected</em>
