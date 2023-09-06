@@ -124,6 +124,23 @@ export const LayerPalette = ({ addLayer, hide, dbModels, getTeamDatasets }: Laye
             }}
           />
         </Section>
+        <Section title="Crop Map of England">
+          {
+            Array<{ year: number }>(
+              { year: 2018 }, { year: 2019 }, { year: 2020 }, { year: 2021 }
+            ).map((year) =>
+              <AddLayerButton
+                addLayer={addLayer}
+                prototype={{
+                  type: "CropMapLayer",
+                  name: `Crop Map of England (CROME) ${year.year}`,
+                  visible: true,
+                  opacity: 1,
+                  year: year.year
+                }}
+              />)
+          }
+        </Section>
         {
           dbModels.overlays.length > 0 &&
           <Section title="Overlays">
