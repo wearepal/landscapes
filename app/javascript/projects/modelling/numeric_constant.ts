@@ -31,6 +31,12 @@ export class NumericConstant {
             case 'Power':
                 return (this.value ** num.value)
                 break;
+            case 'Min':
+                return Math.min(this.value, num.value)
+                break;
+            case 'Max':
+                return Math.max(this.value, num.value)
+                break;
             default:
                 return (0)
                 break;
