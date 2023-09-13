@@ -160,7 +160,7 @@ export function reifyModelOutputLayer(layer: ModelOutputLayer | DatasetLayer, ex
   } else {
 
     const [min, max] = (tileLayer instanceof NumericTileGrid) ? ((layer.overrideBounds && layer.bounds) ? layer.bounds : tileLayer.getMinMax()) : [0, 1]
-    const v0 = (0 - min) / (max - min)
+    const v0 = min !== max ? (0 - min) / (max - min) : 0
 
     color = [
       'case',
