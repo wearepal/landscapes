@@ -150,7 +150,7 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
               layerStats={(layer: ModelOutputLayer | DatasetLayer) => {
                 const cache = layer.type === "ModelOutputLayer" ? modelOutputCache : datasetOutputCache
                 const id = layer.type === "ModelOutputLayer" ? layer.nodeId : layer.id
-                return cache[id] ? cache[id].getStats() : null
+                return cache[id] ? cache[id] : null
               }}
             />
           }

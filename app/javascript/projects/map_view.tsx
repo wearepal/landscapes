@@ -146,11 +146,11 @@ export const MapView = ({ layers, dbModels, initialZoom, setZoom, initialCenter,
         source: vectorSource,
         style: new Style({
           fill: new Fill({
-            color: 'rgba(100, 100, 100, 0.25)'
+            color: 'rgba(255, 255, 255, 0.15)'
           }),
           stroke: new Stroke({
-            color: 'red',
-            width: 5
+            color: 'white',
+            width: 7
           })
         })
       })

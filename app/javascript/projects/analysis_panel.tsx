@@ -1,13 +1,14 @@
 import { Extent } from 'ol/extent'
 import * as React from 'react'
 import { DatasetLayer, Layer, ModelOutputLayer } from './state'
-import { tileGridStats } from './modelling/tile_grid'
+import { BooleanTileGrid, CategoricalTileGrid, NumericTileGrid } from './modelling/tile_grid'
+import { extentToChartData } from './analysis_panel_tools/subsection'
 
 interface AnalysisPanelProps {
     setShowAP: () => void
     selectedArea: Extent | null
     selectedLayer: Layer | null
-    layerStats: (layer: DatasetLayer | ModelOutputLayer) => tileGridStats | null
+    layerStats: (layer: DatasetLayer | ModelOutputLayer) => BooleanTileGrid | NumericTileGrid | CategoricalTileGrid | null
 }
 
 export const AnalysisPanel = ({ selectedArea, setShowAP, selectedLayer, layerStats }: AnalysisPanelProps) => {
@@ -25,6 +26,10 @@ export const AnalysisPanel = ({ selectedArea, setShowAP, selectedLayer, layerSta
             const data = layerStats(selectedLayer)
             if (data === null) {
                 errorMsg = "Model is not yet available."
+            } else {
+                const chartData = extentToChartData(selectedLayer.colors, data, selectedArea)
+
+                // visualise layer as chart
             }
         }
     }
@@ -42,6 +47,7 @@ export const AnalysisPanel = ({ selectedArea, setShowAP, selectedLayer, layerSta
                     { errorMsg } &&
                     <div style={{ textAlign: "center", padding: 30 }}>{errorMsg}</div>
                 }
+
 
 
             </div>
