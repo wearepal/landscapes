@@ -14,19 +14,16 @@ export const GenerateChart = ({ chartData, chartType }: ChartProps) => {
         case "pie":
             return <GeneratePieChart
                 chartData={chartData}
-                chartType={chartType}
             />
             break;
         case "hist":
             return <GenerateHistogram
                 chartData={chartData}
-                chartType={chartType}
             />
             break;
         case "bar":
             return <GenerateBarChart
                 chartData={chartData}
-                chartType={chartType}
             />
             break;
         default:

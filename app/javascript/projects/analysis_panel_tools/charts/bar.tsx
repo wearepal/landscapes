@@ -5,9 +5,8 @@ import { ChartData } from "../subsection"
 
 interface BarChartProps {
     chartData: ChartData
-    chartType: ChartType
 }
-export const GenerateBarChart = ({ chartData, chartType }: BarChartProps) => {
+export const GenerateBarChart = ({ chartData }: BarChartProps) => {
 
     return <>bar</>
 }
