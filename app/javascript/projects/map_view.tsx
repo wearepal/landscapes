@@ -75,9 +75,11 @@ interface MapViewProps {
 
   selectedArea: Extent | null
   setSelectedArea: (area: Extent | null) => void
+
   selected: boolean
+  setSelected: (boolean) => void
 }
-export const MapView = ({ layers, dbModels, initialZoom, setZoom, initialCenter, setCenter, modelOutputCache, datasetCache, loadTeamDataset, selectedArea, setSelectedArea, selected }: MapViewProps) => {
+export const MapView = ({ layers, dbModels, initialZoom, setZoom, initialCenter, setCenter, modelOutputCache, datasetCache, loadTeamDataset, selectedArea, setSelectedArea, selected, setSelected }: MapViewProps) => {
   const mapRef = React.useRef<HTMLDivElement>()
   const [map, setMap] = React.useState<Map | null>(null)
   const [allLayersVisible, setAllLayersVisible] = React.useState(true)
@@ -176,6 +178,7 @@ export const MapView = ({ layers, dbModels, initialZoom, setZoom, initialCenter,
 
     dragBox.on('boxend', () => {
       setSelectedArea(dragBox.getGeometry().getExtent())
+      if (!selected) setSelected(true)
     })
     dragBox.on('boxstart', () => {
       setSelectedArea(null)

@@ -3,32 +3,58 @@ import * as React from 'react'
 import { DatasetLayer, Layer, ModelOutputLayer } from './state'
 import { BooleanTileGrid, CategoricalTileGrid, NumericTileGrid } from './modelling/tile_grid'
 import { ChartData, extentToChartData } from './analysis_panel_tools/subsection'
+import { GenerateChart } from './analysis_panel_tools/charts'
 
-type chartType = "pie" | "hist" | "bar"
+export type ChartType = "pie" | "hist" | "bar"
 
-const Chart = () => {
-    return <>
-        CHART
-    </>
+interface ChartProps {
+    chartType: ChartType | undefined
+    chartData: BooleanTileGrid | NumericTileGrid | CategoricalTileGrid | null
+    extent: Extent | null
+    colours: [number, number, number, number][] | undefined
+
+}
+
+const Chart = ({ chartData, chartType, extent, colours }: ChartProps) => {
+
+    if (!chartType || chartData === null || !extent) return <></>
+
+    const data = extentToChartData(colours, chartData, extent)
+
+    return <GenerateChart
+        chartData={data}
+        chartType={chartType}
+    />
 }
 
 interface DropDownProps {
-    layerType: BooleanTileGrid | NumericTileGrid | CategoricalTileGrid | null
+    SourceType: string
+    ChartTypeSelected: ChartType | undefined
+    SetChartType: (type: ChartType) => void
 }
 
-const DropDown = ({ layerType }: DropDownProps) => {
+const DropDown = ({ SourceType, ChartTypeSelected, SetChartType }: DropDownProps) => {
 
-    return <>
+    const typeArray = ChartTypeArray.get(SourceType) || []
+
+    const options = [
+        { value: "pie", label: "Pie chart" },
+        { value: "bar", label: "Bar chart" },
+        { value: "hist", label: "Histogram" },
+    ].filter(option => (typeArray as string[]).includes(option.value))
+
+    return (
         <div className="d-flex align-items-center mt-3 ml-3 mr-3">
             <span style={{ width: "110px" }}>Chart type</span>
-            <select className="custom-select">
-                <option value="pie">Pie chart</option>
-                <option value="bar">Bar chart</option>
-                <option value="hist">Histogram</option>
+            <select className="custom-select" value={ChartTypeSelected} onChange={e => SetChartType(e.target.value as ChartType)}>
+                {options.map(option => (
+                    <option key={option.value} value={option.value}>
+                        {option.label}
+                    </option>
+                ))}
             </select>
         </div>
-    </>
-
+    );
 }
 
 
@@ -39,27 +65,50 @@ interface AnalysisPanelProps {
     layerStats: (layer: DatasetLayer | ModelOutputLayer) => BooleanTileGrid | NumericTileGrid | CategoricalTileGrid | null
 }
 
+let dataSourceType: string = "null"
+
+const ChartTypeArray: Map<string, ChartType[]> = new Map()
+ChartTypeArray.set("BooleanTileGrid", ["pie", "bar"])
+ChartTypeArray.set("CategoricalTileGrid", ["pie", "bar"])
+ChartTypeArray.set("NumericTileGrid", ["hist"])
+
+
+
 export const AnalysisPanel = ({ selectedArea, setShowAP, selectedLayer, layerStats }: AnalysisPanelProps) => {
 
-
+    const [chartType, setChartType] = React.useState<ChartType>()
     let errorMsg: string = ""
     let showChart: boolean = false
     let data: BooleanTileGrid | NumericTileGrid | CategoricalTileGrid | null = null
+    const colours = selectedLayer?.type == "ModelOutputLayer" || selectedLayer?.type == "DatasetLayer" ? selectedLayer.colors : undefined
 
     if (selectedArea === null) {
-        errorMsg = "Please select an area to analyse."
+        errorMsg = "Please select an area to analyze."
     } else if (selectedLayer === null) {
         errorMsg = "Please select a suitable layer."
+    } else if (selectedLayer.type !== "DatasetLayer" && selectedLayer.type !== "ModelOutputLayer") {
+        errorMsg = "Unsuitable layer type, please select a model output or dataset layer."
     } else {
-        if (selectedLayer.type !== "DatasetLayer" && selectedLayer.type !== "ModelOutputLayer") {
-            errorMsg = "Unsuitable layer type, please select a model output or dataset layer."
-        } else {
-            data = layerStats(selectedLayer)
-            if (data === null) {
-                errorMsg = "Model is not yet available."
+        data = layerStats(selectedLayer)
+
+        if (data !== null) {
+            const typeMap: { [key: string]: string } = {
+                BooleanTileGrid: "BooleanTileGrid",
+                NumericTileGrid: "NumericTileGrid",
+                CategoricalTileGrid: "CategoricalTileGrid",
+            }
+
+            const dataType = typeMap[data.constructor.name]
+
+            if (dataSourceType !== dataType) {
+                dataSourceType = dataType
+                const charts = ChartTypeArray.get(dataType)
+                if (charts) setChartType(charts[0])
             } else {
                 showChart = true
             }
+        } else {
+            errorMsg = "Model is not yet available."
         }
     }
 
@@ -81,11 +130,18 @@ export const AnalysisPanel = ({ selectedArea, setShowAP, selectedLayer, layerSta
                     showChart &&
                     <>
                         <div style={{ height: "350px" }}>
-                            <Chart />
+                            <Chart
+                                chartData={data}
+                                chartType={chartType}
+                                extent={selectedArea}
+                                colours={colours}
+                            />
                         </div>
                         <div className="px-3 py-2 border-top border-bottom bg-light">Details</div>
                         <DropDown
-                            layerType={data}
+                            SourceType={dataSourceType}
+                            ChartTypeSelected={chartType}
+                            SetChartType={setChartType}
                         />
                     </>
                 }

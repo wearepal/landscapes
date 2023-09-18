@@ -131,6 +131,7 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
             setSelectedArea={setSelectedArea}
             selectedArea={selectedArea}
             selected={showAP}
+            setSelected={setShowAP}
           />
           {
             layerPaletteVisible &&
