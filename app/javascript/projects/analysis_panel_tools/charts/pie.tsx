@@ -1,5 +1,4 @@
 import * as React from "react"
-import { ChartType } from "../../analysis_panel"
 import { ChartData } from "../subsection"
 import * as d3 from "d3"
 
@@ -9,47 +8,36 @@ interface PieChartProps {
 }
 export const GeneratePieChart = ({ chartData }: PieChartProps) => {
 
-    const chartRef = React.useRef<SVGSVGElement | null>(null)
     const data = chartData.count
     const colors = chartData.colors
+    const [h, w] = [300, 300]
+    const m = 30
+    const radius = Math.min(h, w) / 2 - m
 
-    React.useEffect(() => {
+    const pieGenerator = d3.pie().value((d) => (d as any).value)
+    const arrayOfObj = Array.from(data, ([name, value]) => ({ name, value }))
+    const pie = pieGenerator(arrayOfObj as any)
 
-        const [width, height] = [350, 350]
-
-        const svg = d3.select(chartRef.current)
-            .attr('width', width)
-            .attr('height', height);
-
-        const pie = d3.pie<number>()
-            .value(d => d);
-
-        const arc = d3.arc<d3.PieArcDatum<number>>()
-            .innerRadius(0)
-            .outerRadius(Math.min(width, height) / 2 - 10);
-
-        const defaultColors = d3.schemeCategory10;
-        const color = d3.scaleOrdinal<string>()
-            .domain(Array.from(data.keys()))
-            .range(colors ? Array.from(colors.values()).map(rgba => `rgba(${rgba.join(',')})`) : defaultColors);
-
-        const pieData = Array.from(data.values());
-
-        const arcs = svg.selectAll<SVGGElement, d3.PieArcDatum<number>>('g.arc')
-            .data(pie(pieData))
-            .enter()
-            .append('g')
-            .attr('class', 'arc')
-            .attr('transform', `translate(${width / 2}, ${height / 2})`);
-
-        arcs.append('path')
-            .attr('d', arc)
-            .attr('fill', (d, i) => color(i.toString()));
-    }, [data, colors]);
+    const arcPathGenerator = d3.arc()
+    const arcs = pie.map((p, i) => ({
+        path: arcPathGenerator({
+            innerRadius: 0,
+            outerRadius: radius,
+            startAngle: p.startAngle,
+            endAngle: p.endAngle,
+        }),
+        color: (colors ? Array.from(colors, ([i, j]) => j)[i] : [0, 0, 0, 0]) // TODO: no color exists, Boolean data, retrieve color from elsewhere.
+    }));
 
     return (
         <div style={{ textAlign: 'center' }}>
-            <svg ref={chartRef}></svg>
+            <svg width={w} height={h}>
+                <g transform={`translate(${w / 2}, ${h / 2})`}>
+                    {arcs.map((arc, i) => {
+                        return <path key={i} d={arc.path as any} fill={`rgb(${arc.color[0]}, ${arc.color[1]}, ${arc.color[2]})`} />
+                    })}
+                </g>
+            </svg>
         </div>
     )
 }

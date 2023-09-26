@@ -9,20 +9,16 @@ export type ChartType = "pie" | "hist" | "bar"
 
 interface ChartProps {
     chartType: ChartType | undefined
-    chartData: BooleanTileGrid | NumericTileGrid | CategoricalTileGrid | null
-    extent: Extent | null
-    colours: [number, number, number, number][] | undefined
+    chartData: ChartData | undefined
 
 }
 
-const Chart = ({ chartData, chartType, extent, colours }: ChartProps) => {
+const Chart = ({ chartType, chartData }: ChartProps) => {
 
-    if (!chartType || chartData === null || !extent) return <></>
-
-    const data = extentToChartData(colours, chartData, extent)
+    if (!chartType || !chartData) return <></>
 
     return <GenerateChart
-        chartData={data}
+        chartData={chartData}
         chartType={chartType}
     />
 }
@@ -77,21 +73,21 @@ ChartTypeArray.set("NumericTileGrid", ["hist"])
 export const AnalysisPanel = ({ selectedArea, setShowAP, selectedLayer, layerStats }: AnalysisPanelProps) => {
 
     const [chartType, setChartType] = React.useState<ChartType>()
+    const [chartData, setChartData] = React.useState<ChartData>()
+    const chartContainerRef = React.useRef(null)
+
     let errorMsg: string = ""
     let showChart: boolean = false
     let data: BooleanTileGrid | NumericTileGrid | CategoricalTileGrid | null = null
-    const colours = selectedLayer?.type == "ModelOutputLayer" || selectedLayer?.type == "DatasetLayer" ? selectedLayer.colors : undefined
 
-    if (selectedArea === null) {
-        errorMsg = "Please select an area to analyze."
-    } else if (selectedLayer === null) {
-        errorMsg = "Please select a suitable layer."
-    } else if (selectedLayer.type !== "DatasetLayer" && selectedLayer.type !== "ModelOutputLayer") {
-        errorMsg = "Unsuitable layer type, please select a model output or dataset layer."
-    } else {
-        data = layerStats(selectedLayer)
+    const colours = selectedLayer?.type == "ModelOutputLayer" || selectedLayer?.type == "DatasetLayer" ? selectedLayer.colors : undefined //TODO calculate colors from fill function if colors is null
 
-        if (data !== null) {
+
+    React.useEffect(() => {
+
+        if (data !== null && selectedArea) {
+            setChartData(extentToChartData(colours, data, selectedArea))
+
             const typeMap: { [key: string]: string } = {
                 BooleanTileGrid: "BooleanTileGrid",
                 NumericTileGrid: "NumericTileGrid",
@@ -104,11 +100,27 @@ export const AnalysisPanel = ({ selectedArea, setShowAP, selectedLayer, layerSta
                 dataSourceType = dataType
                 const charts = ChartTypeArray.get(dataType)
                 if (charts) setChartType(charts[0])
-            } else {
-                showChart = true
             }
+
         } else {
+            setChartData(undefined)
+        }
+
+    }, [selectedArea, selectedLayer, data])
+
+
+    if (selectedArea === null) {
+        errorMsg = "Please select an area to analyze."
+    } else if (selectedLayer === null) {
+        errorMsg = "Please select a suitable layer."
+    } else if (selectedLayer.type !== "DatasetLayer" && selectedLayer.type !== "ModelOutputLayer") {
+        errorMsg = "Unsuitable layer type, please select a model output or dataset layer."
+    } else {
+        data = layerStats(selectedLayer)
+        if (data === null) {
             errorMsg = "Model is not yet available."
+        } else {
+            showChart = true
         }
     }
 
@@ -129,12 +141,10 @@ export const AnalysisPanel = ({ selectedArea, setShowAP, selectedLayer, layerSta
                 {
                     showChart &&
                     <>
-                        <div style={{ height: "350px" }}>
+                        <div style={{ height: "350px", textAlign: 'center' }}>
                             <Chart
-                                chartData={data}
                                 chartType={chartType}
-                                extent={selectedArea}
-                                colours={colours}
+                                chartData={chartData}
                             />
                         </div>
                         <div className="px-3 py-2 border-top border-bottom bg-light">Details</div>
