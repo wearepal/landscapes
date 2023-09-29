@@ -153,6 +153,7 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
                 const id = layer.type === "ModelOutputLayer" ? layer.nodeId : layer.id
                 return cache[id] ? cache[id] : null
               }}
+              currentTab={currentTab}
             />
           }
           {

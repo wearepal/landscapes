@@ -34,7 +34,7 @@ export const GeneratePieChart = ({ chartData }: PieChartProps) => {
             <svg width={w} height={h}>
                 <g transform={`translate(${w / 2}, ${h / 2})`}>
                     {arcs.map((arc, i) => {
-                        return <path key={i} d={arc.path as any} fill={`rgb(${arc.color[0]}, ${arc.color[1]}, ${arc.color[2]})`} />
+                        return <path key={i} d={arc.path as any} stroke="lightgrey" fill={`rgb(${arc.color[0]}, ${arc.color[1]}, ${arc.color[2]})`} />
                     })}
                 </g>
             </svg>

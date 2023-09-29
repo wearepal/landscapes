@@ -34,21 +34,22 @@ const DropDown = ({ SourceType, ChartTypeSelected, SetChartType }: DropDownProps
     const typeArray = ChartTypeArray.get(SourceType) || []
 
     const options = [
-        { value: "pie", label: "Pie chart" },
-        { value: "bar", label: "Bar chart" },
-        { value: "hist", label: "Histogram" },
+        { value: "pie", label: "Pie chart", icon: "fa-chart-pie" },
+        { value: "bar", label: "Bar chart", icon: "fa-chart-bar" },
+        { value: "hist", label: "Histogram", icon: "fa-chart-bar" },
     ].filter(option => (typeArray as string[]).includes(option.value))
 
     return (
         <div className="d-flex align-items-center mt-3 ml-3 mr-3">
-            <span style={{ width: "110px" }}>Chart type</span>
-            <select className="custom-select" value={ChartTypeSelected} onChange={e => SetChartType(e.target.value as ChartType)}>
+            <div className="btn-group mr-2">
                 {options.map(option => (
-                    <option key={option.value} value={option.value}>
-                        {option.label}
-                    </option>
+                    <button title={option.label} type="button" onClick={() => SetChartType(option.value as ChartType)} className={`btn ${ChartTypeSelected == option.value ? "btn-primary" : "btn-outline-primary"}`}><i className={`fas ${option.icon}`} /></button>
                 ))}
-            </select>
+            </div>
+
+            <div className="btn-group mr-2 float-right">
+                <button type="button" className={`btn btn-outline-primary`}><i className="fas fa-download"></i></button>
+            </div>
         </div>
     );
 }
@@ -59,6 +60,7 @@ interface AnalysisPanelProps {
     selectedArea: Extent | null
     selectedLayer: Layer | null
     layerStats: (layer: DatasetLayer | ModelOutputLayer) => BooleanTileGrid | NumericTileGrid | CategoricalTileGrid | null
+    currentTab: number
 }
 
 let dataSourceType: string = "null"
@@ -70,23 +72,20 @@ ChartTypeArray.set("NumericTileGrid", ["hist"])
 
 
 
-export const AnalysisPanel = ({ selectedArea, setShowAP, selectedLayer, layerStats }: AnalysisPanelProps) => {
+export const AnalysisPanel = ({ selectedArea, setShowAP, selectedLayer, layerStats, currentTab }: AnalysisPanelProps) => {
 
     const [chartType, setChartType] = React.useState<ChartType>()
     const [chartData, setChartData] = React.useState<ChartData>()
-    const chartContainerRef = React.useRef(null)
 
     let errorMsg: string = ""
     let showChart: boolean = false
     let data: BooleanTileGrid | NumericTileGrid | CategoricalTileGrid | null = null
 
-    const colours = selectedLayer?.type == "ModelOutputLayer" || selectedLayer?.type == "DatasetLayer" ? selectedLayer.colors : undefined //TODO calculate colors from fill function if colors is null
-
-
     React.useEffect(() => {
 
-        if (data !== null && selectedArea) {
-            setChartData(extentToChartData(colours, data, selectedArea))
+        if (data !== null && selectedArea && (selectedLayer?.type == "ModelOutputLayer" || selectedLayer?.type == "DatasetLayer")) {
+
+            setChartData(extentToChartData(selectedLayer.colors, data, selectedArea, selectedLayer.fill))
 
             const typeMap: { [key: string]: string } = {
                 BooleanTileGrid: "BooleanTileGrid",
@@ -96,7 +95,7 @@ export const AnalysisPanel = ({ selectedArea, setShowAP, selectedLayer, layerSta
 
             const dataType = typeMap[data.constructor.name]
 
-            if (dataSourceType !== dataType) {
+            if (dataSourceType !== dataType || chartType === undefined) {
                 dataSourceType = dataType
                 const charts = ChartTypeArray.get(dataType)
                 if (charts) setChartType(charts[0])
@@ -106,7 +105,7 @@ export const AnalysisPanel = ({ selectedArea, setShowAP, selectedLayer, layerSta
             setChartData(undefined)
         }
 
-    }, [selectedArea, selectedLayer, data])
+    }, [selectedArea, selectedLayer, data, currentTab])
 
 
     if (selectedArea === null) {
@@ -141,6 +140,11 @@ export const AnalysisPanel = ({ selectedArea, setShowAP, selectedLayer, layerSta
                 {
                     showChart &&
                     <>
+                        <DropDown
+                            SourceType={dataSourceType}
+                            ChartTypeSelected={chartType}
+                            SetChartType={setChartType}
+                        />
                         <div style={{ height: "350px", textAlign: 'center' }}>
                             <Chart
                                 chartType={chartType}
@@ -148,11 +152,7 @@ export const AnalysisPanel = ({ selectedArea, setShowAP, selectedLayer, layerSta
                             />
                         </div>
                         <div className="px-3 py-2 border-top border-bottom bg-light">Details</div>
-                        <DropDown
-                            SourceType={dataSourceType}
-                            ChartTypeSelected={chartType}
-                            SetChartType={setChartType}
-                        />
+
                     </>
                 }
 

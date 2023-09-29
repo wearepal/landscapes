@@ -2,17 +2,19 @@ import { Extent } from "ol/extent";
 import { BooleanTileGrid, CategoricalTileGrid, NumericTileGrid } from "../modelling/tile_grid";
 import { createXYZ } from "ol/tilegrid";
 import { getArea } from "ol/sphere";
-import { Layer } from "../state";
 import { fromExtent } from "ol/geom/Polygon";
+import { getColorStops } from "../reify_layer/model_output";
 
+
+type Color = [number, number, number, number]
 
 export interface ChartData {
     count: Map<any, number>
-    colors?: Map<any, [number, number, number, number]>
+    colors?: Map<any, Color>
 }
 
 
-export function extentToChartData(colors: [number, number, number, number][] | undefined, model: BooleanTileGrid | NumericTileGrid | CategoricalTileGrid, extent: Extent): ChartData {
+export function extentToChartData(colors: Color[] | undefined, model: BooleanTileGrid | NumericTileGrid | CategoricalTileGrid, extent: Extent, fillType: string | undefined): ChartData {
 
     const tileGrid = createXYZ()
     const outputTileRange = tileGrid.getTileRangeForExtentAndZ(extent, 20)
@@ -41,6 +43,24 @@ export function extentToChartData(colors: [number, number, number, number][] | u
                 const count = counts.get(value) || 0
                 counts.set(value, count + 1)
             }
+        }
+    }
+
+    if (!(model instanceof CategoricalTileGrid)) {
+        if (model instanceof BooleanTileGrid) {
+            if (fillType) {
+                const fillMap = getColorStops((fillType == "greyscale" ? "greys" : (fillType === "heatmap" ? "jet" : fillType)), 20)
+
+                color.set(false, fillMap[fillMap.length - 1])
+                color.set(true, fillMap[1])
+            } else {
+                color.set(true, [0, 0, 0, 1])
+                color.set(false, [255, 255, 255, 1])
+            }
+        } else {
+
+            //TODO NumericTileGrid colors
+
         }
     }
 
