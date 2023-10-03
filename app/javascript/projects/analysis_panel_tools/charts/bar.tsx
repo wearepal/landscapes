@@ -15,8 +15,8 @@ export const GenerateBarChart = ({ chartData }: BarChartProps) => {
 
     return (
         <div>
-            <svg width={w} height={h}>
-            </svg>
+            {/* <svg width={w} height={h}>
+            </svg> */}
         </div>
     )
 }

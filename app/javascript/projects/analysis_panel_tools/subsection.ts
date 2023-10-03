@@ -27,7 +27,7 @@ export function extentToChartData(colors: Color[] | undefined, model: BooleanTil
 
             if (model instanceof CategoricalTileGrid) {
 
-                const area = getArea(fromExtent(tileGrid.getTileCoordExtent([20, x, y])))
+                const area = getArea(fromExtent(tileGrid.getTileCoordExtent([20, x, y]))) / 1000
 
                 const value = model.labels.get(model.get(x, y)) ? model.labels.get(model.get(x, y)) : "No Data"
                 const count = counts.get(value) || 0
@@ -39,9 +39,13 @@ export function extentToChartData(colors: Color[] | undefined, model: BooleanTil
                 }
 
             } else {
+
+                const area = getArea(fromExtent(tileGrid.getTileCoordExtent([20, x, y]))) / 1000
                 const value = model.get(x, y)
+
+
                 const count = counts.get(value) || 0
-                counts.set(value, count + 1)
+                counts.set(value, count + area)
             }
         }
     }

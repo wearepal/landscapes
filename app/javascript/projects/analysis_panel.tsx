@@ -4,6 +4,8 @@ import { DatasetLayer, Layer, ModelOutputLayer } from './state'
 import { BooleanTileGrid, CategoricalTileGrid, NumericTileGrid } from './modelling/tile_grid'
 import { ChartData, extentToChartData } from './analysis_panel_tools/subsection'
 import { GenerateChart } from './analysis_panel_tools/charts'
+import './analysis_panel.css'
+
 
 export type ChartType = "pie" | "hist" | "bar"
 
@@ -23,13 +25,13 @@ const Chart = ({ chartType, chartData }: ChartProps) => {
     />
 }
 
-interface DropDownProps {
+interface ChartSelectionProps {
     SourceType: string
     ChartTypeSelected: ChartType | undefined
     SetChartType: (type: ChartType) => void
 }
 
-const DropDown = ({ SourceType, ChartTypeSelected, SetChartType }: DropDownProps) => {
+const ChartSelection = ({ SourceType, ChartTypeSelected, SetChartType }: ChartSelectionProps) => {
 
     const typeArray = ChartTypeArray.get(SourceType) || []
 
@@ -47,12 +49,53 @@ const DropDown = ({ SourceType, ChartTypeSelected, SetChartType }: DropDownProps
                 ))}
             </div>
 
-            <div className="btn-group mr-2 float-right">
-                <button type="button" className={`btn btn-outline-primary`}><i className="fas fa-download"></i></button>
+            <div className="btn-group mr-2">
+                <button disabled title='Expand' type="button" className={`btn btn-outline-primary`}><i className="fas fa-expand"></i></button>
+            </div>
+
+            <div className="btn-group mr-2 ">
+                <button disabled title='Download' type="button" className={`btn btn-outline-primary`}><i className="fas fa-download"></i></button>
             </div>
         </div>
     );
 }
+
+interface ChartLegendProps {
+    chartData: ChartData | undefined
+    sourceType: string
+}
+
+const ChartLegend = ({ chartData, sourceType }: ChartLegendProps) => {
+    if (!chartData) {
+        return null
+    }
+
+    let LegendItems
+
+    if (sourceType !== "NumericTileGrid") {
+        const totalCount = Array.from(chartData.count.values()).reduce((acc, count) => acc + count, 0)
+        const sortedLegendItems = Array.from(chartData.count.entries()).sort((a, b) => b[1] - a[1])
+        LegendItems = sortedLegendItems.map(([label, count], index) => (
+            <div style={{ display: "flex", alignItems: "center", fontSize: ".8em" }}>
+                <div
+                    style={{ backgroundColor: `rgb(${chartData.colors?.get(label)?.slice(0, 3)?.join(",")})` }}
+                    className="chart-legend-color"
+                />
+                {`${label} (${count.toFixed(1)}km², ${((count / totalCount) * 100).toFixed(2)}%)`}
+            </div>
+        ))
+    } else {
+        LegendItems = "WIP"
+    }
+
+
+    return (
+        <div className="chart-legend" style={{ display: "flex", flexDirection: "column", padding: "10px" }}>
+            {LegendItems}
+        </div>
+    );
+}
+
 
 
 interface AnalysisPanelProps {
@@ -124,7 +167,7 @@ export const AnalysisPanel = ({ selectedArea, setShowAP, selectedLayer, layerSta
     }
 
     return (
-        <div className="bg-light border-right d-flex flex-column" style={{ minWidth: "450px" }}>
+        <div className="bg-light border-right d-flex flex-column" style={{ minWidth: "450px", maxWidth: "450px" }}>
             <div className="px-3 py-2 border-top border-bottom d-flex align-items-center justify-content-between">
                 Analyse section
                 <i className="fas fa-times" style={{ cursor: "pointer" }} onClick={setShowAP} />
@@ -140,19 +183,21 @@ export const AnalysisPanel = ({ selectedArea, setShowAP, selectedLayer, layerSta
                 {
                     showChart &&
                     <>
-                        <DropDown
+                        <ChartSelection
                             SourceType={dataSourceType}
                             ChartTypeSelected={chartType}
                             SetChartType={setChartType}
                         />
-                        <div style={{ height: "350px", textAlign: 'center' }}>
+                        <div style={{ textAlign: 'center' }}>
                             <Chart
                                 chartType={chartType}
                                 chartData={chartData}
                             />
                         </div>
-                        <div className="px-3 py-2 border-top border-bottom bg-light">Details</div>
-
+                        <ChartLegend
+                            chartData={chartData}
+                            sourceType={dataSourceType}
+                        />
                     </>
                 }
 
