@@ -6,7 +6,50 @@ import { currentBbox , currentExtent} from "../bounding_box"
 import GeoJSON from "ol/format/GeoJSON"
 import { createXYZ } from "ol/tilegrid"
 import { NumericTileGrid } from "../tile_grid"
-import { random } from "lodash"
+import { SelectControl } from "../controls/select"
+
+const censusOptions = [
+    {
+        "code": "output_modified_HIGHEST_QUAL_0",
+        "name": "No Qualifications",
+        "id": 0
+    },
+    {
+        "code": "output_modified_HIGHEST_QUAL_1",
+        "name": "Level 1 and entry level",
+        "id": 1
+    },
+    {
+        "code": "output_modified_HIGHEST_QUAL_2",
+        "name": "Level 2",
+        "id": 2
+    },
+    {
+        "code": "output_modified_HIGHEST_QUAL_3",
+        "name": "Apprenticeship",
+        "id": 3
+    },
+    {
+        "code": "output_modified_HIGHEST_QUAL_4",
+        "name": "Level 3 (A Level)",
+        "id": 4
+    },
+    {
+        "code": "output_modified_HIGHEST_QUAL_5",
+        "name": "Level 4 (BSc/BA or higher)",
+        "id": 5
+    },
+    {
+        "code": "output_modified_HIGHEST_QUAL_6",
+        "name": "Other",
+        "id": 6
+    },
+    {
+        "code": "output_modified_HIGHEST_QUAL_-8",
+        "name": "Does not apply",
+        "id": 7
+    }
+]
 
 async function fetchCensusShapefilesFromExtent(bbox: string){
 
@@ -16,7 +59,7 @@ async function fetchCensusShapefilesFromExtent(bbox: string){
           {
             outputFormat: 'application/json',
             request: 'GetFeature',
-            typeName: ' shapefiles:OA_2021_EW_BGC_V2',
+            typeName: 'census:oa_2021_ew_bgc_v3_1294693978171420992__oa_2021_ew_bgc_v2',
             srsName: 'EPSG:3857',
             bbox
           }
@@ -28,7 +71,7 @@ async function fetchCensusShapefilesFromExtent(bbox: string){
 }
 
 export class CensusComponent extends BaseComponent {
-    DataCache: Map<any, any>
+    DataCache: Map<any, any> // CACHING WIP
 
     constructor() {
         super("UK Census")
@@ -36,8 +79,19 @@ export class CensusComponent extends BaseComponent {
     }
 
     async builder(node: Node) {
-        // controls, inputs, outputs
-        node.addOutput(new Output('out', 'Census Data', numericDataSocket))
+        node.addOutput(new Output('out', 'Census Data - Highest Education Only', numericDataSocket))
+
+        node.meta.toolTip = "Experimental Feature - Census data for highest education per Output Area."
+
+        node.addControl(
+            new SelectControl(
+                this.editor,
+                'censusOptionId',
+                () => censusOptions,
+                () => [],
+                'Education Level'
+            )
+        )
     }
 
 
@@ -63,9 +117,21 @@ export class CensusComponent extends BaseComponent {
             outputTileRange.getHeight()
         )
 
+        let index = node.data.censusOptionId as number
+        if (index === undefined) { index = 0 }
+
         for (let feature of features) {
 
-            const v = Math.random() * 1000
+            let n = 
+                +feature.get("output_modified_HIGHEST_QUAL_0") + 
+                +feature.get("output_modified_HIGHEST_QUAL_1") + 
+                +feature.get("output_modified_HIGHEST_QUAL_2") + 
+                +feature.get("output_modified_HIGHEST_QUAL_3") + 
+                +feature.get("output_modified_HIGHEST_QUAL_4") + 
+                +feature.get("output_modified_HIGHEST_QUAL_5") + 
+                +feature.get("output_modified_HIGHEST_QUAL_6") +
+                +feature.get("output_modified_HIGHEST_QUAL_-8")
+
             const geom = feature.getGeometry()
             if (geom === undefined) { continue }
         
@@ -85,7 +151,7 @@ export class CensusComponent extends BaseComponent {
               ) {
                 const center = tileGrid.getTileCoordCenter([zoom, x, y])
                 if (geom.intersectsCoordinate(center)) {
-                  result.set(x, y, v)
+                  result.set(x, y, feature.get(censusOptions[index].code) / n)
                 }
               }
             }
@@ -94,15 +160,6 @@ export class CensusComponent extends BaseComponent {
 
         editorNode.update()
 
-
-
-
-
-        // for each shape file, retrieve the relevant census data
-
-        // create tile grid
-
-        // return
     }
 
 }
