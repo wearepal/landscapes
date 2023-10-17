@@ -3,6 +3,7 @@ import { BaseComponent } from './base_component'
 import { NodeData, WorkerInputs, WorkerOutputs } from 'rete/types/core/data'
 import { booleanDataSocket, categoricalDataSocket } from '../socket_types'
 import { BooleanTileGrid, CategoricalTileGrid } from '../tile_grid'
+import { isEqual } from 'lodash'
 
 export class CategoricalComponent extends BaseComponent {
     cachedData: CategoricalTileGrid
@@ -28,8 +29,7 @@ export class CategoricalComponent extends BaseComponent {
         const booleanData = inputs['in']
         if (booleanData.length === 0) { return }
 
-
-        if (booleanData.toString() === this.previousInput.toString()) {
+        if (isEqual(booleanData, this.previousInput)) {
             outputs['out'] = this.cachedData
         } else {
             this.previousInput = booleanData as BooleanTileGrid[]
