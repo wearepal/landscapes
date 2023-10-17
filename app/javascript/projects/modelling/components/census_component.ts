@@ -74,12 +74,12 @@ export class CensusComponent extends BaseComponent {
     DataCache: Map<any, any> // CACHING WIP
 
     constructor() {
-        super("UK Census")
+        super("UK Census - Highest Education")
         this.category = "Inputs"
     }
 
     async builder(node: Node) {
-        node.addOutput(new Output('out', 'Census Data - Highest Education Only', numericDataSocket))
+        node.addOutput(new Output('out', 'Census Data', numericDataSocket))
 
         node.meta.toolTip = "Experimental Feature - Census data for highest education per Output Area. Returns percentage value."
 
