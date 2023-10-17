@@ -81,7 +81,7 @@ export class CensusComponent extends BaseComponent {
     async builder(node: Node) {
         node.addOutput(new Output('out', 'Census Data - Highest Education Only', numericDataSocket))
 
-        node.meta.toolTip = "Experimental Feature - Census data for highest education per Output Area."
+        node.meta.toolTip = "Experimental Feature - Census data for highest education per Output Area. Returns percentage value."
 
         node.addControl(
             new SelectControl(
@@ -151,7 +151,7 @@ export class CensusComponent extends BaseComponent {
               ) {
                 const center = tileGrid.getTileCoordCenter([zoom, x, y])
                 if (geom.intersectsCoordinate(center)) {
-                  result.set(x, y, feature.get(censusOptions[index].code) / n)
+                  result.set(x, y, feature.get(censusOptions[index].code) / n * 100)
                 }
               }
             }
