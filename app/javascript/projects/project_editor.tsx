@@ -7,11 +7,13 @@ import { ModelView, Transform } from './model_view'
 import './project_editor.css'
 import { reduce } from './reducer'
 import { CollapsedSidebar, Sidebar } from './sidebar'
-import { DatasetLayer, defaultProject, ModelOutputLayer, Project } from './state'
+import { DatasetLayer, defaultProject, Layer, ModelOutputLayer, Project } from './state'
 import { Toolbar } from './toolbar'
 import { debounce } from 'lodash'
 import { getDataset, getDatasets, saveModelOutput } from './saved_dataset'
 import { TileGridJSON } from './modelling/tile_grid'
+import { AnalysisPanel } from './analysis_panel'
+import { Extent } from 'ol/extent'
 
 export enum Tab {
   MapView,
@@ -37,6 +39,10 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
   const [sidebarVisible, setSidebarVisible] = React.useState(true)
   const [layerPaletteVisible, setLayerPaletteVisible] = React.useState(false)
   const [currentTab, setCurrentTab] = React.useState(Tab.MapView)
+
+  const [showAP, setShowAP] = React.useState(false)
+  const [selectedArea, setSelectedArea] = React.useState<Extent | null>(null)
+  const [selectedLayer, setSelectedLayer] = React.useState<Layer | null>(null)
   //hardcoded to the UK, perhaps later base this on the bounding box?
 
   const [mapViewZoom, setMapViewZoom] = React.useState(6)
@@ -91,6 +97,8 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
           }, 750)
           staggeredProcess()
         }}
+        setShowAP={() => setShowAP(!showAP)}
+        showAP={showAP}
       />
       <div className="flex-grow-1 d-flex">
         {currentTab == Tab.MapView && <>
@@ -120,7 +128,10 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
                 }
               })
             }}
-
+            setSelectedArea={setSelectedArea}
+            selectedArea={selectedArea}
+            selected={showAP}
+            setSelected={setShowAP}
           />
           {
             layerPaletteVisible &&
@@ -129,6 +140,20 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
               addLayer={layer => dispatch({ type: "AddLayer", layer })}
               dbModels={dbModels}
               getTeamDatasets={() => getDatasets(teamId)}
+            />
+          }
+          {
+            showAP &&
+            <AnalysisPanel
+              setShowAP={() => setShowAP(false)}
+              selectedArea={selectedArea}
+              selectedLayer={selectedLayer}
+              layerStats={(layer: ModelOutputLayer | DatasetLayer) => {
+                const cache = layer.type === "ModelOutputLayer" ? modelOutputCache : datasetOutputCache
+                const id = layer.type === "ModelOutputLayer" ? layer.nodeId : layer.id
+                return cache[id] ? cache[id] : null
+              }}
+              currentTab={currentTab}
             />
           }
           {
@@ -146,6 +171,8 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
                   const id = layer.type === "ModelOutputLayer" ? layer.nodeId : layer.id
                   return cache[id] ? cache[id].getStats() : { min: 0, max: 0, type: undefined }
                 }}
+                setSelectedLayer={setSelectedLayer}
+                selectedLayer={selectedLayer}
               />
               : <CollapsedSidebar show={() => setSidebarVisible(true)} />
           }
