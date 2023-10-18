@@ -120,6 +120,8 @@ export const AnalysisPanel = ({ selectedArea, setShowAP, selectedLayer, layerSta
     const [chartType, setChartType] = React.useState<ChartType>()
     const [chartData, setChartData] = React.useState<ChartData>()
 
+    console.log(chartType)
+
     let errorMsg: string = ""
     let showChart: boolean = false
     let data: BooleanTileGrid | NumericTileGrid | CategoricalTileGrid | null = null
@@ -137,6 +139,8 @@ export const AnalysisPanel = ({ selectedArea, setShowAP, selectedLayer, layerSta
             }
 
             const dataType = typeMap[data.constructor.name]
+
+            console.log(dataType)
 
             if (dataSourceType !== dataType || chartType === undefined) {
                 dataSourceType = dataType
