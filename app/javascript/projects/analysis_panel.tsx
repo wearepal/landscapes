@@ -36,16 +36,16 @@ const ChartSelection = ({ SourceType, ChartTypeSelected, SetChartType }: ChartSe
     const typeArray = ChartTypeArray.get(SourceType) || []
 
     const options = [
-        { value: "pie", label: "Pie chart", icon: "fa-chart-pie" },
-        { value: "bar", label: "Bar chart", icon: "fa-chart-bar" },
-        { value: "hist", label: "Histogram", icon: "fa-chart-bar" },
+        { value: "pie", label: "Pie chart", icon: "fa-chart-pie", disabled: false},
+        { value: "bar", label: "Bar chart", icon: "fa-chart-bar", disabled: true },
+        { value: "hist", label: "Histogram", icon: "fa-chart-bar", disabled: true },
     ].filter(option => (typeArray as string[]).includes(option.value))
 
     return (
         <div className="d-flex align-items-center mt-3 ml-3 mr-3">
             <div className="btn-group mr-2">
                 {options.map(option => (
-                    <button title={option.label} type="button" onClick={() => SetChartType(option.value as ChartType)} className={`btn ${ChartTypeSelected == option.value ? "btn-primary" : "btn-outline-primary"}`}><i className={`fas ${option.icon}`} /></button>
+                    <button disabled={option.disabled} title={option.label} type="button" onClick={() => SetChartType(option.value as ChartType)} className={`btn ${ChartTypeSelected == option.value ? "btn-primary" : "btn-outline-primary"}`}><i className={`fas ${option.icon}`} /></button>
                 ))}
             </div>
 
@@ -81,11 +81,11 @@ const ChartLegend = ({ chartData, sourceType }: ChartLegendProps) => {
                     style={{ backgroundColor: `rgb(${chartData.colors?.get(label)?.slice(0, 3)?.join(",")})` }}
                     className="chart-legend-color"
                 />
-                {`${label} (${count.toFixed(1)}km², ${((count / totalCount) * 100).toFixed(2)}%)`}
+                {`${label} (${((count / totalCount) * 100).toFixed(2)}%)`}
             </div>
         ))
     } else {
-        LegendItems = "WIP"
+        LegendItems = ""
     }
 
 
@@ -169,7 +169,7 @@ export const AnalysisPanel = ({ selectedArea, setShowAP, selectedLayer, layerSta
     return (
         <div className="bg-light border-right d-flex flex-column" style={{ minWidth: "450px", maxWidth: "450px" }}>
             <div className="px-3 py-2 border-top border-bottom d-flex align-items-center justify-content-between">
-                Analyse section
+                Snapshot tool
                 <i className="fas fa-times" style={{ cursor: "pointer" }} onClick={setShowAP} />
             </div>
 

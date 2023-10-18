@@ -44,7 +44,7 @@ export const Toolbar = ({ backButtonPath, projectName, hasUnsavedChanges, curren
     </div>
     <div className="btn-group mr-2">
       <button className={`btn btn-sm ${showAP ? "btn-primary" : "btn-outline-primary"}`} onClick={setShowAP}>
-        <i className="fas fa-object-group" /> Analysis panel
+        <i className="fas fa-object-group" /> Snapshot
       </button>
     </div>
     <div className="btn-group mr-2">
