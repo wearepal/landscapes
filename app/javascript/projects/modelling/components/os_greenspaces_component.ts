@@ -27,10 +27,12 @@ async function fetchGreenspacesFromExtent(bbox: string){
 }
 
 export class OSGreenSpacesComponent extends BaseComponent {
+    cachedData: BooleanTileGrid | undefined
 
     constructor(){
         super('OS Green Spaces')
         this.category = 'Inputs'
+        this.cachedData = undefined
     }
 
     async builder(node: Node) {
@@ -43,46 +45,59 @@ export class OSGreenSpacesComponent extends BaseComponent {
         const editorNode = this.editor?.nodes.find(n => n.id === node.id)
         if (editorNode === undefined) { return }
 
-        const res = await fetchGreenspacesFromExtent(currentBbox)
-        const features = new GeoJSON().readFeatures(res)
+        if(this.cachedData){
+            editorNode.meta.output = outputs['out'] = this.cachedData
+        }else{
 
-        const tileGrid = createXYZ()
-        const outputTileRange = tileGrid.getTileRangeForExtentAndZ(currentExtent, zoom)
+            const res = await fetchGreenspacesFromExtent(currentBbox)
+            const features = new GeoJSON().readFeatures(res)
 
-        const result = editorNode.meta.output = outputs['out'] =new BooleanTileGrid(
-            zoom,
-            outputTileRange.minX,
-            outputTileRange.minY,
-            outputTileRange.getWidth(),
-            outputTileRange.getHeight()
-        )
+            const tileGrid = createXYZ()
+            const outputTileRange = tileGrid.getTileRangeForExtentAndZ(currentExtent, zoom)
 
-        for (let feature of features) {
-
-            const geom = feature.getGeometry()
-            if (geom === undefined) { continue }
-        
-            const featureTileRange = tileGrid.getTileRangeForExtentAndZ(
-              geom.getExtent(),
-              zoom
+            const result = editorNode.meta.output = outputs['out'] =new BooleanTileGrid(
+                zoom,
+                outputTileRange.minX,
+                outputTileRange.minY,
+                outputTileRange.getWidth(),
+                outputTileRange.getHeight()
             )
-            for (
-              let x = Math.max(featureTileRange.minX, outputTileRange.minX);
-              x <= Math.min(featureTileRange.maxX, outputTileRange.maxX);
-              ++x
-            ) {
-              for (
-                let y = Math.max(featureTileRange.minY, outputTileRange.minY);
-                y <= Math.min(featureTileRange.maxY, outputTileRange.maxY);
-                ++y
-              ) {
-                const center = tileGrid.getTileCoordCenter([zoom, x, y])
-                if (geom.intersectsCoordinate(center)) {
-                  result.set(x, y, true)
+
+            result.name = "OS Green Spaces"
+
+            for (let feature of features) {
+
+                const geom = feature.getGeometry()
+                if (geom === undefined) { continue }
+            
+                const featureTileRange = tileGrid.getTileRangeForExtentAndZ(
+                geom.getExtent(),
+                zoom
+                )
+                for (
+                let x = Math.max(featureTileRange.minX, outputTileRange.minX);
+                x <= Math.min(featureTileRange.maxX, outputTileRange.maxX);
+                ++x
+                ) {
+                for (
+                    let y = Math.max(featureTileRange.minY, outputTileRange.minY);
+                    y <= Math.min(featureTileRange.maxY, outputTileRange.maxY);
+                    ++y
+                ) {
+                    const center = tileGrid.getTileCoordCenter([zoom, x, y])
+                    if (geom.intersectsCoordinate(center)) {
+                    result.set(x, y, true)
+                    }
                 }
-              }
+                }
             }
+
+            this.cachedData = result
         }
+
+
+        editorNode.update()
+
 
 
     }
