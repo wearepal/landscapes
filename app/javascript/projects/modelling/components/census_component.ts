@@ -71,11 +71,12 @@ async function fetchCensusShapefilesFromExtent(bbox: string){
 }
 
 export class CensusComponent extends BaseComponent {
-    DataCache: Map<any, any> // CACHING WIP
+    cachedData : NumericTileGrid | undefined
 
     constructor() {
         super("UK Census - Highest Education")
         this.category = "Inputs"
+        this.cachedData = undefined
     }
 
     async builder(node: Node) {
@@ -101,60 +102,67 @@ export class CensusComponent extends BaseComponent {
         const editorNode = this.editor?.nodes.find(n => n.id === node.id)
         if (editorNode === undefined) { return }
 
-        const zoom = 20
+        if(this.cachedData){ 
+            editorNode.meta.output = outputs['out'] = this.cachedData
+        }else{
+             const zoom = 20
 
-        const shapeFiles = await fetchCensusShapefilesFromExtent(currentBbox)
-        const features = new GeoJSON().readFeatures(shapeFiles)
+            const shapeFiles = await fetchCensusShapefilesFromExtent(currentBbox)
+            const features = new GeoJSON().readFeatures(shapeFiles)
 
-        const tileGrid = createXYZ()
-        const outputTileRange = tileGrid.getTileRangeForExtentAndZ(currentExtent, zoom)
+            const tileGrid = createXYZ()
+            const outputTileRange = tileGrid.getTileRangeForExtentAndZ(currentExtent, zoom)
 
-        const result = editorNode.meta.output = outputs['out'] =new NumericTileGrid(
-            zoom,
-            outputTileRange.minX,
-            outputTileRange.minY,
-            outputTileRange.getWidth(),
-            outputTileRange.getHeight()
-        )
-
-        let index = node.data.censusOptionId as number
-        if (index === undefined) { index = 0 }
-
-        for (let feature of features) {
-
-            let n = 
-                +feature.get("output_modified_HIGHEST_QUAL_0") + 
-                +feature.get("output_modified_HIGHEST_QUAL_1") + 
-                +feature.get("output_modified_HIGHEST_QUAL_2") + 
-                +feature.get("output_modified_HIGHEST_QUAL_3") + 
-                +feature.get("output_modified_HIGHEST_QUAL_4") + 
-                +feature.get("output_modified_HIGHEST_QUAL_5") + 
-                +feature.get("output_modified_HIGHEST_QUAL_6") +
-                +feature.get("output_modified_HIGHEST_QUAL_-8")
-
-            const geom = feature.getGeometry()
-            if (geom === undefined) { continue }
-        
-            const featureTileRange = tileGrid.getTileRangeForExtentAndZ(
-              geom.getExtent(),
-              zoom
+            const result = editorNode.meta.output = outputs['out'] =new NumericTileGrid(
+                zoom,
+                outputTileRange.minX,
+                outputTileRange.minY,
+                outputTileRange.getWidth(),
+                outputTileRange.getHeight()
             )
-            for (
-              let x = Math.max(featureTileRange.minX, outputTileRange.minX);
-              x <= Math.min(featureTileRange.maxX, outputTileRange.maxX);
-              ++x
-            ) {
-              for (
-                let y = Math.max(featureTileRange.minY, outputTileRange.minY);
-                y <= Math.min(featureTileRange.maxY, outputTileRange.maxY);
-                ++y
-              ) {
-                const center = tileGrid.getTileCoordCenter([zoom, x, y])
-                if (geom.intersectsCoordinate(center)) {
-                  result.set(x, y, feature.get(censusOptions[index].code) / n * 100)
+
+            let index = node.data.censusOptionId as number
+            if (index === undefined) { index = 0 }
+
+            for (let feature of features) {
+
+                let n = 
+                    +feature.get("output_modified_HIGHEST_QUAL_0") + 
+                    +feature.get("output_modified_HIGHEST_QUAL_1") + 
+                    +feature.get("output_modified_HIGHEST_QUAL_2") + 
+                    +feature.get("output_modified_HIGHEST_QUAL_3") + 
+                    +feature.get("output_modified_HIGHEST_QUAL_4") + 
+                    +feature.get("output_modified_HIGHEST_QUAL_5") + 
+                    +feature.get("output_modified_HIGHEST_QUAL_6") +
+                    +feature.get("output_modified_HIGHEST_QUAL_-8")
+
+                const geom = feature.getGeometry()
+                if (geom === undefined) { continue }
+            
+                const featureTileRange = tileGrid.getTileRangeForExtentAndZ(
+                geom.getExtent(),
+                zoom
+                )
+                for (
+                let x = Math.max(featureTileRange.minX, outputTileRange.minX);
+                x <= Math.min(featureTileRange.maxX, outputTileRange.maxX);
+                ++x
+                ) {
+                for (
+                    let y = Math.max(featureTileRange.minY, outputTileRange.minY);
+                    y <= Math.min(featureTileRange.maxY, outputTileRange.maxY);
+                    ++y
+                ) {
+                    const center = tileGrid.getTileCoordCenter([zoom, x, y])
+                    if (geom.intersectsCoordinate(center)) {
+                    result.set(x, y, feature.get(censusOptions[index].code) / n * 100)
+                    }
                 }
-              }
+                }
             }
+
+            this.cachedData = result
+
         }
 
 
