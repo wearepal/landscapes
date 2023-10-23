@@ -132,22 +132,28 @@ export const AnalysisPanel = ({ selectedArea, setShowAP, selectedLayer, layerSta
 
             setChartData(extentToChartData(selectedLayer.colors, data, selectedArea, selectedLayer.fill))
 
-            const typeMap: { [key: string]: string } = {
-                BooleanTileGrid: "BooleanTileGrid",
-                NumericTileGrid: "NumericTileGrid",
-                CategoricalTileGrid: "CategoricalTileGrid",
+            // const typeMap: { [key: string]: string } = {
+            //     BooleanTileGrid: "BooleanTileGrid",
+            //     NumericTileGrid: "NumericTileGrid",
+            //     CategoricalTileGrid: "CategoricalTileGrid",
+            // }
+
+            let dataType: string | undefined = undefined
+
+            if (data instanceof BooleanTileGrid) {
+                dataType = "BooleanTileGrid"
+            } else if (data instanceof NumericTileGrid) {
+                dataType = "NumericTileGrid"
+            } else if (data instanceof CategoricalTileGrid) {
+                dataType = "CategoricalTileGrid"
             }
-
-            const dataType = typeMap[data.constructor.name]
-
-            console.log(dataType)
-
-            if (dataSourceType !== dataType || chartType === undefined) {
-                dataSourceType = dataType
-                const charts = ChartTypeArray.get(dataType)
-                if (charts) setChartType(charts[0])
+            if (dataType !== undefined) {
+                if (dataSourceType !== dataType || chartType === undefined) {
+                    dataSourceType = dataType
+                    const charts = ChartTypeArray.get(dataType)
+                    if (charts) setChartType(charts[0])
+                }
             }
-
         } else {
             setChartData(undefined)
         }
