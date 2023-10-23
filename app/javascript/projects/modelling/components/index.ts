@@ -19,6 +19,8 @@ import { NumericDatasetToNumberComponent } from "./numeric_dataset_to_numeric_co
 import { SaveModelOutputComponent, SaveModel } from "./save_model_component"
 import { PrecompiledModelComponent, getDatasets } from "./dataset_component"
 import { UkcehLandCoverComponent } from "./ukceh_land_cover_component"
+import { CensusComponent } from "./census_component"
+import { OSGreenSpacesComponent } from "./os_greenspaces_component"
 
 export function createDefaultComponents(saveMapLayer: SaveMapLayer, saveModel: SaveModel, getDatasets: getDatasets): BaseComponent[] {
   return [
@@ -29,7 +31,9 @@ export function createDefaultComponents(saveMapLayer: SaveMapLayer, saveModel: S
     new NumericConstantComponent(),
     new DigitalModelComponent(),
     new PrecompiledModelComponent(getDatasets),
-
+    new CensusComponent(),
+    new OSGreenSpacesComponent(),
+    
     // Outputs
     new MapLayerComponent(saveMapLayer),
     new SaveModelOutputComponent(saveModel),

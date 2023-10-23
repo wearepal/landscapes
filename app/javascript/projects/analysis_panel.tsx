@@ -36,7 +36,7 @@ const ChartSelection = ({ SourceType, ChartTypeSelected, SetChartType }: ChartSe
     const typeArray = ChartTypeArray.get(SourceType) || []
 
     const options = [
-        { value: "pie", label: "Pie chart", icon: "fa-chart-pie", disabled: false },
+        { value: "pie", label: "Pie chart", icon: "fa-chart-pie", disabled: false},
         { value: "bar", label: "Bar chart", icon: "fa-chart-bar", disabled: true },
         { value: "hist", label: "Histogram", icon: "fa-chart-bar", disabled: true },
     ].filter(option => (typeArray as string[]).includes(option.value))
@@ -120,6 +120,8 @@ export const AnalysisPanel = ({ selectedArea, setShowAP, selectedLayer, layerSta
     const [chartType, setChartType] = React.useState<ChartType>()
     const [chartData, setChartData] = React.useState<ChartData>()
 
+    console.log(chartType)
+
     let errorMsg: string = ""
     let showChart: boolean = false
     let data: BooleanTileGrid | NumericTileGrid | CategoricalTileGrid | null = null
@@ -152,7 +154,6 @@ export const AnalysisPanel = ({ selectedArea, setShowAP, selectedLayer, layerSta
                     if (charts) setChartType(charts[0])
                 }
             }
-
         } else {
             setChartData(undefined)
         }
