@@ -17,7 +17,7 @@ export interface ChartData {
 export function extentToChartData(colors: Color[] | undefined, model: BooleanTileGrid | NumericTileGrid | CategoricalTileGrid, extent: Extent, fillType: string | undefined): ChartData {
 
     const tileGrid = createXYZ()
-    const outputTileRange = tileGrid.getTileRangeForExtentAndZ(extent, 20)
+    const outputTileRange = tileGrid.getTileRangeForExtentAndZ(extent, model.zoom)
 
     const counts = new Map<any, number>()
     const color = new Map<any, [number, number, number, number]>()
