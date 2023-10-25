@@ -5,11 +5,11 @@ import { NodeData, WorkerInputs, WorkerOutputs } from "rete/types/core/data"
 import { booleanDataSocket, categoricalDataSocket } from "../socket_types"
 import { BooleanTileGrid, CategoricalTileGrid } from "../tile_grid"
 import { BaseComponent } from "./base_component"
-import { currentBbox as bbox, currentExtent as extent } from "../bounding_box"
+import { currentBbox as bbox, currentExtent as extent, zoomLevel } from "../bounding_box"
 import { retrieveModelData } from "../model_retrieval"
 import { TypedArray } from "d3"
 
-const zoom = 20
+const zoom = zoomLevel
 
 interface Habitat {
   agg: number

@@ -2,7 +2,7 @@ import { Node, Output } from "rete"
 import { NodeData, WorkerInputs, WorkerOutputs } from "rete/types/core/data"
 import { BaseComponent } from "./base_component"
 import { booleanDataSocket } from "../socket_types"
-import { currentBbox, currentExtent } from "../bounding_box"
+import { currentBbox, currentExtent, zoomLevel } from "../bounding_box"
 import GeoJSON from "ol/format/GeoJSON"
 import { createXYZ } from "ol/tilegrid"
 import { BooleanTileGrid } from "../tile_grid"
@@ -59,7 +59,7 @@ export class OSGreenSpacesComponent extends BaseComponent {
     }
 
     async worker(node: NodeData, inputs: WorkerInputs, outputs: WorkerOutputs, ...args: unknown[]) {
-        const zoom = 20
+        const zoom = 23
 
         const editorNode = this.editor?.nodes.find(n => n.id === node.id)
         if (editorNode === undefined) { return }

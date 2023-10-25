@@ -10,7 +10,7 @@ import { createXYZ } from "ol/tilegrid"
 import * as proj4 from "proj4"
 import { Polygon } from "ol/geom"
 
-import { currentExtent as extent } from "../bounding_box"
+import { currentExtent as extent, zoomLevel } from "../bounding_box"
 
 
 
@@ -288,7 +288,7 @@ export class OSMLandUseComponent extends BaseComponent {
 
     async worker(node: NodeData, inputs: WorkerInputs, outputs: WorkerOutputs, ...args: unknown[]) {
 
-        const zoom = 20
+        const zoom = zoomLevel
 
         const editorNode = this.editor?.nodes.find(n => n.id === node.id)
         if (editorNode === undefined) { return }

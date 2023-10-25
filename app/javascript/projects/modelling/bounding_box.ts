@@ -16,3 +16,4 @@ export const oldExtent = [-20839.008676500813, 6579722.087031, 12889.487811, 664
 export const currentExtent = [-49469.089243, 6570068.329224, 55641.379277, 6669018.450996]
 
 export const currentBbox = `${currentExtent.join(",")},EPSG:3857`
+export const zoomLevel = 20
