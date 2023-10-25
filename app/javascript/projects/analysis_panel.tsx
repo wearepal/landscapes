@@ -36,7 +36,7 @@ const ChartSelection = ({ SourceType, ChartTypeSelected, SetChartType }: ChartSe
     const typeArray = ChartTypeArray.get(SourceType) || []
 
     const options = [
-        { value: "pie", label: "Pie chart", icon: "fa-chart-pie", disabled: false},
+        { value: "pie", label: "Pie chart", icon: "fa-chart-pie", disabled: false },
         { value: "bar", label: "Bar chart", icon: "fa-chart-bar", disabled: true },
         { value: "hist", label: "Histogram", icon: "fa-chart-bar", disabled: true },
     ].filter(option => (typeArray as string[]).includes(option.value))
@@ -131,12 +131,6 @@ export const AnalysisPanel = ({ selectedArea, setShowAP, selectedLayer, layerSta
         if (data !== null && selectedArea && (selectedLayer?.type == "ModelOutputLayer" || selectedLayer?.type == "DatasetLayer")) {
 
             setChartData(extentToChartData(selectedLayer.colors, data, selectedArea, selectedLayer.fill))
-
-            // const typeMap: { [key: string]: string } = {
-            //     BooleanTileGrid: "BooleanTileGrid",
-            //     NumericTileGrid: "NumericTileGrid",
-            //     CategoricalTileGrid: "CategoricalTileGrid",
-            // }
 
             let dataType: string | undefined = undefined
 
