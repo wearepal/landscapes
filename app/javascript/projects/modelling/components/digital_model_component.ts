@@ -6,7 +6,7 @@ import { PreviewControl } from "../controls/preview"
 import { NumericTileGrid } from "../tile_grid"
 import { numericDataSocket } from "../socket_types"
 import { createXYZ } from "ol/tilegrid"
-import { currentExtent as extent } from "../bounding_box"
+import { currentExtent as extent, zoomLevel } from "../bounding_box"
 import { TypedArray } from "d3"
 import { retrieveModelData } from "../model_retrieval"
 
@@ -85,7 +85,7 @@ export class DigitalModelComponent extends BaseComponent {
             if (this.outputCache.has(digitalModel.source)) {
                 const out = editorNode.meta.output = outputs['dm'] = this.outputCache.get(digitalModel.source)
             } else {
-                const zoom = 20
+                const zoom = zoomLevel
 
                 const tileGrid = createXYZ()
                 const outputTileRange = tileGrid.getTileRangeForExtentAndZ(extent, zoom)

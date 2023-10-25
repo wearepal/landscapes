@@ -32,9 +32,19 @@ export class CategoricalComponent extends BaseComponent {
         if (isEqual(booleanData, this.previousInput)) {
             outputs['out'] = this.cachedData
         } else {
+            let baseBool: BooleanTileGrid | null = null
+            let highestZoom = -1
+            for (const boolGrid of booleanData as BooleanTileGrid[]) {
+                if (boolGrid.zoom > highestZoom) {
+                    highestZoom = boolGrid.zoom
+                    baseBool = boolGrid
+                }
+            }
+
+            if (!baseBool) { return }
+
             this.previousInput = booleanData as BooleanTileGrid[]
 
-            const baseBool = booleanData[0] as BooleanTileGrid
             const labels: Map<number, string> = new Map()
             const result = outputs['out'] = new CategoricalTileGrid(
                 baseBool.zoom,
@@ -43,8 +53,6 @@ export class CategoricalComponent extends BaseComponent {
                 baseBool.width,
                 baseBool.height
             )
-
-            // sort by name alphabetically,
 
             booleanData.map((e, i) => {
                 if (e instanceof BooleanTileGrid) {
