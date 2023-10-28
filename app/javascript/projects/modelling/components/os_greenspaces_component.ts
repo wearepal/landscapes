@@ -21,6 +21,10 @@ const GS_Sources: GS_Source[] =
         {
             source: "nateng:Brighton_PrivateGardens",
             name: "Private gardens"
+        },
+        {
+            source: "nateng:shape_green_privategardens",
+            name: "Private gardens (0.1 vegetation)"
         }
     ]
 
