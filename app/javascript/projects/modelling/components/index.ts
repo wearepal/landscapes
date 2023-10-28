@@ -21,6 +21,8 @@ import { PrecompiledModelComponent, getDatasets } from "./dataset_component"
 import { UkcehLandCoverComponent } from "./ukceh_land_cover_component"
 import { CensusComponent } from "./census_component"
 import { OSGreenSpacesComponent } from "./os_greenspaces_component"
+import { CellAreaComponent } from "./cell_area_component"
+import { ScaleFactorComponent } from "./scale_factor_component"
 
 export function createDefaultComponents(saveMapLayer: SaveMapLayer, saveModel: SaveModel, getDatasets: getDatasets): BaseComponent[] {
   return [
@@ -33,7 +35,7 @@ export function createDefaultComponents(saveMapLayer: SaveMapLayer, saveModel: S
     new PrecompiledModelComponent(getDatasets),
     new CensusComponent(),
     new OSGreenSpacesComponent(),
-    
+
     // Outputs
     new MapLayerComponent(saveMapLayer),
     new SaveModelOutputComponent(saveModel),
@@ -46,6 +48,7 @@ export function createDefaultComponents(saveMapLayer: SaveMapLayer, saveModel: S
     // Calculations
     new AreaComponent(),
     new DistanceMapComponent(),
+    new ScaleFactorComponent(),
 
     // Charts
     new BarChartComponent(),
@@ -73,5 +76,9 @@ export function createDefaultComponents(saveMapLayer: SaveMapLayer, saveModel: S
     new UnaryOpComponent('Reciprocal', '⁻¹', 'postfix', numericDataSocket, numericDataSocket, 'Arithmetic'),
     new BinaryOpComponent('Less', '<', numericDataSocket, booleanDataSocket, 'Arithmetic'),
     new BinaryOpComponent('Greater', '>', numericDataSocket, booleanDataSocket, 'Arithmetic'),
+
+    // DEBUG TOOLS
+    new CellAreaComponent(),
+
   ]
 }
