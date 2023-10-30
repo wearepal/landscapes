@@ -9,6 +9,31 @@ import { getArea } from "ol/sphere"
 import { NumericConstant } from "../numeric_constant"
 import { LabelControl } from "../controls/label"
 
+export function getMedianCellSize(input: BooleanTileGrid | NumericTileGrid | CategoricalTileGrid) {
+    const tileGrid = createXYZ()
+    const output = new NumericTileGrid(
+        input.zoom,
+        input.x,
+        input.y,
+        input.width,
+        input.height
+    )
+    const totalTiles = output.width * output.height
+    const middleIndex = Math.floor(totalTiles / 2)
+    let currentIndex = 0
+    let r
+    for (let x = output.x; x < output.x + output.width; ++x) {
+        for (let y = output.y; y < output.y + output.height; ++y) {
+            if (currentIndex === middleIndex) {
+                r = getArea(fromExtent(tileGrid.getTileCoordExtent([input.zoom, x, y])))
+            }
+
+            currentIndex++;
+        }
+    }
+
+    return r
+}
 
 export class CellAreaComponent extends BaseComponent {
 
@@ -42,37 +67,14 @@ export class CellAreaComponent extends BaseComponent {
                     outputs['out'] = this.cache.get(input.zoom)
 
                 } else {
-                    const tileGrid = createXYZ()
-                    const output = outputs['out'] = new NumericTileGrid(
-                        input.zoom,
-                        input.x,
-                        input.y,
-                        input.width,
-                        input.height
-                    )
 
-                    const totalTiles = output.width * output.height
+                    const cellsize = getMedianCellSize(input)
 
-                    const middleIndex = Math.floor(totalTiles / 2)
-
-                    let currentIndex = 0
-                    let r
-
-                    for (let x = output.x; x < output.x + output.width; ++x) {
-                        for (let y = output.y; y < output.y + output.height; ++y) {
-                            if (currentIndex === middleIndex) {
-                                r = getArea(fromExtent(tileGrid.getTileCoordExtent([input.zoom, x, y])))
-                            }
-
-                            currentIndex++;
-                        }
-                    }
-
-                    const out = outputs['out'] = new NumericConstant(r, editorNode.data.name as string)
+                    const out = outputs['out'] = new NumericConstant(cellsize, editorNode.data.name as string)
 
                     this.cache.set(input.zoom, out)
 
-                    node.data.summary = `${r.toLocaleString()} m²`
+                    node.data.summary = `${cellsize.toLocaleString()} m²`
 
                     const summaryControl: any = editorNode.controls.get('summary')
 
