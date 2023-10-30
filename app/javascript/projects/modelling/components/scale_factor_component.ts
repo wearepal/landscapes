@@ -3,12 +3,10 @@ import { NodeData, WorkerInputs, WorkerOutputs } from 'rete/types/core/data'
 import { Input, Node, Output } from 'rete'
 import { dataSocket, numberSocket, numericDataSocket } from "../socket_types"
 import { BooleanTileGrid, CategoricalTileGrid, NumericTileGrid } from "../tile_grid"
-import { createXYZ } from "ol/tilegrid"
-import { fromExtent } from "ol/geom/Polygon"
-import { getArea } from "ol/sphere"
 import { SelectControl } from "../controls/select"
 import { LabelControl } from "../controls/label"
 import { NumericConstant } from "../numeric_constant"
+import { getMedianCellSize } from "./cell_area_component"
 
 
 interface ScaleFactorType {
@@ -74,31 +72,8 @@ export class ScaleFactorComponent extends BaseComponent {
                     outputs['out'] = this.cache.get([input.zoom, index])
 
                 } else {
-                    const tileGrid = createXYZ()
-                    const output = outputs['out'] = new NumericTileGrid(
-                        input.zoom,
-                        input.x,
-                        input.y,
-                        input.width,
-                        input.height
-                    )
 
-                    const totalTiles = output.width * output.height
-
-                    const middleIndex = Math.floor(totalTiles / 2)
-
-                    let currentIndex = 0
-                    let r
-
-                    for (let x = output.x; x < output.x + output.width; ++x) {
-                        for (let y = output.y; y < output.y + output.height; ++y) {
-                            if (currentIndex === middleIndex) {
-                                r = getArea(fromExtent(tileGrid.getTileCoordExtent([input.zoom, x, y]))) / unitPerM
-                            }
-
-                            currentIndex++;
-                        }
-                    }
+                    const r = getMedianCellSize(input) / unitPerM
 
                     const out = outputs['out'] = new NumericConstant(r, editorNode.data.name as string)
 
