@@ -34,7 +34,7 @@ export class MaskNumericDataComponent extends BaseComponent {
       editorNode.meta.errorMessage = 'Not enough inputs'
     }
 
-    else if (!isEqual(inputs['num'][0], editorNode.meta.previousInputs?.[0]) || !isEqual(inputs['mask'][0], editorNode.meta.previousInputs?.[1])) {
+    else if (!isEqual(inputs['num'][0], (editorNode.meta.previousInputs as any)?.[0]) || !isEqual(inputs['mask'][0], (editorNode.meta.previousInputs as any)?.[1])) {
 
       delete editorNode.meta.errorMessage
 
