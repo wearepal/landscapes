@@ -24,7 +24,7 @@ const GS_Sources: GS_Source[] =
         },
         {
             source: "nateng:shape_green_privategardens",
-            name: "Private gardens (0.1 vegetation)"
+            name: "Private gardens (RGB filtered)"
         }
     ]
 
