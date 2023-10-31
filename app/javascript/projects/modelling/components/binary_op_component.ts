@@ -21,7 +21,7 @@ export class BinaryOpComponent extends BaseComponent {
     this.inputSocket = inputSocket
     this.outputSocket = outputSocket
     this.category = category
-    this.contextMenuName = `${operation} (${operator})`
+    this.contextMenuName = operator ? `${operation} (${operator})` : operation
   }
 
   async builder(node: Node) {
@@ -30,7 +30,7 @@ export class BinaryOpComponent extends BaseComponent {
     ))
     node.addInput(new Input('a', 'A', this.inputSocket))
     node.addInput(new Input('b', 'B', this.inputSocket))
-    node.addOutput(new Output('out', `A ${this.operator} B`, this.outputSocket))
+    node.addOutput(new Output('out', this.operator ? `A ${this.operator} B` : `${this.operation}(A, B)`, this.outputSocket))
   }
 
   async worker(node: NodeData, inputs: WorkerInputs, outputs: WorkerOutputs, ...args: unknown[]) {

@@ -1,14 +1,19 @@
 import * as React from 'react'
-import { Map, View } from 'ol'
+import { Feature, Map, View } from 'ol'
 import { Control, defaults as defaultControls } from 'ol/control'
-import { createEmpty as createEmptyExtent, extend, isEmpty } from 'ol/extent'
+import { Extent, createEmpty as createEmptyExtent, extend, isEmpty } from 'ol/extent'
 import olBaseLayer from 'ol/layer/Base'
 import VectorLayer from 'ol/layer/Vector'
 import { createIconElement } from './util'
-import { Layer } from './state'
+import { DatasetLayer, Layer } from './state'
 import { reifyLayer } from './reify_layer'
 import { DBModels } from './db_models'
 import { BooleanTileGrid, CategoricalTileGrid, NumericTileGrid } from './modelling/tile_grid'
+import VectorSource from 'ol/source/Vector'
+import { Fill, Stroke, Style } from 'ol/style'
+import { fromExtent } from 'ol/geom/Polygon'
+import { DragBox, Select } from 'ol/interaction'
+import { platformModifierKeyOnly } from 'ol/events/condition'
 
 function getLayerExtent(layer: olBaseLayer) {
   if (layer instanceof VectorLayer) {
@@ -66,9 +71,15 @@ interface MapViewProps {
   modelOutputCache: ModelOutputCache
   datasetCache: DatasetCache
 
-  loadTeamDataset: (id: number) => void
+  loadTeamDataset: (layer: DatasetLayer) => void
+
+  selectedArea: Extent | null
+  setSelectedArea: (area: Extent | null) => void
+
+  selected: boolean
+  setSelected: (boolean) => void
 }
-export const MapView = ({ layers, dbModels, initialZoom, setZoom, initialCenter, setCenter, modelOutputCache, datasetCache, loadTeamDataset }: MapViewProps) => {
+export const MapView = ({ layers, dbModels, initialZoom, setZoom, initialCenter, setCenter, modelOutputCache, datasetCache, loadTeamDataset, selectedArea, setSelectedArea, selected, setSelected }: MapViewProps) => {
   const mapRef = React.useRef<HTMLDivElement>()
   const [map, setMap] = React.useState<Map | null>(null)
   const [allLayersVisible, setAllLayersVisible] = React.useState(true)
@@ -130,7 +141,50 @@ export const MapView = ({ layers, dbModels, initialZoom, setZoom, initialCenter,
         map.getLayers().setAt(i, newLayer)
       }
     }
-  }, [map, layers])
+
+    if (selectedArea && selected) {
+      const vectorSource = new VectorSource()
+      const vectorLayer = new VectorLayer({
+        source: vectorSource,
+        style: new Style({
+          fill: new Fill({
+            color: 'rgba(255, 255, 255, 0.15)'
+          }),
+          stroke: new Stroke({
+            color: 'white',
+            width: 7
+          })
+        })
+      })
+      const polygon = fromExtent(selectedArea)
+
+      vectorSource.clear()
+      vectorSource.addFeature(new Feature(polygon))
+
+      map.addLayer(vectorLayer)
+    }
+
+  }, [map, layers, selectedArea, selected])
+
+
+  React.useEffect(() => {
+    if (map === null) return
+
+    const dragBox = new DragBox({
+      condition: platformModifierKeyOnly
+    })
+
+    map.addInteraction(dragBox)
+
+    dragBox.on('boxend', () => {
+      setSelectedArea(dragBox.getGeometry().getExtent())
+      if (!selected) setSelected(true)
+    })
+    dragBox.on('boxstart', () => {
+      setSelectedArea(null)
+    })
+
+  })
 
   React.useEffect(() => {
     if (map === null) { return }

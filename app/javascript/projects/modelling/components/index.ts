@@ -1,7 +1,6 @@
 import { booleanDataSocket, numericDataSocket, numericNumberDataSocket } from "../socket_types"
 import { BaseComponent } from "./base_component"
 import { BinaryOpComponent } from "./binary_op_component"
-import { UkcehLandCoverComponent } from "./ukceh_land_cover_component"
 import { MapLayerComponent, SaveMapLayer } from "./map_layer_component"
 import { NumericConstantComponent } from "./numeric_constant_component"
 import { UnaryOpComponent } from "./unary_op_component"
@@ -19,6 +18,11 @@ import { ExpressionComponent } from "./expression_component"
 import { NumericDatasetToNumberComponent } from "./numeric_dataset_to_numeric_component"
 import { SaveModelOutputComponent, SaveModel } from "./save_model_component"
 import { PrecompiledModelComponent, getDatasets } from "./dataset_component"
+import { UkcehLandCoverComponent } from "./ukceh_land_cover_component"
+import { CensusComponent } from "./census_component"
+import { OSGreenSpacesComponent } from "./os_greenspaces_component"
+import { CellAreaComponent } from "./cell_area_component"
+import { ScaleFactorComponent } from "./scale_factor_component"
 
 export function createDefaultComponents(saveMapLayer: SaveMapLayer, saveModel: SaveModel, getDatasets: getDatasets): BaseComponent[] {
   return [
@@ -29,6 +33,8 @@ export function createDefaultComponents(saveMapLayer: SaveMapLayer, saveModel: S
     new NumericConstantComponent(),
     new DigitalModelComponent(),
     new PrecompiledModelComponent(getDatasets),
+    new CensusComponent(),
+    new OSGreenSpacesComponent(),
 
     // Outputs
     new MapLayerComponent(saveMapLayer),
@@ -42,6 +48,7 @@ export function createDefaultComponents(saveMapLayer: SaveMapLayer, saveModel: S
     // Calculations
     new AreaComponent(),
     new DistanceMapComponent(),
+    new ScaleFactorComponent(),
 
     // Charts
     new BarChartComponent(),
@@ -56,6 +63,8 @@ export function createDefaultComponents(saveMapLayer: SaveMapLayer, saveModel: S
     // Arithmetic
     new MaskNumericDataComponent(),
     new ExpressionComponent(),
+    new BinaryOpComponent('Min', '', numericNumberDataSocket, numericNumberDataSocket, 'Arithmetic'),
+    new BinaryOpComponent('Max', '', numericNumberDataSocket, numericNumberDataSocket, 'Arithmetic'),
     new VariadicOpComponent('Sum', '∑', numericDataSocket, numericDataSocket, 'Arithmetic'),
     new VariadicOpComponent('Product', '∏', numericDataSocket, numericDataSocket, 'Arithmetic'),
     new BinaryOpComponent('Add', '+', numericNumberDataSocket, numericNumberDataSocket, 'Arithmetic'),
@@ -67,5 +76,9 @@ export function createDefaultComponents(saveMapLayer: SaveMapLayer, saveModel: S
     new UnaryOpComponent('Reciprocal', '⁻¹', 'postfix', numericDataSocket, numericDataSocket, 'Arithmetic'),
     new BinaryOpComponent('Less', '<', numericDataSocket, booleanDataSocket, 'Arithmetic'),
     new BinaryOpComponent('Greater', '>', numericDataSocket, booleanDataSocket, 'Arithmetic'),
+
+    // DEBUG TOOLS
+    new CellAreaComponent(),
+
   ]
 }

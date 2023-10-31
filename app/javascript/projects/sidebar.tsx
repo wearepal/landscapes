@@ -2,11 +2,10 @@ import * as React from 'react'
 import './sidebar.css'
 import { ReactSortable } from 'react-sortablejs'
 import { nevoLevelNames, nevoPropertyNames } from './nevo'
-import { DatasetLayer, Layer, ModelOutputLayer, NevoLayer, OverlayLayer, State } from './state'
+import { CropMapLayer, DatasetLayer, Layer, ModelOutputLayer, NevoLayer, OverlayLayer, State } from './state'
 import { iconForLayerType } from "./util"
 import { getColorStops } from './reify_layer/model_output'
 import { tileGridStats } from './modelling/tile_grid'
-import distinctColors from 'distinct-colors'
 
 interface OverlayLayerSettingsProps {
   layer: OverlayLayer
@@ -76,6 +75,19 @@ const NevoLayerSettings = ({ layer, mutate }: NevoLayerSettingsProps) => (
         }
       </select>
     </div>
+  </>
+)
+
+interface CropMapLayerSettingsProps {
+  layer: CropMapLayer
+}
+
+const CropMapLayerSettings = ({ layer }: CropMapLayerSettingsProps) => (
+  <>
+    <details className="mt-3">
+      <summary>Legend</summary>
+      <img src={`https://environment.data.gov.uk/spatialdata/crop-map-of-england-${layer.year}/wms?request=GetLegendGraphic%26version=1.3.0%26format=image/png%26layer=Crop_Map_Of_England_${layer.year}`} />
+    </details>
   </>
 )
 
@@ -221,35 +233,70 @@ export function Legend({ colors, minValue, maxValue, type, labels, mutateColors,
 
       if (!colors) return (<div></div>)
 
-      const updateColour = (event, key) => {
+      const updateColour = (event: React.ChangeEvent<HTMLInputElement>, key: number) => {
         const checked = event.target.checked
-        const updatedColors = colors.map((color, index) => {
-          if (index + 1 === key) {
-            return [color[0], color[1], color[3], checked ? 1 : 0]
+        const updatedColors = colors.map((color: [number, number, number, number], index: number) => {
+          if (index + 1 === key || key === -1) {
+            return [color[0], color[1], color[2], checked ? 1 : 0]
           }
           return color
-        });
+        })
         mutateColors(updatedColors)
-      };
+      }
+
+      const handleColorChange = (event: React.ChangeEvent<HTMLInputElement>, key: number) => {
+        const newColor = event.target.value
+        const r = parseInt(newColor.slice(1, 3), 16)
+        const g = parseInt(newColor.slice(3, 5), 16)
+        const b = parseInt(newColor.slice(5, 7), 16)
+
+        const updatedColors = colors.map((color: [number, number, number, number], index: number) => {
+          if (index + 1 === key) return [r, g, b, color[3]]
+          return color
+        })
+
+        mutateColors(updatedColors)
+      }
 
       const data = labels.map(obj => ({
         label: obj.value,
-        color:
-          colors.length < obj.name ?
-            distinctColors({ count: maxValue })[obj.name - 1].rgba() :
-            colors[obj.name - 1],
+        color: colors[obj.name - 1] ?? [0, 0, 0, 0],
         key: obj.name
       }))
+
+      const colors_unchecked = () => {
+        for (const innerArray of colors) {
+          if (innerArray[3] !== 1) {
+            return false;
+          }
+        }
+        return true
+      }
 
       return (
         <div className="color-bar-container-cat">
           <div className="color-bar-legend-cat">
+            <div className='color-bar-label'>
+              <input type="checkbox" checked={colors_unchecked()} name={"All"} onChange={(event) => updateColour(event, -1)} />
+              <div className="color-bar-label-text ml-1">Select/Unselect All</div>
+            </div>
             {data.map(({ color, label, key }) => (
               <div key={label} className="color-bar-label">
                 <input type="checkbox" checked={color[3]} name={key} onChange={(event) => updateColour(event, key)} />
-                <div
-                  style={{ marginLeft: 4.5, backgroundColor: `rgb(${color[0]}, ${color[1]}, ${color[2]})` }}
-                  className="color-bar-color-cat"
+                <input
+                  type="color"
+                  value={`#${color[0].toString(16).padStart(2, '0')}${color[1].toString(16).padStart(2, '0')}${color[2].toString(16).padStart(2, '0')}`}
+                  style={{
+                    marginLeft: 4.5,
+                    backgroundColor: `rgb(${color[0]}, ${color[1]}, ${color[2]})`,
+                    border: 'none',
+                    width: '20px',
+                    height: '20px',
+                    padding: '0',
+                    cursor: 'pointer',
+                    marginRight: '5px'
+                  }}
+                  onChange={(event) => handleColorChange(event, key)}
                 />
                 <div className="color-bar-label-text">{label}</div>
               </div>
@@ -380,10 +427,12 @@ interface SidebarProps {
   showLayerPalette: () => void
   hide: () => void
   getLayerData: (layer: DatasetLayer | ModelOutputLayer) => tileGridStats
+  selectedLayer: Layer | null
+  setSelectedLayer: (layer: Layer | null) => void
 }
 
-export const Sidebar = ({ state, selectLayer, mutateLayer, deleteLayer, setLayerOrder, showLayerPalette, hide, getLayerData }: SidebarProps) => {
-  const selectedLayer = state.selectedLayer === undefined ? null : state.project.layers[state.selectedLayer]
+export const Sidebar = ({ state, selectLayer, mutateLayer, deleteLayer, setLayerOrder, showLayerPalette, hide, getLayerData, selectedLayer, setSelectedLayer }: SidebarProps) => {
+  setSelectedLayer(state.selectedLayer === undefined ? null : state.project.layers[state.selectedLayer])
   return <div className="d-flex flex-column" style={{ width: "300px" }}>
     <div className="px-3 py-2 border-top border-bottom d-flex align-items-center bg-light">
       <div className="flex-grow-1">Layers</div>
@@ -400,33 +449,40 @@ export const Sidebar = ({ state, selectLayer, mutateLayer, deleteLayer, setLayer
         setList={(list: { id: number }[]) => { setLayerOrder(list.map(item => item.id).reverse()) }}
       >
         {
-          Array.from(state.project.allLayers).reverse().map(id =>
-            <div
-              key={id}
-              className={id === state.selectedLayer ? "d-flex align-items-center bg-primary text-white px-3 py-2" : "align-items-center d-flex px-3 py-2"}
-              style={{ cursor: "pointer" }}
-              onClick={(e) => {
-                e.stopPropagation()
-                selectLayer(id === state.selectedLayer ? undefined : id)
-              }}
-            >
-              <div><i className={`fas fa-fw ${iconForLayerType(state.project.layers[id].type)}`} /></div>
-              <span className="ml-2 mr-3 flex-grow-1" style={{ overflowX: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                {state.project.layers[id].name}
-              </span>
-              <span
+          Array.from(state.project.allLayers).reverse().map(id => {
+            const layer = state.project.layers[id]
+            const isDeleted = layer.type == "DatasetLayer" && layer.deleted === true
+
+            return (
+              <div
+                key={id}
+                className={id === state.selectedLayer ? "d-flex align-items-center bg-primary text-white px-3 py-2" : "align-items-center d-flex px-3 py-2"}
+                style={{ cursor: "pointer", color: isDeleted ? "red" : "inherit", textDecoration: isDeleted ? "line-through" : "none" }}
+                title={isDeleted ? 'Dataset is unavailable.' : ""}
                 onClick={(e) => {
                   e.stopPropagation()
-                  mutateLayer(id, { visible: !state.project.layers[id].visible })
+                  selectLayer(id === state.selectedLayer ? undefined : id)
                 }}
               >
-                {
-                  state.project.layers[id].visible ?
-                    <i className="fas fa-fw fa-eye" /> :
-                    <i className="fas fa-fw fa-eye-slash" />
-                }
-              </span>
-            </div>
+                <div><i className={`fas fa-fw ${iconForLayerType(state.project.layers[id].type)}`} /></div>
+                <span className="ml-2 mr-3 flex-grow-1" style={{ overflowX: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                  {state.project.layers[id].name}
+                </span>
+                <span
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    mutateLayer(id, { visible: !state.project.layers[id].visible })
+                  }}
+                >
+                  {
+                    state.project.layers[id].visible ?
+                      <i className="fas fa-fw fa-eye" /> :
+                      <i className="fas fa-fw fa-eye-slash" />
+                  }
+                </span>
+              </div>
+            )
+          }
           )
         }
       </ReactSortable>
@@ -455,7 +511,7 @@ export const Sidebar = ({ state, selectLayer, mutateLayer, deleteLayer, setLayer
               type="text"
               className="form-control"
               placeholder="Layer name"
-              value={selectedLayer.name}
+              value={selectedLayer?.name}
               onChange={
                 e => state.selectedLayer !== undefined &&
                   mutateLayer(state.selectedLayer, { name: e.target.value })
@@ -512,6 +568,10 @@ export const Sidebar = ({ state, selectLayer, mutateLayer, deleteLayer, setLayer
             {
               selectedLayer?.type == "CehLandCoverLayer" &&
               <CehLandCoverLayerSettings />
+            }
+            {
+              selectedLayer?.type == "CropMapLayer" &&
+              <CropMapLayerSettings layer={selectedLayer} />
             }
           </> :
           <em>No layer selected</em>

@@ -11,7 +11,7 @@ import { SelectControl } from "../controls/select"
 import { Geometry } from "ol/geom"
 import { Feature } from "ol"
 
-import { currentBbox as bbox, currentExtent as extent } from "../bounding_box"
+import { currentBbox as bbox, currentExtent as extent, zoomLevel } from "../bounding_box"
 
 
 interface LayerProperty {
@@ -21,7 +21,7 @@ interface LayerProperty {
 }
 
 const geoServer = "https://geo.leep.exeter.ac.uk/geoserver/nevo/wfs?"
-const zoom = 20
+const zoom = zoomLevel
 
 
 async function retrieveLandCoverData(bbox: string): Promise<Object> {

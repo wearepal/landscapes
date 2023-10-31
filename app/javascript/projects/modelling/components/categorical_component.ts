@@ -3,6 +3,7 @@ import { BaseComponent } from './base_component'
 import { NodeData, WorkerInputs, WorkerOutputs } from 'rete/types/core/data'
 import { booleanDataSocket, categoricalDataSocket } from '../socket_types'
 import { BooleanTileGrid, CategoricalTileGrid } from '../tile_grid'
+import { isEqual } from 'lodash'
 
 export class CategoricalComponent extends BaseComponent {
     cachedData: CategoricalTileGrid
@@ -28,13 +29,22 @@ export class CategoricalComponent extends BaseComponent {
         const booleanData = inputs['in']
         if (booleanData.length === 0) { return }
 
-
-        if (booleanData.toString() === this.previousInput.toString()) {
+        if (isEqual(booleanData, this.previousInput)) {
             outputs['out'] = this.cachedData
         } else {
+            let baseBool: BooleanTileGrid | null = null
+            let highestZoom = -1
+            for (const boolGrid of booleanData as BooleanTileGrid[]) {
+                if (boolGrid.zoom > highestZoom) {
+                    highestZoom = boolGrid.zoom
+                    baseBool = boolGrid
+                }
+            }
+
+            if (!baseBool) { return }
+
             this.previousInput = booleanData as BooleanTileGrid[]
 
-            const baseBool = booleanData[0] as BooleanTileGrid
             const labels: Map<number, string> = new Map()
             const result = outputs['out'] = new CategoricalTileGrid(
                 baseBool.zoom,
@@ -43,8 +53,6 @@ export class CategoricalComponent extends BaseComponent {
                 baseBool.width,
                 baseBool.height
             )
-
-            // sort by name alphabetically,
 
             booleanData.map((e, i) => {
                 if (e instanceof BooleanTileGrid) {

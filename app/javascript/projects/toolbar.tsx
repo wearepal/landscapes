@@ -15,8 +15,10 @@ interface ToolbarProps {
   autoProcessing: boolean
   setAutoProcessing: (autoprocessing: boolean) => void
   manualProcessing: () => void
+  setShowAP: () => void
+  showAP: boolean
 }
-export const Toolbar = ({ backButtonPath, projectName, hasUnsavedChanges, currentTab, isProcessing, isLoading, setProjectName, saveProject, setCurrentTab, autoProcessing, setAutoProcessing, manualProcessing }: ToolbarProps) => (
+export const Toolbar = ({ backButtonPath, projectName, hasUnsavedChanges, currentTab, isProcessing, isLoading, setProjectName, saveProject, setCurrentTab, autoProcessing, setAutoProcessing, manualProcessing, setShowAP, showAP }: ToolbarProps) => (
   <div className="btn-toolbar p-2 bg-light border-top">
     <div className="btn-group mr-2">
       <a className="btn btn-sm btn-outline-primary" href={backButtonPath}>
@@ -40,6 +42,14 @@ export const Toolbar = ({ backButtonPath, projectName, hasUnsavedChanges, curren
         <i className="fas fa-project-diagram" /> Model view
       </button>
     </div>
+    {
+      currentTab == Tab.MapView  &&
+    <div className="btn-group mr-2">
+      <button className={`btn btn-sm ${showAP ? "btn-primary" : "btn-outline-primary"}`} onClick={setShowAP}>
+        <i className="fas fa-object-group" /> Snapshot
+      </button>
+    </div>
+    }
     <div className="btn-group mr-2">
       <button title='Toggle between automatic and manual processing. Manual processing is recommended for larger models.' className={`btn btn-sm ${autoProcessing ? "btn-primary" : "btn-outline-primary"}`} onClick={() => setAutoProcessing(!autoProcessing)}>
         {autoProcessing ? <><i className="fas fa-toggle-on" /> Auto </> : <><i className="fas fa-toggle-off" /> Auto </>}

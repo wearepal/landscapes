@@ -37,6 +37,11 @@ export interface CehLandCoverLayer extends BaseLayer {
   year: 2021 // TODO: allow the user to customise this
 }
 
+export interface CropMapLayer extends BaseLayer {
+  type: "CropMapLayer"
+  year: number
+}
+
 export interface ModelOutputLayer extends BaseLayer {
   type: "ModelOutputLayer"
   nodeId: number
@@ -53,9 +58,10 @@ export interface DatasetLayer extends BaseLayer {
   colors?: Array<[number, number, number, number]>
   overrideBounds: boolean
   bounds: [min: number, max: number] | undefined
+  deleted?: boolean
 }
 
-export type Layer = OsmLayer | MapTileLayer | OverlayLayer | NevoLayer | CehLandCoverLayer | ModelOutputLayer | DatasetLayer
+export type Layer = OsmLayer | MapTileLayer | OverlayLayer | NevoLayer | CehLandCoverLayer | ModelOutputLayer | DatasetLayer | CropMapLayer
 
 export interface Project {
   name: string

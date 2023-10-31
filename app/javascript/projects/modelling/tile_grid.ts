@@ -263,11 +263,12 @@ export class CategoricalTileGrid extends TileGrid {
   }
 
   applyCategoryFromBooleanGrid(boolGrid: BooleanTileGrid, key: number) {
-    const { x, y, width, height } = this
+    const { x, y, width, height, zoom } = this
 
     for (let i = x; i < x + width; i++) {
       for (let j = y; j < y + height; j++) {
-        if (boolGrid.get(i, j)) {
+
+        if (boolGrid.get(i, j, zoom) && this.get(i, j) === 255) {
           this.set(i, j, key)
         }
       }

@@ -3,15 +3,16 @@ import BaseLayer from 'ol/layer/Base'
 import TileLayer from 'ol/layer/Tile'
 import { DBModels } from '../db_models'
 import { DatasetCache, ModelOutputCache } from '../map_view'
-import { Layer } from '../state'
+import { DatasetLayer, Layer } from '../state'
 import { reifyCehLandCoverLayer } from './ceh_land_cover'
 import { reifyMapTileLayer } from './map_tile_layer'
 import { reifyModelOutputLayer } from './model_output'
 import { reifyNevoLayer } from './nevo'
 import { reifyOsmLayer } from './osm'
 import { reifyOverlayLayer } from './overlay'
+import { reifyCropMapLayer } from './crop_map_layer'
 
-export const reifyLayer = (layer: Layer, existingLayer: BaseLayer | null, dbModels: DBModels, map: Map, modelOutputCache: ModelOutputCache, DatasetCache: DatasetCache, loadteamDataset: (id: number) => void): BaseLayer => {
+export const reifyLayer = (layer: Layer, existingLayer: BaseLayer | null, dbModels: DBModels, map: Map, modelOutputCache: ModelOutputCache, DatasetCache: DatasetCache, loadteamDataset: (layer: DatasetLayer) => void): BaseLayer => {
   const layerType = layer.type
   switch (layerType) {
     case "OsmLayer": return reifyOsmLayer(existingLayer)
@@ -21,6 +22,7 @@ export const reifyLayer = (layer: Layer, existingLayer: BaseLayer | null, dbMode
     case "CehLandCoverLayer": return reifyCehLandCoverLayer(existingLayer)
     case "ModelOutputLayer": return reifyModelOutputLayer(layer, existingLayer, modelOutputCache, loadteamDataset)
     case "DatasetLayer": return reifyModelOutputLayer(layer, existingLayer, DatasetCache, loadteamDataset)
+    case "CropMapLayer": return reifyCropMapLayer(layer, existingLayer)
     default: {
       // Ensure this switch statement is exhaustive
       const unreachable: never = layerType

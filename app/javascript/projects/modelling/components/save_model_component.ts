@@ -12,15 +12,15 @@ export class SaveModelOutputComponent extends BaseComponent {
     callback: SaveModel
 
     constructor(savemodel: SaveModel) {
-        super("Save model output")
+        super("Save dataset")
         this.callback = savemodel
         this.category = "Outputs"
     }
 
     async builder(node: Node) {
-        node.meta.toolTip = "[WIP] Save models for access from Map Layers or as an input for other models."
+        node.meta.toolTip = "Save models as a dataset. Dataets can be used as inputs to other models, or as layers from the map view."
 
-        node.addInput(new Input("in", "Input", dataSocket))
+        node.addInput(new Input("in", "Output", dataSocket))
     }
 
     async worker(node: NodeData, inputs: WorkerInputs, outputs: WorkerOutputs, ...args: unknown[]) {

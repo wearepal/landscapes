@@ -98,7 +98,7 @@ const styleOutputCache: Map<number, string> = new Map()
 const catOutputCache: Map<number, [number, number, number, number][] | undefined> = new Map()
 const boundsCache: Map<number, [boolean, [number, number] | undefined]> = new Map()
 
-export function reifyModelOutputLayer(layer: ModelOutputLayer | DatasetLayer, existingLayer: BaseLayer | null, outputCache: ModelOutputCache | DatasetCache, loadteamDataset: (id: number) => void) {
+export function reifyModelOutputLayer(layer: ModelOutputLayer | DatasetLayer, existingLayer: BaseLayer | null, outputCache: ModelOutputCache | DatasetCache, loadteamDataset: (layer: DatasetLayer) => void) {
 
   // to avoid conflicts between model output and dataset layers, we use negative ids for model output layers
   const [ModelId, CacheId] = layer.type === "ModelOutputLayer" ? [layer.nodeId, layer.nodeId] : [layer.id, -layer.id]
@@ -107,7 +107,7 @@ export function reifyModelOutputLayer(layer: ModelOutputLayer | DatasetLayer, ex
 
     // in scenario that layers are saved and loaded, we need to ensure that the layer is loaded
     if (layer.type === "DatasetLayer") {
-      loadteamDataset(layer.id)
+      loadteamDataset(layer)
     }
 
     return new TileLayer()
@@ -122,9 +122,14 @@ export function reifyModelOutputLayer(layer: ModelOutputLayer | DatasetLayer, ex
     //if custom colors are added, add logic here to ensure these are not deleted
 
     if (layer.colors?.length !== tileLayer.getMinMax()[1]) {
-      layer.colors = distinctColors({
-        count: tileLayer.getMinMax()[1]
-      }).map(e => e.rgba())
+
+      const cols = distinctColors({ count: tileLayer.getMinMax()[1] }).map(e => e.rgba())
+
+      if (layer.colors === undefined) layer.colors = []
+
+      for (let x = 0; x < tileLayer.getMinMax()[1]; x++) {
+        layer.colors[x] = layer.colors[x] ?? cols[x]
+      }
 
     }
 
@@ -155,7 +160,7 @@ export function reifyModelOutputLayer(layer: ModelOutputLayer | DatasetLayer, ex
   } else {
 
     const [min, max] = (tileLayer instanceof NumericTileGrid) ? ((layer.overrideBounds && layer.bounds) ? layer.bounds : tileLayer.getMinMax()) : [0, 1]
-    const v0 = (0 - min) / (max - min)
+    const v0 = min !== max ? (0 - min) / (max - min) : 0
 
     color = [
       'case',
