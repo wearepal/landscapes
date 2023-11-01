@@ -4,7 +4,6 @@ import { createXYZ } from "ol/tilegrid"
 import { NodeData, WorkerInputs, WorkerOutputs } from 'rete/types/core/data'
 import { currentBbox as bbox, currentExtent as extent, zoomLevel } from "../bounding_box"
 import { booleanDataSocket, categoricalDataSocket } from "../socket_types"
-import { retrieveModelData } from "../model_retrieval"
 import GeoJSON from "ol/format/GeoJSON"
 import { BooleanTileGrid, CategoricalTileGrid } from "../tile_grid"
 
@@ -18,33 +17,33 @@ interface CropSpecies {
 const cropspecies: CropSpecies[] = [
   //TODO : move to a json or an alternative storage
   { LC: "Perennial Crops and Isolated Trees", LUCODE: "TC01" },
-  { LC: "Trees and Scrubs, short Woody plants, hedgerows", LUCODE: "WO12"},
-  { LC: "Heathland and Bracken", LUCODE: "HE02"},
-  { LC: "Sunflower", LUCODE: "AC88"},
-  { LC: "Tomato", LUCODE: "AC45"},
-  { LC: "Potato", LUCODE: "AC44"},
-  { LC: "Chickpea", LUCODE: "LG01"},
-  { LC: "Soya", LUCODE: "LG08"},
-  { LC: "All", LUCODE: "000"}
+  { LC: "Trees and Scrubs, short Woody plants, hedgerows", LUCODE: "WO12" },
+  { LC: "Heathland and Bracken", LUCODE: "HE02" },
+  { LC: "Sunflower", LUCODE: "AC88" },
+  { LC: "Tomato", LUCODE: "AC45" },
+  { LC: "Potato", LUCODE: "AC44" },
+  { LC: "Chickpea", LUCODE: "LG01" },
+  { LC: "Soya", LUCODE: "LG08" },
+  { LC: "All", LUCODE: "000" }
 ]
 
 async function fetchCROMEFromExtent(bbox: string, source: string) {
 
-    const response = await fetch(
-        "https://landscapes.wearepal.ai/geoserver/wfs?" +
-        new URLSearchParams(
-            {
-                outputFormat: 'application/json',
-                request: 'GetFeature',
-                typeName: source,
-                srsName: 'EPSG:3857',
-                bbox
-            }
-        )
+  const response = await fetch(
+    "https://landscapes.wearepal.ai/geoserver/wfs?" +
+    new URLSearchParams(
+      {
+        outputFormat: 'application/json',
+        request: 'GetFeature',
+        typeName: source,
+        srsName: 'EPSG:3857',
+        bbox
+      }
     )
-    if (!response.ok) throw new Error()
+  )
+  if (!response.ok) throw new Error()
 
-    return await response.json()
+  return await response.json()
 }
 
 async function renderCategoricalData() {
@@ -52,20 +51,14 @@ async function renderCategoricalData() {
 
   const tileGrid = createXYZ()
   const outputTileRange = tileGrid.getTileRangeForExtentAndZ(extent, zoom)
-
-  //const geotiff = await retrieveModelData(extent, 'crome:2021', outputTileRange)
-  
-  //const rasters = await geotiff.readRasters()
-  //const image = await geotiff.getImage()
-
   const res = await fetchCROMEFromExtent(bbox, 'crome:crop_map_of_england_2020_east_sussex')
   const features = new GeoJSON().readFeatures(res)
-  
+
 
   const map: Map<number, string> = new Map()
 
-  cropspecies.forEach(crome => {
-    if (crome.LUCODE !== "000") map.set(crome.LUCODE, crome.LC)
+  cropspecies.forEach((crome, i) => {
+    if (crome.LUCODE !== "000") map.set(i + 1, crome.LC)
   })
 
   const result = new CategoricalTileGrid(
@@ -76,16 +69,7 @@ async function renderCategoricalData() {
     outputTileRange.getHeight()
   )
 
-  //for (let i = 0; i < (rasters[0] as TypedArray).length; i++) {
-
-  //  let x = (outputTileRange.minX + i % image.getWidth())
-  //  let y = (outputTileRange.minY + Math.floor(i / image.getWidth()))
-
-  //  result.set(x, y, rasters[0][i])
-
-  //}
-
-  for (let feature of features){
+  for (let feature of features) {
 
     const lucode = feature.get("lucode")
     const index = cropspecies.findIndex(x => x.LUCODE === lucode)
@@ -93,36 +77,39 @@ async function renderCategoricalData() {
     if (index === -1) { continue }
 
     const geom = feature.getGeometry()
-      const featureTileRange = tileGrid.getTileRangeForExtentAndZ(
-        geom.getExtent(),
-        zoom
-      )
+
+    if (!geom) continue
+
+    const featureTileRange = tileGrid.getTileRangeForExtentAndZ(
+      geom.getExtent(),
+      zoom
+    )
+    for (
+      let x = Math.max(featureTileRange.minX, outputTileRange.minX);
+      x <= Math.min(featureTileRange.maxX, outputTileRange.maxX);
+      ++x
+    ) {
       for (
-        let x = Math.max(featureTileRange.minX, outputTileRange.minX);
-        x <= Math.min(featureTileRange.maxX, outputTileRange.maxX);
-        ++x
+        let y = Math.max(featureTileRange.minY, outputTileRange.minY);
+        y <= Math.min(featureTileRange.maxY, outputTileRange.maxY);
+        ++y
       ) {
-        for (
-          let y = Math.max(featureTileRange.minY, outputTileRange.minY);
-          y <= Math.min(featureTileRange.maxY, outputTileRange.maxY);
-          ++y
-        ) {
-          const tileExtent = tileGrid.getTileCoordExtent([zoom, x, y])
-          if (geom.intersectsExtent(tileExtent)) {
-            result.set(x,y,lucode)
-          }
+        const tileExtent = tileGrid.getTileCoordExtent([zoom, x, y])
+        if (geom.intersectsExtent(tileExtent)) {
+          result.set(x, y, index + 1)
         }
       }
+    }
   }
-  
+
   result.setLabels(map)
-  
+
   return result
 }
 
 export class CROMEComponent extends BaseComponent {
   categoricalData: CategoricalTileGrid | null
-  outputCache: Map<number, BooleanTileGrid>
+  outputCache: Map<string, BooleanTileGrid>
 
   constructor() {
     super("Crop Map of England CROME")
@@ -143,7 +130,7 @@ export class CROMEComponent extends BaseComponent {
   }
 
   async worker(node: NodeData, inputs: WorkerInputs, outputs: WorkerOutputs, ...args: unknown[]) {
-    
+
     if (this.categoricalData === null) {
       this.categoricalData = await renderCategoricalData()
     }
@@ -157,20 +144,20 @@ export class CROMEComponent extends BaseComponent {
         outputs[crome.LUCODE] = this.categoricalData
 
       } else {
-        if (this.outputCache.has(crome.LUCODE)) {
-          outputs[crome.LUCODE] = this.outputCache.get(crome.LUCODE)
-        }
-        else {
-          const out = outputs[crome.LUCODE] = new BooleanTileGrid(categoricalData.zoom, categoricalData.x, categoricalData.y, categoricalData.width, categoricalData.height)
-          
-          out.name = crome.LC
-          for (let x = categoricalData.x; x < categoricalData.x + categoricalData.width; ++x) {
-            for (let y = categoricalData.y; y < categoricalData.y + categoricalData.height; ++y) {
-              out.set(x, y, categoricalData.get(x, y) === crome.LUCODE)
-            }
+
+        const out = outputs[crome.LUCODE] = new BooleanTileGrid(categoricalData.zoom, categoricalData.x, categoricalData.y, categoricalData.width, categoricalData.height)
+
+        out.name = crome.LC
+
+        const key = cropspecies.findIndex(x => x.LUCODE === crome.LUCODE) + 1
+
+        for (let x = categoricalData.x; x < categoricalData.x + categoricalData.width; ++x) {
+          for (let y = categoricalData.y; y < categoricalData.y + categoricalData.height; ++y) {
+            out.set(x, y, categoricalData.get(x, y) === key)
           }
-          this.outputCache.set(crome.LUCODE, out)
         }
+
+        this.outputCache.set(crome.LUCODE, out)
       }
     })
   }
