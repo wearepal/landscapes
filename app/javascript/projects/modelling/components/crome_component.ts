@@ -204,24 +204,10 @@ export class CROMEComponent extends BaseComponent {
       if (crome.LUCODE === "000") {
         node.addOutput(new Output(crome["LUCODE"], crome["LC"], categoricalDataSocket))
       }
-      else if (crome.LUCODE === "TC01" || crome.LUCODE === "WO12" ) {
+      else if (crome.LUCODE === "TC01" || crome.LUCODE === "WO12" || crome.LUCODE === "AC88" || crome.LUCODE === "AC17" || crome.LUCODE === "LG08") {
         node.addOutput(new Output(crome["LUCODE"], crome["LC"], booleanDataSocket))
       }
-      else {
-        continue
-      }
     }
-    /*for (let crome of cropspecies) {
-      if (crome.LUCODE === "000") 
-        {
-          node.addOutput(new Output(crome["LUCODE"], crome["LC"], categoricalDataSocket))
-        }
-        else{
-          if (crome.LUCODE === "TC01" || crome.LUCODE === "WO12" || crome.LUCODE === "AC88" || crome.LUCODE === "AC17" || crome.LUCODE === "LG08"){
-            node.addOutput(new Output(crome["LUCODE"], crome["LC"], booleanDataSocket))
-          }
-        }  
-    }*/
 
   }
 
@@ -233,7 +219,7 @@ export class CROMEComponent extends BaseComponent {
     const categoricalData = this.categoricalData!
 
     cropspecies.filter(
-      crome => node.outputs[crome.LUCODE].connections.length > 0
+      crome => node.outputs[crome.LUCODE]?.connections.length > 0
     ).forEach(crome => {
       if (crome.LUCODE === "000") {
 
