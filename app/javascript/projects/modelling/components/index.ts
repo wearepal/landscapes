@@ -23,6 +23,7 @@ import { CensusComponent } from "./census_component"
 import { OSGreenSpacesComponent } from "./os_greenspaces_component"
 import { CellAreaComponent } from "./cell_area_component"
 import { ScaleFactorComponent } from "./scale_factor_component"
+import { CROMEComponent } from "./crome_component"
 
 export function createDefaultComponents(saveMapLayer: SaveMapLayer, saveModel: SaveModel, getDatasets: getDatasets): BaseComponent[] {
   return [
@@ -35,6 +36,7 @@ export function createDefaultComponents(saveMapLayer: SaveMapLayer, saveModel: S
     new PrecompiledModelComponent(getDatasets),
     new CensusComponent(),
     new OSGreenSpacesComponent(),
+    new CROMEComponent(),
 
     // Outputs
     new MapLayerComponent(saveMapLayer),
