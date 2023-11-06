@@ -325,6 +325,410 @@ const censusDatasets: CensusDataset[] = [
             },
         ]
     },
+    {
+        "code": "EmploymentHistory",
+        "name": "Employment history",
+        "id": 6,
+        "options": [
+            {
+                "code": "EmploymentHistory_-8",
+                "name": "Does not apply"
+            },
+            {
+                "code": "EmploymentHistory_1",
+                "name": "Not in employment: Worked in the last 12 months"
+            },
+            {
+                "code": "EmploymentHistory_2",
+                "name": "Not in employment: Not worked in the last 12 months"
+            },
+            {
+                "code": "EmploymentHistory_3",
+                "name": "Not in employment: Never worked"
+            },
+
+        ]
+    },
+    {
+        "code": "HoursWorked",
+        "name": "Hours worked",
+        "id": 7,
+        "options": [
+            {
+                "code": "HoursWorked_-8",
+                "name": "Does not apply"
+            },
+            {
+                "code": "HoursWorked_1",
+                "name": "Part-time: 15 hours or less worked"
+            },
+            {
+                "code": "HoursWorked_2",
+                "name": "Part-time: 16 to 30 hours worked"
+            },
+            {
+                "code": "HoursWorked_3",
+                "name": "Full-time: 31 to 48 hours worked"
+            },
+            {
+                "code": "HoursWorked_4",
+                "name": "Full-time: 49 or more hours worked"
+            },
+
+        ]
+    },
+    {
+        "code": "MethodUsedToTravelToWorkplace",
+        "name": "Method used to travel to workplace",
+        "id": 8,
+        "options": [
+            {
+                "code": "MethodUsedToTravelToWorkplace_1",
+                "name": "Work mainly at or from home"
+            },
+            {
+                "code": "MethodUsedToTravelToWorkplace_2",
+                "name": "Underground, metro, light rail, tram"
+            },
+            {
+                "code": "MethodUsedToTravelToWorkplace_3",
+                "name": "Train"
+            },
+            {
+                "code": "MethodUsedToTravelToWorkplace_4",
+                "name": "Bus, minibus or coach"
+            },
+            {
+                "code": "MethodUsedToTravelToWorkplace_5",
+                "name": "Taxi"
+            },
+            {
+                "code": "MethodUsedToTravelToWorkplace_6",
+                "name": "Motorcycle, scooter or moped"
+            },
+            {
+                "code": "MethodUsedToTravelToWorkplace_7",
+                "name": "Driving a car or van"
+            },
+            {
+                "code": "MethodUsedToTravelToWorkplace_8",
+                "name": "Passenger in a car or van"
+            },
+            {
+                "code": "MethodUsedToTravelToWorkplace_9",
+                "name": "Bicycle"
+            },
+            {
+                "code": "MethodUsedToTravelToWorkplace_10",
+                "name": "On foot"
+            },
+            {
+                "code": "MethodUsedToTravelToWorkplace_11",
+                "name": "Other method of travel to work"
+            },
+            {
+                "code": "MethodUsedToTravelToWorkplace_12",
+                "name": "Not in employment or aged 15 years and under"
+            },
+
+        ]
+    },
+    {
+        "code": "NBedrooms",
+        "name": "Number of Bedrooms",
+        "id": 9,
+        "options": [
+            {
+                "code": "NBedrooms_-9",
+                "name": "Does not apply"
+            },
+            {
+                "code": "NBedrooms_1",
+                "name": "1 bedroom"
+            },
+            {
+                "code": "NBedrooms_2",
+                "name": "2 bedrooms"
+            },
+            {
+                "code": "NBedrooms_3",
+                "name": "3 bedrooms"
+            },
+            {
+                "code": "NBedrooms_4",
+                "name": "4 or more bedrooms"
+            },
+
+        ]
+    },
+    {
+        "code": "NS-SeC",
+        "name": "National Statistics Socio-economic Classification (NS-SeC)",
+        "id": 10,
+        "options": [
+            {
+                "code": "NS-SeC_-8",
+                "name": "Does not apply"
+            },
+            {
+                "code": "NS-SeC_1",
+                "name": "L1, L2 and L3: Higher managerial, administrative and professional occupations"
+            },
+            {
+                "code": "NS-SeC_2",
+                "name": "L4, L5 and L6: Lower managerial, administrative and professional occupations"
+            },
+
+            {
+                "code": "NS-SeC_3",
+                "name": "L7: Intermediate occupations"
+            },
+
+            {
+                "code": "NS-SeC_4",
+                "name": "L8 and L9: Small employers and own account workers"
+            },
+
+            {
+                "code": "NS-SeC_5",
+                "name": "L10 and L11: Lower supervisory and technical occupations"
+            },
+
+            {
+                "code": "NS-SeC_6",
+                "name": "L12: Semi-routine occupations"
+            },
+
+            {
+                "code": "NS-SeC_7",
+                "name": "L13: Routine occupations"
+            },
+
+            {
+                "code": "NS-SeC_8",
+                "name": "L14.1 and L14.2: Never worked and long-term unemployed"
+            },
+
+            {
+                "code": "NS-SeC_9",
+                "name": "L15: Full-time students"
+            }
+
+        ]
+    },
+    {
+        "code": "OccupancyRating",
+        "name": "Occupancy rating for bedrooms",
+        "id": 11,
+        "options": [
+            {
+                "code": "OccupancyRating_-8",
+                "name": "Does not apply"
+            },
+            {
+                "code": "OccupancyRating_1",
+                "name": "Occupancy rating of bedrooms: +2 or more"
+            },
+            {
+                "code": "OccupancyRating_2",
+                "name": "Occupancy rating of bedrooms: +1"
+            },
+            {
+                "code": "OccupancyRating_3",
+                "name": "Occupancy rating of bedrooms: 0"
+            },
+            {
+                "code": "OccupancyRating_4",
+                "name": "Occupancy rating of bedrooms: -1"
+            },
+            {
+                "code": "OccupancyRating_5",
+                "name": "Occupancy rating of bedrooms: -2 or less"
+            }
+
+        ]
+    },
+    {
+        "code": "OccupationCurrent",
+        "name": "Occupation (current)",
+        "id": 12,
+        "options": [
+            {
+                "code": "OccupationCurrent_-8",
+                "name": "Does not apply"
+            },
+            {
+                "code": "OccupationCurrent_1",
+                "name": "Managers, directors and senior officials"
+            },
+            {
+                "code": "OccupationCurrent_2",
+                "name": "Professional occupations"
+            },
+            {
+                "code": "OccupationCurrent_3",
+                "name": "Associate professional and technical occupations"
+            },
+            {
+                "code": "OccupationCurrent_4",
+                "name": "Administrative and secretarial occupations"
+            },
+            {
+                "code": "OccupationCurrent_5",
+                "name": "Skilled trades occupations"
+            },
+            {
+                "code": "OccupationCurrent_6",
+                "name": "Caring, leisure and other service occupations"
+            },
+            {
+                "code": "OccupationCurrent_7",
+                "name": "Sales and customer service occupations"
+            },
+            {
+                "code": "OccupationCurrent_8",
+                "name": "Process, plant and machine operatives"
+            },
+            {
+                "code": "OccupationCurrent_9",
+                "name": "Elementary occupations"
+            }
+
+        ]
+    },
+    {
+        "code": "SchoolChildren",
+        "name": "Schoolchild or full-time student indicator",
+        "id": 13,
+        "options": [
+            {
+                "code": "SchoolChildren_-8",
+                "name": "Does not apply"
+            },
+            {
+                "code": "SchoolChildren_1",
+                "name": "Student"
+            },
+            {
+                "code": "SchoolChildren_2",
+                "name": "Not a student"
+            }
+
+        ]
+    },
+    {
+        "code": "SecondAddress",
+        "name": "Second address indicator",
+        "id": 14,
+        "options": [
+            {
+                "code": "SecondAddress_1",
+                "name": "No second address"
+            },
+            {
+                "code": "SecondAddress_2",
+                "name": "Second address is in the UK"
+            },
+            {
+                "code": "SecondAddress_3",
+                "name": "Second address is outside the UK"
+            }
+
+        ]
+    },
+    {
+        "code": "SecondAddressType",
+        "name": "Second address type",
+        "id": 15,
+        "options": [
+            {
+                "code": "SecondAddressType_-8",
+                "name": "Does not apply"
+            },
+            {
+                "code": "SecondAddressType_1",
+                "name": "Armed forces base address"
+            },
+            {
+                "code": "SecondAddressType_2",
+                "name": "Another address when working away from home"
+            },
+            {
+                "code": "SecondAddressType_3",
+                "name": "Holiday home"
+            },
+            {
+                "code": "SecondAddressType_4",
+                "name": "Student's term-time address"
+            },
+            {
+                "code": "SecondAddressType_5",
+                "name": "Student's home address"
+            },
+            {
+                "code": "SecondAddressType_6",
+                "name": "Another parent or guardian's address"
+            },
+            {
+                "code": "SecondAddressType_7",
+                "name": "Partner's address"
+            },
+            {
+                "code": "SecondAddressType_8",
+                "name": "Other"
+            },
+            {
+                "code": "SecondAddressType_9",
+                "name": "Second address type not specified"
+            }
+
+        ]
+    },
+    {
+        "code": "TenureOfHousehold",
+        "name": "Tenure of household",
+        "id": 16,
+        "options": [
+            {
+                "code": "TenureOfHousehold_-8",
+                "name": "Does not apply"
+            },
+            {
+                "code": "TenureOfHousehold_0",
+                "name": "Owned: Owns outright"
+            },
+            {
+                "code": "TenureOfHousehold_1",
+                "name": "Owned: Owns with a mortgage or loan"
+            },
+            {
+                "code": "TenureOfHousehold_2",
+                "name": "Shared ownership: Shared ownership"
+            },
+            {
+                "code": "TenureOfHousehold_3",
+                "name": "Social rented: Rents from council or Local Authority"
+            },
+            {
+                "code": "TenureOfHousehold_4",
+                "name": "Social rented: Other social rented"
+            },
+            {
+                "code": "TenureOfHousehold_5",
+                "name": "Private rented: Private landlord or letting agency"
+            },
+            {
+                "code": "TenureOfHousehold_6",
+                "name": "Private rented: Other private rented"
+            },
+            {
+                "code": "TenureOfHousehold_7",
+                "name": "Lives rent free"
+            }
+
+        ]
+    }
+
 ]
 
 
