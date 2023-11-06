@@ -8,14 +8,12 @@ import { numericDataSocket } from "../socket_types"
 import { createXYZ } from "ol/tilegrid"
 import { currentExtent as extent, zoomLevel } from "../bounding_box"
 import { TypedArray } from "d3"
-import { retrieveModelData } from "../model_retrieval"
+import { retrieveModelData, retrieveModelDataWCS } from "../model_retrieval"
 
 interface DigitalModel {
     id: number
     name: string
     source: string
-    min: number
-    max: number
 }
 
 //TODO: hardcoded scale factors, find an effective way of retrieving them from the geoserver?
@@ -23,17 +21,17 @@ const ModelList: Array<DigitalModel> = [
     {
         id: 0,
         name: 'Digital Surface Model',
-        source: 'lidar:116807-4_DSM',
-        min: 0,
-        max: 259.170013
+        source: 'lidar:116807-4_DSM'
     },
-
     {
         id: 1,
         name: 'Digital Terrian Model',
-        source: 'lidar:116807-5_DTM',
-        min: 0,
-        max: 244.979996
+        source: 'lidar:116807-5_DTM'
+    },
+    {
+        id: 2,
+        name: "Canopy Height",
+        source: "lidar:Depth"
     }
 ]
 
@@ -90,7 +88,7 @@ export class DigitalModelComponent extends BaseComponent {
                 const tileGrid = createXYZ()
                 const outputTileRange = tileGrid.getTileRangeForExtentAndZ(extent, zoom)
 
-                const geotiff = await retrieveModelData(extent, digitalModel.source, outputTileRange)
+                const geotiff = await retrieveModelDataWCS(extent, digitalModel.source, outputTileRange)
 
                 const image = await geotiff.getImage()
 
@@ -98,14 +96,12 @@ export class DigitalModelComponent extends BaseComponent {
 
                 const out = editorNode.meta.output = outputs['dm'] = new NumericTileGrid(zoom, outputTileRange.minX, outputTileRange.minY, outputTileRange.getWidth(), outputTileRange.getHeight())
 
-                const scale = (digitalModel.max - digitalModel.min) / 255
-
                 for (let i = 0; i < (rasters[0] as TypedArray).length; i++) {
 
                     let x = (outputTileRange.minX + i % image.getWidth())
                     let y = (outputTileRange.minY + Math.floor(i / image.getWidth()))
 
-                    out.set(x, y, rasters[0][i] * scale)
+                    out.set(x, y, rasters[0][i])
 
                 }
 
