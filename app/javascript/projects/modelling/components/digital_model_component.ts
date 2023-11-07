@@ -36,7 +36,7 @@ const ModelList: Array<DigitalModel> = [
     },
     {
         id: 2,
-        name: 'Canopy Height',
+        name: 'Feature Height',
         source: 'lidar:Depth',
         min: -15.3733,
         max: 48.518349
