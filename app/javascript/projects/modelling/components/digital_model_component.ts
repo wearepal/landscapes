@@ -27,13 +27,19 @@ const ModelList: Array<DigitalModel> = [
         min: 0,
         max: 259.170013
     },
-
     {
         id: 1,
         name: 'Digital Terrian Model',
         source: 'lidar:116807-5_DTM',
         min: 0,
         max: 244.979996
+    },
+    {
+        id: 2,
+        name: 'Canopy Height',
+        source: 'lidar:Depth',
+        min: -15.3733,
+        max: 48.518349
     }
 ]
 
@@ -100,12 +106,13 @@ export class DigitalModelComponent extends BaseComponent {
 
                 const scale = (digitalModel.max - digitalModel.min) / 255
 
+
                 for (let i = 0; i < (rasters[0] as TypedArray).length; i++) {
 
                     let x = (outputTileRange.minX + i % image.getWidth())
                     let y = (outputTileRange.minY + Math.floor(i / image.getWidth()))
 
-                    out.set(x, y, rasters[0][i] * scale)
+                    out.set(x, y, (rasters[0][i] * scale) + digitalModel.min)
 
                 }
 
