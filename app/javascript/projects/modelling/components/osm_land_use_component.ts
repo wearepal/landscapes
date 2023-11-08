@@ -450,7 +450,6 @@ export class OSMLandUseComponent extends BaseComponent {
                         ) {
                             const tileExtent = tileGrid.getTileCoordExtent([zoom, x, y])
                             if (polygon.intersectsExtent(tileExtent)) {
-                                console.log(x, y)
                                 result.set(x, y, true)
                             }
                         }
