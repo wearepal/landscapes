@@ -138,10 +138,30 @@ export class BooleanTileGrid extends TileGrid {
     rescaledGrid.name = this.name
     for (let i = rescaledGrid.x; i < rescaledGrid.x + rescaledGrid.width; i++) {
       for (let j = rescaledGrid.y; j < rescaledGrid.y + rescaledGrid.height; j++) {
-        const x = Math.floor(i / Math.pow(2, zoom - this.zoom))
-        const y = Math.floor(j / Math.pow(2, zoom - this.zoom))
 
-        rescaledGrid.set(i, j, this.get(x, y, this.zoom))
+        const x1 = i * Math.pow(2, this.zoom - zoom);
+        const y1 = j * Math.pow(2, this.zoom - zoom);
+        const x2 = x1 + Math.pow(2, this.zoom - zoom);
+        const y2 = y1 + Math.pow(2, this.zoom - zoom);
+
+        let anyTrue = false;
+
+        // Iterate through the corresponding cells in the old grid
+        for (let x = x1; x < x2; x++) {
+          for (let y = y1; y < y2; y++) {
+            if (this.get(x, y, this.zoom)) {
+              anyTrue = true;
+              break;
+            }
+          }
+          if (anyTrue) {
+            break;
+          }
+        }
+
+        // Set the value in the new grid based on whether any cell in the old grid is true
+        rescaledGrid.set(i, j, anyTrue);
+
       }
     }
 

@@ -19,9 +19,6 @@ export class RescaleComponent extends BaseComponent {
         node.addInput(new Input('in', 'Input', booleanDataSocket))
         node.addInput(new Input('zoom', 'Zoom level', numberSocket))
         node.addOutput(new Output('out', 'Output', booleanDataSocket))
-        node.addControl(new PreviewControl(() =>
-            node.meta.output as any || new BooleanTileGrid(0, 0, 0, 1, 1)
-        ))
     }
 
 
@@ -41,10 +38,6 @@ export class RescaleComponent extends BaseComponent {
             outputs['out'] = editorNode.data.output = input.rescale(zoom.value, currentExtent)
 
         }
-
-        const previewControl: any = editorNode.controls.get('Preview')
-        previewControl.update()
-        editorNode.update()
 
     }
 
