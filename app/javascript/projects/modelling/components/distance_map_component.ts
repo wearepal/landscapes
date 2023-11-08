@@ -1,11 +1,11 @@
-import { Input, Node, Output, Socket } from 'rete'
+import { Input, Node, Output } from 'rete'
 import { BaseComponent } from './base_component'
 import { NodeData, WorkerInputs, WorkerOutputs } from 'rete/types/core/data'
 import { PreviewControl } from '../controls/preview'
-import { NumericTileGrid } from '../tile_grid'
+import { BooleanTileGrid, NumericTileGrid } from '../tile_grid'
 import { booleanDataSocket, numericDataSocket } from '../socket_types'
 import { workerPool } from '../../../modelling/workerPool'
-
+import { currentExtent } from '../bounding_box'
 
 export class DistanceMapComponent extends BaseComponent {
 
@@ -31,12 +31,16 @@ export class DistanceMapComponent extends BaseComponent {
         } else {
             delete editorNode.meta.errorMessage
 
-            if (inputs['in'][0] === editorNode.meta.previousInput) {
+            let input = inputs['in'][0] as BooleanTileGrid
+
+            if (input.zoom > 20) input = input.rescale(20, currentExtent)
+
+            if (input === editorNode.meta.previousInput) {
                 outputs['out'] = editorNode.meta.output
             } else {
-                editorNode.meta.previousInput = inputs['in'][0]
+                editorNode.meta.previousInput = input
                 editorNode.meta.output = outputs['out'] = await workerPool.queue(async worker =>
-                    worker.generateDistanceMap(inputs['in'][0])
+                    worker.generateDistanceMap(input)
                 )
             }
         }
