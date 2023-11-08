@@ -1,3 +1,5 @@
+import { Extent } from "ol/extent"
+import { createXYZ } from "ol/tilegrid"
 import { registerSerializer } from "threads"
 
 function validateZoom(zoom: number) {
@@ -121,6 +123,29 @@ export class BooleanTileGrid extends TileGrid {
       throw new TypeError('coordinate out of range')
     }
     this.data[index] = value ? 1 : 0
+  }
+
+  rescale(zoom: number, extent: Extent): BooleanTileGrid {
+    const tileGrid = createXYZ()
+    const outputTileRange = tileGrid.getTileRangeForExtentAndZ(extent, zoom)
+    const rescaledGrid = new BooleanTileGrid(
+      zoom,
+      outputTileRange.minX,
+      outputTileRange.minY,
+      outputTileRange.getWidth(),
+      outputTileRange.getHeight()
+    )
+    rescaledGrid.name = this.name
+    for (let i = rescaledGrid.x; i < rescaledGrid.x + rescaledGrid.width; i++) {
+      for (let j = rescaledGrid.y; j < rescaledGrid.y + rescaledGrid.height; j++) {
+        const x = Math.floor(i / Math.pow(2, zoom - this.zoom))
+        const y = Math.floor(j / Math.pow(2, zoom - this.zoom))
+
+        rescaledGrid.set(i, j, this.get(x, y, this.zoom))
+      }
+    }
+
+    return rescaledGrid
   }
 
   getStats(): tileGridStats {
