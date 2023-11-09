@@ -8,10 +8,12 @@ import { workerPool } from '../../../modelling/workerPool'
 import { currentExtent } from '../bounding_box'
 
 export class DistanceMapComponent extends BaseComponent {
+    cache: Map<BooleanTileGrid, NumericTileGrid>
 
     constructor() {
         super('Distance map')
         this.category = "Calculations"
+        this.cache = new Map()
     }
 
     async builder(node: Node) {
@@ -33,16 +35,23 @@ export class DistanceMapComponent extends BaseComponent {
 
             let input = inputs['in'][0] as BooleanTileGrid
 
-            if (input.zoom > 20) input = input.rescale(20, currentExtent)
-
-            if (input === editorNode.meta.previousInput) {
-                outputs['out'] = editorNode.meta.output
+            if (this.cache.has(input)) {
+                editorNode.meta.output = outputs['out'] = this.cache.get(input)
             } else {
-                editorNode.meta.previousInput = input
-                editorNode.meta.output = outputs['out'] = await workerPool.queue(async worker =>
-                    worker.generateDistanceMap(input)
-                )
+                if (input.zoom > 20) input = input.rescale(20, currentExtent)
+
+                if (input === editorNode.meta.previousInput) {
+                    outputs['out'] = editorNode.meta.output
+                } else {
+                    editorNode.meta.previousInput = input
+                    editorNode.meta.output = outputs['out'] = await workerPool.queue(async worker =>
+                        worker.generateDistanceMap(input)
+                    )
+                }
+                this.cache.set(inputs['in'][0] as BooleanTileGrid, editorNode.meta.output as NumericTileGrid)
             }
+
+
         }
 
         const previewControl: any = editorNode.controls.get('Preview')
