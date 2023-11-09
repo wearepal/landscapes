@@ -23,16 +23,16 @@ const ModelList: Array<DigitalModel> = [
     {
         id: 0,
         name: 'Digital Surface Model',
-        source: 'lidar:116807-4_DSM',
-        min: 0,
-        max: 259.170013
+        source: 'lidar:DSM_2m',
+        min: -0.568,
+        max: 301.528992
     },
     {
         id: 1,
         name: 'Digital Terrian Model',
-        source: 'lidar:116807-5_DTM',
+        source: 'lidar:DTM_5m',
         min: 0,
-        max: 244.979996
+        max: 290.091003
     },
     {
         id: 2,
