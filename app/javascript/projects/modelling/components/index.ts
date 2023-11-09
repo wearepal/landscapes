@@ -24,6 +24,7 @@ import { OSGreenSpacesComponent } from "./os_greenspaces_component"
 import { CellAreaComponent } from "./cell_area_component"
 import { ScaleFactorComponent } from "./scale_factor_component"
 import { CROMEComponent } from "./crome_component"
+import { RescaleComponent } from "./rescale_component"
 
 export function createDefaultComponents(saveMapLayer: SaveMapLayer, saveModel: SaveModel, getDatasets: getDatasets): BaseComponent[] {
   return [
@@ -81,6 +82,7 @@ export function createDefaultComponents(saveMapLayer: SaveMapLayer, saveModel: S
 
     // DEBUG TOOLS
     new CellAreaComponent(),
+    new RescaleComponent(),
 
   ]
 }
