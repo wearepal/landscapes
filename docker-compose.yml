@@ -77,7 +77,7 @@ services:
     ports:
       - 8888:8080
     volumes:
-      - cvat_data:/opt/geoserver_data
+      - cvat_data:/opt/cvat_data
 
   cvat:
     image: cvat/ui:v2.8.2
