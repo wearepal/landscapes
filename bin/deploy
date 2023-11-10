@@ -10,8 +10,14 @@ fi
 
 if ! docker config inspect landscapes_caddyfile &>/dev/null
 then
-  read -p "Enter your domain name, e.g. landscapes.your-university.ac.uk [localhost]: " ADDRESS
+  read -p "Enter your domain name, e.g. your-university.ac.uk [localhost]: " ADDRESS
+  read -p "Enter your landscape modelling tool subdomain name, e.g. landscapes: " LMTSUBDOM
+  read -p "Enter your annotation tool subdomain name, e.g. annotations: " ANNOSUBDOM
   export ADDRESS="${ADDRESS:-localhost}"
+  export LMTSUBDOM="${LMTSUBDOM}"
+  export ANNOSUBDOM="${ANNOSUBDOM}"
+  export LMTADDRESS="${LMTSUBDOM}.${ADDRESS}"
+  export ANNOADDRESS="${ANNOSUBDOM}.${ADDRESS}"
   envsubst < Caddyfile | docker config create landscapes_caddyfile - &>/dev/null
 fi
 
