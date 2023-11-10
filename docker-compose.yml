@@ -75,14 +75,14 @@ services:
   cvat_server:
     image: cvat/server:v2.8.2
     ports:
-      - 8080:8080
+      - 8081:8080
     volumes:
       - cvat_data:/opt/cvat_data
 
   cvat:
     image: cvat/ui:v2.8.2
     ports:
-      - 80:80
+      - 81:80
 
 configs:
   caddyfile:
