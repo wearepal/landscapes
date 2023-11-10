@@ -72,14 +72,6 @@ services:
     volumes:
       - storage:/app/storage
 
-  cvat_server:
-    image: cvat/server:v2.8.2
-    volumes:
-      - cvat_data:/opt/cvat_data
-
-  cvat_ui:
-    image: cvat/ui:v2.8.2
-
 configs:
   caddyfile:
     external: true
@@ -96,4 +88,3 @@ volumes:
   postgres:
   redis_queue:
   storage:
-  cvat_data:

@@ -9,13 +9,3 @@ $LMTADDRESS {
   encode gzip
   log
 }
-
-$ANNOADDRESS {
-  
-  reverse_proxy cvat_ui:80 {
-    lb_try_duration 30s
-  }
-  
-  encode gzip
-  log
-}
