@@ -12,7 +12,7 @@ $LMTADDRESS {
 
 $ANNOADDRESS {
   
-  reverse_proxy cvat:3300 {
+  reverse_proxy cvat:80 {
     lb_try_duration 30s
   }
   
