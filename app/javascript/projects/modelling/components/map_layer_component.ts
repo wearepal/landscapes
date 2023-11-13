@@ -29,7 +29,10 @@ export class MapLayerComponent extends BaseComponent {
     }
     else {
       delete editorNode.meta.errorMessage
-      this.callback(node.id, inputs["in"][0] as BooleanTileGrid | NumericTileGrid | CategoricalTileGrid)
+
+      if (inputs["in"][0]) this.callback(node.id, inputs["in"][0] as BooleanTileGrid | NumericTileGrid | CategoricalTileGrid)
+      else editorNode.meta.errorMessage = 'No input'
+
     }
     editorNode.update()
   }
