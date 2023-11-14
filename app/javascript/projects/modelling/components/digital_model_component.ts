@@ -87,24 +87,20 @@ export class DigitalModelComponent extends BaseComponent {
 
                 const tileGrid = createXYZ()
                 const outputTileRange = tileGrid.getTileRangeForExtentAndZ(extent, zoom)
-
                 const geotiff = await retrieveModelDataWCS(extent, digitalModel.source, outputTileRange)
 
                 const image = await geotiff.getImage()
-
-                const rasters = await image.readRasters()
-                const { width, [0]: raster } = rasters
+                const rasters = await geotiff.readRasters({ bbox: extent, width: outputTileRange.getWidth(), height: outputTileRange.getHeight() })
 
                 const out = editorNode.meta.output = outputs['dm'] = new NumericTileGrid(zoom, outputTileRange.minX, outputTileRange.minY, outputTileRange.getWidth(), outputTileRange.getHeight())
 
 
-
-                for (let i = 0; i < (raster as TypedArray).length; i++) {
+                for (let i = 0; i < (rasters[0] as TypedArray).length; i++) {
 
                     let x = (outputTileRange.minX + i % image.getWidth())
                     let y = (outputTileRange.minY + Math.floor(i / image.getWidth()))
 
-                    out.set(x, y, (raster[i]) === -32767 ? 0 : (raster[i]))
+                    out.set(x, y, (rasters[0][i]) === -32767 ? 0 : (rasters[0][i]))
 
                 }
 
