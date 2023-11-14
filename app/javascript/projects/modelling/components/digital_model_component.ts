@@ -8,14 +8,12 @@ import { numericDataSocket } from "../socket_types"
 import { createXYZ } from "ol/tilegrid"
 import { currentExtent as extent, zoomLevel } from "../bounding_box"
 import { TypedArray } from "d3"
-import { retrieveModelData } from "../model_retrieval"
+import { retrieveModelData, retrieveModelDataWCS } from "../model_retrieval"
 
 interface DigitalModel {
     id: number
     name: string
     source: string
-    min: number
-    max: number
 }
 
 //TODO: hardcoded scale factors, find an effective way of retrieving them from the geoserver?
@@ -23,23 +21,17 @@ const ModelList: Array<DigitalModel> = [
     {
         id: 0,
         name: 'Digital Surface Model',
-        source: 'lidar:DSM_2m',
-        min: -0.568,
-        max: 301.528992
+        source: 'lidar:DSM_2m'
     },
     {
         id: 1,
         name: 'Digital Terrian Model',
-        source: 'lidar:DTM_5m',
-        min: 0,
-        max: 290.091003
+        source: 'lidar:DTM_5m'
     },
     {
         id: 2,
         name: 'Feature Height',
-        source: 'lidar:Depth',
-        min: -15.3733,
-        max: 48.518349
+        source: 'lidar:Depth'
     }
 ]
 
@@ -96,23 +88,23 @@ export class DigitalModelComponent extends BaseComponent {
                 const tileGrid = createXYZ()
                 const outputTileRange = tileGrid.getTileRangeForExtentAndZ(extent, zoom)
 
-                const geotiff = await retrieveModelData(extent, digitalModel.source, outputTileRange)
+                const geotiff = await retrieveModelDataWCS(extent, digitalModel.source, outputTileRange)
 
                 const image = await geotiff.getImage()
 
-                const rasters = await geotiff.readRasters()
+                const rasters = await image.readRasters()
+                const { width, [0]: raster } = rasters
 
                 const out = editorNode.meta.output = outputs['dm'] = new NumericTileGrid(zoom, outputTileRange.minX, outputTileRange.minY, outputTileRange.getWidth(), outputTileRange.getHeight())
 
-                const scale = (digitalModel.max - digitalModel.min) / 255
 
 
-                for (let i = 0; i < (rasters[0] as TypedArray).length; i++) {
+                for (let i = 0; i < (raster as TypedArray).length; i++) {
 
                     let x = (outputTileRange.minX + i % image.getWidth())
                     let y = (outputTileRange.minY + Math.floor(i / image.getWidth()))
 
-                    out.set(x, y, (rasters[0][i] * scale) + digitalModel.min)
+                    out.set(x, y, (raster[i]) === -32767 ? 0 : (raster[i]))
 
                 }
 
