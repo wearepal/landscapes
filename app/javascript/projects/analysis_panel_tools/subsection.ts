@@ -8,11 +8,21 @@ import { getColorStops } from "../reify_layer/model_output";
 
 type Color = [number, number, number, number]
 
+
+// TODO: add median 
+export interface NumericStats {
+    min: number,
+    max: number,
+    range: number,
+    mean: number,
+    mode: number
+}
+
 export interface ChartData {
     count: Map<any, number>
     colors?: Map<any, Color>
+    numeric_stats?: NumericStats | undefined
 }
-
 
 export function extentToChartData(colors: Color[] | undefined, model: BooleanTileGrid | NumericTileGrid | CategoricalTileGrid, extent: Extent, fillType: string | undefined): ChartData {
 
@@ -21,6 +31,7 @@ export function extentToChartData(colors: Color[] | undefined, model: BooleanTil
 
     let counts = new Map<any, number>()
     let color = new Map<any, [number, number, number, number]>()
+    let numeric_stats: NumericStats | undefined
 
     for (let x = outputTileRange.minX; x <= outputTileRange.maxX; x++) {
         for (let y = outputTileRange.minY; y <= outputTileRange.maxY; y++) {
@@ -64,16 +75,15 @@ export function extentToChartData(colors: Color[] | undefined, model: BooleanTil
             }
         } else {
 
-            const mapEntries: [number, number][] = Array.from(counts.entries())
-            mapEntries.sort((a, b) => a[0] - b[0])
+            let mapEntries: [number, number][] = Array.from(counts.entries())
+            mapEntries = mapEntries.sort((a, b) => a[0] - b[0])
 
             const bins = 10
             const min = mapEntries[0][0]
             const max = mapEntries[mapEntries.length - 1][0]
-            const step = (max - min) / bins
-
+            const range = max - min
+            const step = range / bins
             counts = new Map()
-
             const fillMap = fillType ? getColorStops((fillType == "greyscale" ? "greys" : (fillType === "heatmap" ? "jet" : fillType)), bins * 2) : undefined
 
             for (let i = 0; i < bins; i++) {
@@ -89,8 +99,21 @@ export function extentToChartData(colors: Color[] | undefined, model: BooleanTil
                 }
             }
 
+            numeric_stats = {
+                min,
+                max,
+                range,
+                mean: min + (range / 2),
+                mode: mapEntries.reduce((max, current) => {
+                    return current[1] > max[1] ? current : max
+                }, mapEntries[0])[0]
+
+            }
+
+
+
         }
     }
 
-    return { count: counts, colors: color }
+    return { count: counts, colors: color, numeric_stats }
 } 

@@ -6,7 +6,6 @@ import { ChartData, extentToChartData } from './analysis_panel_tools/subsection'
 import { GenerateChart } from './analysis_panel_tools/charts'
 import './analysis_panel.css'
 
-
 export type ChartType = "pie" | "hist" | "bar"
 
 interface ChartProps {
@@ -37,8 +36,8 @@ const ChartSelection = ({ SourceType, ChartTypeSelected, SetChartType }: ChartSe
 
     const options = [
         { value: "pie", label: "Pie chart", icon: "fa-chart-pie", disabled: false },
-        { value: "bar", label: "Bar chart", icon: "fa-chart-bar", disabled: true },
-        { value: "hist", label: "Histogram", icon: "fa-chart-bar", disabled: true },
+        { value: "bar", label: "Bar chart", icon: "fa-chart-bar", disabled: false },
+        { value: "hist", label: "Histogram", icon: "fa-chart-bar", disabled: false },
     ].filter(option => (typeArray as string[]).includes(option.value))
 
     return (
@@ -85,7 +84,23 @@ const ChartLegend = ({ chartData, sourceType }: ChartLegendProps) => {
             </div>
         ))
     } else {
-        LegendItems = ""
+        if (chartData.numeric_stats) {
+            const NumStats = chartData.numeric_stats
+            LegendItems = Object.keys(NumStats).map(key => (
+                <div>
+                    <label style={{ width: 60 }}>{
+                        key[0].toUpperCase() + key.slice(1)
+                    }</label>
+                    <input
+                        disabled
+                        type="text"
+                        value={NumStats[key]}
+                    />
+                </div>
+            ))
+        } else {
+            LegendItems = ""
+        }
     }
 
 
@@ -95,8 +110,6 @@ const ChartLegend = ({ chartData, sourceType }: ChartLegendProps) => {
         </div>
     );
 }
-
-
 
 interface AnalysisPanelProps {
     setShowAP: () => void
@@ -119,8 +132,6 @@ export const AnalysisPanel = ({ selectedArea, setShowAP, selectedLayer, layerSta
 
     const [chartType, setChartType] = React.useState<ChartType>()
     const [chartData, setChartData] = React.useState<ChartData>()
-
-    console.log(chartType)
 
     let errorMsg: string = ""
     let showChart: boolean = false
