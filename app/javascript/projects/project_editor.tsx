@@ -25,16 +25,15 @@ interface ProjectEditorProps {
   projectSource: Project
   backButtonPath: string
   dbModels: DBModels
+  teamId: number
+  teamName: string
 }
-export function ProjectEditor({ projectId, projectSource, backButtonPath, dbModels }: ProjectEditorProps) {
+export function ProjectEditor({ projectId, projectSource, backButtonPath, dbModels, teamId, teamName }: ProjectEditorProps) {
   const [state, dispatch] = React.useReducer(reduce, {
     project: { ...defaultProject, ...projectSource },
     hasUnsavedChanges: false,
     autoProcessing: false
   })
-
-  const match = backButtonPath.match(/\/(\d+)\//)
-  const teamId = match ? parseInt(match[1]) : 0
 
   const [sidebarVisible, setSidebarVisible] = React.useState(true)
   const [layerPaletteVisible, setLayerPaletteVisible] = React.useState(false)
@@ -140,6 +139,7 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
               addLayer={layer => dispatch({ type: "AddLayer", layer })}
               dbModels={dbModels}
               getTeamDatasets={() => getDatasets(teamId)}
+              teamName={teamName}
             />
           }
           {

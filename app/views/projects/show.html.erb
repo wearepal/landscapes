@@ -1,6 +1,8 @@
 <div
   data-controller="projects"
   data-projects-project-id-value="<%= @project.id %>"
+  data-projects-project-team-id-value="<%= @project.team.id %>"
+  data-projects-project-team-name-value="<%= @project.team.name %>"
   data-projects-project-source-value="<%= @project.source.to_json %>"
   data-projects-back-button-path-value="<%= team_projects_path(@project.team) %>"
   data-projects-db-models-value="<%= render partial: "defs", formats: [:json] %>"
