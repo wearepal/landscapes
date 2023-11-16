@@ -38,9 +38,10 @@ interface LayerPaletteProps {
   hide: () => void
   dbModels: DBModels
   getTeamDatasets: () => Promise<Array<CompiledDatasetRecord>>
+  teamName: string
 }
 
-export const LayerPalette = ({ addLayer, hide, dbModels, getTeamDatasets }: LayerPaletteProps) => {
+export const LayerPalette = ({ addLayer, hide, dbModels, getTeamDatasets, teamName }: LayerPaletteProps) => {
 
   const [teamDatasets, setTeamDatasets] = React.useState<CompiledDatasetRecord[]>([])
 
@@ -62,10 +63,7 @@ export const LayerPalette = ({ addLayer, hide, dbModels, getTeamDatasets }: Laye
         <i className="fas fa-times" style={{ cursor: "pointer" }} onClick={hide} />
       </div>
       <div className="flex-grow-1" style={{ overflowY: "auto", flexBasis: "0px" }}>
-        <Section title="Team Datasets">
-          {
-            // rename to ${team.name}
-          }
+        <Section title={teamName}>
           {teamDatasets.map((dataset) => (
             <AddLayerButton
               key={dataset.id}
