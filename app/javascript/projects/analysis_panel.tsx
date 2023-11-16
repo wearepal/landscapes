@@ -87,7 +87,7 @@ const ChartLegend = ({ chartData, sourceType }: ChartLegendProps) => {
         if (chartData.numeric_stats) {
             const NumStats = chartData.numeric_stats
             LegendItems = Object.keys(NumStats).map(key => (
-                <div>
+                <div hidden={key === "step"}>
                     <label style={{ width: 60 }}>{
                         key[0].toUpperCase() + key.slice(1)
                     }</label>

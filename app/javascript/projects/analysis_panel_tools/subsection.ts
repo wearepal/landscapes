@@ -15,7 +15,8 @@ export interface NumericStats {
     max: number,
     range: number,
     mean: number,
-    mode: number
+    mode: number,
+    step: number
 }
 
 export interface ChartData {
@@ -51,7 +52,7 @@ export function extentToChartData(colors: Color[] | undefined, model: BooleanTil
 
             } else {
 
-                const area = getArea(fromExtent(tileGrid.getTileCoordExtent([20, x, y]))) / 1000000
+                const area = model instanceof NumericTileGrid ? 1 : getArea(fromExtent(tileGrid.getTileCoordExtent([20, x, y]))) / 1000000
                 const value = model.get(x, y)
 
 
@@ -84,18 +85,20 @@ export function extentToChartData(colors: Color[] | undefined, model: BooleanTil
             const range = max - min
             const step = range / bins
             counts = new Map()
-            const fillMap = fillType ? getColorStops((fillType == "greyscale" ? "greys" : (fillType === "heatmap" ? "jet" : fillType)), bins * 2) : undefined
+            const fillMap = fillType ? getColorStops((fillType == "greyscale" ? "greys" : (fillType === "heatmap" ? "jet" : fillType)), bins * 2).reverse() : undefined
 
             for (let i = 0; i < bins; i++) {
 
                 const [l, h] = [min + (i * step), min + (i + 1) * step]
-                counts.set(h, 0)
-                if (fillMap) color.set(h, fillMap[i * 2 + 1])
+                counts.set(l, 0)
+
+                //TODO make this match map heatmap
+                if (fillMap) color.set(l, fillMap[i * 2])
 
                 for (let x = 0; x < mapEntries.length; x++) {
                     const [k, v] = mapEntries[x]
-                    const count = counts.get(h) ? counts.get(h) : 0
-                    if (k >= l && k <= h) counts.set(h, count as number + v)
+                    const count = counts.get(l) ? counts.get(l) : 0
+                    if (k >= l && k <= h) counts.set(l, count as number + v)
                 }
             }
 
@@ -106,7 +109,8 @@ export function extentToChartData(colors: Color[] | undefined, model: BooleanTil
                 mean: min + (range / 2),
                 mode: mapEntries.reduce((max, current) => {
                     return current[1] > max[1] ? current : max
-                }, mapEntries[0])[0]
+                }, mapEntries[0])[0],
+                step
 
             }
 
