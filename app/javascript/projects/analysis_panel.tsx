@@ -6,8 +6,7 @@ import { ChartData, extentToChartData } from './analysis_panel_tools/subsection'
 import { GenerateChart } from './analysis_panel_tools/charts'
 import './analysis_panel.css'
 
-
-export type ChartType = "pie" | "hist" | "bar"
+export type ChartType = "pie" | "hist" | "bar" | "kde"
 
 interface ChartProps {
     chartType: ChartType | undefined
@@ -38,7 +37,7 @@ const ChartSelection = ({ SourceType, ChartTypeSelected, SetChartType }: ChartSe
     const options = [
         { value: "pie", label: "Pie chart", icon: "fa-chart-pie", disabled: false },
         { value: "bar", label: "Bar chart", icon: "fa-chart-bar", disabled: true },
-        { value: "hist", label: "Histogram", icon: "fa-chart-bar", disabled: true },
+        { value: "hist", label: "Histogram", icon: "fa-chart-bar", disabled: false },
     ].filter(option => (typeArray as string[]).includes(option.value))
 
     return (
@@ -85,7 +84,23 @@ const ChartLegend = ({ chartData, sourceType }: ChartLegendProps) => {
             </div>
         ))
     } else {
-        LegendItems = ""
+        if (chartData.numeric_stats) {
+            const NumStats = chartData.numeric_stats
+            LegendItems = Object.keys(NumStats).map(key => (
+                <div hidden={key === "step"}>
+                    <label style={{ width: 60 }}>{
+                        key[0].toUpperCase() + key.slice(1)
+                    }</label>
+                    <input
+                        disabled
+                        type="text"
+                        value={NumStats[key]}
+                    />
+                </div>
+            ))
+        } else {
+            LegendItems = ""
+        }
     }
 
 
@@ -95,8 +110,6 @@ const ChartLegend = ({ chartData, sourceType }: ChartLegendProps) => {
         </div>
     );
 }
-
-
 
 interface AnalysisPanelProps {
     setShowAP: () => void
@@ -119,8 +132,7 @@ export const AnalysisPanel = ({ selectedArea, setShowAP, selectedLayer, layerSta
 
     const [chartType, setChartType] = React.useState<ChartType>()
     const [chartData, setChartData] = React.useState<ChartData>()
-
-    console.log(chartType)
+    const [bins, setBins] = React.useState<number>(10)
 
     let errorMsg: string = ""
     let showChart: boolean = false
@@ -130,7 +142,7 @@ export const AnalysisPanel = ({ selectedArea, setShowAP, selectedLayer, layerSta
 
         if (data !== null && selectedArea && (selectedLayer?.type == "ModelOutputLayer" || selectedLayer?.type == "DatasetLayer")) {
 
-            setChartData(extentToChartData(selectedLayer.colors, data, selectedArea, selectedLayer.fill))
+            setChartData(extentToChartData(selectedLayer.colors, data, selectedArea, selectedLayer.fill, bins))
 
             let dataType: string | undefined = undefined
 
@@ -152,7 +164,7 @@ export const AnalysisPanel = ({ selectedArea, setShowAP, selectedLayer, layerSta
             setChartData(undefined)
         }
 
-    }, [selectedArea, selectedLayer, data, currentTab])
+    }, [selectedArea, selectedLayer, data, currentTab, bins])
 
 
     if (selectedArea === null) {
@@ -198,10 +210,24 @@ export const AnalysisPanel = ({ selectedArea, setShowAP, selectedLayer, layerSta
                                 chartData={chartData}
                             />
                         </div>
-                        <ChartLegend
-                            chartData={chartData}
-                            sourceType={dataSourceType}
-                        />
+                        <div style={{ textAlign: 'center' }}>
+                            {
+                                chartType == "hist"
+                                &&
+                                <>
+                                    <label style={{ width: 60 }}>Bars</label>
+                                    <input
+                                        type="number"
+                                        value={bins}
+                                        onChange={(e) => setBins(+e.target.value)}
+                                    />
+                                </>
+                            }
+                            <ChartLegend
+                                chartData={chartData}
+                                sourceType={dataSourceType}
+                            />
+                        </div>
                     </>
                 }
 
