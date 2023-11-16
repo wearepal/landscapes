@@ -220,6 +220,7 @@ export const AnalysisPanel = ({ selectedArea, setShowAP, selectedLayer, layerSta
                                         type="number"
                                         value={bins}
                                         onChange={(e) => setBins(+e.target.value)}
+                                        min={1}
                                     />
                                 </>
                             }
