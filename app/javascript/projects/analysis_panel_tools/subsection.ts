@@ -1,10 +1,9 @@
-import { Extent } from "ol/extent";
-import { BooleanTileGrid, CategoricalTileGrid, NumericTileGrid } from "../modelling/tile_grid";
-import { createXYZ } from "ol/tilegrid";
-import { getArea } from "ol/sphere";
-import { fromExtent } from "ol/geom/Polygon";
-import { getColorStops } from "../reify_layer/model_output";
-
+import { Extent } from "ol/extent"
+import { BooleanTileGrid, CategoricalTileGrid, NumericTileGrid } from "../modelling/tile_grid"
+import { createXYZ } from "ol/tilegrid"
+import { getArea } from "ol/sphere"
+import { fromExtent } from "ol/geom/Polygon"
+import { getColorStops } from "../reify_layer/model_output"
 
 type Color = [number, number, number, number]
 
@@ -25,7 +24,14 @@ export interface ChartData {
     numeric_stats?: NumericStats | undefined
 }
 
-export function extentToChartData(colors: Color[] | undefined, model: BooleanTileGrid | NumericTileGrid | CategoricalTileGrid, extent: Extent, fillType: string | undefined): ChartData {
+function findColor(value: number, colorArray: any[]): Color {
+    var index = Math.floor(value * (colorArray.length / 2))
+    index = Math.min(index, colorArray.length / 2 - 1)
+    var alpha = colorArray[index * 2]
+    return alpha
+}
+
+export function extentToChartData(colors: Color[] | undefined, model: BooleanTileGrid | NumericTileGrid | CategoricalTileGrid, extent: Extent, fillType: string | undefined, histogram_bins: number): ChartData {
 
     const tileGrid = createXYZ()
     const outputTileRange = tileGrid.getTileRangeForExtentAndZ(extent, model.zoom)
@@ -79,21 +85,25 @@ export function extentToChartData(colors: Color[] | undefined, model: BooleanTil
             let mapEntries: [number, number][] = Array.from(counts.entries())
             mapEntries = mapEntries.sort((a, b) => a[0] - b[0])
 
-            const bins = 10
+            const bins = histogram_bins
             const min = mapEntries[0][0]
             const max = mapEntries[mapEntries.length - 1][0]
             const range = max - min
             const step = range / bins
             counts = new Map()
-            const fillMap = fillType ? getColorStops((fillType == "greyscale" ? "greys" : (fillType === "heatmap" ? "jet" : fillType)), bins * 2).reverse() : undefined
+            const fillMap = fillType ? getColorStops((fillType == "greyscale" ? "greys" : (fillType === "heatmap" ? "jet" : fillType)), 40).reverse() : undefined
+            const [ds_min, ds_max] = [model.getStats().min, model.getStats().max]
 
             for (let i = 0; i < bins; i++) {
 
                 const [l, h] = [min + (i * step), min + (i + 1) * step]
                 counts.set(l, 0)
 
-                //TODO make this match map heatmap
-                if (fillMap) color.set(l, fillMap[i * 2])
+                if (fillMap) {
+                    let val = l + (step / 2)
+                    val = (val - ds_min) / (ds_max - ds_min)
+                    color.set(l, findColor(val, fillMap))
+                }
 
                 for (let x = 0; x < mapEntries.length; x++) {
                     const [k, v] = mapEntries[x]

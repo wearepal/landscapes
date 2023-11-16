@@ -10,7 +10,7 @@ export const GenerateHistogram = ({ chartData }: HistogramProps) => {
 
     const axesRef = React.useRef(null)
     const MARGIN = { top: 60, right: 30, bottom: 40, left: 50 }
-    const BIN_PADDING = 2
+    const BIN_PADDING = 0
 
     const data = chartData.count
     const cols = chartData.colors
@@ -38,7 +38,7 @@ export const GenerateHistogram = ({ chartData }: HistogramProps) => {
         return <rect
             key={i}
             fill={`rgb(${color[0]}, ${color[1]}, ${color[2]})`}
-            stroke="black"
+            stroke="lightgrey"
             x={xScale(bin[0])}
             width={bin_w}
             y={yScale(bin[1])}
