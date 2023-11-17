@@ -12,19 +12,19 @@ import { getMedianCellSize } from "./cell_area_component"
 interface ScaleFactorType {
     name: string
     id: number
-    metersPerUnit: number
+    sqMetersPerUnit: number
 }
 
 const ScaleFactorTypes: ScaleFactorType[] = [
     {
         name: 'ha',
         id: 0,
-        metersPerUnit: 10000
+        sqMetersPerUnit: 10000
     },
     {
-        name: 'km',
+        name: 'km²',
         id: 1,
-        metersPerUnit: 1000
+        sqMetersPerUnit: (1000 * 1000)
     }
 ]
 
@@ -59,7 +59,7 @@ export class ScaleFactorComponent extends BaseComponent {
         let index = node.data.scaleFactorId as number
         if (!index) index = 0
 
-        const unitPerM = ScaleFactorTypes[index].metersPerUnit
+        const unitPerM = ScaleFactorTypes[index].sqMetersPerUnit
 
         if (inputs['in'].length > 0) {
             delete editorNode.meta.errorMessage
