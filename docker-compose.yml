@@ -17,7 +17,8 @@ services:
     volumes:
       - caddy:/data
     networks:
-      - lmtnet
+      - caddy_traefik
+      - default
 
   db:
     image: postgres:14
@@ -25,8 +26,6 @@ services:
       - POSTGRES_HOST_AUTH_METHOD=trust
     volumes:
       - postgres:/var/lib/postgresql/data
-    networks:
-      - lmtnet
 
   geoserver:
     image: docker.osgeo.org/geoserver:2.21.2
@@ -35,16 +34,12 @@ services:
       - EXTRA_JAVA_OPTS=-Xmx10g
     volumes:
       - geoserver:/opt/geoserver_data
-    networks:
-      - lmtnet
 
   queue:
     image: redis:7
     command: redis-server --appendonly yes
     volumes:
       - redis_queue:/data
-    networks:
-      - lmtnet
 
   migration:
     image: "wearepal/landscapes:${VERSION}"
@@ -54,8 +49,6 @@ services:
     deploy:
       restart_policy:
         condition: none
-    networks:
-      - lmtnet
 
   web:
     image: "wearepal/landscapes:${VERSION}"
@@ -68,8 +61,6 @@ services:
       - secret_key_base
     volumes:
       - storage:/app/storage
-    networks:
-      - lmtnet
 
   worker:
     image: "wearepal/landscapes:${VERSION}"
@@ -83,8 +74,6 @@ services:
       - secret_key_base
     volumes:
       - storage:/app/storage
-    networks:
-      - lmtnet
 
 configs:
   caddyfile:
@@ -103,6 +92,6 @@ volumes:
   redis_queue:
   storage:
 
-
 networks:
-  lmtnet:
+  caddy_traefik:
+    external: true
