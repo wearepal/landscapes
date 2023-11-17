@@ -11,7 +11,7 @@ class ProjectsController < ApplicationController
   end
 
   def create
-    @project = @team.projects.new(params.require(:project).permit(:name))
+    @project = @team.projects.new(params.require(:project).permit(:name, :extent))
     if @project.save
       redirect_to team_projects_url(@team)
     else

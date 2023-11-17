@@ -1,6 +1,8 @@
 
 //TODO: Make this customisable
 
+import { Extent } from "ol/extent"
+
 const westHorsely = [-49469.089243, 6669018.450996]
 const bexhill = [55641.379277, 6570068.329224]
 
@@ -17,3 +19,8 @@ export const currentExtent = [-49469.089243, 6570068.329224, 55641.379277, 66690
 
 export const currentBbox = `${currentExtent.join(",")},EPSG:3857`
 export const zoomLevel = 20
+
+export function zoomFromExtent(extent: Extent): number {
+    // TO DO: CALCULATE HIGHEST REALISTIC ZOOM LEVEL FROM EXTENT
+    return 20
+}

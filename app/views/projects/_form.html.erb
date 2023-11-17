@@ -15,6 +15,13 @@
     <%= form.text_field :name, class: 'form-control', data: { "form-target": "field", field: "name" } %>
   </div>
 
+  <div class="form-group">
+    <%= form.label :extent %>
+    <span data-form-target="error" data-field="extent"></span>
+    <%= form.text_field :extent, class: 'form-control', data: { "form-target": "field", field: "extent" }, value: "-49469.089243, 6570068.329224, 55641.379277, 6669018.450996" %>
+  </div>
+
+
   <%= form.submit "Save", class: "btn btn-primary" %>
   <%= link_to "Cancel", [@team, :projects], class: "btn btn-secondary" %>
 <% end %>

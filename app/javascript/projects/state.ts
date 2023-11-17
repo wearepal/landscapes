@@ -1,5 +1,6 @@
 import { Data } from "rete/types/core/data"
 import { NevoLevel, NevoProperty } from "./nevo"
+import { Extent } from "ol/extent"
 
 interface BaseLayer {
   name: string
@@ -65,6 +66,7 @@ export type Layer = OsmLayer | MapTileLayer | OverlayLayer | NevoLayer | CehLand
 
 export interface Project {
   name: string
+  extent?: Extent
   layers: Record<number, Layer>
   allLayers: number[]
   model: Data | null

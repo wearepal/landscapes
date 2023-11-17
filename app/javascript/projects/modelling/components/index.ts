@@ -25,11 +25,12 @@ import { CellAreaComponent } from "./cell_area_component"
 import { ScaleFactorComponent } from "./scale_factor_component"
 import { CROMEComponent } from "./crome_component"
 import { RescaleComponent } from "./rescale_component"
+import { Extent } from "ol/extent"
 
-export function createDefaultComponents(saveMapLayer: SaveMapLayer, saveModel: SaveModel, getDatasets: getDatasets): BaseComponent[] {
+export function createDefaultComponents(saveMapLayer: SaveMapLayer, saveModel: SaveModel, getDatasets: getDatasets, extent: Extent): BaseComponent[] {
   return [
     // Inputs
-    new UkcehLandCoverComponent(),
+    new UkcehLandCoverComponent(extent),
     new NevoLayerComponent(),
     new OSMLandUseComponent(),
     new NumericConstantComponent(),

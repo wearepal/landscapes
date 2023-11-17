@@ -14,6 +14,7 @@ import { getDataset, getDatasets, saveModelOutput } from './saved_dataset'
 import { TileGridJSON } from './modelling/tile_grid'
 import { AnalysisPanel } from './analysis_panel'
 import { Extent } from 'ol/extent'
+import { currentExtent } from './modelling/bounding_box'
 
 export enum Tab {
   MapView,
@@ -34,6 +35,8 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
     hasUnsavedChanges: false,
     autoProcessing: false
   })
+
+  const projectExtent: Extent = projectSource.extent ? projectSource.extent : currentExtent
 
   const [sidebarVisible, setSidebarVisible] = React.useState(true)
   const [layerPaletteVisible, setLayerPaletteVisible] = React.useState(false)
@@ -211,6 +214,7 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
           setProcess={setProcess}
           saveModel={(name: string, json: TileGridJSON) => saveModelOutput(name, json, teamId)}
           getDatasets={() => getDatasets(teamId)}
+          extent={projectExtent}
         />
       </div>
     </div>
