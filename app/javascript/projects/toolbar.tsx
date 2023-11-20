@@ -18,8 +18,9 @@ interface ToolbarProps {
   setShowAP: () => void
   showAP: boolean
   setShowExtent: (boolean) => void
+  zoomLevel: number
 }
-export const Toolbar = ({ backButtonPath, projectName, hasUnsavedChanges, currentTab, isProcessing, isLoading, setProjectName, saveProject, setCurrentTab, autoProcessing, setAutoProcessing, manualProcessing, setShowAP, showAP, setShowExtent }: ToolbarProps) => (
+export const Toolbar = ({ backButtonPath, projectName, hasUnsavedChanges, currentTab, isProcessing, isLoading, setProjectName, saveProject, setCurrentTab, autoProcessing, setAutoProcessing, manualProcessing, setShowAP, showAP, setShowExtent, zoomLevel }: ToolbarProps) => (
   <div className="btn-toolbar p-2 bg-light border-top">
     <div className="btn-group mr-2">
       <a className="btn btn-sm btn-outline-primary" href={backButtonPath}>
@@ -39,6 +40,9 @@ export const Toolbar = ({ backButtonPath, projectName, hasUnsavedChanges, curren
       <button className={`btn btn-sm btn-outline-primary`} onMouseEnter={() => setShowExtent(true)} onMouseLeave={() => setShowExtent(false)} onClick={() => console.log("WIP")}>
         <i className="fas fa-square" /> Extent
       </button>
+      <div title={`Zoom level = ${zoomLevel}`} className="p-1 " style={{backgroundColor: zoomLevel > 20 ? "green" : (zoomLevel < 20 ? "orange" : "yellow"), fontSize: ".9em"}}>
+        {zoomLevel > 20 ? "High" : (zoomLevel < 20 ? "Low" : "Med")}
+      </div>
     </div>
     <div className="btn-group mr-2">
       <button className={`btn btn-sm ${currentTab == Tab.MapView ? "btn-primary" : "btn-outline-primary"}`} onClick={() => setCurrentTab(Tab.MapView)}>

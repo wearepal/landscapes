@@ -105,6 +105,7 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
         setShowAP={() => setShowAP(!showAP)}
         showAP={showAP}
         setShowExtent={setShowExtent}
+        zoomLevel={projectZoom}
       />
       <div className="flex-grow-1 d-flex">
         {currentTab == Tab.MapView && <>

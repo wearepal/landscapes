@@ -22,7 +22,7 @@ class Project < ApplicationRecord
 
   def parse_extent
     if extent.present?
-      extent_array = extent.split(',').map(&:to_f)
+      extent_array = extent.is_a?(String) ? extent.split(',').map(&:to_f) : extent.map(&:to_f)
       self.extent = extent_array
     end
   end
