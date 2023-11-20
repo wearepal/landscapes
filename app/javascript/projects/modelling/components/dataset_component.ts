@@ -5,6 +5,7 @@ import { BooleanTileGrid, CategoricalTileGrid, NumericTileGrid } from "../tile_g
 import { BaseComponent } from "./base_component"
 import { SelectControl } from "../controls/select"
 import { CompiledDatasetRecord, getDataset } from "../../saved_dataset"
+import { Extent } from "ol/extent"
 
 async function fetchDataset(datasetId: number, teamId: number) {
     return new Promise<{ error: { message: string }; out: { model: BooleanTileGrid | NumericTileGrid | CategoricalTileGrid } }>((resolve) => {
@@ -19,11 +20,17 @@ export type getDatasets = () => Promise<CompiledDatasetRecord[]>
 export class PrecompiledModelComponent extends BaseComponent {
     modelSource: getDatasets
     models: CompiledDatasetRecord[]
+    projectExtent: Extent
+    projectZoom: number
 
-    constructor(getDatasets: getDatasets) {
+    constructor(getDatasets: getDatasets, projectExtent: Extent, projectZoom: number) {
         super("Load Dataset")
         this.category = "Inputs"
         this.modelSource = getDatasets
+
+        //TODO: Use these.
+        this.projectExtent = projectExtent
+        this.projectZoom = projectZoom
     }
 
     async builder(node: Node) {

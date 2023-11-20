@@ -17,8 +17,9 @@ interface ToolbarProps {
   manualProcessing: () => void
   setShowAP: () => void
   showAP: boolean
+  setShowExtent: (boolean) => void
 }
-export const Toolbar = ({ backButtonPath, projectName, hasUnsavedChanges, currentTab, isProcessing, isLoading, setProjectName, saveProject, setCurrentTab, autoProcessing, setAutoProcessing, manualProcessing, setShowAP, showAP }: ToolbarProps) => (
+export const Toolbar = ({ backButtonPath, projectName, hasUnsavedChanges, currentTab, isProcessing, isLoading, setProjectName, saveProject, setCurrentTab, autoProcessing, setAutoProcessing, manualProcessing, setShowAP, showAP, setShowExtent }: ToolbarProps) => (
   <div className="btn-toolbar p-2 bg-light border-top">
     <div className="btn-group mr-2">
       <a className="btn btn-sm btn-outline-primary" href={backButtonPath}>
@@ -32,6 +33,11 @@ export const Toolbar = ({ backButtonPath, projectName, hasUnsavedChanges, curren
     <div className="btn-group mr-2">
       <button className="btn btn-sm btn-outline-primary" disabled={!hasUnsavedChanges} onClick={saveProject}>
         <i className="fas fa-save" /> Save
+      </button>
+    </div>    
+    <div className="btn-group mr-2">
+      <button className={`btn btn-sm btn-outline-primary`} onMouseEnter={() => setShowExtent(true)} onMouseLeave={() => setShowExtent(false)} onClick={() => console.log("WIP")}>
+        <i className="fas fa-square" /> Extent
       </button>
     </div>
     <div className="btn-group mr-2">

@@ -6,9 +6,9 @@ import { PreviewControl } from "../controls/preview"
 import { NumericTileGrid } from "../tile_grid"
 import { numericDataSocket } from "../socket_types"
 import { createXYZ } from "ol/tilegrid"
-import { currentExtent as extent, zoomLevel } from "../bounding_box"
 import { TypedArray } from "d3"
-import { retrieveModelData, retrieveModelDataWCS } from "../model_retrieval"
+import { retrieveModelDataWCS } from "../model_retrieval"
+import { Extent } from "ol/extent"
 
 interface DigitalModel {
     id: number
@@ -37,10 +37,14 @@ const ModelList: Array<DigitalModel> = [
 
 export class DigitalModelComponent extends BaseComponent {
     outputCache: Map<string, NumericTileGrid>
+    projectZoom: number
+    projectExtent: Extent
 
-    constructor() {
+    constructor(projectExtent: Extent, projectZoom: number) {
         super("Digital Model")
         this.category = "Inputs"
+        this.projectExtent = projectExtent
+        this.projectZoom = projectZoom
         this.outputCache = new Map()
     }
 
@@ -83,16 +87,14 @@ export class DigitalModelComponent extends BaseComponent {
             if (this.outputCache.has(digitalModel.source)) {
                 const out = editorNode.meta.output = outputs['dm'] = this.outputCache.get(digitalModel.source)
             } else {
-                const zoom = zoomLevel
-
                 const tileGrid = createXYZ()
-                const outputTileRange = tileGrid.getTileRangeForExtentAndZ(extent, zoom)
-                const geotiff = await retrieveModelDataWCS(extent, digitalModel.source, outputTileRange)
+                const outputTileRange = tileGrid.getTileRangeForExtentAndZ(this.projectExtent, this.projectZoom)
+                const geotiff = await retrieveModelDataWCS(this.projectExtent, digitalModel.source, outputTileRange)
 
                 const image = await geotiff.getImage()
-                const rasters = await geotiff.readRasters({ bbox: extent, width: outputTileRange.getWidth(), height: outputTileRange.getHeight() })
+                const rasters = await geotiff.readRasters({ bbox: this.projectExtent, width: outputTileRange.getWidth(), height: outputTileRange.getHeight() })
 
-                const out = editorNode.meta.output = outputs['dm'] = new NumericTileGrid(zoom, outputTileRange.minX, outputTileRange.minY, outputTileRange.getWidth(), outputTileRange.getHeight())
+                const out = editorNode.meta.output = outputs['dm'] = new NumericTileGrid(this.projectZoom, outputTileRange.minX, outputTileRange.minY, outputTileRange.getWidth(), outputTileRange.getHeight())
 
 
                 for (let i = 0; i < (rasters[0] as TypedArray).length; i++) {

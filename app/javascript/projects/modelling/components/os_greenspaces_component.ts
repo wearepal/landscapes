@@ -2,10 +2,11 @@ import { Node, Output } from "rete"
 import { NodeData, WorkerInputs, WorkerOutputs } from "rete/types/core/data"
 import { BaseComponent } from "./base_component"
 import { booleanDataSocket } from "../socket_types"
-import { currentBbox, currentExtent, zoomLevel } from "../bounding_box"
 import GeoJSON from "ol/format/GeoJSON"
 import { createXYZ } from "ol/tilegrid"
 import { BooleanTileGrid } from "../tile_grid"
+import { Extent } from "ol/extent"
+import { bboxFromExtent } from "../bounding_box"
 
 interface GS_Source {
     source: string
@@ -49,11 +50,15 @@ async function fetchGreenspacesFromExtent(bbox: string, source: string) {
 
 export class OSGreenSpacesComponent extends BaseComponent {
     cachedData: Map<string, BooleanTileGrid | undefined>
+    projectExtent: Extent
+    projectZoom: number
 
-    constructor() {
+    constructor(currentExtent: Extent, projectZoom: number) {
         super('OS Green Spaces')
         this.category = 'Inputs'
         this.cachedData = new Map()
+        this.projectExtent = currentExtent
+        this.projectZoom = projectZoom
     }
 
     async builder(node: Node) {
@@ -63,7 +68,6 @@ export class OSGreenSpacesComponent extends BaseComponent {
     }
 
     async worker(node: NodeData, inputs: WorkerInputs, outputs: WorkerOutputs, ...args: unknown[]) {
-        const zoom = 23
 
         const editorNode = this.editor?.nodes.find(n => n.id === node.id)
         if (editorNode === undefined) { return }
@@ -76,14 +80,14 @@ export class OSGreenSpacesComponent extends BaseComponent {
                 outputs[GS_Sources[i].name] = this.cachedData.get(GS_Sources[i].name)
 
             } else {
-                const res = await fetchGreenspacesFromExtent(currentBbox, GS_Sources[i].source)
+                const res = await fetchGreenspacesFromExtent(bboxFromExtent(this.projectExtent), GS_Sources[i].source)
                 const features = new GeoJSON().readFeatures(res)
 
                 const tileGrid = createXYZ()
-                const outputTileRange = tileGrid.getTileRangeForExtentAndZ(currentExtent, zoom)
+                const outputTileRange = tileGrid.getTileRangeForExtentAndZ(this.projectExtent, this.projectZoom)
 
                 const result = editorNode.meta.output = outputs[GS_Sources[i].name] = new BooleanTileGrid(
-                    zoom,
+                    this.projectZoom,
                     outputTileRange.minX,
                     outputTileRange.minY,
                     outputTileRange.getWidth(),
@@ -99,7 +103,7 @@ export class OSGreenSpacesComponent extends BaseComponent {
 
                     const featureTileRange = tileGrid.getTileRangeForExtentAndZ(
                         geom.getExtent(),
-                        zoom
+                        this.projectZoom
                     )
                     for (
                         let x = Math.max(featureTileRange.minX, outputTileRange.minX);
@@ -111,7 +115,7 @@ export class OSGreenSpacesComponent extends BaseComponent {
                             y <= Math.min(featureTileRange.maxY, outputTileRange.maxY);
                             ++y
                         ) {
-                            const center = tileGrid.getTileCoordCenter([zoom, x, y])
+                            const center = tileGrid.getTileCoordCenter([this.projectZoom, x, y])
                             if (geom.intersectsCoordinate(center)) {
                                 result.set(x, y, true)
                             }

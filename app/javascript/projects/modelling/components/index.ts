@@ -27,18 +27,18 @@ import { CROMEComponent } from "./crome_component"
 import { RescaleComponent } from "./rescale_component"
 import { Extent } from "ol/extent"
 
-export function createDefaultComponents(saveMapLayer: SaveMapLayer, saveModel: SaveModel, getDatasets: getDatasets, extent: Extent): BaseComponent[] {
+export function createDefaultComponents(saveMapLayer: SaveMapLayer, saveModel: SaveModel, getDatasets: getDatasets, extent: Extent, zoom: number): BaseComponent[] {
   return [
     // Inputs
-    new UkcehLandCoverComponent(extent),
-    new NevoLayerComponent(),
-    new OSMLandUseComponent(),
+    new UkcehLandCoverComponent(extent, zoom),
+    new NevoLayerComponent(extent, zoom),
+    new OSMLandUseComponent(extent, zoom),
     new NumericConstantComponent(),
-    new DigitalModelComponent(),
-    new PrecompiledModelComponent(getDatasets),
-    new CensusComponent(),
-    new OSGreenSpacesComponent(),
-    new CROMEComponent(),
+    new DigitalModelComponent(extent, zoom),
+    new PrecompiledModelComponent(getDatasets, extent, zoom), //TODO: Work out how this should use project extent and zoom
+    new CensusComponent(extent, zoom),
+    new OSGreenSpacesComponent(extent, zoom),
+    new CROMEComponent(extent, zoom),
 
     // Outputs
     new MapLayerComponent(saveMapLayer),

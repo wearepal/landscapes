@@ -24,3 +24,8 @@ export function zoomFromExtent(extent: Extent): number {
     // TO DO: CALCULATE HIGHEST REALISTIC ZOOM LEVEL FROM EXTENT
     return 20
 }
+
+export function bboxFromExtent(extent: Extent): string {
+    // Required format for some requests
+    return `${extent.join(",")},EPSG:3857`
+}

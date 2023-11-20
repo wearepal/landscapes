@@ -2,12 +2,11 @@ import { BaseComponent } from "./base_component"
 import { Node, Output } from "rete"
 import { createXYZ } from "ol/tilegrid"
 import { NodeData, WorkerInputs, WorkerOutputs } from 'rete/types/core/data'
-import { currentBbox as bbox, currentExtent as extent, zoomLevel } from "../bounding_box"
 import { booleanDataSocket, categoricalDataSocket } from "../socket_types"
 import GeoJSON from "ol/format/GeoJSON"
 import { BooleanTileGrid, CategoricalTileGrid } from "../tile_grid"
-
-const zoom = 23 //zoomLevel
+import { Extent } from "ol/extent"
+import { bboxFromExtent } from "../bounding_box"
 
 interface CropSpecies {
   LUCODE: string
@@ -119,12 +118,12 @@ async function fetchCROMEFromExtent(bbox: string, source: string) {
   return await response.json()
 }
 
-async function renderCategoricalData() {
+async function renderCategoricalData(extent: Extent, zoom: number) {
   // When testing locally, disable CORS in browser settings
 
   const tileGrid = createXYZ()
   const outputTileRange = tileGrid.getTileRangeForExtentAndZ(extent, zoom)
-  const res = await fetchCROMEFromExtent(bbox, 'crome:crop_map_of_england_2020_east_sussex')
+  const res = await fetchCROMEFromExtent(bboxFromExtent(extent), 'crome:crop_map_of_england_2020_east_sussex')
   const features = new GeoJSON().readFeatures(res)
 
 
@@ -183,12 +182,16 @@ async function renderCategoricalData() {
 export class CROMEComponent extends BaseComponent {
   categoricalData: CategoricalTileGrid | null
   outputCache: Map<string, BooleanTileGrid>
+  projectExtent: Extent
+  projectZoom: number
 
-  constructor() {
+  constructor(projectExtent: Extent, projectZoom: number) {
     super("Crop Map of England CROME")
     this.category = "Inputs"
     this.categoricalData = null
     this.outputCache = new Map()
+    this.projectExtent = projectExtent
+    this.projectZoom = projectZoom
   }
 
   async builder(node: Node) {
@@ -214,7 +217,7 @@ export class CROMEComponent extends BaseComponent {
   async worker(node: NodeData, inputs: WorkerInputs, outputs: WorkerOutputs, ...args: unknown[]) {
 
     if (this.categoricalData === null) {
-      this.categoricalData = await renderCategoricalData()
+      this.categoricalData = await renderCategoricalData(this.projectExtent, this.projectZoom)
     }
     const categoricalData = this.categoricalData!
 

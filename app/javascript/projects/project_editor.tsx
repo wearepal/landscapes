@@ -14,7 +14,7 @@ import { getDataset, getDatasets, saveModelOutput } from './saved_dataset'
 import { TileGridJSON } from './modelling/tile_grid'
 import { AnalysisPanel } from './analysis_panel'
 import { Extent } from 'ol/extent'
-import { currentExtent } from './modelling/bounding_box'
+import { currentExtent, zoomFromExtent } from './modelling/bounding_box'
 
 export enum Tab {
   MapView,
@@ -36,7 +36,9 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
     autoProcessing: false
   })
 
+  // Retrieve the project extent from the project source, or use the current extent if not present. Calculate the zoom level from the extent.
   const projectExtent: Extent = projectSource.extent ? projectSource.extent : currentExtent
+  const projectZoom: number = zoomFromExtent(projectExtent)
 
   const [sidebarVisible, setSidebarVisible] = React.useState(true)
   const [layerPaletteVisible, setLayerPaletteVisible] = React.useState(false)
@@ -45,10 +47,11 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
   const [showAP, setShowAP] = React.useState(false)
   const [selectedArea, setSelectedArea] = React.useState<Extent | null>(null)
   const [selectedLayer, setSelectedLayer] = React.useState<Layer | null>(null)
-  //hardcoded to the UK, perhaps later base this on the bounding box?
 
-  const [mapViewZoom, setMapViewZoom] = React.useState(6)
-  const [mapViewCenter, setMapViewCenter] = React.useState<[number, number]>([-254382.430133, 7083572.285244])
+  // Set the initial map view zoom and center to the project extent.
+  const [mapViewZoom, setMapViewZoom] = React.useState(9)
+  const [mapViewCenter, setMapViewCenter] = React.useState<[number, number]>([(projectExtent[0]+projectExtent[2])/2, (projectExtent[1]+projectExtent[3])/2])
+  const [showExtent, setShowExtent] = React.useState(false)
 
 
   const [modelViewTransform, setModelViewTransform] = React.useState<Transform>({ x: 0, y: 0, k: 1 })
@@ -101,6 +104,7 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
         }}
         setShowAP={() => setShowAP(!showAP)}
         showAP={showAP}
+        setShowExtent={setShowExtent}
       />
       <div className="flex-grow-1 d-flex">
         {currentTab == Tab.MapView && <>
@@ -134,6 +138,8 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
             selectedArea={selectedArea}
             selected={showAP}
             setSelected={setShowAP}
+            projectExtent={projectExtent}
+            showProjectExtent={showExtent}
           />
           {
             layerPaletteVisible &&
@@ -215,6 +221,7 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
           saveModel={(name: string, json: TileGridJSON) => saveModelOutput(name, json, teamId)}
           getDatasets={() => getDatasets(teamId)}
           extent={projectExtent}
+          zoom={projectZoom}
         />
       </div>
     </div>

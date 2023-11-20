@@ -2,13 +2,14 @@ import { Node, Output } from "rete"
 import { NodeData, WorkerInputs, WorkerOutputs } from "rete/types/core/data"
 import { BaseComponent } from "./base_component"
 import { numericDataSocket } from "../socket_types"
-import { currentBbox, currentExtent, zoomLevel } from "../bounding_box"
 import GeoJSON from "ol/format/GeoJSON"
 import { createXYZ } from "ol/tilegrid"
 import { NumericTileGrid } from "../tile_grid"
 import { SelectControl } from "../controls/select"
 import { Feature } from "ol"
 import { Geometry } from "ol/geom"
+import { Extent } from "ol/extent"
+import { bboxFromExtent } from "../bounding_box"
 
 interface CensusDataset {
     code: string
@@ -754,12 +755,16 @@ async function fetchCensusShapefilesFromExtent(bbox: string) {
 export class CensusComponent extends BaseComponent {
     cachedData: Feature<Geometry>[] | undefined
     cachedOutput: Map<string, NumericTileGrid>
+    projectZoom: number
+    projectExtent: Extent
 
-    constructor() {
+    constructor(projectExtent: Extent, projectZoom: number) {
         super("UK Census 2021")
         this.category = "Inputs"
         this.cachedData = undefined
         this.cachedOutput = new Map()
+        this.projectExtent = projectExtent
+        this.projectZoom = projectZoom
     }
 
     async builder(node: Node) {
@@ -814,7 +819,7 @@ export class CensusComponent extends BaseComponent {
         const editorNode = this.editor?.nodes.find(n => n.id === node.id)
         if (editorNode === undefined) { return }
 
-        const features = this.cachedData ? this.cachedData : new GeoJSON().readFeatures(await fetchCensusShapefilesFromExtent(currentBbox))
+        const features = this.cachedData ? this.cachedData : new GeoJSON().readFeatures(await fetchCensusShapefilesFromExtent(bboxFromExtent(this.projectExtent)))
 
         const datasetIndex = node.data.censusDatasetId ? node.data.censusDatasetId as number : 0
         const options = censusDatasets[datasetIndex].options
@@ -830,10 +835,10 @@ export class CensusComponent extends BaseComponent {
             } else {
 
                 const tileGrid = createXYZ()
-                const outputTileRange = tileGrid.getTileRangeForExtentAndZ(currentExtent, zoomLevel)
+                const outputTileRange = tileGrid.getTileRangeForExtentAndZ(this.projectExtent, this.projectZoom)
 
                 const result = editorNode.meta.output = outputs[option.name] = new NumericTileGrid(
-                    zoomLevel,
+                    this.projectZoom,
                     outputTileRange.minX,
                     outputTileRange.minY,
                     outputTileRange.getWidth(),
@@ -848,7 +853,7 @@ export class CensusComponent extends BaseComponent {
 
                     const featureTileRange = tileGrid.getTileRangeForExtentAndZ(
                         geom.getExtent(),
-                        zoomLevel
+                        this.projectZoom
                     )
 
                     for (
@@ -861,7 +866,7 @@ export class CensusComponent extends BaseComponent {
                             y <= Math.min(featureTileRange.maxY, outputTileRange.maxY);
                             ++y
                         ) {
-                            const center = tileGrid.getTileCoordCenter([zoomLevel, x, y])
+                            const center = tileGrid.getTileCoordCenter([this.projectZoom, x, y])
                             if (geom.intersectsCoordinate(center)) {
                                 result.set(x, y, feature.get(code) / n * 100)
                             }

@@ -1,11 +1,9 @@
-import GeoJSON from "ol/format/GeoJSON"
 import { createXYZ } from "ol/tilegrid"
 import { Node, Output } from "rete"
 import { NodeData, WorkerInputs, WorkerOutputs } from "rete/types/core/data"
 import { booleanDataSocket, categoricalDataSocket } from "../socket_types"
 import { BooleanTileGrid, CategoricalTileGrid } from "../tile_grid"
 import { BaseComponent } from "./base_component"
-import { zoomFromExtent } from "../bounding_box"
 import { retrieveModelData } from "../model_retrieval"
 import { TypedArray } from "d3"
 import { Extent } from "ol/extent"
@@ -89,13 +87,13 @@ export class UkcehLandCoverComponent extends BaseComponent {
   projectExtent: Extent
   zoom: number
 
-  constructor(projectExtent: Extent) {
+  constructor(projectExtent: Extent, projectZoom: number) {
     super("UKCEH Land Cover")
     this.category = "Inputs"
     this.categoricalData = null
     this.outputCache = new Map()
     this.projectExtent = projectExtent
-    this.zoom = zoomFromExtent(projectExtent)
+    this.zoom = projectZoom
   }
 
   async builder(node: Node) {
