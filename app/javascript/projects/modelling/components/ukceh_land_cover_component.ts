@@ -1,15 +1,12 @@
-import GeoJSON from "ol/format/GeoJSON"
 import { createXYZ } from "ol/tilegrid"
 import { Node, Output } from "rete"
 import { NodeData, WorkerInputs, WorkerOutputs } from "rete/types/core/data"
 import { booleanDataSocket, categoricalDataSocket } from "../socket_types"
 import { BooleanTileGrid, CategoricalTileGrid } from "../tile_grid"
 import { BaseComponent } from "./base_component"
-import { currentBbox as bbox, currentExtent as extent, zoomLevel } from "../bounding_box"
 import { retrieveModelData } from "../model_retrieval"
 import { TypedArray } from "d3"
-
-const zoom = zoomLevel
+import { Extent } from "ol/extent"
 
 interface Habitat {
   agg: number
@@ -44,7 +41,7 @@ const habitats: Habitat[] = [
   { agg: 0, AC: "All", mode: 0, LC: "All" }
 ]
 
-async function renderCategoricalData() {
+async function renderCategoricalData(extent: Extent, zoom: number) {
   // When testing locally, disable CORS in browser settings
 
   const tileGrid = createXYZ()
@@ -87,12 +84,16 @@ async function renderCategoricalData() {
 export class UkcehLandCoverComponent extends BaseComponent {
   categoricalData: CategoricalTileGrid | null
   outputCache: Map<number, BooleanTileGrid>
+  projectExtent: Extent
+  zoom: number
 
-  constructor() {
+  constructor(projectExtent: Extent, projectZoom: number) {
     super("UKCEH Land Cover")
     this.category = "Inputs"
     this.categoricalData = null
     this.outputCache = new Map()
+    this.projectExtent = projectExtent
+    this.zoom = projectZoom
   }
 
   async builder(node: Node) {
@@ -108,7 +109,7 @@ export class UkcehLandCoverComponent extends BaseComponent {
 
   async worker(node: NodeData, inputs: WorkerInputs, outputs: WorkerOutputs, ...args: unknown[]) {
     if (this.categoricalData === null) {
-      this.categoricalData = await renderCategoricalData()
+      this.categoricalData = await renderCategoricalData(this.projectExtent, this.zoom)
     }
     const categoricalData = this.categoricalData!
 

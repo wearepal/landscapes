@@ -1,14 +1,16 @@
 
 
 import * as GeoTIFF from 'geotiff/dist-browser/geotiff'
+import { Extent } from 'ol/extent'
+import { bboxFromExtent } from './bounding_box'
 
-export async function retrieveModelData(extent: any, source: string, tileRange: any) {
+export async function retrieveModelData(extent: Extent, source: string, tileRange: any) {
 
-    // Uses WMS server: Unsuitable for certain raster data
+    // Uses WMS server: Returns data between 0 and 255
 
     const geoserver = "https://landscapes.wearepal.ai/geoserver/"
     const [width, height] = [tileRange.getWidth(), tileRange.getHeight()]
-    const bbox = `${extent.join(",")},EPSG:3857`
+    const bbox = bboxFromExtent(extent)
 
     const response = await fetch(
         geoserver + "wms?" +
@@ -37,9 +39,9 @@ export async function retrieveModelData(extent: any, source: string, tileRange: 
 
 }
 
-export async function retrieveModelDataWCS(extent: any, source: string, tileRange: any) {
+export async function retrieveModelDataWCS(extent: Extent, source: string, tileRange: any) {
 
-    // WIP: Uses WCS server
+    // Uses WCS server: Returns raw data
 
     const geoserver = "https://landscapes.wearepal.ai/geoserver/"
     const [width, height] = [tileRange.getWidth(), tileRange.getHeight()]
@@ -57,7 +59,7 @@ export async function retrieveModelDataWCS(extent: any, source: string, tileRang
                 HEIGHT: height,
                 CRS: 'EPSG:3857',
                 RESPONSE_CRS: 'EPSG:3857',
-                BBOX: extent
+                BBOX: extent.toString()
             }
         )
     )

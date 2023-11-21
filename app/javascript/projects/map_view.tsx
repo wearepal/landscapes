@@ -78,8 +78,11 @@ interface MapViewProps {
 
   selected: boolean
   setSelected: (boolean) => void
+
+  projectExtent: Extent
+  showProjectExtent: boolean
 }
-export const MapView = ({ layers, dbModels, initialZoom, setZoom, initialCenter, setCenter, modelOutputCache, datasetCache, loadTeamDataset, selectedArea, setSelectedArea, selected, setSelected }: MapViewProps) => {
+export const MapView = ({ layers, dbModels, initialZoom, setZoom, initialCenter, setCenter, modelOutputCache, datasetCache, loadTeamDataset, selectedArea, setSelectedArea, selected, setSelected, projectExtent, showProjectExtent }: MapViewProps) => {
   const mapRef = React.useRef<HTMLDivElement>()
   const [map, setMap] = React.useState<Map | null>(null)
   const [allLayersVisible, setAllLayersVisible] = React.useState(true)
@@ -163,6 +166,23 @@ export const MapView = ({ layers, dbModels, initialZoom, setZoom, initialCenter,
 
       map.addLayer(vectorLayer)
     }
+    const vectorSource = new VectorSource()
+    const vectorLayer = new VectorLayer({
+      source: vectorSource,
+      style: new Style({
+        stroke: new Stroke({
+          color: showProjectExtent ? 'limegreen' : 'rgba(0, 0, 0, 0)',
+          width: 5
+        })
+      })
+    })
+    const polygon = fromExtent(projectExtent)
+
+    vectorSource.clear()
+    vectorSource.addFeature(new Feature(polygon))
+
+    map.addLayer(vectorLayer)
+    
 
   }, [map, layers, selectedArea, selected])
 

@@ -10,8 +10,6 @@ import { createXYZ } from "ol/tilegrid"
 import * as proj4 from "proj4"
 import { Point, Polygon } from "ol/geom"
 
-import { currentExtent, currentExtent as extent, zoomLevel } from "../bounding_box"
-
 
 
 interface LandUseCategory {
@@ -19,7 +17,6 @@ interface LandUseCategory {
     name: string
     id: number
     type: "node" | "way" | "relation"
-    zoom: number
 }
 
 interface OverpassCoord {
@@ -65,283 +62,248 @@ export const LandUseCategories: LandUseCategory[] = [
         "code": "[aeroway=aerodrome]",
         "name": "Aerodrome",
         "id": 0,
-        "type": "way",
-        "zoom": zoomLevel
+        "type": "way"
     },
     {
         "code": "[landuse=allotments]",
         "name": "Allotments",
         "id": 1,
-        "type": "way",
-        "zoom": zoomLevel
+        "type": "way"
     },
     {
         "code": "[landuse=brownfield]",
         "name": "Brownfield",
         "id": 2,
-        "type": "way",
-        "zoom": zoomLevel
+        "type": "way"
     },
     {
         "code": "[landuse=cemetery]",
         "name": "Cemetery",
         "id": 3,
-        "type": "way",
-        "zoom": zoomLevel
+        "type": "way"
     },
     {
         "code": "[amenity=college]",
         "name": "College",
         "id": 4,
-        "type": "way",
-        "zoom": zoomLevel
+        "type": "way"
     },
     {
         "code": "[landuse=commercial]",
         "name": "Commerical",
         "id": 5,
-        "type": "way",
-        "zoom": zoomLevel
+        "type": "way"
     },
     {
         "code": "[landuse=construction]",
         "name": "Construction",
         "id": 6,
-        "type": "way",
-        "zoom": zoomLevel
+        "type": "way"
     },
     {
         "code": "[landuse=farmland]",
         "name": "Farm Land",
         "id": 7,
-        "type": "way",
-        "zoom": zoomLevel
+        "type": "way"
     },
     {
         "code": "[landuse=farmyard]",
         "name": "Farm Yard",
         "id": 8,
-        "type": "way",
-        "zoom": zoomLevel
+        "type": "way"
     },
     {
         "code": "[landuse=forest]",
         "name": "Forest",
         "id": 9,
-        "type": "way",
-        "zoom": zoomLevel
+        "type": "way"
     },
     {
         "code": "[leisure=garden]",
         "name": "Garden",
         "id": 10,
-        "type": "way",
-        "zoom": zoomLevel
+        "type": "way"
     },
     {
         "code": "[leisure=garages]",
         "name": "Garages",
         "id": 11,
-        "type": "way",
-        "zoom": zoomLevel
+        "type": "way"
     },
     {
         "code": "[landuse=meadow]",
         "name": "Grazing",
         "id": 12,
-        "type": "way",
-        "zoom": zoomLevel
+        "type": "way"
     },
     {
         "code": "[landuse=greenfield]",
         "name": "Greenfield",
         "id": 13,
-        "type": "way",
-        "zoom": zoomLevel
+        "type": "way"
     },
     {
         "code": "[landuse=greenhouse_horticulture]",
         "name": "Greenhouses",
         "id": 14,
-        "type": "way",
-        "zoom": zoomLevel
+        "type": "way"
     },
     {
         "code": "[amenity=hospital]",
         "name": "Hospital",
         "id": 15,
-        "type": "way",
-        "zoom": zoomLevel
+        "type": "way"
     },
     {
         "code": "[landuse=industrial]",
         "name": "Industrial",
         "id": 16,
-        "type": "way",
-        "zoom": zoomLevel
+        "type": "way"
     },
     {
         "code": "[landuse=landfill]",
         "name": "Landfill",
         "id": 17,
-        "type": "way",
-        "zoom": zoomLevel
+        "type": "way"
     },
     {
         "code": "[landuse=meadow]",
         "name": "Meadow / Pasture",
         "id": 18,
-        "type": "way",
-        "zoom": zoomLevel
+        "type": "way"
     },
     {
         "code": "[landuse=military]",
         "name": "Military",
         "id": 19,
-        "type": "way",
-        "zoom": zoomLevel
+        "type": "way"
     },
     {
         "code": "[landuse=quarry]",
         "name": "Mine (open pit) / Quarry",
         "id": 20,
-        "type": "way",
-        "zoom": zoomLevel
+        "type": "way"
     },
     {
         "code": "[boundary=national_park]",
         "name": "National Park",
         "id": 21,
-        "type": "way",
-        "zoom": zoomLevel
+        "type": "way"
     },
     {
         "code": "[boundary=nature_reserve]",
         "name": "Nature Reserve",
         "id": 22,
-        "type": "way",
-        "zoom": zoomLevel
+        "type": "way"
     },
     {
         "code": "[landuse=orchard]",
         "name": "Orchard / Plantation",
         "id": 23,
-        "type": "way",
-        "zoom": zoomLevel
+        "type": "way"
     },
     {
         "code": "[leisure=park]",
         "name": "Park",
         "id": 24,
-        "type": "way",
-        "zoom": zoomLevel
+        "type": "way"
     },
     {
         "code": "[amenity=parking]",
         "name": "Parking",
         "id": 25,
-        "type": "way",
-        "zoom": zoomLevel
+        "type": "way"
     },
     {
         "code": "[landuse=plant_nursery]",
         "name": "Plant Nursery",
         "id": 26,
-        "type": "way",
-        "zoom": zoomLevel
+        "type": "way"
     },
     {
         "code": "[landuse=railway]",
         "name": "Railway",
         "id": 27,
-        "type": "way",
-        "zoom": zoomLevel
+        "type": "way"
     },
     {
         "code": "[landuse=recreation_ground]",
         "name": "Recreation Ground",
         "id": 28,
-        "type": "way",
-        "zoom": zoomLevel
+        "type": "way"
     },
     {
         "code": "[landuse=religious]",
         "name": "Religious",
         "id": 29,
-        "type": "way",
-        "zoom": zoomLevel
+        "type": "way"
     },
     {
         "code": "[landuse=residential]",
         "name": "Residential",
         "id": 30,
-        "type": "way",
-        "zoom": zoomLevel
+        "type": "way"
     },
     {
         "code": "[landuse=retail]",
         "name": "Retail",
         "id": 31,
-        "type": "way",
-        "zoom": zoomLevel
+        "type": "way"
     },
     {
         "code": "[amenity=school]",
         "name": "School",
         "id": 32,
-        "type": "way",
-        "zoom": zoomLevel
+        "type": "way"
     },
     {
         "code": "[landuse=salt_pond]",
         "name": "Salt Pond",
         "id": 33,
-        "type": "way",
-        "zoom": zoomLevel
+        "type": "way"
     },
     {
         "code": "[amenity=university]",
         "name": "University",
         "id": 34,
-        "type": "way",
-        "zoom": zoomLevel
+        "type": "way"
     },
     {
         "code": "[landuse=village_green]",
         "name": "Village Green",
         "id": 35,
-        "type": "way",
-        "zoom": zoomLevel
+        "type": "way"
     },
     {
         "code": "[landuse=vineyard]",
         "name": "Vineyard",
         "id": 36,
-        "type": "way",
-        "zoom": zoomLevel
+        "type": "way"
     },
     {
         "code": "[man_made=wastewater_plant]",
         "name": "Waste water treatment",
         "id": 37,
-        "type": "way",
-        "zoom": zoomLevel
+        "type": "way"
     },
     {
         "code": "[natural=tree]",
         "name": "Tree",
         "id": 38,
-        "type": "node",
-        "zoom": 23
+        "type": "node"
     },
 ]
 
 export class OSMLandUseComponent extends BaseComponent {
     osmOutput: null
     outputCache: Map<string, BooleanTileGrid>
+    projectZoom: number
+    projectExtent: Extent
 
-    constructor() {
+    constructor(projectExtent: Extent, projectZoom: number) {
         super("OSM land use layer")
+        this.projectExtent = projectExtent
+        this.projectZoom = projectZoom
         this.category = "Inputs"
 
     }
@@ -385,22 +347,21 @@ export class OSMLandUseComponent extends BaseComponent {
         const code = LandUseCategories[index].code
         const name = LandUseCategories[index].name
         const type = LandUseCategories[index].type
-        const zoom = LandUseCategories[index].zoom
 
         if (this.outputCache.has(code)) {
             const result = editorNode.meta.output = outputs['out'] = this.outputCache.get(code)
         } else {
 
-            const json = await retrieveLandUseData(extent, code, type)
+            const json = await retrieveLandUseData(this.projectExtent, code, type)
 
             const features = json.elements as Array<OverpassFeature>
 
             const tileGrid = createXYZ()
 
-            const outputTileRange = tileGrid.getTileRangeForExtentAndZ(extent, zoom)
+            const outputTileRange = tileGrid.getTileRangeForExtentAndZ(this.projectExtent, this.projectZoom)
 
             const result = editorNode.meta.output = outputs['out'] = new BooleanTileGrid(
-                zoom,
+                this.projectZoom,
                 outputTileRange.minX,
                 outputTileRange.minY,
                 outputTileRange.getWidth(),
@@ -419,7 +380,7 @@ export class OSMLandUseComponent extends BaseComponent {
 
                     const featureTileRange = tileGrid.getTileRangeForExtentAndZ(
                         p.getExtent(),
-                        zoom
+                        this.projectZoom
                     )
 
                     result.set(featureTileRange.maxX, featureTileRange.minY, true)
@@ -435,7 +396,7 @@ export class OSMLandUseComponent extends BaseComponent {
 
                     const featureTileRange = tileGrid.getTileRangeForExtentAndZ(
                         polygon.getExtent(),
-                        zoom
+                        this.projectZoom
                     )
 
                     for (
@@ -448,7 +409,7 @@ export class OSMLandUseComponent extends BaseComponent {
                             y <= Math.min(featureTileRange.maxY, outputTileRange.maxY);
                             ++y
                         ) {
-                            const tileExtent = tileGrid.getTileCoordExtent([zoom, x, y])
+                            const tileExtent = tileGrid.getTileCoordExtent([this.projectZoom, x, y])
                             if (polygon.intersectsExtent(tileExtent)) {
                                 result.set(x, y, true)
                             }

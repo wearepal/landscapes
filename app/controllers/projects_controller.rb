@@ -10,8 +10,14 @@ class ProjectsController < ApplicationController
     render layout: "team"
   end
 
+  def edit
+    @project = Project.find(params[:id])
+    authorize_for! @project.team
+  end
+  
+
   def create
-    @project = @team.projects.new(params.require(:project).permit(:name))
+    @project = @team.projects.new(params.require(:project).permit(:name, :extent))
     if @project.save
       redirect_to team_projects_url(@team)
     else
@@ -22,10 +28,22 @@ class ProjectsController < ApplicationController
   def update
     @project = Project.find(params[:id])
     authorize_for! @project.team
-    if @project.update(source: JSON.parse(params.require(:project).require(:source)))
-      head :ok
+    if params[:project].present? && params[:project][:source].present?
+      # update from projects view
+      if @project.update(source: JSON.parse(params.require(:project).require(:source)))
+        head :ok
+      else
+        head :unprocessable_entity
+      end
     else
-      head :unprocessable_entity
+      # update from edit view
+      @team = @project.team
+      existing_source = @project.source || {}
+      existing_source["name"] = params.require(:project).require(:name)
+      existing_source["extent"] = params.require(:project).require(:extent).split(",").map(&:to_f)
+      if @project.update(source: existing_source)
+        redirect_to team_projects_url(@team)
+      end
     end
   end
 

@@ -6,12 +6,11 @@ import { PreviewControl } from "../controls/preview"
 import { NumericTileGrid } from "../tile_grid"
 import GeoJSON from "ol/format/GeoJSON"
 import { createXYZ } from "ol/tilegrid"
-import { getArea } from "ol/extent"
+import { Extent, getArea } from "ol/extent"
 import { SelectControl } from "../controls/select"
 import { Geometry } from "ol/geom"
 import { Feature } from "ol"
-
-import { currentBbox as bbox, currentExtent as extent, zoomLevel } from "../bounding_box"
+import { bboxFromExtent } from "../bounding_box"
 
 
 interface LayerProperty {
@@ -21,7 +20,6 @@ interface LayerProperty {
 }
 
 const geoServer = "https://geo.leep.exeter.ac.uk/geoserver/nevo/wfs?"
-const zoom = zoomLevel
 
 
 async function retrieveLandCoverData(bbox: string): Promise<Object> {
@@ -2040,11 +2038,15 @@ export const LayerProperties: LayerProperty[] = [
 export class NevoLayerComponent extends BaseComponent {
     nevoOutput: Feature<Geometry>[] | null
     outputCache: Map<string, NumericTileGrid>
+    projectExtent: Extent
+    projectZoom: number
 
 
-    constructor() {
+    constructor(projectExtent: Extent, projectZoom: number) {
         super("NEVO layer")
         this.category = "Inputs"
+        this.projectExtent = projectExtent
+        this.projectZoom = projectZoom
     }
 
     async builder(node: Node) {
@@ -2081,7 +2083,7 @@ export class NevoLayerComponent extends BaseComponent {
         if (editorNode === undefined) { return }
 
         if (this.nevoOutput === null) {
-            const json = await retrieveLandCoverData(bbox)
+            const json = await retrieveLandCoverData(bboxFromExtent(this.projectExtent))
             this.nevoOutput = new GeoJSON().readFeatures(json)
         }
 
@@ -2089,7 +2091,7 @@ export class NevoLayerComponent extends BaseComponent {
 
         const tileGrid = createXYZ()
 
-        const outputTileRange = tileGrid.getTileRangeForExtentAndZ(extent, zoom)
+        const outputTileRange = tileGrid.getTileRangeForExtentAndZ(this.projectExtent, this.projectZoom)
 
 
         let index = node.data.nevoLayerId as number
@@ -2104,7 +2106,7 @@ export class NevoLayerComponent extends BaseComponent {
         } else {
 
             const result = editorNode.meta.output = outputs['out'] = new NumericTileGrid(
-                zoom,
+                this.projectZoom,
                 outputTileRange.minX,
                 outputTileRange.minY,
                 outputTileRange.getWidth(),
@@ -2120,7 +2122,7 @@ export class NevoLayerComponent extends BaseComponent {
 
                 const featureTileRange = tileGrid.getTileRangeForExtentAndZ(
                     geom.getExtent(),
-                    zoom
+                    this.projectZoom
                 )
 
                 const featureArea = getArea(geom.getExtent())
@@ -2135,7 +2137,7 @@ export class NevoLayerComponent extends BaseComponent {
                         y <= Math.min(featureTileRange.maxY, outputTileRange.maxY);
                         ++y
                     ) {
-                        const tileExtent = tileGrid.getTileCoordExtent([zoom, x, y])
+                        const tileExtent = tileGrid.getTileCoordExtent([this.projectZoom, x, y])
                         if (geom.intersectsExtent(tileExtent)) {
 
                             const tileArea = getArea(tileExtent)
