@@ -21,14 +21,31 @@ class DatasetsController < ApplicationController
 
     end
 
+    def edit
+        @dataset = Dataset.find(params[:id])
+        @team = @dataset.team
+        authorize_for! @team
+    end
+      
+
     def update
         @dataset = Dataset.find(params[:id])
         @team = @dataset.team
         authorize_for! @team
-
-        puts params
-    end
-
+      
+        new_name = params.require(:dataset).permit(:name)[:name]
+      
+        if @dataset.name != new_name && Dataset.exists?(name: new_name)
+          new_name = generate_unique_name(new_name)
+        end
+      
+        if @dataset.update(name: new_name)
+          redirect_to team_datasets_url(@team)
+        else
+          render json: { errors: @dataset.errors.full_messages }, status: :unprocessable_entity
+        end
+      end
+      
     def destroy
         @dataset = Dataset.find(params[:id])
         @team = @dataset.team
