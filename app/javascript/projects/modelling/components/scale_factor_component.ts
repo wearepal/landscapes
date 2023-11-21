@@ -25,6 +25,11 @@ const ScaleFactorTypes: ScaleFactorType[] = [
         name: 'km²',
         id: 1,
         sqMetersPerUnit: (1000 * 1000)
+    },
+    {
+        name: 'm²',
+        id: 2,
+        sqMetersPerUnit: 1
     }
 ]
 
@@ -33,7 +38,7 @@ export class ScaleFactorComponent extends BaseComponent {
     cache: Map<[number, number], NumericConstant>
 
     constructor() {
-        super("Scale factor")
+        super("Cell area in")
         this.category = "Calculations"
     }
 
