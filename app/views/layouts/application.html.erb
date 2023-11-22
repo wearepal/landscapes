@@ -73,4 +73,153 @@
     </div>
     <%= yield %>
   </body>
+
+  <script>
+
+    function zoomLevel(area){
+            
+        if(area < 5000000) return 23
+        if(area < 10000000) return 22
+        if(area < 100000000) return 21
+        if(area < 100000000000) return 20
+        
+        return 18
+    }
+
+    function showZoom(){
+        const extent = document.getElementById('project_extent').value.split(',').map(Number)
+        const area = ol.extent.getArea(extent) / 100
+
+        if(isNaN(area)){
+            document.getElementById('zoom').innerHTML = 'No valid extent selected'
+            document.getElementById('zoom').style.backgroundColor = 'red'
+        }else{
+            const zoom = zoomLevel(area)
+            const zoomCategory = zoom > 20 ? ['green', 'high'] : zoom < 20 ? ['orange', 'low'] : ['yellow', 'medium']
+            
+
+            document.getElementById('zoom').innerHTML = `${zoomCategory[1]} resolution, zoom level: ${zoom}`
+            document.getElementById('zoom').style.backgroundColor = zoomCategory[0]
+        }
+
+
+    }
+
+    function mapUpdate(formGroupID){
+
+        const exinput = document.getElementById(formGroupID)
+        if(!exinput) return
+
+        showZoom()
+
+        if(document.getElementById('map')) document.getElementById('map').innerHTML = ''
+        const isMac = navigator.platform.toUpperCase().indexOf('MAC')>=0;
+        
+        if(isMac){
+            document.getElementById('guide').innerHTML = 'Select a new extent by holding down the command key and dragging a box on the map.'
+        }else{
+            document.getElementById('guide').innerHTML = 'Select a new extent by holding down the control key and dragging a box on the map.'
+        }
+
+        const extentInput = document.getElementById('project_extent');
+        const extent = extentInput.value.split(',').map(Number);
+
+        const map = new ol.Map({
+            target: 'map',
+            layers: [
+            new ol.layer.Tile({
+                source: new ol.source.OSM(),
+            }),
+            ],
+            view: new ol.View({
+            center: [(extent[0]+extent[2])/2, (extent[1]+extent[3])/2],
+            zoom: 9,
+            }),
+        });
+
+        const extentFeature = new ol.Feature(
+            new ol.geom.Polygon([
+            [
+                [extent[0], extent[1]],
+                [extent[0], extent[3]],
+                [extent[2], extent[3]],
+                [extent[2], extent[1]],
+                [extent[0], extent[1]],
+            ],
+            ])
+        );
+    
+        const extentLayer = new ol.layer.Vector({
+            source: new ol.source.Vector({
+            features: [extentFeature],
+            }),
+            style: new ol.style.Style({
+            stroke: new ol.style.Stroke({
+                color: 'limegreen',
+                width: 2,
+            }),
+            fill: new ol.style.Fill({
+                color: 'rgba(0, 155, 0, 0.1)',
+            }),
+            }),
+        });
+    
+        map.addLayer(extentLayer);
+
+        const dragBox = new ol.interaction.DragBox({
+            condition: ol.events.condition.platformModifierKeyOnly
+        })
+
+        map.addInteraction(dragBox)
+
+        dragBox.on('boxend', () => {
+            const extent = dragBox.getGeometry().getExtent()     
+            const extentString = extent.join(',')
+            extentInput.value = extentString
+
+            showZoom()
+
+            extentFeature.setGeometry(
+            new ol.geom.Polygon([
+                [
+                [extent[0], extent[1]],
+                [extent[0], extent[3]],
+                [extent[2], extent[3]],
+                [extent[2], extent[1]],
+                [extent[0], extent[1]],
+                ],
+            ])
+            );
+        })
+
+        function updateMap() {
+            console.log('update map')
+
+            showZoom()
+
+            const extent = extentInput.value.split(',').map(Number);
+    
+            map.getView().setCenter([(extent[0]+extent[2])/2, (extent[1]+extent[3])/2]);
+    
+            extentFeature.setGeometry(
+            new ol.geom.Polygon([
+                [
+                [extent[0], extent[1]],
+                [extent[0], extent[3]],
+                [extent[2], extent[3]],
+                [extent[2], extent[1]],
+                [extent[0], extent[1]],
+                ],
+            ])
+            );
+        }
+    
+        extentInput.addEventListener('input', updateMap);
+
+    }
+
+  </script>
 </html>
+
+
+

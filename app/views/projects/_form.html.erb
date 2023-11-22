@@ -19,6 +19,7 @@
     <%= form.label :extent %>
     <span data-form-target="error" data-field="extent"></span>
     <%= form.text_field :extent, class: 'form-control', data: { "form-target": "field", field: "extent" }, value: "-49469.089243, 6570068.329224, 55641.379277, 6669018.450996" %>
+    <span id="zoom" class="badge"></span>
   </div>
 
   <div id="map" style="width: 100%; height: 400px; margin-bottom: 10px;"></div>
@@ -35,109 +36,9 @@
 
 <script>
 
-    document.addEventListener("turbolinks:load", function() {
 
-      
-        const exinput = document.getElementById('PROJEDIT3303')
-        if(!exinput) return
-
-        if(document.getElementById('map')) document.getElementById('map').innerHTML = ''
-        const isMac = navigator.platform.toUpperCase().indexOf('MAC')>=0;
-        
-        if(isMac){
-          document.getElementById('guide').innerHTML = 'Select a new extent by holding down the command key and dragging a box on the map.'
-        }else{
-          document.getElementById('guide').innerHTML = 'Select a new extent by holding down the control key and dragging a box on the map.'
-        }
-
-        const extentInput = document.getElementById('project_extent');
-        const extent = extentInput.value.split(',').map(Number);
-
-        const map = new ol.Map({
-          target: 'map',
-          layers: [
-            new ol.layer.Tile({
-              source: new ol.source.OSM(),
-            }),
-          ],
-          view: new ol.View({
-            center: [(extent[0]+extent[2])/2, (extent[1]+extent[3])/2],
-            zoom: 9,
-          }),
-        });
-
-        const extentFeature = new ol.Feature(
-          new ol.geom.Polygon([
-            [
-              [extent[0], extent[1]],
-              [extent[0], extent[3]],
-              [extent[2], extent[3]],
-              [extent[2], extent[1]],
-              [extent[0], extent[1]],
-            ],
-          ])
-        );
-    
-        const extentLayer = new ol.layer.Vector({
-          source: new ol.source.Vector({
-            features: [extentFeature],
-          }),
-          style: new ol.style.Style({
-            stroke: new ol.style.Stroke({
-              color: 'limegreen',
-              width: 2,
-            }),
-            fill: new ol.style.Fill({
-              color: 'rgba(0, 155, 0, 0.1)',
-            }),
-          }),
-        });
-    
-        map.addLayer(extentLayer);
-
-        const dragBox = new ol.interaction.DragBox({
-          condition: ol.events.condition.platformModifierKeyOnly
-        })
-
-        map.addInteraction(dragBox)
-
-        dragBox.on('boxend', () => {
-          const extent = dragBox.getGeometry().getExtent()     
-          const extentString = extent.join(',')
-          extentInput.value = extentString
-
-          extentFeature.setGeometry(
-            new ol.geom.Polygon([
-              [
-                [extent[0], extent[1]],
-                [extent[0], extent[3]],
-                [extent[2], extent[3]],
-                [extent[2], extent[1]],
-                [extent[0], extent[1]],
-              ],
-            ])
-          );
-        })
-        function updateMap() {
-          console.log('update map')
-          const extent = extentInput.value.split(',').map(Number);
-    
-          map.getView().setCenter([(extent[0]+extent[2])/2, (extent[1]+extent[3])/2]);
-    
-          extentFeature.setGeometry(
-            new ol.geom.Polygon([
-              [
-                [extent[0], extent[1]],
-                [extent[0], extent[3]],
-                [extent[2], extent[3]],
-                [extent[2], extent[1]],
-                [extent[0], extent[1]],
-              ],
-            ])
-          );
-        }
-    
-        extentInput.addEventListener('input', updateMap);
+   document.addEventListener("turbolinks:load", function() {
+        mapUpdate('PROJEDIT3303')
     });
 </script>
 
