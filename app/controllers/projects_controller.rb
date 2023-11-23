@@ -42,7 +42,11 @@ class ProjectsController < ApplicationController
       existing_source["name"] = params.require(:project).require(:name)
       existing_source["extent"] = params.require(:project).require(:extent).split(",").map(&:to_f)
       if @project.update(source: existing_source)
-        redirect_to team_projects_url(@team)
+        if params[:commit] == 'Save and open project'
+          redirect_to project_url(@project)
+        elsif params[:commit] == 'Save and return to menus'
+          redirect_to team_projects_url(@team)
+        end
       end
     end
   end
