@@ -4,7 +4,7 @@ import { NodeData, WorkerInputs, WorkerOutputs } from "rete/types/core/data"
 import { booleanDataSocket, categoricalDataSocket } from "../socket_types"
 import { BooleanTileGrid, CategoricalTileGrid } from "../tile_grid"
 import { BaseComponent } from "./base_component"
-import { retrieveModelData } from "../model_retrieval"
+import { retrieveModelDataWCS } from "../model_retrieval"
 import { TypedArray } from "d3"
 import { Extent } from "ol/extent"
 
@@ -47,9 +47,9 @@ async function renderCategoricalData(extent: Extent, zoom: number) {
   const tileGrid = createXYZ()
   const outputTileRange = tileGrid.getTileRangeForExtentAndZ(extent, zoom)
 
-  const geotiff = await retrieveModelData(extent, 'ukceh:gblcm10m2021', outputTileRange)
+  const geotiff = await retrieveModelDataWCS(extent, 'ukceh:gblcm10m2021', outputTileRange)
 
-  const rasters = await geotiff.readRasters()
+  const rasters = await geotiff.readRasters({ bbox: extent, width: outputTileRange.getWidth(), height: outputTileRange.getHeight() })
   const image = await geotiff.getImage()
 
 
