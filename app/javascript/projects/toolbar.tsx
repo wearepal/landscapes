@@ -37,9 +37,11 @@ export const Toolbar = ({ backButtonPath, projectName, hasUnsavedChanges, curren
       </button>
     </div>    
     <div className="btn-group mr-2">
-      <button className={`btn btn-sm btn-outline-primary`} onMouseEnter={() => setShowExtent(true)} onMouseLeave={() => setShowExtent(false)} onClick={() => console.log("WIP")}>
+      <a href={`${window.location}/edit`}>
+        <button className={`btn btn-sm btn-outline-primary`}  onMouseEnter={() => setShowExtent(true)} onMouseLeave={() => setShowExtent(false)}>
         <i className="fas fa-square" /> Extent
       </button>
+      </a>
       <div title={`Zoom level = ${zoomLevel}`} className="p-1 " style={{backgroundColor: zoomLevel > 20 ? "green" : (zoomLevel < 20 ? "orange" : "yellow"), fontSize: ".9em"}}>
         {zoomLevel > 20 ? "High" : (zoomLevel < 20 ? "Low" : "Med")}
       </div>

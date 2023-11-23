@@ -85,11 +85,10 @@
             const tiles = tileGrid.getTileRangeForExtentAndZ(extent, zoom)
             const tileCount = tiles.getWidth() * tiles.getHeight()
             if(tileCount <= maxtiles){
-                console.log('zoom', zoom, 'tiles', tileCount)
                 return zoom
             }
         }
-        
+
     }
 
     function showZoom(){
