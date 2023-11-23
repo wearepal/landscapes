@@ -2,6 +2,7 @@
 //TODO: Make this customisable
 
 import { Extent, getArea } from "ol/extent"
+import { createXYZ } from "ol/tilegrid"
 
 const westHorsely = [-49469.089243, 6669018.450996]
 const bexhill = [55641.379277, 6570068.329224]
@@ -26,15 +27,20 @@ export const currentBbox = `${currentExtent.join(",")},EPSG:3857`
 export const zoomLevel = 20
 
 // WIP: Sets global zoom level from extent, requires tweaking and tests
-export function zoomFromExtent(extent: Extent): number {
-    const area = getArea(extent) / 100
-
-    if(area < 5000000) return 23
-    if(area < 10000000) return 22
-    if(area < 100000000) return 21
-    if(area < 100000000000) return 20
+export function zoomFromExtent(extent: Extent, maxtiles: number): number {
+    const tileGrid = createXYZ()
+    const zoomLevels = Array.from({ length: 30 }, (_, index) => index + 1).reverse()
     
-    return 18
+    for (const zoom of zoomLevels){
+        const tiles = tileGrid.getTileRangeForExtentAndZ(extent, zoom)
+        const tileCount = tiles.getWidth() * tiles.getHeight()
+        if(tileCount <= maxtiles){
+            return zoom
+        }
+    }
+
+    return 0
+
 }
 
 // Required format for some requests

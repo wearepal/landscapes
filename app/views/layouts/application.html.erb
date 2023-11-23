@@ -76,25 +76,32 @@
 
   <script>
 
-    function zoomLevel(area){
-            
-        if(area < 5000000) return 23
-        if(area < 10000000) return 22
-        if(area < 100000000) return 21
-        if(area < 100000000000) return 20
+    function zoomLevel(extent, maxtiles){
+
+        const tileGrid = ol.tilegrid.createXYZ()
+        const zoomLevels = Array.from({ length: 30 }, (_, index) => index + 1).reverse()  
         
-        return 18
+        for (const zoom of zoomLevels){
+            const tiles = tileGrid.getTileRangeForExtentAndZ(extent, zoom)
+            const tileCount = tiles.getWidth() * tiles.getHeight()
+            if(tileCount <= maxtiles){
+                console.log('zoom', zoom, 'tiles', tileCount)
+                return zoom
+            }
+        }
+        
     }
 
     function showZoom(){
         const extent = document.getElementById('project_extent').value.split(',').map(Number)
-        const area = ol.extent.getArea(extent) / 100
+        const area = (extent[2]-extent[0])*(extent[3]-extent[1])
 
         if(isNaN(area)){
             document.getElementById('zoom').innerHTML = 'No valid extent selected'
             document.getElementById('zoom').style.backgroundColor = 'red'
         }else{
-            const zoom = zoomLevel(area)
+        
+            const zoom = zoomLevel(extent, 10000000)
             const zoomCategory = zoom > 20 ? ['green', 'high'] : zoom < 20 ? ['orange', 'low'] : ['yellow', 'medium']
             
 

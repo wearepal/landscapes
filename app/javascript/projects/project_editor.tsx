@@ -37,8 +37,9 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
   })
 
   // Retrieve the project extent from the project source, or use the current extent if not present. Calculate the zoom level from the extent.
+  const maxTiles = 10000000
   const projectExtent: Extent = projectSource.extent ? projectSource.extent : currentExtent
-  const projectZoom: number = zoomFromExtent(projectExtent)
+  const projectZoom: number = zoomFromExtent(projectExtent, maxTiles)
 
   const [sidebarVisible, setSidebarVisible] = React.useState(true)
   const [layerPaletteVisible, setLayerPaletteVisible] = React.useState(false)
