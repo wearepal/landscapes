@@ -1,5 +1,6 @@
 import { kdTree } from 'kd-tree-javascript'
 import { NumericTileGrid } from "../../projects/modelling/tile_grid"
+import { getMedianCellSize } from "../../projects/modelling/components/cell_area_component"
 
 export function generateDistanceMap(input) {
   const result = new NumericTileGrid(
@@ -24,7 +25,7 @@ export function generateDistanceMap(input) {
     ['x', 'y']
   )
 
-  const tileSize = 20000000 / Math.pow(2, input.zoom)
+  const tileSize = getMedianCellSize(input)
   for (let x = result.x; x < result.x + result.width; ++x) {
     for (let y = result.y; y < result.y + result.height; ++y) {
       const [point, distance] = tree.nearest({ x, y }, 1)[0]

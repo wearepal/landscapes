@@ -38,7 +38,7 @@ export class DistanceMapComponent extends BaseComponent {
             if (this.cache.has(input)) {
                 editorNode.meta.output = outputs['out'] = this.cache.get(input)
             } else {
-                if (input.zoom > 20) input = input.rescale(20, currentExtent)
+                // if (input.zoom > 20) input = input.rescale(20, currentExtent)
 
                 if (input === editorNode.meta.previousInput) {
                     outputs['out'] = editorNode.meta.output
