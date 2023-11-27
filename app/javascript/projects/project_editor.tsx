@@ -211,10 +211,11 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
           deleteOutputLayer={(nodeId: number) =>
             dispatch({ type: "DeleteModelOutputLayer", nodeId })
           }
-          saveMapLayer={(id, tileGrid) => {
+          saveMapLayer={(id, name, tileGrid) => {
             const cache = modelOutputCache
             cache[id] = tileGrid
             setModelOutputCache(cache)
+            if(name) dispatch({ type: "MutateLayer", id, data: { name }})
           }}
           setProcessing={setProcessing}
           autoProcessing={state.autoProcessing}

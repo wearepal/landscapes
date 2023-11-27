@@ -4,7 +4,7 @@ import { dataSocket } from "../socket_types"
 import { BooleanTileGrid, CategoricalTileGrid, NumericTileGrid } from "../tile_grid"
 import { BaseComponent } from "./base_component"
 
-export type SaveMapLayer = (id: number, tileGrid: BooleanTileGrid | NumericTileGrid | CategoricalTileGrid) => void
+export type SaveMapLayer = (id: number, name: string | undefined, tileGrid: BooleanTileGrid | NumericTileGrid | CategoricalTileGrid) => void
 
 export class MapLayerComponent extends BaseComponent {
   callback: SaveMapLayer
@@ -30,7 +30,7 @@ export class MapLayerComponent extends BaseComponent {
     else {
       delete editorNode.meta.errorMessage
 
-      if (inputs["in"][0]) this.callback(node.id, inputs["in"][0] as BooleanTileGrid | NumericTileGrid | CategoricalTileGrid)
+      if (inputs["in"][0]) this.callback(node.id, editorNode.data.name as string, inputs["in"][0] as BooleanTileGrid | NumericTileGrid | CategoricalTileGrid)
       else editorNode.meta.errorMessage = 'No input'
 
     }
