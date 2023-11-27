@@ -108,6 +108,15 @@ export class BooleanTileGrid extends TileGrid {
     }
   }
 
+  iterate(callback: (x: number, y: number, value: boolean) => void) {
+    const { x, y, width, height } = this
+    for (let i = x; i < x + width; i++) {
+      for (let j = y; j < y + height; j++) {
+        callback(i, j, this.get(i, j))
+      }
+    }
+  }
+
   get(x: number, y: number, zoom = this.zoom): boolean {
     if (zoom < this.zoom) {
       throw new TypeError("invalid zoom level")
@@ -205,6 +214,15 @@ export class NumericTileGrid extends TileGrid {
     this.minMax = null
   }
 
+  iterate(callback: (x: number, y: number, value: number) => void) {
+    const { x, y, width, height } = this
+    for (let i = x; i < x + width; i++) {
+      for (let j = y; j < y + height; j++) {
+        callback(i, j, this.get(i, j))
+      }
+    }
+  }
+
   get(x: number, y: number, zoom = this.zoom): number {
     if (zoom < this.zoom) {
       throw new TypeError("invalid zoom level")
@@ -236,7 +254,6 @@ export class NumericTileGrid extends TileGrid {
     }
     return this.minMax
   }
-
   getStats(): tileGridStats {
 
     const [min, max] = this.getMinMax()
@@ -274,6 +291,15 @@ export class CategoricalTileGrid extends TileGrid {
     super(zoom, x, y, width, height)
     this.data = initialValue ? initialValue : new Uint8Array(width * height).fill(255)
     if (labels) this.setLabels(labels)
+  }
+
+  iterate(callback: (x: number, y: number, value: number) => void) {
+    const { x, y, width, height } = this
+    for (let i = x; i < x + width; i++) {
+      for (let j = y; j < y + height; j++) {
+        callback(i, j, this.get(i, j))
+      }
+    }
   }
 
   get(x: number, y: number, zoom = this.zoom): number {

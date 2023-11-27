@@ -40,11 +40,8 @@ export class AreaComponent extends BaseComponent {
 
             const input = inputs['in'][0] as BooleanTileGrid
 
-            for (let x = input.x; x < input.x + input.width; ++x) {
-                for (let y = input.y; y < input.y + input.height; ++y) {
-                    totalArea += input.get(x, y) ? getArea(fromExtent(tileGrid.getTileCoordExtent([input.zoom, x, y]))) : 0
-                }
-            }
+            input.iterate((x, y, value) => totalArea += value ? getArea(fromExtent(tileGrid.getTileCoordExtent([input.zoom, x, y]))) : 0)
+
             totalArea /= 1000000
         }
 
