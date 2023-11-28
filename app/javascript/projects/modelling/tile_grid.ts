@@ -203,7 +203,7 @@ export class NumericTileGrid extends TileGrid {
   name: string | undefined
   private minMax: [number, number] | null
 
-  constructor(zoom: number, x: number, y: number, width: number, height: number, initialValue: number | Float32Array = 0) {
+  constructor(zoom: number, x: number, y: number, width: number, height: number, initialValue: number | Float32Array = NaN) {
     super(zoom, x, y, width, height)
     if (initialValue instanceof Float32Array) {
       this.data = initialValue

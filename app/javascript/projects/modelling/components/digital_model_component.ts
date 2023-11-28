@@ -102,7 +102,7 @@ export class DigitalModelComponent extends BaseComponent {
                     let x = (outputTileRange.minX + i % image.getWidth())
                     let y = (outputTileRange.minY + Math.floor(i / image.getWidth()))
 
-                    out.set(x, y, (rasters[0][i]) === -32767 ? 0 : (rasters[0][i]))
+                    out.set(x, y, (rasters[0][i]) === -32767 ? NaN : (rasters[0][i]))
 
                 }
 

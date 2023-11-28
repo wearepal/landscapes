@@ -7,6 +7,7 @@ import { BooleanTileGrid, CategoricalTileGrid, NumericTileGrid } from "../modell
 import { DatasetLayer, Layer, ModelOutputLayer } from "../state"
 import colormap from "colormap"
 import distinctColors from "distinct-colors"
+import { im } from "mathjs"
 
 class ModelOutputSource extends DataTileSource {
   readonly tileLayer: BooleanTileGrid | NumericTileGrid | CategoricalTileGrid
@@ -39,6 +40,10 @@ class ModelOutputSource extends DataTileSource {
                 image[pixelY * 256 + pixelX] = val
               }
             } else {
+
+
+              // for visualization purposes, we want to show NaN as 0, which will be transparent
+              if(isNaN(val)) val = 0 
 
               if (bounds) {
                 if (val > max) val = max
