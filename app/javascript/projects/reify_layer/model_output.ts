@@ -7,7 +7,6 @@ import { BooleanTileGrid, CategoricalTileGrid, NumericTileGrid } from "../modell
 import { DatasetLayer, Layer, ModelOutputLayer } from "../state"
 import colormap from "colormap"
 import distinctColors from "distinct-colors"
-import { im } from "mathjs"
 
 class ModelOutputSource extends DataTileSource {
   readonly tileLayer: BooleanTileGrid | NumericTileGrid | CategoricalTileGrid
