@@ -174,57 +174,57 @@ export function ModelView({ visible, initialTransform, setTransform, initialMode
       return <div className={`model-editor bg-dark flex-grow-1 ${!visible ? "d-none" : ""}`} ref={ref}></div>
     }
 
-    function updateForBackwardsCompatibility(initialModel: Data, components: any): Data {
+function updateForBackwardsCompatibility(initialModel: Data, components: any): Data {
 
-      let model = initialModel;
-      let nodeNames = Object.keys(model.nodes)
-      let activeComponents = Array.from(components.keys())
-      let inactiveComponents: number[] = []
+  let model = initialModel;
+  let nodeNames = Object.keys(model.nodes)
+  let activeComponents = Array.from(components.keys())
+  let inactiveComponents: number[] = []
 
-      // remove and log any components that have been deleted/updated
-      for (let i = 0; i < nodeNames.length; i++) {
-        let node = model.nodes[nodeNames[i]]
-        if(!activeComponents.includes(node.name)) {
-          inactiveComponents.push(node.id)
-          delete model.nodes[nodeNames[i]]
-          nodeNames[i] = "deleted"
-        }
-      }
-
-      // remove any connections that are connected to deleted/updated components
-      if(inactiveComponents.length > 0) {
-        for (let i = 0; i < nodeNames.length; i++) {
-          if(nodeNames[i] !== "deleted") {
-            let node = model.nodes[nodeNames[i]]
-            let inputs = Object.keys(node.inputs)
-            let outputs = Object.keys(node.outputs)
-
-            for (let j = 0; j < inputs.length; j++) {
-              let input = node.inputs[inputs[j]]
-              input.connections.forEach((connection: any, index: number) => {
-                if(inactiveComponents.includes(connection.node)) {
-                  input.connections.splice(index, 1)
-                }
-              })
-              model.nodes[nodeNames[i]].inputs[inputs[j]] = input
-            }
-            
-
-            for (let j = 0; j < outputs.length; j++) {
-              let output = node.outputs[outputs[j]]
-              output.connections.forEach((connection: any, index: number) => {
-                if(inactiveComponents.includes(connection.node)) {
-                  output.connections.splice(index, 1)
-                }
-              })
-              model.nodes[nodeNames[i]].outputs[outputs[j]] = output
-            }
-            
-            
-          }
-      
-        }
-      }
-
-      return model
+  // remove and log any components that have been deleted/updated
+  for (let i = 0; i < nodeNames.length; i++) {
+    let node = model.nodes[nodeNames[i]]
+    if(!activeComponents.includes(node.name)) {
+      inactiveComponents.push(node.id)
+      delete model.nodes[nodeNames[i]]
+      nodeNames[i] = "deleted"
     }
+  }
+
+  // remove any connections that are connected to deleted/updated components
+  if(inactiveComponents.length > 0) {
+    for (let i = 0; i < nodeNames.length; i++) {
+      if(nodeNames[i] !== "deleted") {
+        let node = model.nodes[nodeNames[i]]
+        let inputs = Object.keys(node.inputs)
+        let outputs = Object.keys(node.outputs)
+
+        for (let j = 0; j < inputs.length; j++) {
+          let input = node.inputs[inputs[j]]
+          input.connections.forEach((connection: any, index: number) => {
+            if(inactiveComponents.includes(connection.node)) {
+              input.connections.splice(index, 1)
+            }
+          })
+          model.nodes[nodeNames[i]].inputs[inputs[j]] = input
+        }
+        
+
+        for (let j = 0; j < outputs.length; j++) {
+          let output = node.outputs[outputs[j]]
+          output.connections.forEach((connection: any, index: number) => {
+            if(inactiveComponents.includes(connection.node)) {
+              output.connections.splice(index, 1)
+            }
+          })
+          model.nodes[nodeNames[i]].outputs[outputs[j]] = output
+        }
+        
+        
+      }
+  
+    }
+  }
+
+  return model
+}
