@@ -97,20 +97,22 @@ export class PrecompiledModelComponent extends BaseComponent {
                     if (model instanceof BooleanTileGrid) {
                         const out = outputs['out'] = editorNode.meta.output = new BooleanTileGrid(this.projectZoom, outputTileRange.minX, outputTileRange.minY, outputTileRange.getWidth(), outputTileRange.getHeight())
                         out.iterate((x, y, v) => {
-                            out.set(x, y, model.get(x, y, this.projectZoom) as boolean | false)
+                            let val = model.get(x, y, this.projectZoom) ? model.get(x, y, this.projectZoom) as boolean : false
+                            out.set(x, y, val)
                         })
                     } else if (model instanceof CategoricalTileGrid) {
                         const out = outputs['out'] = editorNode.meta.output = new CategoricalTileGrid(this.projectZoom, outputTileRange.minX, outputTileRange.minY, outputTileRange.getWidth(), outputTileRange.getHeight(), undefined, model.labels)
                         out.iterate((x, y, v) => {
-                            out.set(x, y, model.get(x, y, this.projectZoom) | 255)                        
+                            let val = model.get(x, y, this.projectZoom) ? model.get(x, y, this.projectZoom) as number : 255
+                            out.set(x, y, val)                        
                         })
                     } else if (model instanceof NumericTileGrid) {
                         const out = outputs['out'] = editorNode.meta.output = new NumericTileGrid(this.projectZoom, outputTileRange.minX, outputTileRange.minY, outputTileRange.getWidth(), outputTileRange.getHeight(), NaN)
                         out.iterate((x, y, v) => {
-                            out.set(x, y, model.get(x, y, this.projectZoom) | NaN)
+                            let val = model.get(x, y, this.projectZoom) ? model.get(x, y, this.projectZoom) as number : NaN
+                            out.set(x, y, val)
                         })
                     }
-
 
                 }
             } catch (error) {
