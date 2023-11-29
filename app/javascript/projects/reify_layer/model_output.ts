@@ -40,6 +40,10 @@ class ModelOutputSource extends DataTileSource {
               }
             } else {
 
+
+              // for visualization purposes, we want to show NaN as 0, which will be transparent
+              if(isNaN(val)) val = 0 
+
               if (bounds) {
                 if (val > max) val = max
                 if (val < min) val = min

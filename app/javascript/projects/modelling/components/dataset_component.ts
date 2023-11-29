@@ -6,6 +6,7 @@ import { BaseComponent } from "./base_component"
 import { SelectControl } from "../controls/select"
 import { CompiledDatasetRecord, getDataset } from "../../saved_dataset"
 import { Extent } from "ol/extent"
+import { createXYZ } from "ol/tilegrid"
 
 async function fetchDataset(datasetId: number, teamId: number) {
     return new Promise<{ error: { message: string }; out: { model: BooleanTileGrid | NumericTileGrid | CategoricalTileGrid } }>((resolve) => {
@@ -27,8 +28,6 @@ export class PrecompiledModelComponent extends BaseComponent {
         super("Load Dataset")
         this.category = "Inputs"
         this.modelSource = getDatasets
-
-        //TODO: Use these.
         this.projectExtent = projectExtent
         this.projectZoom = projectZoom
     }
@@ -90,7 +89,31 @@ export class PrecompiledModelComponent extends BaseComponent {
                 if (response.error) {
                     editorNode.meta.errorMessage = response.error.message;
                 } else {
-                    outputs['out'] = editorNode.meta.output = response.out;
+                    const model = response.out;
+                    
+                    const tileGrid = createXYZ()
+                    const outputTileRange = tileGrid.getTileRangeForExtentAndZ(this.projectExtent, this.projectZoom)
+
+                    if (model instanceof BooleanTileGrid) {
+                        const out = outputs['out'] = editorNode.meta.output = new BooleanTileGrid(this.projectZoom, outputTileRange.minX, outputTileRange.minY, outputTileRange.getWidth(), outputTileRange.getHeight())
+                        out.iterate((x, y, v) => {
+                            let val = model.get(x, y, this.projectZoom) ? model.get(x, y, this.projectZoom) as boolean : false
+                            out.set(x, y, val)
+                        })
+                    } else if (model instanceof CategoricalTileGrid) {
+                        const out = outputs['out'] = editorNode.meta.output = new CategoricalTileGrid(this.projectZoom, outputTileRange.minX, outputTileRange.minY, outputTileRange.getWidth(), outputTileRange.getHeight(), undefined, model.labels)
+                        out.iterate((x, y, v) => {
+                            let val = model.get(x, y, this.projectZoom) ? model.get(x, y, this.projectZoom) as number : 255
+                            out.set(x, y, val)                        
+                        })
+                    } else if (model instanceof NumericTileGrid) {
+                        const out = outputs['out'] = editorNode.meta.output = new NumericTileGrid(this.projectZoom, outputTileRange.minX, outputTileRange.minY, outputTileRange.getWidth(), outputTileRange.getHeight(), NaN)
+                        out.iterate((x, y, v) => {
+                            let val = model.get(x, y, this.projectZoom) ? model.get(x, y, this.projectZoom) as number : NaN
+                            out.set(x, y, val)
+                        })
+                    }
+
                 }
             } catch (error) {
                 editorNode.meta.errorMessage = error.message;
