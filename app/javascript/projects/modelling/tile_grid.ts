@@ -1,3 +1,4 @@
+import { mean, mode } from "mathjs"
 import { Extent } from "ol/extent"
 import { createXYZ } from "ol/tilegrid"
 import { registerSerializer } from "threads"
@@ -119,8 +120,23 @@ export class BooleanTileGrid extends TileGrid {
 
   get(x: number, y: number, zoom = this.zoom): boolean {
     if (zoom < this.zoom) {
-      throw new TypeError("invalid zoom level")
+      const x1 = x * Math.pow(2, this.zoom - zoom)
+      const y1 = y * Math.pow(2, this.zoom - zoom)
+      const x2 = x1 + Math.pow(2, this.zoom - zoom)
+      const y2 = y1 + Math.pow(2, this.zoom - zoom)
+
+      for (let x = x1; x < x2; x++) {
+        for (let y = y1; y < y2; y++) {
+          const index = toIndex(this, Math.floor(x), Math.floor(y))
+          if(typeof index === 'undefined') return false
+          if (this.data[index] === 1) {
+            return true;
+          }
+        }
+      }
+      return false;
     }
+
     const scale = Math.pow(2, zoom - this.zoom)
     const index = toIndex(this, Math.floor(x / scale), Math.floor(y / scale))
     return (typeof index === 'undefined') ? false : this.data[index] === 1
@@ -225,11 +241,25 @@ export class NumericTileGrid extends TileGrid {
 
   get(x: number, y: number, zoom = this.zoom): number {
     if (zoom < this.zoom) {
-      throw new TypeError("invalid zoom level")
+      const x1 = x * Math.pow(2, this.zoom - zoom)
+      const y1 = y * Math.pow(2, this.zoom - zoom)
+      const x2 = x1 + Math.pow(2, this.zoom - zoom)
+      const y2 = y1 + Math.pow(2, this.zoom - zoom)
+
+      let nums: number[] = []
+
+      for (let x = x1; x < x2; x++) {
+        for (let y = y1; y < y2; y++) {
+          const index = toIndex(this, Math.floor(x), Math.floor(y))
+          if(typeof index === 'undefined') return NaN
+          nums.push(this.data[index])
+        }
+      }
+      return nums.length > 0 ? mean(...nums) : NaN
     }
     const scale = Math.pow(2, zoom - this.zoom)
     const index = toIndex(this, Math.floor(x / scale), Math.floor(y / scale))
-    return (typeof index === 'undefined') ? 0 : this.data[index]
+    return (typeof index === 'undefined') ? NaN : this.data[index]
   }
 
   set(x: number, y: number, value: number) {
@@ -304,8 +334,30 @@ export class CategoricalTileGrid extends TileGrid {
 
   get(x: number, y: number, zoom = this.zoom): number {
     if (zoom < this.zoom) {
-      throw new TypeError("invalid zoom level")
+      const x1 = x * Math.pow(2, this.zoom - zoom)
+      const y1 = y * Math.pow(2, this.zoom - zoom)
+      const x2 = x1 + Math.pow(2, this.zoom - zoom)
+      const y2 = y1 + Math.pow(2, this.zoom - zoom)
+
+      let nums: number[] = []
+
+      for (let x = x1; x < x2; x++) {
+        for (let y = y1; y < y2; y++) {
+          const index = toIndex(this, Math.floor(x), Math.floor(y))
+          if(typeof index === 'undefined') return 255
+          nums.push(this.data[index])
+        }
+      }
+
+      if(nums.length == 0) return 255
+      else{
+        let r = mode(...nums)
+        if (r instanceof Array) return r[0]
+        else return r
+      }
     }
+
+
     const scale = Math.pow(2, zoom - this.zoom)
     const index = toIndex(this, Math.floor(x / scale), Math.floor(y / scale))
     return (typeof index === 'undefined') ? 255 : this.data[index]
