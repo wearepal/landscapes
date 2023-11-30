@@ -107,11 +107,18 @@ export class PrecompiledModelComponent extends BaseComponent {
                             out.set(x, y, val)                        
                         })
                     } else if (model instanceof NumericTileGrid) {
-                        const out = outputs['out'] = editorNode.meta.output = new NumericTileGrid(this.projectZoom, outputTileRange.minX, outputTileRange.minY, outputTileRange.getWidth(), outputTileRange.getHeight(), NaN)
+                        const out = new NumericTileGrid(this.projectZoom, outputTileRange.minX, outputTileRange.minY, outputTileRange.getWidth(), outputTileRange.getHeight(), NaN)
                         out.iterate((x, y, v) => {
                             let val = model.get(x, y, this.projectZoom) ? model.get(x, y, this.projectZoom) as number : NaN
                             out.set(x, y, val)
                         })
+
+                        if(out.getMinMax()[1] === -Infinity) {
+                            editorNode.meta.errorMessage = "No valid data found in dataset. Possible cause: no coverage for selected area."
+                            outputs['out'] = editorNode.meta.output = undefined
+                        }else{
+                            outputs['out'] = editorNode.meta.output = out
+                        }
                     }
 
                 }
