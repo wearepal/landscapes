@@ -5,6 +5,9 @@ import { BooleanTileGrid, CategoricalTileGrid, NumericTileGrid } from './modelli
 import { ChartData, extentToChartData } from './analysis_panel_tools/subsection'
 import { GenerateChart } from './analysis_panel_tools/charts'
 import './analysis_panel.css'
+import { getArea } from 'ol/sphere'
+import { fromExtent } from 'ol/geom/Polygon'
+import { set } from 'lodash'
 
 export type ChartType = "pie" | "hist" | "bar" | "kde"
 
@@ -114,6 +117,7 @@ const ChartLegend = ({ chartData, sourceType }: ChartLegendProps) => {
 interface AnalysisPanelProps {
     setShowAP: () => void
     selectedArea: Extent | null
+    setSelectedArea: (extent: Extent | null) => void
     selectedLayer: Layer | null
     layerStats: (layer: DatasetLayer | ModelOutputLayer) => BooleanTileGrid | NumericTileGrid | CategoricalTileGrid | null
     currentTab: number
@@ -128,7 +132,7 @@ ChartTypeArray.set("NumericTileGrid", ["hist"])
 
 
 
-export const AnalysisPanel = ({ selectedArea, setShowAP, selectedLayer, layerStats, currentTab }: AnalysisPanelProps) => {
+export const AnalysisPanel = ({ selectedArea, setSelectedArea, setShowAP, selectedLayer, layerStats, currentTab }: AnalysisPanelProps) => {
 
     const [chartType, setChartType] = React.useState<ChartType>()
     const [chartData, setChartData] = React.useState<ChartData>()
@@ -238,42 +242,118 @@ export const AnalysisPanel = ({ selectedArea, setShowAP, selectedLayer, layerSta
 
             <div className="px-3 py-2 border-top border-bottom bg-white text-center">
 
-                <div>
-                    <label style={{ width: 60 }} >Xmin</label>
+                <div style={{paddingBottom: 15}} > 
+                    <label style={{ width: 60 }} >Area</label>
                     <input
                         disabled
                         type="text"
-                        value={selectedArea ? selectedArea[0] : 0}
+                        value={selectedArea ? `${(getArea(fromExtent(selectedArea)) / 1000000).toFixed(4)} km²` : "0 km²"}
                     />
                 </div>
-                <div>
-                    <label style={{ width: 60 }}>Ymin</label>
-                    <input
-                        disabled
-                        type="text"
-                        value={selectedArea ? selectedArea[1] : 0}
-                    />
+                
+                <div className="row">
+                    <div className="col-8">
+                        <div>
+                            <label style={{ width: 40 }} >Xmin</label>
+                            <input
+                                disabled
+                                type="text"
+                                value={selectedArea ? selectedArea[0] : 0}
+                            />
+                        </div>
+                        <div>
+                            <label style={{ width: 40 }}>Ymin</label>
+                            <input
+                                disabled
+                                type="text"
+                                value={selectedArea ? selectedArea[1] : 0}
+                            />
+                        </div>
+                        <div>
+                            <label style={{ width: 40 }}>Xmax</label>
+                            <input
+                                disabled
+                                type="text"
+                                value={selectedArea ? selectedArea[2] : 0}
+                            />
+                        </div>
+                        <div>
+                            <label style={{ width: 40 }}>Ymax</label>
+                            <input
+                                disabled
+                                type="text"
+                                value={selectedArea ? selectedArea[3] : 0}
+                            />
+                        </div>
+                    </div>
+
+                    <div className="col">
+                        <div className="btn-group mr-2" style={{paddingBottom: 15}} data-toggle="modal" data-target="#extentModal">
+                            <button className="btn btn-sm btn-outline-primary">
+                                <i className="fas fa-square" /> Set extent
+                            </button>
+                        </div>                        
+                        <div className="btn-group mr-2" style={{paddingBottom: 15}} onClick={()=>{navigator.clipboard.writeText(selectedArea ? selectedArea.join(",") : ""); alert("Copied selected area to clipboard.")}}>
+                            <button className="btn btn-sm btn-outline-primary">
+                                <i className="fas fa-copy" /> Copy extent
+                            </button>
+                        </div>
+                    </div>
                 </div>
-                <div>
-                    <label style={{ width: 60 }}>Xmax</label>
+
+                
+
+            </div>
+            <div className="modal fade" id="extentModal" role="dialog" aria-labelledby="extentModalTitle" aria-hidden="true">
+                <div className="modal-dialog modal-lg modal-dialog-centered" role="document">
+                    <div className="modal-content">
+                    <div className="modal-header">
+                        <h5 className="modal-title" id="extentModalTitle">Select Extent</h5>
+                        <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div className="modal-body">
                     <input
-                        disabled
+                        id="extent-input"
+                        style={{width: '100%'}}
                         type="text"
-                        value={selectedArea ? selectedArea[2] : 0}
+                        placeholder='min x, min y, max x, max y'
+                        onChange={(e) => {
+                            let valid = false
+                            const extent = e.target.value.split(',').map(Number)
+                            valid = extent.length === 4 && extent.every((coord) => !isNaN(coord)) && extent[0] < extent[2] && extent[1] < extent[3]
+                            if(!valid){
+                                (document.getElementById('save-snapshot-extent-btn') as HTMLButtonElement).disabled = true
+                            }else{
+                                (document.getElementById('save-snapshot-extent-btn') as HTMLButtonElement).disabled = false
+                            }
+                        }}
                     />
-                </div>
-                <div>
-                    <label style={{ width: 60 }}>Ymax</label>
-                    <input
-                        disabled
-                        type="text"
-                        value={selectedArea ? selectedArea[3] : 0}
-                    />
+                    </div>
+                    <div className="modal-footer">
+                        <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button 
+                            id="save-snapshot-extent-btn" 
+                            type="button" 
+                            data-dismiss="modal"
+                            className="btn btn-primary"
+                            onClick={()=>{
+                                const extent = (document.getElementById('extent-input') as HTMLInputElement).value.split(',').map(Number)
+                                if(extent.length === 4 && extent.every((coord) => !isNaN(coord)) && extent[0] < extent[2] && extent[1] < extent[3]){
+                                    const extentFeature = fromExtent(extent)
+                                    const extentArea = getArea(extentFeature)
+                                    if(extentArea > 0){
+                                        setSelectedArea(extent)
+                                        
+                                    }
+                                }
+                            }}
+                            >Set as snapshot extent</button>
+                    </div>
+                    </div>
                 </div>
             </div>
-
         </div >
-
-
     )
 }

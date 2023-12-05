@@ -4,18 +4,21 @@ import { createXYZ } from "ol/tilegrid"
 import { getArea } from "ol/sphere"
 import { fromExtent } from "ol/geom/Polygon"
 import { getColorStops } from "../reify_layer/model_output"
+import { median } from "mathjs"
 
 type Color = [number, number, number, number]
 
 
 // TODO: add median 
 export interface NumericStats {
+    sum: number
     min: number,
     max: number,
     range: number,
     mean: number,
     mode: number,
-    step: number
+    step: number,
+    median: number
 }
 
 export interface ChartData {
@@ -39,6 +42,7 @@ export function extentToChartData(colors: Color[] | undefined, model: BooleanTil
     let counts = new Map<any, number>()
     let color = new Map<any, [number, number, number, number]>()
     let numeric_stats: NumericStats | undefined
+    let sum = 0
 
     for (let x = outputTileRange.minX; x <= outputTileRange.maxX; x++) {
         for (let y = outputTileRange.minY; y <= outputTileRange.maxY; y++) {
@@ -60,7 +64,7 @@ export function extentToChartData(colors: Color[] | undefined, model: BooleanTil
 
                 const area = model instanceof NumericTileGrid ? 1 : getArea(fromExtent(tileGrid.getTileCoordExtent([model.zoom, x, y]))) / 1000000
                 const value = model.get(x, y)
-
+                sum += +value
 
                 const count = counts.get(value) || 0
 
@@ -88,6 +92,7 @@ export function extentToChartData(colors: Color[] | undefined, model: BooleanTil
             const bins = histogram_bins
             const min = mapEntries[0][0]
             const max = mapEntries[mapEntries.length - 1][0]
+            const mediann = median(mapEntries.map((x) => x[0]))
             const range = max - min
             const step = range / bins
             counts = new Map()
@@ -113,8 +118,10 @@ export function extentToChartData(colors: Color[] | undefined, model: BooleanTil
             }
 
             numeric_stats = {
+                sum,
                 min,
                 max,
+                median: mediann,
                 range,
                 mean: min + (range / 2),
                 mode: mapEntries.reduce((max, current) => {

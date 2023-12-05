@@ -158,6 +158,7 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
             <AnalysisPanel
               setShowAP={() => setShowAP(false)}
               selectedArea={selectedArea}
+              setSelectedArea={setSelectedArea}
               selectedLayer={selectedLayer}
               layerStats={(layer: ModelOutputLayer | DatasetLayer) => {
                 const cache = layer.type === "ModelOutputLayer" ? modelOutputCache : datasetOutputCache
