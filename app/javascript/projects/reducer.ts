@@ -1,6 +1,12 @@
 import { cloneDeep, isEqual } from "lodash"
 import { Action } from "./actions"
-import { Project, State } from "./state"
+import { Layer, Project, State } from "./state"
+
+const nodeIdtoLayer = (nodeId: number, layers: Record<number, Layer>) => {
+  const layerArray = Object.values(layers)
+  const foundLayer = layerArray.find(layer => "nodeId" in layer && layer.nodeId === nodeId)
+  return foundLayer
+}
 
 const reduceProject = (state: Project, action: Action): Project => {
   switch (action.type) {
@@ -37,7 +43,7 @@ const reduceProject = (state: Project, action: Action): Project => {
     case "MutateLayer": {
       const { id, data } = action
       const layers = cloneDeep(state.layers)
-      Object.assign(layers[id], data)
+      Object.assign(layers[id] || nodeIdtoLayer(id, layers), data)
       return { ...state, layers }
     }
 
