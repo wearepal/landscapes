@@ -30,7 +30,9 @@ export class MapLayerComponent extends BaseComponent {
     else {
       delete editorNode.meta.errorMessage
 
-      if (inputs["in"][0]) this.callback(node.id, editorNode.data.name as string, inputs["in"][0] as BooleanTileGrid | NumericTileGrid | CategoricalTileGrid)
+      const name = editorNode.data.name as string
+
+      if (inputs["in"][0]) this.callback(node.id, name ? (name !== "" ? name.trim() : undefined) : undefined, inputs["in"][0] as BooleanTileGrid | NumericTileGrid | CategoricalTileGrid)
       else editorNode.meta.errorMessage = 'No input'
 
     }
