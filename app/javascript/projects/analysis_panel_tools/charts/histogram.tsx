@@ -21,7 +21,7 @@ export const GenerateHistogram = ({ chartData }: HistogramProps) => {
 
     const xScale = d3
         .scaleLinear()
-        .domain([min, max + 10])
+        .domain([min, max])
         .range([0, boundsWidth])
 
     const yScale = d3

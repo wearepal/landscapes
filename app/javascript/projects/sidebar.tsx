@@ -194,6 +194,19 @@ function ModelOutputLayerSettings({ layer, mutate, layerType }: ModelOutputLayer
   }
 }
 
+export function ZoomData({zoom, area}) {
+  const resolutionPerPixel = Math.round(Math.sqrt(area))
+  return (
+    <>
+      <div className="pl-3 pb-2">
+        Zoom level: {zoom} <br />
+        Area per cell: ~{Math.round(area)}m² <br />
+        Resolution per cell: ~{resolutionPerPixel}m
+      </div>
+    </>
+  )
+}
+
 interface ModelOutputLayerLegendProps {
   layer: ModelOutputLayer | DatasetLayer
   getLayerData: (layer: DatasetLayer | ModelOutputLayer) => tileGridStats
@@ -201,7 +214,7 @@ interface ModelOutputLayerLegendProps {
   updateBounds: (overrideBounds: boolean, bounds: [min: number, max: number]) => void
 }
 
-export function Legend({ colors, minValue, maxValue, type, labels, mutateColors, updateBounds, overrideBounds, bounds }) {
+export function Legend({ colors, minValue, maxValue, type, labels, mutateColors, updateBounds, overrideBounds, bounds, zoom, area }) {
 
   if (type === undefined) {
     // if layer is still loading stats will be unavailable.
@@ -212,19 +225,22 @@ export function Legend({ colors, minValue, maxValue, type, labels, mutateColors,
     const data = [{ color: colors[0], label: "False" }, { color: colors[colors.length - 1], label: "True" }]
 
     return (
-      <div className="color-bar-container-cat">
-        <div className="color-bar-legend-cat">
-          {data.map(({ color, label }) => (
-            <div key={label} className="color-bar-label">
-              <div
-                style={{ backgroundColor: `rgb(${color.join(",")})` }}
-                className="color-bar-color-cat"
-              />
-              <div className="color-bar-label-text">{label}</div>
-            </div>
-          ))}
+      <>
+        <div className="color-bar-container-cat">
+          <div className="color-bar-legend-cat">
+            {data.map(({ color, label }) => (
+              <div key={label} className="color-bar-label">
+                <div
+                  style={{ backgroundColor: `rgb(${color.join(",")})` }}
+                  className="color-bar-color-cat"
+                />
+                <div className="color-bar-label-text">{label}</div>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+        <ZoomData zoom={zoom} area={area} />
+      </>
     )
 
   } else if (type === "CategoricalTileGrid") {
@@ -274,6 +290,7 @@ export function Legend({ colors, minValue, maxValue, type, labels, mutateColors,
       }
 
       return (
+        <>
         <div className="color-bar-container-cat">
           <div className="color-bar-legend-cat">
             <div className='color-bar-label'>
@@ -303,6 +320,8 @@ export function Legend({ colors, minValue, maxValue, type, labels, mutateColors,
             ))}
           </div>
         </div>
+        <ZoomData zoom={zoom} area={area} />
+        </>
       )
 
     } else {
@@ -344,6 +363,7 @@ export function Legend({ colors, minValue, maxValue, type, labels, mutateColors,
     }
 
     return (
+      <>
       <div className="color-bar-container">
         <div className="color-bar">
           {colors.map((color) => (
@@ -400,6 +420,8 @@ export function Legend({ colors, minValue, maxValue, type, labels, mutateColors,
           </div>
         )}
       </div>
+      <ZoomData zoom={zoom} area={area} />
+      </>
     )
   }
 
@@ -413,7 +435,7 @@ function ModelOutputLayerLegend({ layer, getLayerData, mutateColors, updateBound
 
   return (
     <div>
-      <Legend colors={colors} minValue={stats.min} maxValue={stats.max} type={stats.type} labels={stats.labels} mutateColors={mutateColors} updateBounds={updateBounds} overrideBounds={layer.overrideBounds} bounds={layer.bounds} />
+      <Legend colors={colors} minValue={stats.min} maxValue={stats.max} type={stats.type} labels={stats.labels} mutateColors={mutateColors} updateBounds={updateBounds} overrideBounds={layer.overrideBounds} bounds={layer.bounds} zoom={stats.zoom} area={stats.area} />
     </div>
   )
 }
