@@ -4,7 +4,7 @@ import { createXYZ } from "ol/tilegrid"
 import { getArea } from "ol/sphere"
 import { fromExtent } from "ol/geom/Polygon"
 import { getColorStops } from "../reify_layer/model_output"
-import { median } from "mathjs"
+import { mean, median } from "mathjs"
 
 type Color = [number, number, number, number]
 
@@ -92,9 +92,10 @@ export function extentToChartData(colors: Color[] | undefined, model: BooleanTil
             const bins = histogram_bins
             const min = mapEntries[0][0]
             const max = mapEntries[mapEntries.length - 1][0]
-            const mediann = median(mapEntries.map((x) => x[0]))
+            const _median = median(mapEntries.map((x) => x[0]))
             const range = max - min
             const step = range / bins
+            const _mean = mean(mapEntries.map((x) => x[0]))
             counts = new Map()
             const fillMap = fillType ? getColorStops((fillType == "greyscale" ? "greys" : (fillType === "heatmap" ? "jet" : fillType)), 40).reverse() : undefined
             const [ds_min, ds_max] = [model.getStats().min, model.getStats().max]
@@ -121,9 +122,9 @@ export function extentToChartData(colors: Color[] | undefined, model: BooleanTil
                 sum,
                 min,
                 max,
-                median: mediann,
+                median: _median,
                 range,
-                mean: min + (range / 2),
+                mean: _mean,
                 mode: mapEntries.reduce((max, current) => {
                     return current[1] > max[1] ? current : max
                 }, mapEntries[0])[0],

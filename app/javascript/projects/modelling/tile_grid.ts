@@ -2,6 +2,7 @@ import { mean, mode } from "mathjs"
 import { Extent } from "ol/extent"
 import { createXYZ } from "ol/tilegrid"
 import { registerSerializer } from "threads"
+import { getMedianCellSize } from "./components/cell_area_component"
 
 function validateZoom(zoom: number) {
   if (!(
@@ -37,6 +38,8 @@ export interface tileGridStats {
   max: number
   type: "BooleanTileGrid" | "NumericTileGrid" | "CategoricalTileGrid" | undefined
   labels?: Array<any>
+  zoom: number
+  area: number
 }
 
 export interface TileGridJSON {
@@ -197,7 +200,9 @@ export class BooleanTileGrid extends TileGrid {
     return {
       min: 0,
       max: 1,
-      type: "BooleanTileGrid"
+      type: "BooleanTileGrid",
+      zoom: this.zoom,
+      area: getMedianCellSize(this)
     }
   }
 
@@ -291,7 +296,9 @@ export class NumericTileGrid extends TileGrid {
     return {
       min: min,
       max: max,
-      type: "NumericTileGrid"
+      type: "NumericTileGrid",
+      zoom: this.zoom,
+      area: getMedianCellSize(this)
     }
   }
 
@@ -410,7 +417,9 @@ export class CategoricalTileGrid extends TileGrid {
       min,
       max,
       type: "CategoricalTileGrid",
-      labels: Array.from(this.labels, ([name, value]) => ({ name, value }))//this.labels
+      labels: Array.from(this.labels, ([name, value]) => ({ name, value })),//this.labels
+      zoom: this.zoom,
+      area: getMedianCellSize(this)
     }
   }
 
