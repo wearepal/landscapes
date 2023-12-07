@@ -78,6 +78,7 @@ export function extentToChartData(colors: Color[] | undefined, model: BooleanTil
 
                 const value = model.labels.get(model.get(x, y)) ? model.labels.get(model.get(x, y)) : "No Data"
                 const count = counts.get(value) || 0
+                counts.set(value, count + area)
 
 
                 if (colors) {
