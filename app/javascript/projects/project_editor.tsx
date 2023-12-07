@@ -61,7 +61,30 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
 
   const [isProcessing, setProcessing] = React.useState(false)
   const [isLoading, setLoading] = React.useState(false)
+  const [loadingQueue, setLoadingQueue] = React.useState<number[]>([])
   const [process, setProcess] = React.useState(false)
+
+  const loadDataset = debounce((layer: DatasetLayer)=>{      
+    if(!layer.deleted) {              
+      getDatasets(teamId).then((datasets) => {
+        // check if deleted
+        if (!datasets.some((d) => d.id === layer.id)) {
+          layer.deleted = true
+        }
+      })
+    }
+
+    if (isLoading) return // prevent spamming the server
+    if (layer.deleted) return // prevent loading deleted layers
+
+    setLoading(true)
+    getDataset(layer.id, teamId, (err, out) => {
+      if (out && !err) datasetOutputCache[layer.id] = out
+      setLoadingQueue(loadingQueue.filter(id => id !== layer.id))
+      setLoading(false)
+    })
+
+  }, 750)
 
   const saveProject = async () => {
     const method = 'PATCH'
@@ -94,6 +117,8 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
         setCurrentTab={setCurrentTab}
         isProcessing={isProcessing}
         isLoading={isLoading}
+        loadingQueue={loadingQueue}
+        datasetOutputCache={datasetOutputCache}
         autoProcessing={state.autoProcessing}
         setAutoProcessing={autoprocessing => dispatch({ type: "SetAutoprocessing", autoprocessing })}
         manualProcessing={() => {
@@ -120,22 +145,10 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
             modelOutputCache={modelOutputCache}
             datasetCache={datasetOutputCache}
             loadTeamDataset={(layer: DatasetLayer) => {
-              if (isLoading) return // prevent spamming the server
-              if (layer.deleted) return // prevent loading deleted layers
-
-              setLoading(true)
-              getDataset(layer.id, teamId, (err, out) => {
-                if (out && !err) {
-                  datasetOutputCache[layer.id] = out
-                  setLoading(false)
-                }
-                else {
-
-                  layer.deleted = true
-                  setLoading(false)
-                }
-              })
-            }}
+              if(!loadingQueue.includes(layer.id)) loadingQueue.push(layer.id)
+              loadDataset(layer)
+              }
+            }
             setSelectedArea={setSelectedArea}
             selectedArea={selectedArea}
             selected={showAP}
@@ -181,7 +194,7 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
                 getLayerData={(layer: ModelOutputLayer | DatasetLayer) => {
                   const cache = layer.type === "ModelOutputLayer" ? modelOutputCache : datasetOutputCache
                   const id = layer.type === "ModelOutputLayer" ? layer.nodeId : layer.id
-                  return cache[id] ? cache[id].getStats() : { min: 0, max: 0, type: undefined, zoom: 0, area: 0 }
+                  return cache[id] ? cache[id].getStats() : { min: 0, max: 0, type: undefined, zoom: 0, area: 0, length: 0 }
                 }}
                 setSelectedLayer={setSelectedLayer}
                 selectedLayer={selectedLayer}

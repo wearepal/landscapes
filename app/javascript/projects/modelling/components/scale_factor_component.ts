@@ -78,7 +78,7 @@ export class ScaleFactorComponent extends BaseComponent {
 
                 } else {
 
-                    const r = getMedianCellSize(input) / unitPerM
+                    const r = getMedianCellSize(input).area / unitPerM
 
                     const out = outputs['out'] = new NumericConstant(r, editorNode.data.name as string)
 

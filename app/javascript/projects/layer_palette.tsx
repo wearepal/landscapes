@@ -64,7 +64,7 @@ export const LayerPalette = ({ addLayer, hide, dbModels, getTeamDatasets, teamNa
       </div>
       <div className="flex-grow-1" style={{ overflowY: "auto", flexBasis: "0px" }}>
         <Section title={teamName}>
-          {teamDatasets.map((dataset) => (
+          {teamDatasets.sort((a, b) => a.name.localeCompare(b.name)).map((dataset) => (
             <AddLayerButton
               key={dataset.id}
               addLayer={addLayer}
