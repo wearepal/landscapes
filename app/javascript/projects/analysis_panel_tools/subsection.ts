@@ -4,12 +4,11 @@ import { createXYZ } from "ol/tilegrid"
 import { getArea } from "ol/sphere"
 import { fromExtent } from "ol/geom/Polygon"
 import { getColorStops } from "../reify_layer/model_output"
-import { mean, median } from "mathjs"
+import { sum } from "mathjs"
 
 type Color = [number, number, number, number]
 
 
-// TODO: add median 
 export interface NumericStats {
     sum: number
     min: number,
@@ -34,6 +33,33 @@ function findColor(value: number, colorArray: any[]): Color {
     return alpha
 }
 
+function medianFromMap(arr: [number, number][], total: number): number | undefined {
+    let idx = total / 2;
+
+    if (idx % 1 === 0) {
+        for (let i = 0; i < arr.length; i++) {
+            const [key, value] = arr[i];
+            idx -= value;
+            if (idx <= 0) return key;
+        }
+    } else {
+        let [lower, upper] = [Math.floor(idx), Math.ceil(idx)];
+
+        for (let i = 0; i < arr.length; i++) {
+            const [key, value] = arr[i];
+            lower -= value;
+            upper -= value;
+            if (lower <= 0) {
+                if (upper <= 0) return key;
+                else return (key + arr[i + 1][0]) / 2;
+            }
+        }
+    }
+
+    return undefined
+
+}
+
 export function extentToChartData(colors: Color[] | undefined, model: BooleanTileGrid | NumericTileGrid | CategoricalTileGrid, extent: Extent, fillType: string | undefined, histogram_bins: number): ChartData {
 
     const tileGrid = createXYZ()
@@ -42,7 +68,6 @@ export function extentToChartData(colors: Color[] | undefined, model: BooleanTil
     let counts = new Map<any, number>()
     let color = new Map<any, [number, number, number, number]>()
     let numeric_stats: NumericStats | undefined
-    let sum = 0
 
     for (let x = outputTileRange.minX; x <= outputTileRange.maxX; x++) {
         for (let y = outputTileRange.minY; y <= outputTileRange.maxY; y++) {
@@ -53,7 +78,7 @@ export function extentToChartData(colors: Color[] | undefined, model: BooleanTil
 
                 const value = model.labels.get(model.get(x, y)) ? model.labels.get(model.get(x, y)) : "No Data"
                 const count = counts.get(value) || 0
-                counts.set(value, count + area)
+
 
                 if (colors) {
                     const col_value = colors[model.get(x, y) - 1]
@@ -64,7 +89,6 @@ export function extentToChartData(colors: Color[] | undefined, model: BooleanTil
 
                 const area = model instanceof NumericTileGrid ? 1 : getArea(fromExtent(tileGrid.getTileCoordExtent([model.zoom, x, y]))) / 1000000
                 const value = model.get(x, y)
-                sum += +value
 
                 const count = counts.get(value) || 0
 
@@ -86,16 +110,26 @@ export function extentToChartData(colors: Color[] | undefined, model: BooleanTil
             }
         } else {
 
-            let mapEntries: [number, number][] = Array.from(counts.entries())
+            let mapEntries: [number, number][] = Array.from(counts.entries()).filter(([key, value]) => !isNaN(key) && !isNaN(value))
             mapEntries = mapEntries.sort((a, b) => a[0] - b[0])
 
             const bins = histogram_bins
+
             const min = mapEntries[0][0]
             const max = mapEntries[mapEntries.length - 1][0]
-            const _median = median(mapEntries.map((x) => x[0]))
             const range = max - min
             const step = range / bins
-            const _mean = mean(mapEntries.map((x) => x[0]))
+
+            const _sum = sum(mapEntries.map((x) => x[1] * x[0]))
+            const total_entries = mapEntries.reduce((acc, cur) => acc + cur[1], 0)
+
+            const _mean = _sum / total_entries
+            const _median = medianFromMap(mapEntries, total_entries)
+
+            const mode = mapEntries.reduce((max, current) => {
+                return current[1] > max[1] ? current : max
+            }, mapEntries[0])[0]
+
             counts = new Map()
             const fillMap = fillType ? getColorStops((fillType == "greyscale" ? "greys" : (fillType === "heatmap" ? "jet" : fillType)), 40).reverse() : undefined
             const [ds_min, ds_max] = [model.getStats().min, model.getStats().max]
@@ -119,15 +153,13 @@ export function extentToChartData(colors: Color[] | undefined, model: BooleanTil
             }
 
             numeric_stats = {
-                sum,
+                sum: _sum,
                 min,
                 max,
-                median: _median,
+                median: _median || 0,
                 range,
                 mean: _mean,
-                mode: mapEntries.reduce((max, current) => {
-                    return current[1] > max[1] ? current : max
-                }, mapEntries[0])[0],
+                mode,
                 step
 
             }
