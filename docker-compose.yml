@@ -18,6 +18,7 @@ services:
       - caddy:/data
     networks:
       - caddy_traefik
+      - caddy_astute
       - default
 
   db:
@@ -92,6 +93,9 @@ volumes:
   redis_queue:
   storage:
 
+
 networks:
   caddy_traefik:
+    external: true
+  caddy_astute:
     external: true
