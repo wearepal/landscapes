@@ -194,14 +194,16 @@ function ModelOutputLayerSettings({ layer, mutate, layerType }: ModelOutputLayer
   }
 }
 
-export function ZoomData({zoom, area}) {
-  const resolutionPerPixel = Math.round(Math.sqrt(area))
+export function ZoomData({zoom, area, length}) {
+  const unit = area < 1 ? "cm²" : (area > 1000000 ? "km²" : "m²")
+  length = area < 1 ? length * 100 : (area > 1000000 ? length / 1000 : length)
+  area = area < 1 ? area * 10000 : (area > 1000000 ? area / 1000000 : area)
   return (
     <>
-      <div className="pl-3 pb-2">
+      <div title={`Rounded to two decimal places. Unrounded values; Area: ${area}m², Resolution: ${length}m`} className="pl-3 pb-2">
         Zoom level: {zoom} <br />
-        Area per cell: ~{Math.round(area)}m² <br />
-        Resolution per cell: ~{resolutionPerPixel}m
+        Area per cell: ~{area.toFixed(2)}{unit} <br />
+        Resolution per cell: ~{length.toFixed(2)}{unit}
       </div>
     </>
   )
@@ -214,7 +216,7 @@ interface ModelOutputLayerLegendProps {
   updateBounds: (overrideBounds: boolean, bounds: [min: number, max: number]) => void
 }
 
-export function Legend({ colors, minValue, maxValue, type, labels, mutateColors, updateBounds, overrideBounds, bounds, zoom, area }) {
+export function Legend({ colors, minValue, maxValue, type, labels, mutateColors, updateBounds, overrideBounds, bounds, zoom, area, length }) {
 
   if (type === undefined) {
     // if layer is still loading stats will be unavailable.
@@ -239,7 +241,7 @@ export function Legend({ colors, minValue, maxValue, type, labels, mutateColors,
             ))}
           </div>
         </div>
-        <ZoomData zoom={zoom} area={area} />
+        <ZoomData zoom={zoom} area={area} length={length} />
       </>
     )
 
@@ -320,7 +322,7 @@ export function Legend({ colors, minValue, maxValue, type, labels, mutateColors,
             ))}
           </div>
         </div>
-        <ZoomData zoom={zoom} area={area} />
+        <ZoomData zoom={zoom} area={area} length={length} />
         </>
       )
 
@@ -420,7 +422,7 @@ export function Legend({ colors, minValue, maxValue, type, labels, mutateColors,
           </div>
         )}
       </div>
-      <ZoomData zoom={zoom} area={area} />
+      <ZoomData zoom={zoom} area={area} length={length}/>
       </>
     )
   }
@@ -435,7 +437,19 @@ function ModelOutputLayerLegend({ layer, getLayerData, mutateColors, updateBound
 
   return (
     <div>
-      <Legend colors={colors} minValue={stats.min} maxValue={stats.max} type={stats.type} labels={stats.labels} mutateColors={mutateColors} updateBounds={updateBounds} overrideBounds={layer.overrideBounds} bounds={layer.bounds} zoom={stats.zoom} area={stats.area} />
+      <Legend 
+        colors={colors} 
+        minValue={stats.min} 
+        maxValue={stats.max} 
+        type={stats.type} 
+        labels={stats.labels}
+        mutateColors={mutateColors} 
+        updateBounds={updateBounds} 
+        overrideBounds={layer.overrideBounds} 
+        bounds={layer.bounds} 
+        zoom={stats.zoom} 
+        area={stats.area} 
+        length={stats.length} />
     </div>
   )
 }

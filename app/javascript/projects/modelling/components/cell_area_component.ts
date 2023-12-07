@@ -9,30 +9,16 @@ import { getArea } from "ol/sphere"
 import { NumericConstant } from "../numeric_constant"
 import { LabelControl } from "../controls/label"
 
-export function getMedianCellSize(input: BooleanTileGrid | NumericTileGrid | CategoricalTileGrid) {
-    const tileGrid = createXYZ()
-    const output = new NumericTileGrid(
-        input.zoom,
-        input.x,
-        input.y,
-        input.width,
-        input.height
-    )
-    const totalTiles = output.width * output.height
-    const middleIndex = Math.floor(totalTiles / 2)
-    let currentIndex = 0
-    let r
-    for (let x = output.x; x < output.x + output.width; ++x) {
-        for (let y = output.y; y < output.y + output.height; ++y) {
-            if (currentIndex === middleIndex) {
-                r = getArea(fromExtent(tileGrid.getTileCoordExtent([input.zoom, x, y])))
-            }
-
-            currentIndex++;
-        }
-    }
-
-    return r
+export function getMedianCellSize(input: BooleanTileGrid | NumericTileGrid | CategoricalTileGrid) : {area: number, length: number} {
+    const tileGrid = createXYZ() 
+    let x = input.x + Math.floor(input.width / 2)
+    let y = input.y + Math.floor(input.height / 2)
+    const tile = tileGrid.getTileCoordExtent([input.zoom, x, y])
+    
+    const area = getArea(fromExtent(tile))
+    const length = Math.sqrt(area * 1000000) / 1000
+    
+    return {area, length}
 }
 
 export class CellAreaComponent extends BaseComponent {
@@ -68,7 +54,7 @@ export class CellAreaComponent extends BaseComponent {
 
                 } else {
 
-                    const cellsize = getMedianCellSize(input)
+                    const cellsize = getMedianCellSize(input).area
 
                     const out = outputs['out'] = new NumericConstant(cellsize, editorNode.data.name as string)
 

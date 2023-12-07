@@ -194,7 +194,7 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
                 getLayerData={(layer: ModelOutputLayer | DatasetLayer) => {
                   const cache = layer.type === "ModelOutputLayer" ? modelOutputCache : datasetOutputCache
                   const id = layer.type === "ModelOutputLayer" ? layer.nodeId : layer.id
-                  return cache[id] ? cache[id].getStats() : { min: 0, max: 0, type: undefined, zoom: 0, area: 0 }
+                  return cache[id] ? cache[id].getStats() : { min: 0, max: 0, type: undefined, zoom: 0, area: 0, length: 0 }
                 }}
                 setSelectedLayer={setSelectedLayer}
                 selectedLayer={selectedLayer}
