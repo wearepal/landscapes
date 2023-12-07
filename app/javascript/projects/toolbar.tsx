@@ -1,6 +1,7 @@
 import * as React from 'react'
 
 import { Tab } from "./project_editor"
+import { DatasetCache } from './map_view'
 
 interface ToolbarProps {
   backButtonPath: string
@@ -9,6 +10,8 @@ interface ToolbarProps {
   currentTab: Tab
   isProcessing: boolean
   isLoading: boolean
+  loadingQueue: number[]
+  datasetOutputCache: DatasetCache
   setProjectName: (name: string) => void
   saveProject: () => void
   setCurrentTab: (tab: Tab) => void
@@ -20,7 +23,7 @@ interface ToolbarProps {
   setShowExtent: (boolean) => void
   zoomLevel: number
 }
-export const Toolbar = ({ backButtonPath, projectName, hasUnsavedChanges, currentTab, isProcessing, isLoading, setProjectName, saveProject, setCurrentTab, autoProcessing, setAutoProcessing, manualProcessing, setShowAP, showAP, setShowExtent, zoomLevel }: ToolbarProps) => (
+export const Toolbar = ({ backButtonPath, projectName, hasUnsavedChanges, currentTab, isProcessing, isLoading, loadingQueue, datasetOutputCache, setProjectName, saveProject, setCurrentTab, autoProcessing, setAutoProcessing, manualProcessing, setShowAP, showAP, setShowExtent, zoomLevel }: ToolbarProps) => (
   <div className="btn-toolbar p-2 bg-light border-top">
     <div className="btn-group mr-2">
       <a className="btn btn-sm btn-outline-primary" href={backButtonPath}>
@@ -82,7 +85,7 @@ export const Toolbar = ({ backButtonPath, projectName, hasUnsavedChanges, curren
     {
       isLoading &&
       <div className="d-flex align-items-center">
-        <div><i className="fas fa-circle-notch fa-spin" /> Loading Dataset...</div>
+        <div><i className="fas fa-circle-notch fa-spin" /> Loading datasets... ({Object.keys(datasetOutputCache).length+1}/{loadingQueue.length+Object.keys(datasetOutputCache).length})</div>
       </div>
     }
   </div>
