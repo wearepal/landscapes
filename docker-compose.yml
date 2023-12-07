@@ -16,6 +16,9 @@ services:
         mode: ingress
     volumes:
       - caddy:/data
+    networks:
+      - caddy_traefik
+      - default
 
   db:
     image: postgres:14
@@ -72,18 +75,6 @@ services:
     volumes:
       - storage:/app/storage
 
-  cvat_server:
-    image: cvat/server:v2.8.2
-    ports:
-      - 8081:8080
-    volumes:
-      - cvat_data:/opt/cvat_data
-
-  cvat:
-    image: cvat/ui:v2.8.2
-    ports:
-      - 81:80
-
 configs:
   caddyfile:
     external: true
@@ -100,4 +91,7 @@ volumes:
   postgres:
   redis_queue:
   storage:
-  cvat_data:
+
+networks:
+  caddy_traefik:
+    external: true
