@@ -19,3 +19,13 @@ $ANNOADDRESS {
   encode gzip
   log
 }
+
+www.astuteai.co.uk, www.astuteai.tech {
+  
+  reverse_proxy astute:8000 {
+    lb_try_duration 30s
+  }
+  
+  encode gzip
+  log
+}
