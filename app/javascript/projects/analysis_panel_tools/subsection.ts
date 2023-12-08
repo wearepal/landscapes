@@ -112,6 +112,9 @@ export function extentToChartData(colors: Color[] | undefined, model: BooleanTil
         } else {
 
             let mapEntries: [number, number][] = Array.from(counts.entries()).filter(([key, value]) => !isNaN(key) && !isNaN(value))
+
+            if(mapEntries.length === 0) return {count: new Map(), colors: new Map(), numeric_stats: undefined}
+
             mapEntries = mapEntries.sort((a, b) => a[0] - b[0])
 
             const bins = histogram_bins
