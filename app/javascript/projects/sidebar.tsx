@@ -6,7 +6,6 @@ import { CropMapLayer, DatasetLayer, Layer, ModelOutputLayer, NevoLayer, Overlay
 import { iconForLayerType } from "./util"
 import { getColorStops } from './reify_layer/model_output'
 import { tileGridStats } from './modelling/tile_grid'
-import { none } from 'ol/centerconstraint'
 
 interface OverlayLayerSettingsProps {
   layer: OverlayLayer
