@@ -26,6 +26,7 @@ import { ScaleFactorComponent } from "./scale_factor_component"
 import { CROMEComponent } from "./crome_component"
 import { RescaleComponent } from "./rescale_component"
 import { Extent } from "ol/extent"
+import { ReplaceNaNComponent } from "./replace_nan_component"
 
 export function createDefaultComponents(saveMapLayer: SaveMapLayer, saveModel: SaveModel, getDatasets: getDatasets, extent: Extent, zoom: number): BaseComponent[] {
   return [
@@ -80,6 +81,7 @@ export function createDefaultComponents(saveMapLayer: SaveMapLayer, saveModel: S
     new UnaryOpComponent('Reciprocal', '⁻¹', 'postfix', numericDataSocket, numericDataSocket, 'Arithmetic'),
     new BinaryOpComponent('Less', '<', numericDataSocket, booleanDataSocket, 'Arithmetic'),
     new BinaryOpComponent('Greater', '>', numericDataSocket, booleanDataSocket, 'Arithmetic'),
+    new ReplaceNaNComponent(),
 
     // DEBUG TOOLS
     new CellAreaComponent(),
