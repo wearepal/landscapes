@@ -200,7 +200,7 @@ export function ZoomData({zoom, area, length}) {
   area = area < 1 ? area * 10000 : (area > 1000000 ? area / 1000000 : area)
   return (
     <>
-      <div title={`Rounded to two decimal places. Unrounded values; Area: ${area}m², Resolution: ${length}m`} className="pl-3 pb-2">
+      <div title={`Rounded to two decimal places. Unrounded values; Area: ${area}${unit}, Resolution: ${length}${unit}`} className="pl-3 pb-2 pt-2">
         Zoom level: {zoom} <br />
         Area per cell: ~{area.toFixed(2)}{unit} <br />
         Resolution per cell: ~{length.toFixed(2)}{unit}
@@ -352,16 +352,30 @@ export function Legend({ colors, minValue, maxValue, type, labels, mutateColors,
 
     const handleMinChange = (e) => {
       const val = +(e.target.value as string)
-      if (!isNaN(val) && val < bounds[1]) {
-        updateBounds(overrideBounds, [val, bounds[1]])
+      document.getElementById("minOverrideInput")?.classList.remove("text-danger")
+      document.getElementById("maxOverrideInput")?.classList.remove("text-danger")
+      const boundsValidation = document.getElementById("bounds-validation") as HTMLElement
+      boundsValidation.style.display = "none"
+      if (!isNaN(val) && val > bounds[1]) {
+        document.getElementById("minOverrideInput")?.classList.add("text-danger")
+        document.getElementById("maxOverrideInput")?.classList.add("text-danger")
+        boundsValidation.style.display = "block"
       }
+      updateBounds(overrideBounds, [val, bounds[1]])
     }
 
     const handleMaxChange = (e) => {
       const val = +(e.target.value as string)
-      if (!isNaN(val) && val > bounds[0]) {
-        updateBounds(overrideBounds, [bounds[0], val])
+      document.getElementById("minOverrideInput")?.classList.remove("text-danger")
+      document.getElementById("maxOverrideInput")?.classList.remove("text-danger")
+      const boundsValidation = document.getElementById("bounds-validation") as HTMLElement
+      boundsValidation.style.display = "none"
+      if (!isNaN(val) && val < bounds[0]) {
+        document.getElementById("minOverrideInput")?.classList.add("text-danger")
+        document.getElementById("maxOverrideInput")?.classList.add("text-danger")
+        boundsValidation.style.display = "block"
       }
+      updateBounds(overrideBounds, [bounds[0], val])
     }
 
     return (
@@ -394,7 +408,8 @@ export function Legend({ colors, minValue, maxValue, type, labels, mutateColors,
           </label>
         </div>
         {overrideBounds && (
-          <div style={{ padding: 15, paddingTop: 0 }} className="row override-inputs">
+          <>
+          <div style={{ paddingRight: 15, paddingLeft: 15 }} className="row override-inputs">
             <div className="col">
               <label htmlFor="minOverrideInput" className="form-label">
                 Min
@@ -420,6 +435,10 @@ export function Legend({ colors, minValue, maxValue, type, labels, mutateColors,
               />
             </div>
           </div>
+          <div style={{ display: "none" }} id="bounds-validation" className="pl-3 text-center text-danger">
+            invalid bounds
+          </div>
+          </>
         )}
       </div>
       <ZoomData zoom={zoom} area={area} length={length}/>

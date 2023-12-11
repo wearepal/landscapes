@@ -96,22 +96,13 @@ export class PrecompiledModelComponent extends BaseComponent {
 
                     if (model instanceof BooleanTileGrid) {
                         const out = outputs['out'] = editorNode.meta.output = new BooleanTileGrid(this.projectZoom, outputTileRange.minX, outputTileRange.minY, outputTileRange.getWidth(), outputTileRange.getHeight())
-                        out.iterate((x, y, v) => {
-                            let val = model.get(x, y, this.projectZoom) ? model.get(x, y, this.projectZoom) as boolean : false
-                            out.set(x, y, val)
-                        })
+                        out.iterate((x, y, v) => out.set(x, y, model.get(x, y, this.projectZoom)))
                     } else if (model instanceof CategoricalTileGrid) {
                         const out = outputs['out'] = editorNode.meta.output = new CategoricalTileGrid(this.projectZoom, outputTileRange.minX, outputTileRange.minY, outputTileRange.getWidth(), outputTileRange.getHeight(), undefined, model.labels)
-                        out.iterate((x, y, v) => {
-                            let val = model.get(x, y, this.projectZoom) ? model.get(x, y, this.projectZoom) as number : 255
-                            out.set(x, y, val)                        
-                        })
+                        out.iterate((x, y, v) => out.set(x, y, model.get(x, y, this.projectZoom)))
                     } else if (model instanceof NumericTileGrid) {
                         const out = new NumericTileGrid(this.projectZoom, outputTileRange.minX, outputTileRange.minY, outputTileRange.getWidth(), outputTileRange.getHeight(), NaN)
-                        out.iterate((x, y, v) => {
-                            let val = model.get(x, y, this.projectZoom) ? model.get(x, y, this.projectZoom) as number : NaN
-                            out.set(x, y, val)
-                        })
+                        out.iterate((x, y, v) => out.set(x, y, model.get(x, y, this.projectZoom)))
 
                         if(out.getMinMax()[1] === -Infinity) {
                             editorNode.meta.errorMessage = "No valid data found in dataset. Possible cause: no coverage for selected area."
