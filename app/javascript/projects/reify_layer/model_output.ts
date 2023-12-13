@@ -4,7 +4,7 @@ import WebGLTileLayer from "ol/layer/WebGLTile"
 import DataTileSource from "ol/source/DataTile"
 import { DatasetCache, ModelOutputCache } from "../map_view"
 import { BooleanTileGrid, CategoricalTileGrid, NumericTileGrid } from "../modelling/tile_grid"
-import { DatasetLayer, Layer, ModelOutputLayer } from "../state"
+import { DatasetLayer, ModelOutputLayer } from "../state"
 import colormap from "colormap"
 import distinctColors from "distinct-colors"
 
@@ -42,14 +42,17 @@ class ModelOutputSource extends DataTileSource {
 
 
               // for visualization purposes, we want to show NaN as 0, which will be transparent
-              if(isNaN(val)) val = 0 
+              if(isNaN(val)) image[pixelY * 256 + pixelX] = -1 
+              else{
+                if (bounds) {
+                  if (val > max) val = max
+                  if (val < min) val = min
+                }
 
-              if (bounds) {
-                if (val > max) val = max
-                if (val < min) val = min
+                image[pixelY * 256 + pixelX] = (val - min) / (max - min)
               }
 
-              image[pixelY * 256 + pixelX] = (val - min) / (max - min)
+
             }
           }
         }
@@ -163,13 +166,15 @@ export function reifyModelOutputLayer(layer: ModelOutputLayer | DatasetLayer, ex
 
   } else {
 
-    const [min, max] = (tileLayer instanceof NumericTileGrid) ? ((layer.overrideBounds && layer.bounds) ? layer.bounds : tileLayer.getMinMax()) : [0, 1]
-    const v0 = min !== max ? (0 - min) / (max - min) : 0
+    const zero = (tileLayer instanceof BooleanTileGrid) ? [['==', ['band', 1], 0], [0, 0, 0, 0]] : []
 
     color = [
       'case',
-      ['==', ['band', 1], v0],
+      // if the value is NaN, make it transparent
+      ['==', ['band', 1], -1],
       [0, 0, 0, 0],
+      // if the value is 0 on a boolean layer, make it transparent, else show the zero values
+      ...zero,
       ['interpolate',
         ['linear'],
         ['band', 1],
