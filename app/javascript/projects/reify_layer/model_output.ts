@@ -39,9 +39,7 @@ class ModelOutputSource extends DataTileSource {
                 image[pixelY * 256 + pixelX] = val
               }
             } else {
-
-
-              // for visualization purposes, we want to show NaN as 0, which will be transparent
+              // if the value is NaN, assign it to -1 so that it is transparent
               if(isNaN(val)) image[pixelY * 256 + pixelX] = -1 
               else{
                 if (bounds) {
