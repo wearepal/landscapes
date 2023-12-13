@@ -200,10 +200,10 @@ export function ZoomData({zoom, area, length}) {
   area = area < 1 ? area * 10000 : (area > 1000000 ? area / 1000000 : area)
   return (
     <>
-      <div title={`Rounded to two decimal places. Unrounded values; Area: ${area}${unit}, Resolution: ${length}${unit}`} className="pl-3 pb-2 pt-2">
+      <div title={`Rounded to two decimal places. Unrounded values; Area: ${area}${unit}, Resolution: ${length}${unit.slice(0, -1)}`} className="pl-3 pb-2 pt-2">
         Zoom level: {zoom} <br />
         Area per cell: ~{area.toFixed(2)}{unit} <br />
-        Resolution per cell: ~{length.toFixed(2)}{unit}
+        Resolution per cell: ~{length.toFixed(2)}{unit.slice(0, -1)}
       </div>
     </>
   )
