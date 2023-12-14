@@ -133,10 +133,10 @@ function ModelOutputLayerSettings({ layer, mutate, layerType }: ModelOutputLayer
     layer.fill = "jet"
   }
 
-  if (layerType === "CategoricalTileGrid") {
+  if (layerType !== "NumericTileGrid") {
     return (
-      <div>
-      </div>
+      <>
+      </>
     )
   } else {
 
@@ -222,9 +222,21 @@ export function Legend({ colors, minValue, maxValue, type, labels, mutateColors,
     // if layer is still loading stats will be unavailable.
     return <div></div>
   } else if (type === "BooleanTileGrid") {
-    colors = [colors[0], colors[colors.length - 1]]
 
-    const data = [{ color: colors[0], label: "False" }, { color: colors[colors.length - 1], label: "True" }]
+    const data = [{ color: colors[0], label: "False" }, { color: colors[1], label: "True" }]
+
+    const handleColorChange = (event: React.ChangeEvent<HTMLInputElement>, key: number) => {
+      const newColor = event.target.value
+      const r = parseInt(newColor.slice(1, 3), 16)
+      const g = parseInt(newColor.slice(3, 5), 16)
+      const b = parseInt(newColor.slice(5, 7), 16)
+
+      const updatedColors = colors.map((color: [number, number, number, number], index: number) => {
+        return (index === key) ? [r, g, b, 1] : color
+      })
+
+      mutateColors(updatedColors)
+    }
 
     return (
       <>
@@ -232,11 +244,22 @@ export function Legend({ colors, minValue, maxValue, type, labels, mutateColors,
           <div className="color-bar-legend-cat">
             {data.map(({ color, label }) => (
               <div key={label} className="color-bar-label">
-                <div
-                  style={{ backgroundColor: `rgb(${color.join(",")})` }}
-                  className="color-bar-color-cat"
-                />
-                <div className="color-bar-label-text">{label}</div>
+              <input
+                type="color"
+                value={`#${color[0].toString(16).padStart(2, '0')}${color[1].toString(16).padStart(2, '0')}${color[2].toString(16).padStart(2, '0')}`}
+                style={{
+                  marginLeft: 4.5,
+                  backgroundColor: `rgb(${color[0]}, ${color[1]}, ${color[2]})`,
+                  border: 'none',
+                  width: '20px',
+                  height: '20px',
+                  padding: '0',
+                  cursor: 'pointer',
+                  marginRight: '5px'
+                }}
+                onChange={(event) => handleColorChange(event, label === "False" ? 0 : 1)}
+              />
+              <div className="color-bar-label-text">{label}</div>
               </div>
             ))}
           </div>
@@ -452,7 +475,7 @@ function ModelOutputLayerLegend({ layer, getLayerData, mutateColors, updateBound
 
   const stats = getLayerData(layer)
 
-  const colors = stats.type === "CategoricalTileGrid" ? layer.colors : getColorStops((layer.fill == "greyscale" ? "greys" : (layer.fill === "heatmap" ? "jet" : layer.fill)), 50).filter(c => typeof c !== "number").reverse()
+  const colors = stats.type !== "NumericTileGrid" ? layer.colors : getColorStops((layer.fill == "greyscale" ? "greys" : (layer.fill === "heatmap" ? "jet" : layer.fill)), 50).filter(c => typeof c !== "number").reverse()
 
   return (
     <div>

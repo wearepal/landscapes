@@ -94,83 +94,74 @@ export function extentToChartData(colors: Color[] | undefined, model: BooleanTil
                 const count = counts.get(value) || 0
 
                 counts.set(value, count + area)
+
+                if (colors && model instanceof BooleanTileGrid) {
+                    const col_value = colors[value ? 1 : 0]
+                    color.set(value, col_value ? col_value : [100, 100, 100, 1])
+                }
             }
         }
     }
 
-    if (!(model instanceof CategoricalTileGrid)) {
-        if (model instanceof BooleanTileGrid) {
-            if (fillType) {
-                const fillMap = getColorStops((fillType == "greyscale" ? "greys" : (fillType === "heatmap" ? "jet" : fillType)), 20)
+    if (model instanceof NumericTileGrid) {
 
-                color.set(false, fillMap[fillMap.length - 1])
-                color.set(true, fillMap[1])
-            } else {
-                color.set(true, [0, 0, 0, 1])
-                color.set(false, [255, 255, 255, 1])
-            }
-        } else {
+        let mapEntries: [number, number][] = Array.from(counts.entries()).filter(([key, value]) => !isNaN(key) && !isNaN(value))
 
-            let mapEntries: [number, number][] = Array.from(counts.entries()).filter(([key, value]) => !isNaN(key) && !isNaN(value))
+        if(mapEntries.length === 0) return {count: new Map(), colors: new Map(), numeric_stats: undefined}
 
-            if(mapEntries.length === 0) return {count: new Map(), colors: new Map(), numeric_stats: undefined}
+        mapEntries = mapEntries.sort((a, b) => a[0] - b[0])
 
-            mapEntries = mapEntries.sort((a, b) => a[0] - b[0])
+        const bins = histogram_bins
 
-            const bins = histogram_bins
+        const min = mapEntries[0][0]
+        const max = mapEntries[mapEntries.length - 1][0]
+        const range = max - min
+        const step = range / bins
 
-            const min = mapEntries[0][0]
-            const max = mapEntries[mapEntries.length - 1][0]
-            const range = max - min
-            const step = range / bins
+        const _sum = sum(mapEntries.map((x) => x[1] * x[0]))
+        const total_entries = mapEntries.reduce((acc, cur) => acc + cur[1], 0)
 
-            const _sum = sum(mapEntries.map((x) => x[1] * x[0]))
-            const total_entries = mapEntries.reduce((acc, cur) => acc + cur[1], 0)
+        const _mean = _sum / total_entries
+        const _median = medianFromMap(mapEntries, total_entries)
 
-            const _mean = _sum / total_entries
-            const _median = medianFromMap(mapEntries, total_entries)
+        const mode = mapEntries.reduce((max, current) => {
+            return current[1] > max[1] ? current : max
+        }, mapEntries[0])[0]
 
-            const mode = mapEntries.reduce((max, current) => {
-                return current[1] > max[1] ? current : max
-            }, mapEntries[0])[0]
+        counts = new Map()
+        const fillMap = fillType ? getColorStops((fillType == "greyscale" ? "greys" : (fillType === "heatmap" ? "jet" : fillType)), 40).reverse() : undefined
+        const [ds_min, ds_max] = [model.getStats().min, model.getStats().max]
 
-            counts = new Map()
-            const fillMap = fillType ? getColorStops((fillType == "greyscale" ? "greys" : (fillType === "heatmap" ? "jet" : fillType)), 40).reverse() : undefined
-            const [ds_min, ds_max] = [model.getStats().min, model.getStats().max]
+        for (let i = 0; i < bins; i++) {
 
-            for (let i = 0; i < bins; i++) {
+            const [l, h] = [min + (i * step), min + (i + 1) * step]
+            counts.set(l, 0)
 
-                const [l, h] = [min + (i * step), min + (i + 1) * step]
-                counts.set(l, 0)
-
-                if (fillMap) {
-                    let val = l + (step / 2)
-                    val = (val - ds_min) / (ds_max - ds_min)
-                    color.set(l, findColor(val, fillMap))
-                }
-
-                for (let x = 0; x < mapEntries.length; x++) {
-                    const [k, v] = mapEntries[x]
-                    const count = counts.get(l) ? counts.get(l) : 0
-                    if (k >= l && k <= h) counts.set(l, count as number + v)
-                }
+            if (fillMap) {
+                let val = l + (step / 2)
+                val = (val - ds_min) / (ds_max - ds_min)
+                color.set(l, findColor(val, fillMap))
             }
 
-            numeric_stats = {
-                sum: _sum,
-                min,
-                max,
-                median: _median || 0,
-                range,
-                mean: _mean,
-                mode,
-                step
-
+            for (let x = 0; x < mapEntries.length; x++) {
+                const [k, v] = mapEntries[x]
+                const count = counts.get(l) ? counts.get(l) : 0
+                if (k >= l && k <= h) counts.set(l, count as number + v)
             }
+        }
 
-
+        numeric_stats = {
+            sum: _sum,
+            min,
+            max,
+            median: _median || 0,
+            range,
+            mean: _mean,
+            mode,
+            step
 
         }
+
     }
 
     return { count: counts, colors: color, numeric_stats }

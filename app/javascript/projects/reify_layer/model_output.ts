@@ -109,36 +109,14 @@ export function reifyModelOutputLayer(layer: ModelOutputLayer | DatasetLayer, ex
   const [ModelId, CacheId] = layer.type === "ModelOutputLayer" ? [layer.nodeId, layer.nodeId] : [layer.id, -layer.id]
 
   if (!(ModelId in outputCache)) {
-
     // in scenario that layers are saved and loaded, we need to ensure that the layer is loaded
     if (layer.type === "DatasetLayer") {
       loadteamDataset(layer)
     }
-
     return new TileLayer()
   }
 
   const tileLayer = outputCache[ModelId]
-
-  if (tileLayer instanceof CategoricalTileGrid) {
-
-    //if first time loading or n of variables has changed, update layer.colors.
-
-    //if custom colors are added, add logic here to ensure these are not deleted
-
-    if (layer.colors?.length !== tileLayer.getMinMax()[1]) {
-
-      const cols = distinctColors({ count: tileLayer.getMinMax()[1] }).map(e => e.rgba())
-
-      if (layer.colors === undefined) layer.colors = []
-
-      for (let x = 0; x < tileLayer.getMinMax()[1]; x++) {
-        layer.colors[x] = layer.colors[x] ?? cols[x]
-      }
-
-    }
-
-  }
 
   if (existingLayer instanceof WebGLTileLayer) {
     const source = existingLayer.getSource()
@@ -160,19 +138,37 @@ export function reifyModelOutputLayer(layer: ModelOutputLayer | DatasetLayer, ex
 
   if (tileLayer instanceof CategoricalTileGrid) {
 
+    if (layer.colors?.length !== tileLayer.getMinMax()[1]) {
+
+      const cols = distinctColors({ count: tileLayer.getMinMax()[1] }).map(e => e.rgba())
+
+      if (layer.colors === undefined) layer.colors = []
+
+      for (let x = 0; x < tileLayer.getMinMax()[1]; x++) {
+        layer.colors[x] = layer.colors[x] ?? cols[x]
+      }
+    }
+
     color = getCatColorStops(layer.colors, tileLayer.getMinMax()[1])
 
-  } else {
+  }else if (tileLayer instanceof BooleanTileGrid) {
 
-    const zero = (tileLayer instanceof BooleanTileGrid) ? [['==', ['band', 1], 0], [0, 0, 0, 0]] : []
+    if (layer.colors === undefined || layer.colors.length !== 2) layer.colors = [[0, 0, 0, 1], [255, 255, 255, 1]]
+
+    color = [
+      'case',
+      ['==', ['band', 1], 0],
+      [0, 0, 0, 0],
+      layer.colors[1]
+    ]
+
+  }else {
 
     color = [
       'case',
       // if the value is NaN, make it transparent
       ['==', ['band', 1], -1],
       [0, 0, 0, 0],
-      // if the value is 0 on a boolean layer, make it transparent, else show the zero values
-      ...zero,
       ['interpolate',
         ['linear'],
         ['band', 1],
