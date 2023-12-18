@@ -9,9 +9,9 @@
     <div class="list-group-item list-group-item-light">
       <input placeholder="Search" class="form-control" data-action="input->filter#update" autofocus>
     </div>
-    <% @team.projects.sort_by(&:name).each do |project| %>
-      <div class="list-group-item p-0 d-flex align-items-center">
-        <%= link_to project_path(project), class: "list-group-item list-group-item-action border-0", data: { "filter-target": "item" } do %>
+    <% @team.projects.sort_by { |project| project.name.downcase }.each do |project| %>
+      <div class="list-group-item list-group-item-action p-0 align-items-center" data-filter-target="item" style="display: flex;">
+        <%= link_to project_path(project), class: "list-group-item list-group-item-action border-0" do %>
           <div class="d-flex align-items-center justify-content-between">
             <%= project.name %>
             <i class="fas fa-chevron-right"></i>
