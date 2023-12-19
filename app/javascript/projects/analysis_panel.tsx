@@ -7,7 +7,6 @@ import { GenerateChart } from './analysis_panel_tools/charts'
 import './analysis_panel.css'
 import { getArea } from 'ol/sphere'
 import { fromExtent } from 'ol/geom/Polygon'
-import { set } from 'lodash'
 
 export type ChartType = "pie" | "hist" | "bar" | "kde"
 
@@ -39,7 +38,7 @@ const ChartSelection = ({ SourceType, ChartTypeSelected, SetChartType }: ChartSe
 
     const options = [
         { value: "pie", label: "Pie chart", icon: "fa-chart-pie", disabled: false },
-        { value: "bar", label: "Bar chart", icon: "fa-chart-bar", disabled: true },
+        { value: "bar", label: "Bar chart", icon: "fa-chart-bar", disabled: false },
         { value: "hist", label: "Histogram", icon: "fa-chart-bar", disabled: false },
     ].filter(option => (typeArray as string[]).includes(option.value))
 
