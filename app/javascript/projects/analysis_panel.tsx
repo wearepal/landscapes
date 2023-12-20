@@ -32,6 +32,35 @@ interface ChartSelectionProps {
     SetChartType: (type: ChartType) => void
 }
 
+function downloadChartAsPNG(ChartTypeSelected: ChartType | undefined) {
+    if(!ChartTypeSelected) return
+
+    const chart = document.getElementById(ChartTypeSelected) as HTMLCanvasElement
+    const svgContent = new XMLSerializer().serializeToString(chart)
+
+    const canvas = document.createElement("canvas")
+    const context = canvas.getContext("2d")
+
+    const svgImage = new Image()
+
+    svgImage.src = "data:image/svg+xml;base64," + btoa(svgContent)
+
+    svgImage.onload = () => {
+        canvas.width = svgImage.width
+        canvas.height = svgImage.height
+        context?.drawImage(svgImage, 0, 0)
+
+        const url = canvas.toDataURL("image/png")
+
+        const link = document.createElement("a")
+        link.href = url
+        link.download = `snapshot_${ChartTypeSelected}_${Date.now()}.png`
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+    }
+}
+
 const ChartSelection = ({ SourceType, ChartTypeSelected, SetChartType }: ChartSelectionProps) => {
 
     const typeArray = ChartTypeArray.get(SourceType) || []
@@ -50,12 +79,8 @@ const ChartSelection = ({ SourceType, ChartTypeSelected, SetChartType }: ChartSe
                 ))}
             </div>
 
-            <div className="btn-group mr-2">
-                <button disabled title='Expand' type="button" className={`btn btn-outline-primary`}><i className="fas fa-expand"></i></button>
-            </div>
-
             <div className="btn-group mr-2 ">
-                <button disabled title='Download' type="button" className={`btn btn-outline-primary`}><i className="fas fa-download"></i></button>
+                <button title='Download' onClick={() => downloadChartAsPNG(ChartTypeSelected)} type="button" className={`btn btn-outline-primary`}><i className="fas fa-download"></i></button>
             </div>
         </div>
     );
