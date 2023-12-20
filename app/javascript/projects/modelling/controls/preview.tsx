@@ -32,7 +32,7 @@ const Preview = ({ getTileGrid }: PreviewProps) => {
       for (let x = 0; x < tileGrid.width; ++x) {
         for (let y = 0; y < tileGrid.height; ++y) {
           let val = tileGrid.get(tileGrid.x + x, tileGrid.y + y)
-          ctx.fillStyle = isFinite(val) ? `rgba(255, 255, 255, ${(val - min) / (max - min)})` : 'rgba(255, 0, 0, 0)'
+          ctx.fillStyle = isFinite(val) ? `rgba(255, 255, 255, ${(val - min) / (max - min)})` : 'rgba(255, 0, 0, .1)'
           ctx.fillRect(x, y, 1, 1)
         }
       }
