@@ -69,7 +69,7 @@ export const GenerateBarChart = ({ chartData }: BarChartProps) => {
 
     return (
         <div>
-            <svg width={w} height={h}>
+            <svg id="bar" width={w} height={h}>
                 <g
                 width={bounds_h}
                 height={bounds_w}

@@ -62,7 +62,7 @@ export const GenerateHistogram = ({ chartData }: HistogramProps) => {
 
 
     return (
-        <svg width={width} height={height}>
+        <svg id="hist" width={width} height={height}>
             <g
                 width={boundsWidth}
                 height={boundsHeight}
