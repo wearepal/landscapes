@@ -43,9 +43,9 @@ export class MaskNumericDataComponent extends BaseComponent {
 
       editorNode.meta.previousInputs = [num, mask]
 
-      const out = editorNode.meta.output = outputs['out'] = new NumericTileGrid(mask.zoom, mask.x, mask.y, mask.width, mask.height)
+      const out = editorNode.meta.output = outputs['out'] = new NumericTileGrid(mask.zoom, mask.x, mask.y, mask.width, mask.height, NaN)
 
-      mask.iterate((x, y, value) => out.set(x, y, value ? num.get(x, y, mask.zoom) : 0))
+      mask.iterate((x, y, value) => out.set(x, y, value ? num.get(x, y, mask.zoom) : NaN))
 
     }
     else {

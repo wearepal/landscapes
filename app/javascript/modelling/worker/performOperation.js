@@ -13,6 +13,7 @@ operations.set('Intersection', { inputType: BooleanTileGrid, outputType: Boolean
 operations.set('Set difference', { inputType: BooleanTileGrid, outputType: BooleanTileGrid, fn: (a, b) => (a && !b) })
 operations.set('Symmetric difference', { inputType: BooleanTileGrid, outputType: BooleanTileGrid, fn: (...inputs) => inputs.reduce((a, b) => (a || b) && !(a && b)) })
 operations.set('Sum', { inputType: NumericTileGrid, outputType: NumericTileGrid, fn: (...inputs) => inputs.reduce((a, b) => a + b) })
+operations.set('Merge', { inputType: NumericTileGrid, outputType: NumericTileGrid, fn: (...inputs) => inputs.reduce((a, b) => isNaN(a) && isNaN(b) ? NaN : (isNaN(a) ? b : (isNaN(b) ? a : (a + b))))})
 operations.set('Product', { inputType: NumericTileGrid, outputType: NumericTileGrid, fn: (...inputs) => inputs.reduce((a, b) => a * b) })
 operations.set('Add', { inputType: NumericTileGrid, outputType: NumericTileGrid, fn: (a, b) => (a + b) })
 operations.set('Subtract', { inputType: NumericTileGrid, outputType: NumericTileGrid, fn: (a, b) => (a - b) })
