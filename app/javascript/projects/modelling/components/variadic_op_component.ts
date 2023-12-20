@@ -11,18 +11,21 @@ export class VariadicOpComponent extends BaseComponent {
   operation: string
   inputSocket: Socket
   outputSocket: Socket
+  tooltip: string | undefined
 
-  constructor(operation: string, operator: string, inputSocket: Socket, outputSocket: Socket, category: string) {
+  constructor(operation: string, operator: string, inputSocket: Socket, outputSocket: Socket, category: string, tooltip?: string) {
     super(operation)
     this.operation = operation
     this.operator = operator
     this.inputSocket = inputSocket
     this.outputSocket = outputSocket
     this.category = category
-    this.contextMenuName = `${operation} (${operator})`
+    this.contextMenuName = operator !== "" ? `${operation} (${operator})` : operation
+    this.tooltip = tooltip
   }
 
   async builder(node: Node) {
+    node.meta.toolTip = this.tooltip
     node.addControl(new PreviewControl(() =>
       node.meta.output as any || new BooleanTileGrid(0, 0, 0, 1, 1)
     ))
