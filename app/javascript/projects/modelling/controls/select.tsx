@@ -1,4 +1,3 @@
-import { style } from "d3"
 import * as React from "react"
 import { Control, Emitter } from 'rete'
 import { EventsTypes } from "rete/types/events"

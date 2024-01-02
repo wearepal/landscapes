@@ -9,7 +9,7 @@ export interface CompiledDatasetRecord {
     updated_at: string
 }
 
-export function saveModelOutput(name: string, model: TileGridJSON, teamId: number) {
+export function saveModelOutput(name: string, model: TileGridJSON, teamId: number, callback?: (status: number) => void) {
     const formData = new FormData()
 
     const blob = new Blob([JSON.stringify(model)], { type: "application/json" })
@@ -20,6 +20,7 @@ export function saveModelOutput(name: string, model: TileGridJSON, teamId: numbe
     formData.append('gridtype', model.type)
 
     const request = new XMLHttpRequest()
+    if(callback) request.addEventListener('load', () => callback(request.status)) 
     request.open('POST', `/teams/${teamId}/datasets`)
     request.setRequestHeader('X-CSRF-Token', (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement).content)
     request.send(formData)
