@@ -1,3 +1,4 @@
+import { style } from "d3"
 import * as React from "react"
 import { Control, Emitter } from 'rete'
 import { EventsTypes } from "rete/types/events"
@@ -14,6 +15,7 @@ interface SelectControlProps {
 interface SelectControlOptions {
     id: number
     name: string
+    gridtype? : string
 }
 
 const SelectInput = ({ emitter, getId, setId, getOptions, change, label }: SelectControlProps) => {
@@ -29,24 +31,73 @@ const SelectInput = ({ emitter, getId, setId, getOptions, change, label }: Selec
 
         emitter?.trigger("process")
     }
+    
+    if(getOptions()[0].gridtype) {
+        const numeric = getOptions().filter(opt => opt.gridtype == "NumericTileGrid")
+        const categorical = getOptions().filter(opt => opt.gridtype == "CategoricalTileGrid")
+        const boolean = getOptions().filter(opt => opt.gridtype == "BooleanTileGrid")
 
-    return (
-        <label style={{ display: "block" }}>
-            {label}
-            <select
-                className="custom-select d-block"
-                style={{ maxWidth: "400px" }}
-                onChange={onChange}
-                value={getId()}
-            >
-                {
-                    getOptions().map(opt =>
-                        <option value={opt.id} key={opt.id}>{opt.name}</option>
-                    )
-                }
-            </select>
-        </label>
-    )
+        return (
+            <label style={{ display: "block" }}>
+                {label}
+                <select
+                    className="custom-select d-block"
+                    style={{ maxWidth: "400px" }}
+                    onChange={onChange}
+                    value={getId()}
+                >
+                    <optgroup label="Numeric">
+                        {
+                            numeric.map(opt =>
+                                <option value={opt.id} key={opt.id}>
+                                    {opt.name}
+                                </option>
+                            )
+                        }
+                    </optgroup>
+                    <optgroup label="Categorical">
+                        {
+                            categorical.map(opt =>
+                                <option value={opt.id} key={opt.id}>
+                                    {opt.name}
+                                </option>
+                            )
+                        }
+                    </optgroup>
+                    <optgroup label="Boolean">
+                        {
+                            boolean.map(opt =>
+                                <option value={opt.id} key={opt.id}>
+                                    {opt.name}
+                                </option>
+                            )
+                        }
+                    </optgroup>
+                </select>
+            </label>
+        )
+
+    }else{
+        return (
+            <label style={{ display: "block" }}>
+                {label}
+                <select
+                    className="custom-select d-block"
+                    style={{ maxWidth: "400px" }}
+                    onChange={onChange}
+                    value={getId()}
+                >
+                    {
+                        getOptions().map(opt =>
+                            <option value={opt.id} key={opt.id}>
+                                {opt.name}
+                            </option>
+                        )
+                    }
+                </select>
+            </label>
+        )
+    }
 
 }
 
