@@ -39,16 +39,28 @@ export const Toolbar = ({ backButtonPath, projectName, hasUnsavedChanges, curren
         <i className="fas fa-save" /> Save
       </button>
     </div>    
-    <div className="btn-group mr-2">
-      <a href={`${window.location}/edit`}>
-        <button className={`btn btn-sm btn-outline-primary`}  onMouseEnter={() => setShowExtent(true)} onMouseLeave={() => setShowExtent(false)}>
-        <i className="fas fa-square" /> Extent
-      </button>
-      </a>
-      <div title={`Zoom level = ${zoomLevel}`} className="p-1 " style={{backgroundColor: zoomLevel > 20 ? "green" : (zoomLevel < 20 ? "orange" : "yellow"), fontSize: ".9em"}}>
-        {zoomLevel > 20 ? "High" : (zoomLevel < 20 ? "Low" : "Med")}
+    {
+      currentTab == Tab.MapView  &&
+      <div className="btn-group mr-2">
+        <a onClick={()=> {
+              const editUrl = `${window.location}/edit`
+              if(hasUnsavedChanges) {
+                if(confirm("You have unsaved changes. Are you sure you want to leave this page?") == true) window.location.href = editUrl
+              }else{
+                window.location.href = editUrl
+              }
+            }
+          }
+        >
+          <button className={`btn btn-sm btn-outline-primary`}  onMouseEnter={() => setShowExtent(true)} onMouseLeave={() => setShowExtent(false)}>
+          <i className="fas fa-square" /> Extent
+        </button>
+        </a>
+        <div title={`Zoom level = ${zoomLevel}`} className="p-1 " style={{backgroundColor: zoomLevel > 20 ? "green" : (zoomLevel < 20 ? "orange" : "yellow"), fontSize: ".9em"}}>
+          {zoomLevel > 20 ? "High" : (zoomLevel < 20 ? "Low" : "Med")}
+        </div>
       </div>
-    </div>
+    }
     <div className="btn-group mr-2">
       <button className={`btn btn-sm ${currentTab == Tab.MapView ? "btn-primary" : "btn-outline-primary"}`} onClick={() => setCurrentTab(Tab.MapView)}>
         <i className="fas fa-map-marked-alt" /> Map view
