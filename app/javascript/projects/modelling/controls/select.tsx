@@ -10,7 +10,6 @@ interface SelectControlProps {
     getOptions: () => Array<SelectControlOptions>
     change: () => void
     label: string | undefined
-    style: Map<string, string> | undefined
 }
 
 interface SelectControlOptions {
@@ -107,7 +106,7 @@ export class SelectControl extends Control {
     props: SelectControlProps
     component: (props: SelectControlProps) => JSX.Element
 
-    constructor(emitter: Emitter<EventsTypes> | null, key: string, getOptions: () => Array<SelectControlOptions>, change: () => void, label: string | undefined = undefined, style? : Map<string, string>) {
+    constructor(emitter: Emitter<EventsTypes> | null, key: string, getOptions: () => Array<SelectControlOptions>, change: () => void, label: string | undefined = undefined) {
         super(key)
 
         this.props = {
@@ -116,8 +115,7 @@ export class SelectControl extends Control {
             setId: this.putData.bind(this, key),
             getOptions,
             change,
-            label,
-            style
+            label
         }
 
         this.component = SelectInput
