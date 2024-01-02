@@ -35,6 +35,7 @@ export class PrecompiledModelComponent extends BaseComponent {
     async builder(node: Node) {
 
         this.models = await this.modelSource()
+        this.models.sort((a, b) => a.name.localeCompare(b.name))
 
         node.meta.toolTip = "Load a precompiled dataset. These can be created from the 'Save Dataset' component."
 
