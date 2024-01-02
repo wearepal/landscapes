@@ -235,7 +235,7 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
           autoProcessing={state.autoProcessing}
           process={process}
           setProcess={setProcess}
-          saveModel={(name: string, json: TileGridJSON) => saveModelOutput(name, json, teamId)}
+          saveModel={(name: string, json: TileGridJSON, callback?: (status: number) => void) => saveModelOutput(name, json, teamId, callback)}
           getDatasets={() => getDatasets(teamId)}
           extent={projectExtent}
           zoom={projectZoom}
