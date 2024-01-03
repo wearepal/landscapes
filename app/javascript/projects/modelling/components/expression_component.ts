@@ -128,7 +128,7 @@ export class ExpressionComponent extends BaseComponent {
 
             const v = inputs[variables[0]][0] as NumericTileGrid
 
-            const out = editorNode.meta.output = outputs['out'] = new NumericTileGrid(v.zoom, v.x, v.y, v.width, v.height, 0)
+            const out = editorNode.meta.output = outputs['out'] = new NumericTileGrid(v.zoom, v.x, v.y, v.width, v.height)
 
             for (let x = v.x; x < v.x + v.width; ++x) {
                 for (let y = v.y; y < v.y + v.height; ++y) {
@@ -140,11 +140,7 @@ export class ExpressionComponent extends BaseComponent {
 
                     let r = p.evaluate(expression)
 
-
-                    if (!isNaN(r)) {
-                        out.set(x, y, r);
-                    }
-
+                    out.set(x, y, r);
                     p.clear();
                 }
             }
