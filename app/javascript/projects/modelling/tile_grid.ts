@@ -3,7 +3,6 @@ import { Extent } from "ol/extent"
 import { createXYZ } from "ol/tilegrid"
 import { registerSerializer } from "threads"
 import { getMedianCellSize } from "./components/cell_area_component"
-import { area } from "d3"
 
 function validateZoom(zoom: number) {
   if (!(
@@ -63,7 +62,8 @@ export function fromJSON(json: TileGridJSON): NumericTileGrid | BooleanTileGrid 
     case "BooleanTileGrid":
       return new BooleanTileGrid(json.zoom, json.x, json.y, json.width, json.height, Uint8Array.from(arraydata, value => value))
     case "NumericTileGrid":
-      return new NumericTileGrid(json.zoom, json.x, json.y, json.width, json.height, Float32Array.from(arraydata, value => value))
+      // NaN are stored as null in JSON, return these back to NaN
+      return new NumericTileGrid(json.zoom, json.x, json.y, json.width, json.height, Float32Array.from(arraydata.map(e => e === null ? NaN : e), value => value))
     case "CategoricalTileGrid":
       const labels = json.labels || {}
       const map = new Map<number, string>()
