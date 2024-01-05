@@ -11,7 +11,7 @@ interface SelectControlProps {
     label: string | undefined
 }
 
-interface SelectControlOptions {
+export interface SelectControlOptions {
     id: number
     name: string
     gridtype? : string
