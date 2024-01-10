@@ -590,6 +590,7 @@ export const Sidebar = ({ state, selectLayer, mutateLayer, deleteLayer, setLayer
               className="form-control"
               placeholder="Layer name"
               value={selectedLayer?.name}
+              title={selectedLayer?.name}
               onChange={
                 e => state.selectedLayer !== undefined &&
                   mutateLayer(state.selectedLayer, { name: e.target.value })

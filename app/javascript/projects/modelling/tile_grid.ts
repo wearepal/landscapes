@@ -21,7 +21,7 @@ function validateAxisExtent(zoom: number, start: number, length: number) {
   }
 }
 
-function toIndex(grid: TileGrid, x: number, y: number) {
+export function toIndex(grid: TileGrid, x: number, y: number) {
   if (
     x >= grid.x && x < grid.x + grid.width &&
     y >= grid.y && y < grid.y + grid.height
