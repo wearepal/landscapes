@@ -8,6 +8,15 @@ interface BaseLayer {
   opacity: number
 }
 
+export interface ColourMapATI {
+  ancient: [r: number, g: number, b: number, a: number]
+  lost_ancient: [r: number, g: number, b: number, a: number]
+  veteran: [r: number, g: number, b: number, a: number]
+  lost_veteran: [r: number, g: number, b: number, a: number]
+  public: [r: number, g: number, b: number, a: number]
+  private: [r: number, g: number, b: number, a: number]
+}
+
 type fillType = "greyscale" | "heatmap" | "jet" | "hsv" | "hot" | "cool" | "spring" | "summer" | "autumn" | "winter" | "copper" | "WIGnBu" | "greens" | "YIOrRd" | "bluered" | "RdBu" | "picnic" | "rainbow" | "portland" | "blackbody" | "earth" | "electric" | "viridis" | "inferno" | "magma" | "plasma" | "warm" | "cool" | "rainbow-soft" | "bathymetry" | "cdom" | "chlorophyll" | "density" | "freesurface-blue" | "freesurface-red" | "oxygen" | "par" | "phase" | "salinity" | "temperature" | "turbidity" | "velocity-blue" | "velocity-green" | "cubehelix"
 
 export interface OsmLayer extends BaseLayer {
@@ -24,6 +33,11 @@ export interface OverlayLayer extends BaseLayer {
   id: number
   strokeWidth: number
   fillOpacity: number
+}
+
+export interface AtiLayer extends BaseLayer {
+  type: "AtiLayer"
+  colors: ColourMapATI
 }
 
 export interface NevoLayer extends BaseLayer {
@@ -62,7 +76,7 @@ export interface DatasetLayer extends BaseLayer {
   deleted?: boolean
 }
 
-export type Layer = OsmLayer | MapTileLayer | OverlayLayer | NevoLayer | CehLandCoverLayer | ModelOutputLayer | DatasetLayer | CropMapLayer
+export type Layer = OsmLayer | MapTileLayer | OverlayLayer | NevoLayer | CehLandCoverLayer | ModelOutputLayer | DatasetLayer | CropMapLayer | AtiLayer
 
 export interface Project {
   name: string
