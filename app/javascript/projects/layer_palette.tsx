@@ -82,6 +82,25 @@ export const LayerPalette = ({ addLayer, hide, dbModels, getTeamDatasets, teamNa
             />
           ))}
         </Section>
+        <Section title="Ancient Tree Inventory">
+          <AddLayerButton
+            addLayer={addLayer}
+            prototype={{
+              type: "AtiLayer",
+              name: "Ancient Tree Inventory",
+              visible: true,
+              opacity: 1,
+              colors: {
+                ancient: [255, 183, 0, 1],
+                veteran: [0, 82, 11, 1],
+                lost_ancient: [245, 218, 149, 1],
+                lost_veteran: [77, 92, 79, 1],
+                public: [0, 217, 255, 1],
+                private: [235, 0, 0, 1],
+              }
+            }}
+          />
+        </Section>
         <Section title="NEVO">
           {
             Array<{ name: string, level: NevoLevel }>(

@@ -2,7 +2,7 @@ import * as React from 'react'
 import './sidebar.css'
 import { ReactSortable } from 'react-sortablejs'
 import { nevoLevelNames, nevoPropertyNames } from './nevo'
-import { CropMapLayer, DatasetLayer, Layer, ModelOutputLayer, NevoLayer, OverlayLayer, State } from './state'
+import { AtiLayer, CropMapLayer, DatasetLayer, Layer, ModelOutputLayer, NevoLayer, OverlayLayer, State } from './state'
 import { iconForLayerType } from "./util"
 import { getColorStops } from './reify_layer/model_output'
 import { tileGridStats } from './modelling/tile_grid'
@@ -77,6 +77,29 @@ const NevoLayerSettings = ({ layer, mutate }: NevoLayerSettingsProps) => (
     </div>
   </>
 )
+
+interface ATILayerSettingsProps {
+  layer: AtiLayer
+}
+
+const ATILayerSettings = ({ layer }: ATILayerSettingsProps) => {
+
+  const colors = layer.colors
+
+  return (
+    <details className="mt-3">
+      <summary>Legend</summary>
+      <span className="swatch" style={{ backgroundColor: `rgb(${colors.ancient[0]},${colors.ancient[1]},${colors.ancient[2]},1)` }} /> Ancient Tree<br />
+      <span className="swatch" style={{ backgroundColor: `rgb(${colors.veteran[0]},${colors.veteran[1]},${colors.veteran[2]},1)` }} /> Veteran Tree<br />
+      <span className="swatch" style={{ backgroundColor: `rgb(${colors.lost_ancient[0]},${colors.lost_ancient[1]},${colors.lost_ancient[2]},1)` }} /> Lost Ancient Tree<br />
+      <span className="swatch" style={{ backgroundColor: `rgb(${colors.lost_veteran[0]},${colors.lost_veteran[1]},${colors.lost_veteran[2]},1)` }} /> Lost Veteran Tree<br />
+      <br />
+      <span className="swatch" style={{ backgroundColor: `rgb(${colors.public[0]},${colors.public[1]},${colors.public[2]},1)` }} /> Public<br />
+      <span className="swatch" style={{ backgroundColor: `rgb(${colors.private[0]},${colors.private[1]},${colors.private[2]},1)` }} /> Private<br />
+    </details>
+  )
+
+}
 
 interface CropMapLayerSettingsProps {
   layer: CropMapLayer
@@ -651,6 +674,10 @@ export const Sidebar = ({ state, selectLayer, mutateLayer, deleteLayer, setLayer
             {
               selectedLayer?.type == "CropMapLayer" &&
               <CropMapLayerSettings layer={selectedLayer} />
+            }
+            {
+              selectedLayer?.type == "AtiLayer" &&
+              <ATILayerSettings layer={selectedLayer} />
             }
           </> :
           <em>No layer selected</em>
