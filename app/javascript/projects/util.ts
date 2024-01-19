@@ -16,6 +16,10 @@ export function iconForLayerType(type: Layer['type']) {
       return "fa-draw-polygon"
     case "ModelOutputLayer":
       return "fa-project-diagram"
+    case "ShapeLayer":
+      return "fa-draw-polygon"
+    case "AtiLayer":
+      return "fa-tree"
     default:
       return "fa-layer-group"
   }

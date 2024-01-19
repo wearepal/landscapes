@@ -101,27 +101,33 @@ export const LayerPalette = ({ addLayer, hide, dbModels, getTeamDatasets, teamNa
             }}
           />
         </Section>
-        <Section title="Shape Files">
+        <Section title="Designations">
           {
             Array<{ name: string, identifier: string, fill: [number, number, number, number], stroke: [number, number, number, number] }>(
               { 
                 name: "Areas of Outstanding Natural Beauty (AONB)", 
                 identifier: "shapefiles:AONB_UK", 
-                fill: [0, 255, 0, 1], 
+                fill: [0, 155, 0, 1], 
                 stroke: [0, 0, 0, 1] 
               },
               { 
                 name: "Sites of Special Scientific Interest (SSSI)", 
-                identifier: "shapefiles:Sites_of_Special_Scientific_Interest__England____Natural_England", 
+                identifier: "shapefiles:SSSI_UK", 
                 fill: [255, 0, 0, 1], 
                 stroke: [0, 0, 0, 1]  
               },
               { 
                 name: "National Nature Reserves", 
-                identifier: "shapefiles:National_Nature_Reserves___Natural_England", 
-                fill: [255, 50, 0, 1], 
+                identifier: "shapefiles:NNR_UK", 
+                fill: [42, 161, 79, 1], 
                 stroke: [0, 0, 0, 1]  
               },
+              {
+                name: "Local Nature Reserves",
+                identifier: "shapefiles:LNR_ENG",
+                fill: [27, 174, 196, 1],
+                stroke: [0, 0, 0, 1]
+              }
             ).map(({ name, identifier, stroke, fill }) =>
               <AddLayerButton
                 addLayer={addLayer}

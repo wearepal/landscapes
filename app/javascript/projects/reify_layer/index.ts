@@ -26,7 +26,7 @@ export const reifyLayer = (layer: Layer, existingLayer: BaseLayer | null, dbMode
     case "DatasetLayer": return reifyModelOutputLayer(layer, existingLayer, DatasetCache, loadteamDataset)
     case "CropMapLayer": return reifyCropMapLayer(layer, existingLayer)
     case "AtiLayer" : return reifyAtiLayer(layer, existingLayer, map)
-    case "ShapeLayer": return reifyShapeFileLayer(layer, existingLayer)
+    case "ShapeLayer": return reifyShapeFileLayer(layer, existingLayer, map)
     default: {
       // Ensure this switch statement is exhaustive
       const unreachable: never = layerType
