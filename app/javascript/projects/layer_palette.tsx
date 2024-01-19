@@ -101,6 +101,52 @@ export const LayerPalette = ({ addLayer, hide, dbModels, getTeamDatasets, teamNa
             }}
           />
         </Section>
+        <Section title="Designations">
+          {
+            Array<{ name: string, identifier: string, fill: [number, number, number, number], stroke: [number, number, number, number] }>(
+              { 
+                name: "Areas of Outstanding Natural Beauty (AONB)", 
+                identifier: "shapefiles:AONB_UK", 
+                fill: [0, 155, 0, 1], 
+                stroke: [0, 0, 0, 1] 
+              },
+              { 
+                name: "Sites of Special Scientific Interest (SSSI)", 
+                identifier: "shapefiles:SSSI_UK", 
+                fill: [255, 0, 0, 1], 
+                stroke: [0, 0, 0, 1]  
+              },
+              { 
+                name: "National Nature Reserves", 
+                identifier: "shapefiles:NNR_UK", 
+                fill: [42, 161, 79, 1], 
+                stroke: [0, 0, 0, 1]  
+              },
+              {
+                name: "Local Nature Reserves",
+                identifier: "shapefiles:LNR_ENG",
+                fill: [27, 174, 196, 1],
+                stroke: [0, 0, 0, 1]
+              }
+            ).map(({ name, identifier, stroke, fill }) =>
+              <AddLayerButton
+                addLayer={addLayer}
+                prototype={{
+                  type: "ShapeLayer",
+                  name,
+                  colors: {
+                    stroke,
+                    fill
+                  },
+                  identifier,
+                  visible: true,
+                  opacity: 1,
+                }}
+              />
+            )
+            }
+
+        </Section>
         <Section title="NEVO">
           {
             Array<{ name: string, level: NevoLevel }>(
