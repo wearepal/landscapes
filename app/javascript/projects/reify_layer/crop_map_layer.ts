@@ -8,7 +8,7 @@ export function reifyCropMapLayer(layer: CropMapLayer, existingLayer: BaseLayer 
 
     const source = new TileWMS({
         url: `https://environment.data.gov.uk/spatialdata/crop-map-of-england-${layer.year}/wms`,
-        params: { "TILED": true, "LAYERS": `Crop_Map_Of_England_${layer.year}` },
+        params: { "TILED": true, "LAYERS": layer.year != 2021 ? `Crop_Map_Of_England_${layer.year}` : `Crop_Map_of_England_2021_East_Sussex,Crop_Map_of_England_2021_West_Sussex` },
         serverType: "mapserver",
     })
 
