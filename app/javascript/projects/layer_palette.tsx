@@ -127,6 +127,12 @@ export const LayerPalette = ({ addLayer, hide, dbModels, getTeamDatasets, teamNa
                 identifier: "shapefiles:LNR_ENG",
                 fill: [27, 174, 196, 1],
                 stroke: [0, 0, 0, 1]
+              },
+              {
+                name: "National Parks",
+                identifier: "shapefiles:NP_ENG",
+                fill: [255, 255, 0, 1],
+                stroke: [0, 0, 0, 1]
               }
             ).map(({ name, identifier, stroke, fill }) =>
               <AddLayerButton
