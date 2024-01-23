@@ -109,7 +109,7 @@ const CropMapLayerSettings = ({ layer }: CropMapLayerSettingsProps) => (
   <>
     <details className="mt-3">
       <summary>Legend</summary>
-      <img src={`https://environment.data.gov.uk/spatialdata/crop-map-of-england-${layer.year}/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetLegendGraphic&FORMAT=image%2Fpng&TILED=true&LAYER=Crop_Map_Of_England_${layer.year}`} />
+      <img src={`https://environment.data.gov.uk/spatialdata/crop-map-of-england-${layer.year}/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetLegendGraphic&FORMAT=image%2Fpng&LAYER=Crop_Map_Of_England_${layer.year}`} />
     </details>
   </>
 )
