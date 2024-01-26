@@ -13,92 +13,92 @@ import TileGrid from "ol/tilegrid/TileGrid"
 interface CropSpecies {
   LUCODE: string
   LC: string
+  LC_CAT: string
 }
 
 const cropspecies: CropSpecies[] = [
-  //TODO : move to a json or an alternative storage
-{ LC: "Spring Barley", LUCODE: "AC01" }, 
-{ LC: "Beet", LUCODE: "AC03" }, 
-{ LC: "Borage", LUCODE: "AC04" }, 
-{ LC: "Buckwheat", LUCODE: "AC05" }, 
-{ LC: "Canary Seed", LUCODE: "AC06" }, 
-{ LC: "Carrot", LUCODE: "AC07" }, 
-{ LC: "Chicory", LUCODE: "AC09" }, 
-{ LC: "Daffodil", LUCODE: "AC10" }, 
-{ LC: "Hemp", LUCODE: "AC14" }, 
-{ LC: "Lettuce", LUCODE: "AC15" }, 
-{ LC: "Spring Linseed ", LUCODE: "AC16" }, 
-{ LC: "Maize", LUCODE: "AC17" }, 
-{ LC: "Millet", LUCODE: "AC18" }, 
-{ LC: "Spring Oats", LUCODE: "AC19" }, 
-{ LC: "Onions", LUCODE: "AC20" }, 
-{ LC: "Parsley", LUCODE: "AC22" }, 
-{ LC: "Parsnips", LUCODE: "AC23" }, 
-{ LC: "Spring Rye", LUCODE: "AC24" }, 
-{ LC: "Spinach", LUCODE: "AC26" }, 
-{ LC: "Strawberry", LUCODE: "AC27" }, 
-{ LC: "Spring Triticale", LUCODE: "AC30" }, 
-{ LC: "Spring Wheat", LUCODE: "AC32" }, 
-{ LC: "Spring Cabbage", LUCODE: "AC34" }, 
-{ LC: "Turnip", LUCODE: "AC35" }, 
-{ LC: "Spring Oilseed", LUCODE: "AC36" }, 
-{ LC: "Brown Mustard", LUCODE: "AC37" }, 
-{ LC: "Mustard", LUCODE: "AC38" }, 
-{ LC: "Radish", LUCODE: "AC41" }, 
-{ LC: "Potato", LUCODE: "AC44" }, 
-{ LC: "Tomato", LUCODE: "AC45" }, 
-{ LC: "Squash", LUCODE: "AC50" }, 
-{ LC: "Siam Pumpkin", LUCODE: "AC52" }, 
-{ LC: "Mixed Crop-Group 1", LUCODE: "AC58" }, 
-{ LC: "Mixed Crop-Group 2", LUCODE: "AC59" }, 
-{ LC: "Mixed Crop-Group 3", LUCODE: "AC60" }, 
-{ LC: "Mixed Crop-Group 4", LUCODE: "AC61" }, 
-{ LC: "Mixed Crop-Group 5", LUCODE: "AC62" }, 
-{ LC: "Winter Barley", LUCODE: "AC63" }, 
-{ LC: "Winter Linseed", LUCODE: "AC64" }, 
-{ LC: "Winter Oats", LUCODE: "AC65" }, 
-{ LC: "Winter Wheat", LUCODE: "AC66" }, 
-{ LC: "Winter Oilseed", LUCODE: "AC67" }, 
-{ LC: "Winter Rye", LUCODE: "AC68" }, 
-{ LC: "Winter Triticale", LUCODE: "AC69" }, 
-{ LC: "Winter Cabbage", LUCODE: "AC70" }, 
-{ LC: "Coriander", LUCODE: "AC71" }, 
-{ LC: "Corn gromwell", LUCODE: "AC72" }, 
-{ LC: "Phacelia", LUCODE: "AC74" }, 
-{ LC: "Poppy", LUCODE: "AC81" }, 
-{ LC: "Sunflower", LUCODE: "AC88" }, 
-{ LC: "Gladioli", LUCODE: "AC90" }, 
-{ LC: "Sorghum", LUCODE: "AC92" }, 
-{ LC: "Sweet William", LUCODE: "AC94" }, 
-{ LC: "Italian Ryegrass", LUCODE: "AC100" }, 
-{ LC: "Cover Crop", LUCODE: "CA02" }, 
-{ LC: "Chickpea", LUCODE: "LG01" }, 
-{ LC: "Fenugreek", LUCODE: "LG02" }, 
-{ LC: "Spring Field beans", LUCODE: "LG03" }, 
-{ LC: "Green Beans", LUCODE: "LG04" }, 
-{ LC: "Lupins", LUCODE: "LG06" }, 
-{ LC: "Spring Peas", LUCODE: "LG07" }, 
-{ LC: "Cowpea", LUCODE: "LG09" }, 
-{ LC: "Soya", LUCODE: "LG08" }, 
-{ LC: "Lucerne", LUCODE: "LG11" }, 
-{ LC: "Sainfoin", LUCODE: "LG13" }, 
-{ LC: "Clover", LUCODE: "LG14" }, 
-{ LC: "Mixed Crops–Group 1 Leguminous", LUCODE: "LG15" }, 
-{ LC: "Mixed Crops–Group 2 Leguminous", LUCODE: "LG16" }, 
-{ LC: "Winter Field beans", LUCODE: "LG20" }, 
-{ LC: "Winter Peas", LUCODE: "LG21" }, 
-{ LC: "Short Rotation Coppice", LUCODE: "SR01" }, 
-{ LC: "Fallow Land", LUCODE: "FA01" }, 
-{ LC: "Heathland and Bracken", LUCODE: "HE02" }, 
-{ LC: "Heather", LUCODE: "HEAT" }, 
-{ LC: "Grass", LUCODE: "PG01" }, 
-{ LC: "Non-vegetated or sparsely-vegetated Land", LUCODE: "NA01" }, 
-{ LC: "Water", LUCODE: "WA00" }, 
-{ LC: "Perennial Crops and Isolated Trees", LUCODE: "TC01" }, 
-{ LC: "Nursery Crops", LUCODE: "NU01" }, 
-{ LC: "Trees and Scrubs, short Woody plants, hedgerows", LUCODE: "WO12" }, 
-{ LC: "Unknown or Mixed Vegetation", LUCODE: "AC00" }, 
-{ LC: "All", LUCODE: "000" }
+{ LC: "Spring Barley", LUCODE: "AC01", LC_CAT: "Cereal" }, 
+{ LC: "Beet", LUCODE: "AC03", LC_CAT: "Other (fruit, vegetables, herbs, flowers, oilseeds, cover crops)" }, 
+{ LC: "Borage", LUCODE: "AC04", LC_CAT: "Other (fruit, vegetables, herbs, flowers, oilseeds, cover crops)" }, 
+{ LC: "Buckwheat", LUCODE: "AC05", LC_CAT: "Cereal" }, 
+{ LC: "Canary Seed", LUCODE: "AC06", LC_CAT: "Other (fruit, vegetables, herbs, flowers, oilseeds, cover crops)" }, 
+{ LC: "Carrot", LUCODE: "AC07", LC_CAT: "Other (fruit, vegetables, herbs, flowers, oilseeds, cover crops)" }, 
+{ LC: "Chicory", LUCODE: "AC09", LC_CAT: "Other (fruit, vegetables, herbs, flowers, oilseeds, cover crops)" }, 
+{ LC: "Daffodil", LUCODE: "AC10", LC_CAT: "Other (fruit, vegetables, herbs, flowers, oilseeds, cover crops)" }, 
+{ LC: "Hemp", LUCODE: "AC14", LC_CAT: "Other (fruit, vegetables, herbs, flowers, oilseeds, cover crops)" }, 
+{ LC: "Lettuce", LUCODE: "AC15", LC_CAT: "Other (fruit, vegetables, herbs, flowers, oilseeds, cover crops)" }, 
+{ LC: "Spring Linseed ", LUCODE: "AC16" , LC_CAT: "Other (fruit, vegetables, herbs, flowers, oilseeds, cover crops)"}, 
+{ LC: "Maize", LUCODE: "AC17", LC_CAT: "Cereal" }, 
+{ LC: "Millet", LUCODE: "AC18", LC_CAT: "Cereal" }, 
+{ LC: "Spring Oats", LUCODE: "AC19", LC_CAT: "Cereal" }, 
+{ LC: "Onions", LUCODE: "AC20" , LC_CAT: "Other (fruit, vegetables, herbs, flowers, oilseeds, cover crops)"}, 
+{ LC: "Parsley", LUCODE: "AC22", LC_CAT: "Other (fruit, vegetables, herbs, flowers, oilseeds, cover crops)" }, 
+{ LC: "Parsnips", LUCODE: "AC23", LC_CAT: "Other (fruit, vegetables, herbs, flowers, oilseeds, cover crops)" }, 
+{ LC: "Spring Rye", LUCODE: "AC24" , LC_CAT: "Cereal"}, 
+{ LC: "Spinach", LUCODE: "AC26" , LC_CAT: "Other (fruit, vegetables, herbs, flowers, oilseeds, cover crops)"}, 
+{ LC: "Strawberry", LUCODE: "AC27" , LC_CAT: "Other (fruit, vegetables, herbs, flowers, oilseeds, cover crops)"}, 
+{ LC: "Spring Triticale", LUCODE: "AC30" , LC_CAT: "Cereal"}, 
+{ LC: "Spring Wheat", LUCODE: "AC32" , LC_CAT: "Cereal"}, 
+{ LC: "Spring Cabbage", LUCODE: "AC34" , LC_CAT: "Cereal"}, 
+{ LC: "Turnip", LUCODE: "AC35" , LC_CAT: "Other (fruit, vegetables, herbs, flowers, oilseeds, cover crops)"}, 
+{ LC: "Spring Oilseed", LUCODE: "AC36" , LC_CAT: "Cereal"}, 
+{ LC: "Brown Mustard", LUCODE: "AC37" , LC_CAT: "Other (fruit, vegetables, herbs, flowers, oilseeds, cover crops)"}, 
+{ LC: "Mustard", LUCODE: "AC38" , LC_CAT: "Cereal"}, 
+{ LC: "Radish", LUCODE: "AC41" , LC_CAT: "Other (fruit, vegetables, herbs, flowers, oilseeds, cover crops)"}, 
+{ LC: "Potato", LUCODE: "AC44" , LC_CAT: "Other (fruit, vegetables, herbs, flowers, oilseeds, cover crops)"}, 
+{ LC: "Tomato", LUCODE: "AC45" , LC_CAT: "Other (fruit, vegetables, herbs, flowers, oilseeds, cover crops)"}, 
+{ LC: "Squash", LUCODE: "AC50" , LC_CAT: "Other (fruit, vegetables, herbs, flowers, oilseeds, cover crops)"}, 
+{ LC: "Siam Pumpkin", LUCODE: "AC52" , LC_CAT: "Other (fruit, vegetables, herbs, flowers, oilseeds, cover crops)"}, 
+{ LC: "Mixed Crop-Group 1", LUCODE: "AC58" , LC_CAT: "Other (fruit, vegetables, herbs, flowers, oilseeds, cover crops)"}, 
+{ LC: "Mixed Crop-Group 2", LUCODE: "AC59" , LC_CAT: "Other (fruit, vegetables, herbs, flowers, oilseeds, cover crops)"}, 
+{ LC: "Mixed Crop-Group 3", LUCODE: "AC60" , LC_CAT: "Other (fruit, vegetables, herbs, flowers, oilseeds, cover crops)"}, 
+{ LC: "Mixed Crop-Group 4", LUCODE: "AC61" , LC_CAT: "Other (fruit, vegetables, herbs, flowers, oilseeds, cover crops)"}, 
+{ LC: "Mixed Crop-Group 5", LUCODE: "AC62" , LC_CAT: "Other (fruit, vegetables, herbs, flowers, oilseeds, cover crops)"}, 
+{ LC: "Winter Barley", LUCODE: "AC63" , LC_CAT: "Cereal"}, 
+{ LC: "Winter Linseed", LUCODE: "AC64" , LC_CAT: "Other (fruit, vegetables, herbs, flowers, oilseeds, cover crops)"}, 
+{ LC: "Winter Oats", LUCODE: "AC65" , LC_CAT: "Cereal"}, 
+{ LC: "Winter Wheat", LUCODE: "AC66" , LC_CAT: "Cereal"}, 
+{ LC: "Winter Oilseed", LUCODE: "AC67" , LC_CAT: "Other (fruit, vegetables, herbs, flowers, oilseeds, cover crops)"}, 
+{ LC: "Winter Rye", LUCODE: "AC68" , LC_CAT: "Cereal"}, 
+{ LC: "Winter Triticale", LUCODE: "AC69" , LC_CAT: "Cereal"}, 
+{ LC: "Winter Cabbage", LUCODE: "AC70" , LC_CAT: "Other (fruit, vegetables, herbs, flowers, oilseeds, cover crops)"}, 
+{ LC: "Coriander", LUCODE: "AC71" , LC_CAT: "Other (fruit, vegetables, herbs, flowers, oilseeds, cover crops)"}, 
+{ LC: "Corn gromwell", LUCODE: "AC72" , LC_CAT: "Other (fruit, vegetables, herbs, flowers, oilseeds, cover crops)"}, 
+{ LC: "Phacelia", LUCODE: "AC74" , LC_CAT: "Other (fruit, vegetables, herbs, flowers, oilseeds, cover crops)"}, 
+{ LC: "Poppy", LUCODE: "AC81" , LC_CAT: "Other (fruit, vegetables, herbs, flowers, oilseeds, cover crops)"}, 
+{ LC: "Sunflower", LUCODE: "AC88" , LC_CAT: "Other (fruit, vegetables, herbs, flowers, oilseeds, cover crops)"}, 
+{ LC: "Gladioli", LUCODE: "AC90" , LC_CAT: "Other (fruit, vegetables, herbs, flowers, oilseeds, cover crops)"}, 
+{ LC: "Sorghum", LUCODE: "AC92" , LC_CAT: "Cereal"}, 
+{ LC: "Sweet William", LUCODE: "AC94" , LC_CAT: "Other (fruit, vegetables, herbs, flowers, oilseeds, cover crops)"}, 
+{ LC: "Italian Ryegrass", LUCODE: "AC100" , LC_CAT: "Other (fruit, vegetables, herbs, flowers, oilseeds, cover crops)"}, 
+{ LC: "Cover Crop", LUCODE: "CA02" , LC_CAT: "Cereal"}, 
+{ LC: "Chickpea", LUCODE: "LG01" , LC_CAT: "Leguminous"}, 
+{ LC: "Fenugreek", LUCODE: "LG02"  , LC_CAT: "Leguminous"}, 
+{ LC: "Spring Field beans", LUCODE: "LG03"  , LC_CAT: "Leguminous"}, 
+{ LC: "Green Beans", LUCODE: "LG04"  , LC_CAT: "Leguminous"}, 
+{ LC: "Lupins", LUCODE: "LG06"  , LC_CAT: "Leguminous"}, 
+{ LC: "Spring Peas", LUCODE: "LG07"  , LC_CAT: "Leguminous"}, 
+{ LC: "Cowpea", LUCODE: "LG09"  , LC_CAT: "Leguminous"}, 
+{ LC: "Soya", LUCODE: "LG08"  , LC_CAT: "Leguminous"}, 
+{ LC: "Lucerne", LUCODE: "LG11"  , LC_CAT: "Leguminous"}, 
+{ LC: "Sainfoin", LUCODE: "LG13"  , LC_CAT: "Leguminous"}, 
+{ LC: "Clover", LUCODE: "LG14"  , LC_CAT: "Leguminous"}, 
+{ LC: "Mixed Crops–Group 1 Leguminous", LUCODE: "LG15"  , LC_CAT: "Leguminous"}, 
+{ LC: "Mixed Crops–Group 2 Leguminous", LUCODE: "LG16"  , LC_CAT: "Leguminous"}, 
+{ LC: "Winter Field beans", LUCODE: "LG20"  , LC_CAT: "Leguminous"}, 
+{ LC: "Winter Peas", LUCODE: "LG21" , LC_CAT: "Leguminous" }, 
+{ LC: "Short Rotation Coppice", LUCODE: "SR01", LC_CAT: "Energy"}, 
+{ LC: "Fallow Land", LUCODE: "FA01", LC_CAT: "Grassland"}, 
+{ LC: "Heathland and Bracken", LUCODE: "HE02", LC_CAT: "Grassland" }, 
+{ LC: "Heather", LUCODE: "HEAT", LC_CAT: "Grassland" }, 
+{ LC: "Grass", LUCODE: "PG01", LC_CAT: "Grassland" }, 
+{ LC: "Non-vegetated or sparsely-vegetated Land", LUCODE: "NA01", LC_CAT: "Non–Agricultural" }, 
+{ LC: "Water", LUCODE: "WA00", LC_CAT: "Water" }, 
+{ LC: "Perennial Crops and Isolated Trees", LUCODE: "TC01", LC_CAT: "Trees" }, 
+{ LC: "Nursery Crops", LUCODE: "NU01", LC_CAT: "Trees" }, 
+{ LC: "Trees and Scrubs, short Woody plants, hedgerows", LUCODE: "WO12", LC_CAT: "Trees" }, 
+{ LC: "Unknown or Mixed Vegetation", LUCODE: "AC00", LC_CAT: "Unknown Vegetation Or Mixed Vegetation" }, 
+{ LC: "All", LUCODE: "000", LC_CAT: "All"}
 ]
 
 async function fetchCROMEFromExtent(bbox: string, source: string, count: number, startIndex: number) {
@@ -122,15 +122,17 @@ async function fetchCROMEFromExtent(bbox: string, source: string, count: number,
   return await response.json()
 }
 
-async function loadFeaturesToGrid(grid: CategoricalTileGrid, tileRange: TileRange, tileGrid: TileGrid, features: any, map: Map<number, string>) : Promise<CategoricalTileGrid>{
+async function loadFeaturesToGrid(grid: CategoricalTileGrid, tileRange: TileRange, tileGrid: TileGrid, features: any, map: Map<string, number>) : Promise<CategoricalTileGrid>{
   // given a grid and a set of features, load the features into the grid
+
+  console.log(map)
 
   for (let feature of features) {
 
     const lucode = feature.get("lucode")
-    const index = cropspecies.findIndex(x => x.LUCODE === lucode)
+    const index = map.get(lucode)
 
-    if (index === -1) { continue }
+    if (!index) { continue }
 
     const geom = feature.getGeometry()
 
@@ -152,7 +154,7 @@ async function loadFeaturesToGrid(grid: CategoricalTileGrid, tileRange: TileRang
       ) {
         const tileExtent = tileGrid.getTileCoordExtent([grid.zoom, x, y])
         if (geom.intersectsExtent(tileExtent)) {
-          grid.set(x, y, index + 1)
+          grid.set(x, y, index)
         }
       }
     }
@@ -169,10 +171,18 @@ async function renderCategoricalData(extent: Extent, zoom: number) {
   //TODO retrieve count & available layers from GetCapabilities request incase it changes
   let startIndex = 0
 
-  const map: Map<number, string> = new Map()
+  const cropcats = new Set<string>()
+  cropspecies.forEach(crome => cropcats.add(crome.LC_CAT))
+  const arr = Array.from(cropcats)
 
-  cropspecies.forEach((crome, i) => {
-    if (crome.LUCODE !== "000") map.set(i + 1, crome.LC)
+  const map: Map<string, number> = new Map()
+  const labelsMap: Map<number, string> = new Map()
+
+  cropspecies.forEach((crome) => {
+    if (crome.LC_CAT !== "All") {
+      map.set(crome.LUCODE, arr.findIndex(x => x === crome.LC_CAT) + 1)
+      labelsMap.set(arr.findIndex(x => x === crome.LC_CAT) + 1, crome.LC_CAT)
+    }
   })
 
   const result = new CategoricalTileGrid(
@@ -196,7 +206,7 @@ async function renderCategoricalData(extent: Extent, zoom: number) {
     startIndex += count
   }
 
-  result.setLabels(map)
+  result.setLabels(labelsMap)
 
   return result
 }
@@ -225,14 +235,21 @@ export class CROMEComponent extends BaseComponent {
     //cropspecies.forEach(crome =>
     //  crome.LC === "All" ? node.addOutput(new Output(crome["LUCODE"], crome["LC"], categoricalDataSocket)) : node.addOutput(new Output(crome["LUCODE"], crome["LC"], booleanDataSocket))
     //)
-    for (let crome of cropspecies) {
-      if (crome.LUCODE === "000") {
-        node.addOutput(new Output(crome["LUCODE"], crome["LC"], categoricalDataSocket))
-      }
-      else if (crome.LUCODE === "TC01" || crome.LUCODE === "WO12" || crome.LUCODE === "AC88" || crome.LUCODE === "AC17" || crome.LUCODE === "LG08") {
-        node.addOutput(new Output(crome["LUCODE"], crome["LC"], booleanDataSocket))
-      }
+
+    const cropcats = new Set<string>()
+    cropspecies.forEach(crome => cropcats.add(crome.LC_CAT))
+
+    for (let cropcat of Array.from(cropcats)) {
+      node.addOutput(new Output(cropcat, cropcat, cropcat === "All" ? categoricalDataSocket : booleanDataSocket))
     }
+
+    // for (let crome of cropspecies) {
+    //   if (crome.LUCODE === "000") {
+    //     node.addOutput(new Output(crome["LUCODE"], crome["LC"], categoricalDataSocket))
+    //   } else if (crome.LUCODE === "TC01" || crome.LUCODE === "WO12" || crome.LUCODE === "AC88" || crome.LUCODE === "AC17" || crome.LUCODE === "LG08") {
+    //     node.addOutput(new Output(crome["LUCODE"], crome["LC"], booleanDataSocket))
+    //   }
+    // }
 
   }
 
@@ -243,28 +260,27 @@ export class CROMEComponent extends BaseComponent {
     }
     const categoricalData = this.categoricalData!
 
-    cropspecies.filter(
-      crome => node.outputs[crome.LUCODE]?.connections.length > 0
-    ).forEach(crome => {
-      if (crome.LUCODE === "000") {
+    const cropcats = new Set<string>()
+    cropspecies.forEach(crome => cropcats.add(crome.LC_CAT))
+    const arr = Array.from(cropcats)
 
-        outputs[crome.LUCODE] = this.categoricalData
+    arr.filter(
+      cropcat => node.outputs[cropcat]?.connections.length > 0
+    ).forEach(cropcat => {
+      if (cropcat === "All") {
+
+        outputs[cropcat] = this.categoricalData
 
       } else {
 
-            const out = outputs[crome.LUCODE] = new BooleanTileGrid(categoricalData.zoom, categoricalData.x, categoricalData.y, categoricalData.width, categoricalData.height)
+            const out = outputs[cropcat] = new BooleanTileGrid(categoricalData.zoom, categoricalData.x, categoricalData.y, categoricalData.width, categoricalData.height)
 
-            out.name = crome.LC
+            out.name = cropcat
+            const k = arr.findIndex(x => x === cropcat) +1 
 
-            const key = cropspecies.findIndex(x => x.LUCODE === crome.LUCODE) + 1
+            categoricalData.iterate((x, y, value) => out.set(x, y, value === k))
 
-            for (let x = categoricalData.x; x < categoricalData.x + categoricalData.width; ++x) {
-              for (let y = categoricalData.y; y < categoricalData.y + categoricalData.height; ++y) {
-                out.set(x, y, categoricalData.get(x, y) === key)
-              }
-            }
-
-            this.outputCache.set(crome.LUCODE, out)
+            this.outputCache.set(cropcat, out)
 
       }
     })
