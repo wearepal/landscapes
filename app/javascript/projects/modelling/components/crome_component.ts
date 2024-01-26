@@ -7,6 +7,8 @@ import GeoJSON from "ol/format/GeoJSON"
 import { BooleanTileGrid, CategoricalTileGrid } from "../tile_grid"
 import { Extent } from "ol/extent"
 import { bboxFromExtent } from "../bounding_box"
+import { TileRange } from "ol"
+import TileGrid from "ol/tilegrid/TileGrid"
 
 interface CropSpecies {
   LUCODE: string
@@ -99,17 +101,19 @@ const cropspecies: CropSpecies[] = [
 { LC: "All", LUCODE: "000" }
 ]
 
-async function fetchCROMEFromExtent(bbox: string, source: string) {
+async function fetchCROMEFromExtent(bbox: string, source: string, count: number, startIndex: number) {
 
   const response = await fetch(
-    "https://landscapes.wearepal.ai/geoserver/wfs?" +
+    "https://environment.data.gov.uk/spatialdata/crop-map-of-england-2021/wfs?" +
     new URLSearchParams(
       {
         outputFormat: 'application/json',
         request: 'GetFeature',
         typeName: source,
         srsName: 'EPSG:3857',
-        bbox
+        bbox,
+        count: count.toString(),
+        startIndex: startIndex.toString()
       }
     )
   )
@@ -118,14 +122,52 @@ async function fetchCROMEFromExtent(bbox: string, source: string) {
   return await response.json()
 }
 
+async function loadFeaturesToGrid(grid: CategoricalTileGrid, tileRange: TileRange, tileGrid: TileGrid, features: any, map: Map<number, string>) : Promise<CategoricalTileGrid>{
+  // given a grid and a set of features, load the features into the grid
+
+  for (let feature of features) {
+
+    const lucode = feature.get("lucode")
+    const index = cropspecies.findIndex(x => x.LUCODE === lucode)
+
+    if (index === -1) { continue }
+
+    const geom = feature.getGeometry()
+
+    if (!geom) continue
+
+    const featureTileRange = tileGrid.getTileRangeForExtentAndZ(
+      geom.getExtent(),
+      grid.zoom
+    )
+    for (
+      let x = Math.max(featureTileRange.minX, tileRange.minX);
+      x <= Math.min(featureTileRange.maxX, tileRange.maxX);
+      ++x
+    ) {
+      for (
+        let y = Math.max(featureTileRange.minY, tileRange.minY);
+        y <= Math.min(featureTileRange.maxY, tileRange.maxY);
+        ++y
+      ) {
+        const tileExtent = tileGrid.getTileCoordExtent([grid.zoom, x, y])
+        if (geom.intersectsExtent(tileExtent)) {
+          grid.set(x, y, index + 1)
+        }
+      }
+    }
+  }
+
+  return grid
+}
 async function renderCategoricalData(extent: Extent, zoom: number) {
-  // When testing locally, disable CORS in browser settings
 
   const tileGrid = createXYZ()
   const outputTileRange = tileGrid.getTileRangeForExtentAndZ(extent, zoom)
-  const res = await fetchCROMEFromExtent(bboxFromExtent(extent), 'crome:crop_map_of_england_2020_east_sussex')
-  const features = new GeoJSON().readFeatures(res)
 
+  const count = 300000
+  //TODO retrieve count & available layers from GetCapabilities request incase it changes
+  let startIndex = 0
 
   const map: Map<number, string> = new Map()
 
@@ -141,37 +183,17 @@ async function renderCategoricalData(extent: Extent, zoom: number) {
     outputTileRange.getHeight()
   )
 
-  for (let feature of features) {
+  while (true) {
+    const res = await fetchCROMEFromExtent(bboxFromExtent(extent), 'dataset-f0f54bc1-b77a-42c8-b601-2f4aaf4dd851:Crop_Map_of_England_2021_Kent,dataset-f0f54bc1-b77a-42c8-b601-2f4aaf4dd851:Crop_Map_of_England_2021_Surrey,dataset-f0f54bc1-b77a-42c8-b601-2f4aaf4dd851:Crop_Map_of_England_2021_West_Sussex,dataset-f0f54bc1-b77a-42c8-b601-2f4aaf4dd851:Crop_Map_of_England_2021_East_Sussex', count, startIndex)
+    const features = new GeoJSON().readFeatures(res)
 
-    const lucode = feature.get("lucode")
-    const index = cropspecies.findIndex(x => x.LUCODE === lucode)
+    if (features.length === 0) break
 
-    if (index === -1) { continue }
+    await loadFeaturesToGrid(result, outputTileRange, tileGrid, features, map)
 
-    const geom = feature.getGeometry()
+    if (features.length < count) break
 
-    if (!geom) continue
-
-    const featureTileRange = tileGrid.getTileRangeForExtentAndZ(
-      geom.getExtent(),
-      zoom
-    )
-    for (
-      let x = Math.max(featureTileRange.minX, outputTileRange.minX);
-      x <= Math.min(featureTileRange.maxX, outputTileRange.maxX);
-      ++x
-    ) {
-      for (
-        let y = Math.max(featureTileRange.minY, outputTileRange.minY);
-        y <= Math.min(featureTileRange.maxY, outputTileRange.maxY);
-        ++y
-      ) {
-        const tileExtent = tileGrid.getTileCoordExtent([zoom, x, y])
-        if (geom.intersectsExtent(tileExtent)) {
-          result.set(x, y, index + 1)
-        }
-      }
-    }
+    startIndex += count
   }
 
   result.setLabels(map)
