@@ -51,6 +51,12 @@ export interface ShapeLayer extends BaseLayer {
   colors: StrokeFill
 }
 
+export interface BoundaryLayer extends BaseLayer {
+  type: "BoundaryLayer"
+  identifier: string
+}
+
+
 export interface NevoLayer extends BaseLayer {
   type: "NevoLayer"
   level: NevoLevel
@@ -87,7 +93,7 @@ export interface DatasetLayer extends BaseLayer {
   deleted?: boolean
 }
 
-export type Layer = OsmLayer | MapTileLayer | OverlayLayer | NevoLayer | CehLandCoverLayer | ModelOutputLayer | DatasetLayer | CropMapLayer | AtiLayer | ShapeLayer
+export type Layer = OsmLayer | MapTileLayer | OverlayLayer | NevoLayer | CehLandCoverLayer | ModelOutputLayer | DatasetLayer | CropMapLayer | AtiLayer | ShapeLayer | BoundaryLayer
 
 export interface Project {
   name: string
