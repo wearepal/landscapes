@@ -98,7 +98,8 @@ const cropspecies: CropSpecies[] = [
 { LC: "Nursery Crops", LUCODE: "NU01", LC_CAT: "Trees" }, 
 { LC: "Trees and Scrubs, short Woody plants, hedgerows", LUCODE: "WO12", LC_CAT: "Trees" }, 
 { LC: "Unknown or Mixed Vegetation", LUCODE: "AC00", LC_CAT: "Unknown Vegetation Or Mixed Vegetation" }, 
-{ LC: "All", LUCODE: "000", LC_CAT: "All"}
+{ LC: "All", LUCODE: "000", LC_CAT: "All"},
+{ LC: "All (Original Data)", LUCODE: "001", LC_CAT: "All (Original Data)"}
 ]
 
 async function fetchCROMEFromExtent(bbox: string, source: string, count: number, startIndex: number) {
@@ -124,8 +125,6 @@ async function fetchCROMEFromExtent(bbox: string, source: string, count: number,
 
 async function loadFeaturesToGrid(grid: CategoricalTileGrid, tileRange: TileRange, tileGrid: TileGrid, features: any, map: Map<string, number>) : Promise<CategoricalTileGrid>{
   // given a grid and a set of features, load the features into the grid
-
-  console.log(map)
 
   for (let feature of features) {
 
@@ -176,16 +175,30 @@ async function renderCategoricalData(extent: Extent, zoom: number) {
   const arr = Array.from(cropcats)
 
   const map: Map<string, number> = new Map()
+  const mapOG: Map<string, number> = new Map()
   const labelsMap: Map<number, string> = new Map()
+  const labelsMapOG: Map<number, string> = new Map()
 
   cropspecies.forEach((crome) => {
-    if (crome.LC_CAT !== "All") {
+    if (crome.LC_CAT !== "All" && crome.LC_CAT !== "All (Original Data)") {
+      
       map.set(crome.LUCODE, arr.findIndex(x => x === crome.LC_CAT) + 1)
+      mapOG.set(crome.LUCODE, cropspecies.findIndex(x => x.LUCODE === crome.LUCODE) + 1)
+
       labelsMap.set(arr.findIndex(x => x === crome.LC_CAT) + 1, crome.LC_CAT)
+      labelsMapOG.set(cropspecies.findIndex(x => x.LUCODE === crome.LUCODE) + 1, crome.LC)
     }
   })
 
   const result = new CategoricalTileGrid(
+    zoom,
+    outputTileRange.minX,
+    outputTileRange.minY,
+    outputTileRange.getWidth(),
+    outputTileRange.getHeight()
+  )
+
+  const resultOG = new CategoricalTileGrid(
     zoom,
     outputTileRange.minX,
     outputTileRange.minY,
@@ -201,18 +214,21 @@ async function renderCategoricalData(extent: Extent, zoom: number) {
 
     await loadFeaturesToGrid(result, outputTileRange, tileGrid, features, map)
 
+    await loadFeaturesToGrid(resultOG, outputTileRange, tileGrid, features, mapOG)
+
     if (features.length < count) break
 
     startIndex += count
   }
 
   result.setLabels(labelsMap)
+  resultOG.setLabels(labelsMapOG)
 
-  return result
+  return [result, resultOG]
 }
 
 export class CROMEComponent extends BaseComponent {
-  categoricalData: CategoricalTileGrid | null
+  categoricalData: CategoricalTileGrid[] | null
   outputCache: Map<string, BooleanTileGrid>
   projectExtent: Extent
   projectZoom: number
@@ -232,24 +248,12 @@ export class CROMEComponent extends BaseComponent {
 
     node.meta.toolTipLink = "https://www.data.gov.uk/dataset/aaedb588-fc86-498f-acab-5fa1b261fdd5/crop-map-of-england-crome-2021"
 
-    //cropspecies.forEach(crome =>
-    //  crome.LC === "All" ? node.addOutput(new Output(crome["LUCODE"], crome["LC"], categoricalDataSocket)) : node.addOutput(new Output(crome["LUCODE"], crome["LC"], booleanDataSocket))
-    //)
-
     const cropcats = new Set<string>()
     cropspecies.forEach(crome => cropcats.add(crome.LC_CAT))
 
     for (let cropcat of Array.from(cropcats)) {
-      node.addOutput(new Output(cropcat, cropcat, cropcat === "All" ? categoricalDataSocket : booleanDataSocket))
+      node.addOutput(new Output(cropcat, cropcat, cropcat === "All" || cropcat === "All (Original Data)" ? categoricalDataSocket : booleanDataSocket))
     }
-
-    // for (let crome of cropspecies) {
-    //   if (crome.LUCODE === "000") {
-    //     node.addOutput(new Output(crome["LUCODE"], crome["LC"], categoricalDataSocket))
-    //   } else if (crome.LUCODE === "TC01" || crome.LUCODE === "WO12" || crome.LUCODE === "AC88" || crome.LUCODE === "AC17" || crome.LUCODE === "LG08") {
-    //     node.addOutput(new Output(crome["LUCODE"], crome["LC"], booleanDataSocket))
-    //   }
-    // }
 
   }
 
@@ -269,16 +273,20 @@ export class CROMEComponent extends BaseComponent {
     ).forEach(cropcat => {
       if (cropcat === "All") {
 
-        outputs[cropcat] = this.categoricalData
+        outputs[cropcat] = categoricalData[0]
 
-      } else {
+      } else if (cropcat === "All (Original Data)") {
 
-            const out = outputs[cropcat] = new BooleanTileGrid(categoricalData.zoom, categoricalData.x, categoricalData.y, categoricalData.width, categoricalData.height)
+        outputs[cropcat] = categoricalData[1]
+
+      }else {
+
+            const out = outputs[cropcat] = new BooleanTileGrid(categoricalData[0].zoom, categoricalData[0].x, categoricalData[0].y, categoricalData[0].width, categoricalData[0].height)
 
             out.name = cropcat
             const k = arr.findIndex(x => x === cropcat) +1 
 
-            categoricalData.iterate((x, y, value) => out.set(x, y, value === k))
+            categoricalData[0].iterate((x, y, value) => out.set(x, y, value === k))
 
             this.outputCache.set(cropcat, out)
 
