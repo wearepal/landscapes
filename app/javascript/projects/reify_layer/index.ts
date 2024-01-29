@@ -13,6 +13,7 @@ import { reifyOverlayLayer } from './overlay'
 import { reifyCropMapLayer } from './crop_map_layer'
 import { reifyAtiLayer } from './ati'
 import { reifyShapeFileLayer } from './shapefile'
+import { reifyBoundaryLayer } from './boundary'
 
 export const reifyLayer = (layer: Layer, existingLayer: BaseLayer | null, dbModels: DBModels, map: Map, modelOutputCache: ModelOutputCache, DatasetCache: DatasetCache, loadteamDataset: (layer: DatasetLayer) => void): BaseLayer => {
   const layerType = layer.type
@@ -27,6 +28,7 @@ export const reifyLayer = (layer: Layer, existingLayer: BaseLayer | null, dbMode
     case "CropMapLayer": return reifyCropMapLayer(layer, existingLayer)
     case "AtiLayer" : return reifyAtiLayer(layer, existingLayer, map)
     case "ShapeLayer": return reifyShapeFileLayer(layer, existingLayer, map)
+    case "BoundaryLayer": return reifyBoundaryLayer(layer, existingLayer, map)
     default: {
       // Ensure this switch statement is exhaustive
       const unreachable: never = layerType

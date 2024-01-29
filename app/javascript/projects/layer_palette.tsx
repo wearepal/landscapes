@@ -133,8 +133,26 @@ export const LayerPalette = ({ addLayer, hide, dbModels, getTeamDatasets, teamNa
                 identifier: "shapefiles:NP_ENG",
                 fill: [255, 255, 0, 1],
                 stroke: [0, 0, 0, 1]
-              }
-            ).map(({ name, identifier, stroke, fill }) =>
+              },
+              {
+                name: "Special Areas of Conservation (SAC)",
+                identifier: "shapefiles:SAC_ENG",
+                fill: [198, 3, 252, 1],
+                stroke: [0, 0, 0, 1]
+              },
+              {
+                name: "Ramsar Sites",
+                identifier: "shapefiles:ramsar_eng",
+                fill: [0, 60, 110, 1],
+                stroke: [0, 0, 0, 1]
+              },
+              // {
+              //   name: "Special Protection Areas (SPA)",
+              //   identifier: "shapefiles:SPA_ENG",
+              //   fill: [255, 145, 218, 1],
+              //   stroke: [0, 0, 0, 1]
+              // }
+            ).sort((a, b) => (a.name < b.name) ? -1 : 1).map(({ name, identifier, stroke, fill }) =>
               <AddLayerButton
                 addLayer={addLayer}
                 prototype={{
@@ -150,8 +168,40 @@ export const LayerPalette = ({ addLayer, hide, dbModels, getTeamDatasets, teamNa
                 }}
               />
             )
-            }
-
+        }
+        </Section>
+        <Section title="OS Boundaries">
+        {
+            Array<{ name: string, identifier: string }>(
+              { 
+                name: "Historic Counties", 
+                identifier: "shapefiles:boundary_line_historic_counties"
+              },
+              {
+                name: "Ceremonial Counties",
+                identifier: "shapefiles:boundary_line_ceremonial_counties"
+              },
+              {
+                name: "Westminster Constituencies",
+                identifier: "shapefiles:westminster_const "
+              },
+              {
+                name: "Polling Districts",
+                identifier: "shapefiles:polling_districts_england"
+              }
+            ).sort((a, b) => (a.name < b.name) ? -1 : 1).map(({ name, identifier }) =>
+            <AddLayerButton
+              addLayer={addLayer}
+              prototype={{
+                type: "BoundaryLayer",
+                name,
+                identifier,
+                visible: true,
+                opacity: 1,
+              }}
+            />
+          )
+        }
         </Section>
         <Section title="NEVO">
           {
