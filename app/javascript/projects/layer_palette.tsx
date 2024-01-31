@@ -104,23 +104,23 @@ export const LayerPalette = ({ addLayer, hide, dbModels, getTeamDatasets, teamNa
         <Section title="Designations">
           {
             Array<{ name: string, identifier: string, fill: [number, number, number, number], stroke: [number, number, number, number] }>(
-              { 
-                name: "Areas of Outstanding Natural Beauty (AONB)", 
-                identifier: "shapefiles:AONB_UK", 
-                fill: [0, 155, 0, 1], 
-                stroke: [0, 0, 0, 1] 
+              {
+                name: "Areas of Outstanding Natural Beauty (AONB)",
+                identifier: "shapefiles:AONB_UK",
+                fill: [0, 155, 0, 1],
+                stroke: [0, 0, 0, 1]
               },
-              { 
-                name: "Sites of Special Scientific Interest (SSSI)", 
-                identifier: "shapefiles:SSSI_UK", 
-                fill: [255, 0, 0, 1], 
-                stroke: [0, 0, 0, 1]  
+              {
+                name: "Sites of Special Scientific Interest (SSSI)",
+                identifier: "shapefiles:SSSI_UK",
+                fill: [255, 0, 0, 1],
+                stroke: [0, 0, 0, 1]
               },
-              { 
-                name: "National Nature Reserves", 
-                identifier: "shapefiles:NNR_UK", 
-                fill: [42, 161, 79, 1], 
-                stroke: [0, 0, 0, 1]  
+              {
+                name: "National Nature Reserves",
+                identifier: "shapefiles:NNR_UK",
+                fill: [42, 161, 79, 1],
+                stroke: [0, 0, 0, 1]
               },
               {
                 name: "Local Nature Reserves",
@@ -168,13 +168,13 @@ export const LayerPalette = ({ addLayer, hide, dbModels, getTeamDatasets, teamNa
                 }}
               />
             )
-        }
+          }
         </Section>
         <Section title="OS Boundaries">
-        {
+          {
             Array<{ name: string, identifier: string }>(
-              { 
-                name: "Historic Counties", 
+              {
+                name: "Historic Counties",
                 identifier: "shapefiles:boundary_line_historic_counties"
               },
               {
@@ -190,18 +190,18 @@ export const LayerPalette = ({ addLayer, hide, dbModels, getTeamDatasets, teamNa
                 identifier: "shapefiles:polling_districts_england"
               }
             ).sort((a, b) => (a.name < b.name) ? -1 : 1).map(({ name, identifier }) =>
-            <AddLayerButton
-              addLayer={addLayer}
-              prototype={{
-                type: "BoundaryLayer",
-                name,
-                identifier,
-                visible: true,
-                opacity: 1,
-              }}
-            />
-          )
-        }
+              <AddLayerButton
+                addLayer={addLayer}
+                prototype={{
+                  type: "BoundaryLayer",
+                  name,
+                  identifier,
+                  visible: true,
+                  opacity: 1,
+                }}
+              />
+            )
+          }
         </Section>
         <Section title="NEVO">
           {
