@@ -29,6 +29,16 @@ const speciesFamilyList: SpeciesFamilySelectControlOptions[] = [
         name: 'Ladybird (Coccinellidae)',
         id: 1,
         family: 'Coccinellidae'
+    },
+    {
+        name: 'Eel (Anguillidae)',
+        id: 2,
+        family: 'Anguillidae'
+    },
+    {
+        name: 'Salmon & Trout (Salmonidae)',
+        id: 3,
+        family: 'Salmonidae'
     }
 ]
 
@@ -122,21 +132,43 @@ const speciesList: SpeciesCheckboxControlOptions[] = [
         name: 'Tytthaspis 16‐punctata (16-spot ladybird)',
         id: 15,
         scientificSpeciesName: 'Tytthaspis sedecimpunctata'
+    },
+    {
+        familyId: 2,
+        name: 'European eel (Anguilla anguilla)',
+        id: 16,
+        scientificSpeciesName: 'Anguilla anguilla'
+    },
+    {
+        familyId: 3,
+        name: 'Sea/Brown trout (Salmo trutta Linnaeus)',
+        id: 17,
+        scientificSpeciesName: 'Salmo trutta Linnaeus'
+    },
+    {
+        familyId: 3,
+        name: 'Brown trout (Salmo trutta subsp. fario Linnaeus)',
+        id: 18,
+        scientificSpeciesName: 'Salmo trutta subsp. fario Linnaeus'
+    },
+    {
+        familyId: 3,
+        name: 'Sea trout (Salmo trutta subsp. trutta Linnaeus)',
+        id: 19,
+        scientificSpeciesName: 'Salmo trutta subsp. trutta Linnaeus'
     }
 ]
 
 
 async function fetchSpeciesFromExtent(extent: Extent, familyId: number, selectedSpecies: number[], dateFrom: Date, dateTo: Date) {
 
-    console.log(familyId)
-    
-
     const wkt = WKTfromExtent(extent)
     const points: Coordinate[] = []
 
     for (const species of selectedSpecies) {
         const speciesEntry = speciesList.find(s => s.id === species)
-        if (speciesEntry === undefined || speciesEntry.familyId !== familyId)  continue 
+
+        if (speciesEntry === undefined || speciesEntry.familyId != familyId)  continue 
 
         const speciesName = speciesEntry.scientificSpeciesName
         
