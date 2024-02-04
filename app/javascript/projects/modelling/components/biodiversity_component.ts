@@ -39,6 +39,16 @@ const speciesFamilyList: SpeciesFamilySelectControlOptions[] = [
         name: 'Salmon & Trout (Salmonidae)',
         id: 3,
         family: 'Salmonidae'
+    },
+    {
+        name: 'Soapberry (Sapindaceae)',
+        id: 4,
+        family: 'Sapindaceae'
+    },
+    {
+        name: 'Moschatel (Adoxaceae)',
+        id: 5,
+        family: 'Adoxaceae'
     }
 ]
 
@@ -156,6 +166,18 @@ const speciesList: SpeciesCheckboxControlOptions[] = [
         name: 'Sea trout (Salmo trutta subsp. trutta Linnaeus)',
         id: 19,
         scientificSpeciesName: 'Salmo trutta subsp. trutta Linnaeus'
+    },
+    {
+        familyId: 4,
+        name: 'Field Maple (Acer campestre L.)',
+        id: 20,
+        scientificSpeciesName: 'Acer campestre L.'
+    },
+    {
+        familyId: 5,
+        name: 'Moschatel (Adoxa moschatellina L.)',
+        id: 21,
+        scientificSpeciesName: 'Adoxa moschatellina L.'
     }
 ]
 
@@ -170,16 +192,18 @@ async function fetchSpeciesFromExtent(extent: Extent, familyId: number, selected
 
         if (speciesEntry === undefined || speciesEntry.familyId != familyId)  continue 
 
+        const speciesFamily = speciesFamilyList.find(x => x.id == familyId)
         const speciesName = speciesEntry.scientificSpeciesName
         
-        const r = await fetch(`https://records-ws.nbnatlas.org/occurrences/search?q=*:*&fq=species:${speciesName}&wkt=${wkt}&pageSize=900000000`)
+        const r = await fetch(`https://records-ws.nbnatlas.org/occurrences/search?q=*:*&fq=family:${speciesFamily?.family}&fq=species:${speciesName}&wkt=${wkt}&pageSize=900000000`)
         const data = await r.json()
 
         const occurrences = data.occurrences
 
         for (const occurrence of occurrences) {
             const occurrenceDate = new Date(occurrence.eventDate)
-            if (occurrenceDate < dateFrom || occurrenceDate > dateTo ) {
+            if (occurrenceDate < dateFrom || occurrenceDate > dateTo || occurrence.family !== speciesFamily?.family || occurrence.species !== speciesName) {
+                console.log(occurrence)
                 continue
             }else{
                 const [x, y] = (proj4 as any).default(EPSG4326, EPSG3857, [occurrence.decimalLongitude, occurrence.decimalLatitude])

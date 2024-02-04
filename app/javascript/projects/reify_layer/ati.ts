@@ -8,6 +8,7 @@ import { bbox } from "ol/loadingstrategy"
 import { Map } from "ol"
 import Select from "ol/interaction/Select"
 import { click } from "ol/events/condition"
+import { bboxFromExtent } from "../modelling/bounding_box"
 
 const statusToColor = (status: string, colors: ColourMapATI) => {
     switch (status) {
@@ -29,7 +30,7 @@ const accessibilityToStroke = (accessibility: string, colors: ColourMapATI) => {
 
 const getSource = () => (
     new VectorSource({
-        url: extent => `https://services-eu1.arcgis.com/WIfgdJeDbrZU1cnA/arcgis/rest/services/Ancient_Tree_Inventory_ATI/FeatureServer/29/query?where=1%3D1&outFields=*&geometry=${extent.join(",")}&geometryType=esriGeometryEnvelope&inSR=3857&spatialRel=esriSpatialRelIntersects&outSR=3857&f=geojson`,
+        url: extent => `https://landscapes.wearepal.ai/geoserver/nateng/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nateng:ATIData_Public&bbox=${bboxFromExtent(extent)}&outputFormat=application%2Fjson`,
         attributions: '&copy; <a href="https://ati.woodlandtrust.org.uk/">Woodland Trust ATI</a>',
         format: new GeoJSON(),
         strategy: bbox,
@@ -71,7 +72,8 @@ export function reifyAtiLayer (layer: AtiLayer, existingLayer: BaseLayer | null,
 
     const vectLayer =  new VectorLayer({
         source: getSource(),
-        style: getStyleFunction(layer, map.getView().getZoom())
+        style: getStyleFunction(layer, map.getView().getZoom()),
+        minZoom: 12,
     })
 
     const select = new Select({
