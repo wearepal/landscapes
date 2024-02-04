@@ -13,7 +13,13 @@
       <div class="list-group-item list-group-item-action p-0 align-items-center" data-filter-target="item" style="display: flex;">
         <%= link_to project_path(project), class: "list-group-item list-group-item-action border-0" do %>
           <div class="d-flex align-items-center justify-content-between">
-            <%= project.name %>
+            <div>
+              <%= project.name %> 
+              <br>
+              <span class="small text-secondary">
+                <%= project.updated_at.strftime("Last updated: %b %d, %Y, %H:%M") %>
+              </span>
+            </div>
             <i class="fas fa-chevron-right"></i>
           </div>
         <% end %>  
