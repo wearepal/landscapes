@@ -2,7 +2,10 @@ class ProjectsController < ApplicationController
   before_action :set_team, only: [:index, :new, :create]
 
   def index
-    @projects = @team.projects.select(:id, :name, :created_at, :updated_at)
+    @team_projects = @team.projects.select(:id, :source, :updated_at)
+      .order(Arel.sql("source->>'name'"))
+      .pluck(:id, Arel.sql("source->>'name'"), :updated_at)
+      .map { |id, name, updated_at| OpenStruct.new(id: id, name: name, updated_at: updated_at) }
     render layout: "team"
   end
 
