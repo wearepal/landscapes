@@ -2,6 +2,7 @@ class ProjectsController < ApplicationController
   before_action :set_team, only: [:index, :new, :create]
 
   def index
+    @projects = @team.projects.select(:id, :name, :created_at, :updated_at)
     render layout: "team"
   end
 
