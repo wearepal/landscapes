@@ -85,14 +85,15 @@ interface ATILayerSettingsProps {
 const ATILayerSettings = ({ layer }: ATILayerSettingsProps) => {
 
   const colors = layer.colors
+  // backwards compatibility for old layers
+  const notable = colors.notable ?? [158, 52, 235, 1]
 
   return (
     <details className="mt-3">
       <summary>Legend</summary>
       <span className="swatch" style={{ backgroundColor: `rgb(${colors.ancient[0]},${colors.ancient[1]},${colors.ancient[2]},1)` }} /> Ancient Tree<br />
       <span className="swatch" style={{ backgroundColor: `rgb(${colors.veteran[0]},${colors.veteran[1]},${colors.veteran[2]},1)` }} /> Veteran Tree<br />
-      <span className="swatch" style={{ backgroundColor: `rgb(${colors.lost_ancient[0]},${colors.lost_ancient[1]},${colors.lost_ancient[2]},1)` }} /> Lost Ancient Tree<br />
-      <span className="swatch" style={{ backgroundColor: `rgb(${colors.lost_veteran[0]},${colors.lost_veteran[1]},${colors.lost_veteran[2]},1)` }} /> Lost Veteran Tree<br />
+      <span className="swatch" style={{ backgroundColor: `rgb(${notable[0]},${notable[1]},${notable[2]},1)` }} /> Notable Tree<br />
       <br />
       <span className="swatch" style={{ backgroundColor: `rgb(${colors.public[0]},${colors.public[1]},${colors.public[2]},1)` }} /> Public<br />
       <span className="swatch" style={{ backgroundColor: `rgb(${colors.private[0]},${colors.private[1]},${colors.private[2]},1)` }} /> Private<br />
