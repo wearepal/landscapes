@@ -93,8 +93,7 @@ export const LayerPalette = ({ addLayer, hide, dbModels, getTeamDatasets, teamNa
               colors: {
                 ancient: [255, 183, 0, 1],
                 veteran: [0, 82, 11, 1],
-                lost_ancient: [245, 218, 149, 1],
-                lost_veteran: [77, 92, 79, 1],
+                notable: [158, 52, 235, 1],
                 public: [0, 217, 255, 1],
                 private: [235, 0, 0, 1],
               }
