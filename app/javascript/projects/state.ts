@@ -10,9 +10,8 @@ interface BaseLayer {
 
 export interface ColourMapATI {
   ancient: [r: number, g: number, b: number, a: number]
-  lost_ancient: [r: number, g: number, b: number, a: number]
   veteran: [r: number, g: number, b: number, a: number]
-  lost_veteran: [r: number, g: number, b: number, a: number]
+  notable: [r: number, g: number, b: number, a: number]
   public: [r: number, g: number, b: number, a: number]
   private: [r: number, g: number, b: number, a: number]
 }
