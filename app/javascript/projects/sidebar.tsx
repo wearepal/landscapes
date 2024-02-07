@@ -2,7 +2,7 @@ import * as React from 'react'
 import './sidebar.css'
 import { ReactSortable } from 'react-sortablejs'
 import { nevoLevelNames, nevoPropertyNames } from './nevo'
-import { AtiLayer, CropMapLayer, DatasetLayer, Layer, ModelOutputLayer, NevoLayer, OverlayLayer, State } from './state'
+import { AtiLayer, CropMapLayer, DatasetLayer, Layer, ModelOutputLayer, NevoLayer, OverlayLayer, ShapeLayer, State } from './state'
 import { iconForLayerType } from "./util"
 import { getColorStops } from './reify_layer/model_output'
 import { tileGridStats } from './modelling/tile_grid'
@@ -100,6 +100,22 @@ const ATILayerSettings = ({ layer }: ATILayerSettingsProps) => {
     </details>
   )
 
+}
+
+interface ShapeLayerSettingsProps {
+  layer: ShapeLayer
+}
+
+const ShapeLayerSettings = ({ layer }: ShapeLayerSettingsProps) => {
+  const colors = layer.colors.fill
+  const name = layer.name
+
+  return (
+    <details className="mt-3">
+      <summary>Legend</summary>
+      <span className="swatch" style={{ backgroundColor: `rgb(${colors.join(",")})` }} />{name}<br />
+    </details>
+  )
 }
 
 interface CropMapLayerSettingsProps {
@@ -554,6 +570,7 @@ export const Sidebar = ({ state, selectLayer, mutateLayer, deleteLayer, setLayer
           Array.from(state.project.allLayers).reverse().map(id => {
             const layer = state.project.layers[id]
             const isDeleted = layer.type == "DatasetLayer" && layer.deleted === true
+            const iconColor = layer.type === "ShapeLayer" ? `rgb(${layer.colors.fill.join(',')})` :  "rgb(96,96,96)"
 
             return (
               <div
@@ -566,7 +583,7 @@ export const Sidebar = ({ state, selectLayer, mutateLayer, deleteLayer, setLayer
                   selectLayer(id === state.selectedLayer ? undefined : id)
                 }}
               >
-                <div><i className={`fas fa-fw ${iconForLayerType(state.project.layers[id].type)}`} /></div>
+                <div><i className={`fas fa-fw ${iconForLayerType(state.project.layers[id].type)}`} style={{color: iconColor, textShadow: "1px 1px 1px black"}} /></div>
                 <span className="ml-2 mr-3 flex-grow-1" style={{ overflowX: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                   {state.project.layers[id].name}
                 </span>
@@ -679,6 +696,10 @@ export const Sidebar = ({ state, selectLayer, mutateLayer, deleteLayer, setLayer
             {
               selectedLayer?.type == "AtiLayer" &&
               <ATILayerSettings layer={selectedLayer} />
+            }
+            {
+              selectedLayer?.type == "ShapeLayer" &&
+              <ShapeLayerSettings layer={selectedLayer}/>
             }
           </> :
           <em>No layer selected</em>
