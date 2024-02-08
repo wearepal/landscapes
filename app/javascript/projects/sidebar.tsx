@@ -2,7 +2,7 @@ import * as React from 'react'
 import './sidebar.css'
 import { ReactSortable } from 'react-sortablejs'
 import { nevoLevelNames, nevoPropertyNames } from './nevo'
-import { AtiLayer, CropMapLayer, DatasetLayer, Layer, ModelOutputLayer, NevoLayer, OverlayLayer, ShapeLayer, State } from './state'
+import { AtiLayer, CropMapLayer, DatasetLayer, Layer, MLLayer, ModelOutputLayer, NevoLayer, OverlayLayer, ShapeLayer, State } from './state'
 import { iconForLayerType } from "./util"
 import { getColorStops } from './reify_layer/model_output'
 import { tileGridStats } from './modelling/tile_grid'
@@ -233,6 +233,18 @@ function ModelOutputLayerSettings({ layer, mutate, layerType }: ModelOutputLayer
     )
   }
 }
+
+interface MLLayerSettingsProps {
+  layer: MLLayer
+}
+
+const MLLayerSettings = ({ layer }: MLLayerSettingsProps) => (
+  <details className="mt-3">
+    <summary>Legend</summary>
+    <span className="swatch" style={{ backgroundColor: "#008000" }} /> Hedge<br />
+    <span className="swatch" style={{ backgroundColor: "#ffee00" }} /> Tree<br />
+  </details>
+)
 
 export function ZoomData({zoom, area, length}) {
   const unit = area < 1 ? "cm²" : (area > 1000000 ? "km²" : "m²")
@@ -700,6 +712,10 @@ export const Sidebar = ({ state, selectLayer, mutateLayer, deleteLayer, setLayer
             {
               selectedLayer?.type == "ShapeLayer" &&
               <ShapeLayerSettings layer={selectedLayer}/>
+            }
+            {
+              selectedLayer?.type == "MLLayer" &&
+              <MLLayerSettings layer={selectedLayer} />
             }
           </> :
           <em>No layer selected</em>

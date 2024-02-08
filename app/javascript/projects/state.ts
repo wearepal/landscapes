@@ -92,7 +92,12 @@ export interface DatasetLayer extends BaseLayer {
   deleted?: boolean
 }
 
-export type Layer = OsmLayer | MapTileLayer | OverlayLayer | NevoLayer | CehLandCoverLayer | ModelOutputLayer | DatasetLayer | CropMapLayer | AtiLayer | ShapeLayer | BoundaryLayer
+export interface MLLayer extends BaseLayer {
+  type: "MLLayer"
+  layerName: string
+}
+
+export type Layer = OsmLayer | MapTileLayer | OverlayLayer | NevoLayer | CehLandCoverLayer | ModelOutputLayer | DatasetLayer | CropMapLayer | AtiLayer | ShapeLayer | BoundaryLayer | MLLayer
 
 export interface Project {
   name: string
