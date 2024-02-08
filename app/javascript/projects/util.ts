@@ -15,6 +15,7 @@ export function iconForLayerType(type: Layer['type']) {
     case "OverlayLayer":
       return "fa-draw-polygon"
     case "ModelOutputLayer":
+    case "MLLayer":
       return "fa-project-diagram"
     case "ShapeLayer":
     case "BoundaryLayer":

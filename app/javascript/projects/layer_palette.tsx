@@ -82,6 +82,18 @@ export const LayerPalette = ({ addLayer, hide, dbModels, getTeamDatasets, teamNa
             />
           ))}
         </Section>
+        <Section title="Machine Learning Output">
+          <AddLayerButton
+            addLayer={addLayer}
+            prototype={{
+              type: "MLLayer",
+              layerName: "ml:tree_hedge_predictions",
+              name: "Trees & Hedges Classification",
+              visible: true,
+              opacity: 1,
+            }}
+          />
+        </Section>
         <Section title="Ancient Tree Inventory">
           <AddLayerButton
             addLayer={addLayer}
