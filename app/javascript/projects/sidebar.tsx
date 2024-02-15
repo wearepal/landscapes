@@ -2,7 +2,7 @@ import * as React from 'react'
 import './sidebar.css'
 import { ReactSortable } from 'react-sortablejs'
 import { nevoLevelNames, nevoPropertyNames } from './nevo'
-import { AtiLayer, CropMapLayer, DatasetLayer, Layer, MLLayer, ModelOutputLayer, NevoLayer, OverlayLayer, ShapeLayer, State } from './state'
+import { AtiLayer, CropMapLayer, DatasetLayer, KewLayer, Layer, MLLayer, ModelOutputLayer, NevoLayer, OverlayLayer, ShapeLayer, State } from './state'
 import { iconForLayerType } from "./util"
 import { getColorStops } from './reify_layer/model_output'
 import { tileGridStats } from './modelling/tile_grid'
@@ -245,6 +245,49 @@ const MLLayerSettings = ({ layer }: MLLayerSettingsProps) => (
     <span className="swatch" style={{ backgroundColor: "#ffee00" }} /> Tree<br />
   </details>
 )
+
+interface KewLayerSettingsProps {
+  layer: KewLayer
+  mutate: (data: any) => void
+}
+
+const KewLayerSettings = ({ layer, mutate }: KewLayerSettingsProps) => {
+
+
+  const handlePeriodChange = (value: string) => {
+    const updatedPeriodOptions = layer.periodOptions.map(opt => {
+      if (opt.value === value) {
+        return { ...opt, selected: !opt.selected }
+      }
+      return opt
+    })
+    mutate({ periodOptions: updatedPeriodOptions })
+  }
+
+  return (  
+    <div className="mt-3">
+        <select className="custom-select" value={layer.metric} onChange={e => mutate({ metric: e.target.value })}>
+          {
+            layer.typeOptions.map(opt =>
+              <option key={opt.value} value={opt.value}>
+                {opt.label}
+              </option>
+            )
+          }
+        </select>
+        <ul className="list-group mt-1">
+          {
+            layer.periodOptions.map(opt =>
+              <li key={opt.value} className="list-group-item" style={{border: 0, padding: 0}}>
+                <input type="checkbox" checked={opt.selected} onChange={() => handlePeriodChange(opt.value)} />
+                {opt.label}
+              </li>
+            )
+          }
+        </ul>
+    </div>
+  )
+}
 
 export function ZoomData({zoom, area, length}) {
   const unit = area < 1 ? "cm²" : (area > 1000000 ? "km²" : "m²")
@@ -716,6 +759,16 @@ export const Sidebar = ({ state, selectLayer, mutateLayer, deleteLayer, setLayer
             {
               selectedLayer?.type == "MLLayer" &&
               <MLLayerSettings layer={selectedLayer} />
+            }
+            {
+              selectedLayer?.type == "KewLayer" &&
+              <KewLayerSettings 
+                layer={selectedLayer} 
+                mutate={
+                  data => state.selectedLayer !== undefined &&
+                  mutateLayer(state.selectedLayer, data)
+                } 
+              />
             }
           </> :
           <em>No layer selected</em>

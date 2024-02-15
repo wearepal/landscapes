@@ -22,6 +22,8 @@ export function iconForLayerType(type: Layer['type']) {
       return "fa-draw-polygon"
     case "AtiLayer":
       return "fa-tree"
+    case "KewLayer":
+      return "fa-leaf"
     default:
       return "fa-layer-group"
   }
