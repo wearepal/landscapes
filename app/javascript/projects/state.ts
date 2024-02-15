@@ -21,6 +21,13 @@ export interface StrokeFill {
   fill: [r: number, g: number, b: number, a: number]
 }
 
+export interface KewOption {
+  value: string
+  label: string
+  selected?: boolean
+  max?: number
+}
+
 type fillType = "greyscale" | "heatmap" | "jet" | "hsv" | "hot" | "cool" | "spring" | "summer" | "autumn" | "winter" | "copper" | "WIGnBu" | "greens" | "YIOrRd" | "bluered" | "RdBu" | "picnic" | "rainbow" | "portland" | "blackbody" | "earth" | "electric" | "viridis" | "inferno" | "magma" | "plasma" | "warm" | "cool" | "rainbow-soft" | "bathymetry" | "cdom" | "chlorophyll" | "density" | "freesurface-blue" | "freesurface-red" | "oxygen" | "par" | "phase" | "salinity" | "temperature" | "turbidity" | "velocity-blue" | "velocity-green" | "cubehelix"
 
 export interface OsmLayer extends BaseLayer {
@@ -55,6 +62,14 @@ export interface BoundaryLayer extends BaseLayer {
   identifier: string
 }
 
+export interface KewLayer extends BaseLayer {
+  type: "KewLayer"
+  location: string
+  periodOptions: KewOption[]
+  typeOptions: KewOption[]
+  metric: string
+  loc?: string
+}
 
 export interface NevoLayer extends BaseLayer {
   type: "NevoLayer"
@@ -97,7 +112,7 @@ export interface MLLayer extends BaseLayer {
   layerName: string
 }
 
-export type Layer = OsmLayer | MapTileLayer | OverlayLayer | NevoLayer | CehLandCoverLayer | ModelOutputLayer | DatasetLayer | CropMapLayer | AtiLayer | ShapeLayer | BoundaryLayer | MLLayer
+export type Layer = OsmLayer | MapTileLayer | OverlayLayer | NevoLayer | CehLandCoverLayer | ModelOutputLayer | DatasetLayer | CropMapLayer | AtiLayer | ShapeLayer | BoundaryLayer | MLLayer | KewLayer
 
 export interface Project {
   name: string
