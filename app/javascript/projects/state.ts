@@ -19,6 +19,7 @@ export interface ColourMapATI {
 export interface StrokeFill {
   stroke: [r: number, g: number, b: number, a: number]
   fill: [r: number, g: number, b: number, a: number]
+  strokeWidth?: number
 }
 
 export interface KewOption {
@@ -55,6 +56,7 @@ export interface ShapeLayer extends BaseLayer {
   type: "ShapeLayer"
   identifier: string
   colors: StrokeFill
+  minZoom?: number
 }
 
 export interface BoundaryLayer extends BaseLayer {
