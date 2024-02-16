@@ -337,6 +337,22 @@ export const LayerPalette = ({ addLayer, hide, dbModels, getTeamDatasets, teamNa
               year: 2021,
             }}
           />
+          <AddLayerButton
+            addLayer={addLayer}
+            prototype={{
+              type: "ShapeLayer",
+              name: "UKCEH Woody Linear Features",
+              identifier: "ukceh:linearwoody2",
+              colors: {
+                stroke: [0, 255, 0, 1],
+                fill: [0, 255, 0, 1],
+                strokeWidth: 3
+              },
+              visible: true,
+              opacity: 1,
+              minZoom: 15
+            }}
+          />
         </Section>
         <Section title="Crop Map of England">
           {
