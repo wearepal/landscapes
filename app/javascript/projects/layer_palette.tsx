@@ -4,6 +4,7 @@ import { NevoLevel } from './nevo'
 import { KewOption, Layer } from './state'
 import { iconForLayerType } from "./util"
 import { CompiledDatasetRecord } from './saved_dataset'
+import { designations } from './modelling/designations'
 
 interface AddLayerButtonProps {
   prototype: Layer
@@ -63,25 +64,28 @@ export const LayerPalette = ({ addLayer, hide, dbModels, getTeamDatasets, teamNa
         <i className="fas fa-times" style={{ cursor: "pointer" }} onClick={hide} />
       </div>
       <div className="flex-grow-1" style={{ overflowY: "auto", flexBasis: "0px" }}>
-        <Section title={teamName}>
-          {teamDatasets.sort((a, b) => a.name.localeCompare(b.name)).map((dataset) => (
-            <AddLayerButton
-              key={dataset.id}
-              addLayer={addLayer}
-              prototype={{
-                type: "DatasetLayer",
-                id: dataset.id,
-                name: dataset.name,
-                visible: true,
-                opacity: 1,
-                fill: "greyscale",
-                colors: [],
-                overrideBounds: false,
-                bounds: undefined
-              }}
-            />
-          ))}
-        </Section>
+        {
+          teamDatasets.length > 0 &&
+          <Section title={teamName}>
+            {teamDatasets.sort((a, b) => a.name.localeCompare(b.name)).map((dataset) => (
+              <AddLayerButton
+                key={dataset.id}
+                addLayer={addLayer}
+                prototype={{
+                  type: "DatasetLayer",
+                  id: dataset.id,
+                  name: dataset.name,
+                  visible: true,
+                  opacity: 1,
+                  fill: "greyscale",
+                  colors: [],
+                  overrideBounds: false,
+                  bounds: undefined
+                }}
+              />
+            ))}
+          </Section>
+        }
         <Section title="Machine Learning Output">
           <AddLayerButton
             addLayer={addLayer}
@@ -198,56 +202,7 @@ export const LayerPalette = ({ addLayer, hide, dbModels, getTeamDatasets, teamNa
         </Section>
         <Section title="Designations">
           {
-            Array<{ name: string, identifier: string, fill: [number, number, number, number], stroke: [number, number, number, number] }>(
-              {
-                name: "Areas of Outstanding Natural Beauty (AONB)",
-                identifier: "shapefiles:AONB_UK",
-                fill: [0, 155, 0, 1],
-                stroke: [0, 0, 0, 1]
-              },
-              {
-                name: "Sites of Special Scientific Interest (SSSI)",
-                identifier: "shapefiles:SSSI_UK",
-                fill: [255, 0, 0, 1],
-                stroke: [0, 0, 0, 1]
-              },
-              {
-                name: "National Nature Reserves",
-                identifier: "shapefiles:NNR_UK",
-                fill: [42, 161, 79, 1],
-                stroke: [0, 0, 0, 1]
-              },
-              {
-                name: "Local Nature Reserves",
-                identifier: "shapefiles:LNR_ENG",
-                fill: [27, 174, 196, 1],
-                stroke: [0, 0, 0, 1]
-              },
-              {
-                name: "National Parks",
-                identifier: "shapefiles:NP_ENG",
-                fill: [255, 255, 0, 1],
-                stroke: [0, 0, 0, 1]
-              },
-              {
-                name: "Special Areas of Conservation (SAC)",
-                identifier: "shapefiles:SAC_ENG",
-                fill: [198, 3, 252, 1],
-                stroke: [0, 0, 0, 1]
-              },
-              {
-                name: "Ramsar Sites",
-                identifier: "shapefiles:ramsar_eng",
-                fill: [0, 60, 110, 1],
-                stroke: [0, 0, 0, 1]
-              },
-              // {
-              //   name: "Special Protection Areas (SPA)",
-              //   identifier: "shapefiles:SPA_ENG",
-              //   fill: [255, 145, 218, 1],
-              //   stroke: [0, 0, 0, 1]
-              // }
-            ).sort((a, b) => (a.name < b.name) ? -1 : 1).map(({ name, identifier, stroke, fill }) =>
+            designations.sort((a, b) => (a.name < b.name) ? -1 : 1).map(({ name, identifier, stroke, fill }) =>
               <AddLayerButton
                 addLayer={addLayer}
                 prototype={{
