@@ -57,6 +57,7 @@ export interface ShapeLayer extends BaseLayer {
   identifier: string
   colors: StrokeFill
   minZoom?: number
+  attribution?: string
 }
 
 export interface BoundaryLayer extends BaseLayer {

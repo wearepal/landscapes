@@ -11,6 +11,7 @@ export interface Designation {
     identifier: string
     fill: [number, number, number, number]
     stroke: [number, number, number, number]
+    attribution?: string
 }
 
 // Designations available from both the Model and Map view, add new designations here to make them available in both views
@@ -78,5 +79,15 @@ export const designations : Designation[] = [
         identifier: "shapefiles:ramsar_eng",
         fill: [0, 60, 110, 1],
         stroke: [0, 0, 0, 1]
+    },
+    {
+        id: 8,
+        value: "AW",
+        socket: booleanDataSocket,
+        name: "Ancient Woodland",
+        identifier: "shapefiles:aw_eng",
+        fill: [252, 186, 3, 1],
+        stroke: [0, 0, 0, 1],
+        attribution: '&copy; <a href="https://naturalengland-defra.opendata.arcgis.com/datasets/Defra::ancient-woodland-england/about">Natural England</a>'
     }
 ]
