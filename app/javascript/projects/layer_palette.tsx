@@ -202,7 +202,7 @@ export const LayerPalette = ({ addLayer, hide, dbModels, getTeamDatasets, teamNa
         </Section>
         <Section title="Designations">
           {
-            designations.sort((a, b) => (a.name < b.name) ? -1 : 1).map(({ name, identifier, stroke, fill }) =>
+            designations.sort((a, b) => (a.name < b.name) ? -1 : 1).map(({ name, identifier, stroke, fill, attribution }) =>
               <AddLayerButton
                 addLayer={addLayer}
                 prototype={{
@@ -215,6 +215,7 @@ export const LayerPalette = ({ addLayer, hide, dbModels, getTeamDatasets, teamNa
                   identifier,
                   visible: true,
                   opacity: 1,
+                  attribution
                 }}
               />
             )

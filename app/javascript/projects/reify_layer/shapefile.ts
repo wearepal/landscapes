@@ -9,7 +9,7 @@ import { memoize } from "lodash"
 import { Map } from "ol"
 
 
-const getSource = memoize((id: string) => {
+const getSource = memoize((id: string, attribution: undefined | string) => {
 
     const store = id.split(":")[0]
 
@@ -19,6 +19,7 @@ const getSource = memoize((id: string) => {
             extractGeometryName: true
         }),
         strategy: bbox,
+        attributions: attribution
     })
 
     return source
@@ -41,7 +42,7 @@ const getStyle = (layer: ShapeLayer, zoom: number | undefined) => (
 export function reifyShapeFileLayer (layer: ShapeLayer, existingLayer: BaseLayer | null, map: Map) {
 
     const vectLayer =  new VectorLayer({
-        source: getSource(layer.identifier),
+        source: getSource(layer.identifier, layer.attribution),
         style: getStyle(layer, map.getView().getZoom()),
         minZoom: layer.minZoom,
     })
