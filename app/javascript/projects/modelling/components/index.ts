@@ -31,6 +31,7 @@ import { BiodiversityComponent } from "./biodiversity_component"
 import { LehLandCoverComponent } from "./leh_land_cover_component"
 import { MlTreeHedgeComponent } from "./ml_tree_hedge_component"
 import { ATIComponent } from "./ati_component"
+import { DesignationsComponent } from "./designations_component"
 
 export function createDefaultComponents(saveMapLayer: SaveMapLayer, saveModel: SaveModel, getDatasets: getDatasets, extent: Extent, zoom: number): BaseComponent[] {
   return [
@@ -48,6 +49,7 @@ export function createDefaultComponents(saveMapLayer: SaveMapLayer, saveModel: S
     new OSGreenSpacesComponent(extent, zoom),
     new CROMEComponent(extent, zoom),
     new ATIComponent(extent, zoom),
+    new DesignationsComponent(extent, zoom),
 
     // Outputs
     new MapLayerComponent(saveMapLayer),
