@@ -341,7 +341,7 @@ export function Legend({ colors, minValue, maxValue, type, labels, mutateColors,
               <div key={label} className="color-bar-label">
               <input
                 type="color"
-                value={`#${color[0].toString(16).padStart(2, '0')}${color[1].toString(16).padStart(2, '0')}${color[2].toString(16).padStart(2, '0')}`}
+                value={`#${color[0].toString(16).padStart(2, '0')}${color[1].toString(16).padStart(2, '0')}${color[2].toString(16).padStart(2, '0')}` || "#ffffff"}
                 style={{
                   marginLeft: 4.5,
                   backgroundColor: `rgb(${color[0]}, ${color[1]}, ${color[2]})`,
