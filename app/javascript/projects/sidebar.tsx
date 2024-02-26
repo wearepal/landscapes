@@ -500,19 +500,30 @@ export function Legend({ colors, minValue, maxValue, type, labels, mutateColors,
       <>
       <div className="color-bar-container">
         <div className="color-bar">
-          {colors.map((color) => (
-            <div
-              key={color.join(",")}
-              style={{ backgroundColor: `rgb(${color.join(",")})` }}
-              className="color-bar-item"
-            />
-          ))}
+          {
+            colors.map((color) => (
+              <div
+                key={color.join(",")}
+                style={{ backgroundColor: `rgb(${color.join(",")})`, opacity: (isFinite(min) ? 1 : 0.3)}}
+                className="color-bar-item"
+              />
+            ))
+          }
         </div>
-        <div className="color-bar-legend">
-          <div title={min.toString()} >{min.toFixed(3)}</div>
-          <div title={mean.toString()} >{mean.toFixed(3)}</div>
-          <div title={max.toString()} >{max.toFixed(3)}</div>
-        </div>
+        { 
+          isFinite(min) && 
+          <div className="color-bar-legend">
+            <div title={min.toString()} >{min.toFixed(3)}</div>
+            <div title={mean.toString()} >{mean.toFixed(3)}</div>
+            <div title={max.toString()} >{max.toFixed(3)}</div>
+          </div>
+        }
+        {
+          !isFinite(min) &&
+          <div className="color-bar-legend">
+            No numeric data found
+          </div>
+        }
         <div style={{ padding: 15, paddingTop: 0, paddingLeft: 35 }} className="form-check form-switch">
           <input
             className="form-check-input"
