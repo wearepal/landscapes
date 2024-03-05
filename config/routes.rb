@@ -49,7 +49,11 @@ Rails.application.routes.draw do
 
   resource :session
 
+  # New route for the new app
   root to: "maps#show"
+
+  # legacy content from the old app content
+  get "legacy", to: "maps#show" 
 
   get "modelling_worker.js", to: redirect(status: 302) { Webpacker.manifest.lookup("modelling_worker.js") }
 end
