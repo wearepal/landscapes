@@ -108,7 +108,7 @@ export class BiodiversityComponent extends BaseComponent {
 
     async builder(node: Node) {
 
-        node.meta.toolTip = "Given species and two dates (optional), return the number of recorded sightings of species within the given dates and extent."
+        node.meta.toolTip = "Given species and two dates (optional), return the number of recorded sightings of species within the given dates and extent. Please note, data is blurred for privacy reasons and may not represent the exact location of the sighting."
         node.meta.toolTipLink = "https://nbnatlas.org/"
 
         node.addControl(
