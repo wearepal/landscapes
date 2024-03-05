@@ -33,6 +33,13 @@ class TeamsController < ApplicationController
     end
   end
 
+  def select_team
+    authorize!
+
+    @teams = current_user.teams
+
+  end
+
   private
 
     def team_params

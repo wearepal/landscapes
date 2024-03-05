@@ -1,0 +1,15 @@
+.team-select-container{  
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 90vh;
+}
+
+.team-select-card{
+    height: 50vh;
+    width: 50vw;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 100px 0 rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+}
