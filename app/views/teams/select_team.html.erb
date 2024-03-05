@@ -1,0 +1,33 @@
+<div class="container team-select-container">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card team-select-card m-0">
+                <h2 style="padding-bottom: 10px;">Select a team</h2>
+                
+                <div class="h-75 w-100 d-inline-block">
+                    <% if @teams.present? %>
+                        <ul class="team-list-scroll h-100 p-0 overflow-auto">
+                            <% @teams.each do |team| %>      
+                                <div class="list-group-item list-group-item-action p-0 align-items-center">    
+                                    <%= link_to team_projects_path(team.id), class: "list-group-item list-group-item-action border-0" do %>
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <div>
+                                                <%= team.name %> 
+                                                <br>
+                                                <span class="small text-secondary">
+                                                    <%= team.projects.length %> project(s)
+                                                </span>
+                                            </div>
+                                        </div>
+                                    <% end %>  
+                                </div>
+                            <% end %>
+                        </ul>
+                    <% else %>
+                        <p>No teams found. Please contact an <a href="mailto:N.Quadrianto@sussex.ac.uk?subject=LMT:Requesting team access">contact an administrator</a> for assistance.</p>
+                    <% end %>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

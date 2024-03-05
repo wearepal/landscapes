@@ -50,7 +50,7 @@ Rails.application.routes.draw do
   resource :session
 
   # New route for the new app
-  root to: "maps#show"
+  root to: "teams#select_team"
 
   # legacy content from the old app content
   get "legacy", to: "maps#show" 
