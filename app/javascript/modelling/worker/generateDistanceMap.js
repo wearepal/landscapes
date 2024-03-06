@@ -3,6 +3,7 @@ import { NumericTileGrid } from "../../projects/modelling/tile_grid"
 import { getMedianCellSize } from "../../projects/modelling/components/cell_area_component"
 
 export function generateDistanceMap(input) {
+
   const result = new NumericTileGrid(
     input.zoom, input.x, input.y, input.width, input.height
   )
@@ -14,6 +15,11 @@ export function generateDistanceMap(input) {
         points.push({ x, y })
       }
     }
+  }
+
+  if (points.length === 0) {
+    // empty input, return empty result
+    return result
   }
 
   const tree = new kdTree(

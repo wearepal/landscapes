@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Feature, Map, View } from 'ol'
-import { Control, defaults as defaultControls } from 'ol/control'
+import { Control, ScaleLine, defaults as defaultControls } from 'ol/control'
 import { Extent, createEmpty as createEmptyExtent, extend, isEmpty } from 'ol/extent'
 import olBaseLayer from 'ol/layer/Base'
 import VectorLayer from 'ol/layer/Vector'
@@ -107,7 +107,13 @@ export const MapView = ({ layers, dbModels, initialZoom, setZoom, initialCenter,
           zoomInLabel: createIconElement("search-plus"),
           zoomOutLabel: createIconElement("search-minus")
         }
-      }).extend([new FitViewControl()]),
+      }).extend([
+        new FitViewControl(), 
+        new ScaleLine({
+          units: 'metric',
+          minWidth: 200
+        })
+      ]),
       target: mapRef.current
     });
 

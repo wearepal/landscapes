@@ -12,6 +12,7 @@
     <%= stylesheet_pack_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
     <%= javascript_include_tag 'https://cdn.jsdelivr.net/npm/ol@v8.2.0/dist/ol.js' %>
 
+    <%= stylesheet_link_tag 'team_select', media: 'all', 'data-turbolinks-track': 'reload' %>
 
   </head>
 
@@ -42,6 +43,8 @@
                 <% end %>
                 <div class="dropdown-divider"></div>
                 <%= link_to "Create team...", new_team_path, class: "dropdown-item" %>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="https://forms.gle/1zJnyaCbFExwPzJW8">Leave feedback</a>
                 <%= link_to "Sign Out", session_path, method: :delete, class: "dropdown-item" %>
               </div>
             </li>

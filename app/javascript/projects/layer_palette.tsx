@@ -1,9 +1,10 @@
 import * as React from 'react'
 import { DBModels } from './db_models'
 import { NevoLevel } from './nevo'
-import { Layer } from './state'
+import { KewOption, Layer } from './state'
 import { iconForLayerType } from "./util"
 import { CompiledDatasetRecord } from './saved_dataset'
+import { designations } from './modelling/designations'
 
 interface AddLayerButtonProps {
   prototype: Layer
@@ -63,24 +64,123 @@ export const LayerPalette = ({ addLayer, hide, dbModels, getTeamDatasets, teamNa
         <i className="fas fa-times" style={{ cursor: "pointer" }} onClick={hide} />
       </div>
       <div className="flex-grow-1" style={{ overflowY: "auto", flexBasis: "0px" }}>
-        <Section title={teamName}>
-          {teamDatasets.sort((a, b) => a.name.localeCompare(b.name)).map((dataset) => (
-            <AddLayerButton
-              key={dataset.id}
-              addLayer={addLayer}
-              prototype={{
-                type: "DatasetLayer",
-                id: dataset.id,
-                name: dataset.name,
-                visible: true,
-                opacity: 1,
-                fill: "greyscale",
-                colors: [],
-                overrideBounds: false,
-                bounds: undefined
-              }}
-            />
-          ))}
+        {
+          teamDatasets.length > 0 &&
+          <Section title={teamName}>
+            {teamDatasets.sort((a, b) => a.name.localeCompare(b.name)).map((dataset) => (
+              <AddLayerButton
+                key={dataset.id}
+                addLayer={addLayer}
+                prototype={{
+                  type: "DatasetLayer",
+                  id: dataset.id,
+                  name: dataset.name,
+                  visible: true,
+                  opacity: 1,
+                  fill: "greyscale",
+                  colors: [],
+                  overrideBounds: false,
+                  bounds: undefined
+                }}
+              />
+            ))}
+          </Section>
+        }
+        <Section title="Machine Learning Output">
+          <AddLayerButton
+            addLayer={addLayer}
+            prototype={{
+              type: "MLLayer",
+              layerName: "ml:tree_hedge_predictions",
+              name: "Trees & Hedges Classification",
+              visible: true,
+              opacity: 1,
+            }}
+          />
+        </Section>
+        <Section title="Kew Samples">
+          {
+            Array<{ name: string, location: string, metric: string, loc : string | undefined, periodOptions: KewOption[], typeOptions: KewOption[] }>(
+              {
+                name: "SSSI Woodland",
+                location: "kew:sssi_wood_os_bng_04m_grid",
+                metric: "grasses",
+                loc: undefined,
+                periodOptions: [
+                  { value: "Summer22", label: "Summer 22", selected: false },
+                  { value: "Autumn22", label: "Autumn 22", selected: false },
+                  { value: "Spring23", label: "Spring 23", selected: false },
+                  { value: "Summer23", label: "Summer 23", selected: false },
+                  { value: "Autumn23", label: "Autumn 23", selected: true },
+                ],
+                typeOptions: [
+                  { value: "grasses", label: "Grass", max : 100 },
+                  { value: "forbs", label: "Forbs" , max : 100},
+                  { value: "bryos", label: "Bryos" , max : 100},
+                  { value: "leaf_litter", label: "Leaf Liter", max : 100 },
+                  { value: "bare_ground", label: "Bare Ground" , max : 100},
+                  { value: "canopy_cover", label: "Canopy" , max : 100},
+                ]
+              },
+              {
+                name: "Young Conifer",
+                location: "kew:young_conifer_os_bng_04m_grid",
+                metric: "totalCarbon",
+                loc: "DenseCon",
+                periodOptions: [
+                  { value: "Sp21", label: "Spring 2022", selected: false },
+                  { value: "Aut21", label: "Autumn 2021", selected: false },
+                  { value: "Su22", label: "Summer 2022", selected: false },
+                  { value: "Su22_2", label: "Summer 2022 - 2" , selected: false},
+                  { value: "Aut22", label: "Autumn 2022", selected: false },
+                  { value: "Sp23", label: "Spring 2023" , selected: false},
+                  { value: "Su23", label: "Summer 2023", selected: true }
+                ],
+                typeOptions: [
+                  { value: "totalCarbon", label: "Total Carbon", max : 7},
+                  { value: "soil_density", label: "Soil Density", max : 1200 },
+                  { value: "pH", label: "pH", max : 14},
+                  { value: "dry_matter", label: "Dry Matter", max : 100},
+                ]
+              },
+              {
+                name: "Coronation Meadow",
+                location: "kew:coronation_meadow_os_bng_02m_grid",
+                metric: "totalCarbon",
+                loc: "Meadow",
+                periodOptions: [
+                  { value: "Sp21", label: "Spring 2022", selected: false },
+                  { value: "Aut21", label: "Autumn 2021", selected: false },
+                  { value: "Su22", label: "Summer 2022", selected: false },
+                  { value: "Su22_2", label: "Summer 2022 - 2" , selected: false},
+                  { value: "Aut22", label: "Autumn 2022", selected: false },
+                  { value: "Sp23", label: "Spring 2023" , selected: false},
+                  { value: "Su23", label: "Summer 2023", selected: true }
+                ],
+                typeOptions: [
+                  { value: "totalCarbon", label: "Total Carbon", max : 7},
+                  { value: "soil_density", label: "Soil Density", max : 1200 },
+                  { value: "pH", label: "pH", max : 14},
+                  { value: "dry_matter", label: "Dry Matter", max : 100},
+                ]
+              }
+            ).map(({ name, location, metric, periodOptions, typeOptions, loc }) =>
+              <AddLayerButton
+                addLayer={addLayer}
+                prototype={{
+                  type: "KewLayer",
+                  name,
+                  location,
+                  metric,
+                  periodOptions,
+                  typeOptions,
+                  visible: true,
+                  opacity: 1,
+                  loc
+                }}
+              />
+            )
+          }
         </Section>
         <Section title="Ancient Tree Inventory">
           <AddLayerButton
@@ -93,8 +193,7 @@ export const LayerPalette = ({ addLayer, hide, dbModels, getTeamDatasets, teamNa
               colors: {
                 ancient: [255, 183, 0, 1],
                 veteran: [0, 82, 11, 1],
-                lost_ancient: [245, 218, 149, 1],
-                lost_veteran: [77, 92, 79, 1],
+                notable: [158, 52, 235, 1],
                 public: [0, 217, 255, 1],
                 private: [235, 0, 0, 1],
               }
@@ -103,38 +202,7 @@ export const LayerPalette = ({ addLayer, hide, dbModels, getTeamDatasets, teamNa
         </Section>
         <Section title="Designations">
           {
-            Array<{ name: string, identifier: string, fill: [number, number, number, number], stroke: [number, number, number, number] }>(
-              { 
-                name: "Areas of Outstanding Natural Beauty (AONB)", 
-                identifier: "shapefiles:AONB_UK", 
-                fill: [0, 155, 0, 1], 
-                stroke: [0, 0, 0, 1] 
-              },
-              { 
-                name: "Sites of Special Scientific Interest (SSSI)", 
-                identifier: "shapefiles:SSSI_UK", 
-                fill: [255, 0, 0, 1], 
-                stroke: [0, 0, 0, 1]  
-              },
-              { 
-                name: "National Nature Reserves", 
-                identifier: "shapefiles:NNR_UK", 
-                fill: [42, 161, 79, 1], 
-                stroke: [0, 0, 0, 1]  
-              },
-              {
-                name: "Local Nature Reserves",
-                identifier: "shapefiles:LNR_ENG",
-                fill: [27, 174, 196, 1],
-                stroke: [0, 0, 0, 1]
-              },
-              {
-                name: "National Parks",
-                identifier: "shapefiles:NP_ENG",
-                fill: [255, 255, 0, 1],
-                stroke: [0, 0, 0, 1]
-              }
-            ).map(({ name, identifier, stroke, fill }) =>
+            designations.sort((a, b) => (a.name < b.name) ? -1 : 1).map(({ name, identifier, stroke, fill, attribution }) =>
               <AddLayerButton
                 addLayer={addLayer}
                 prototype={{
@@ -147,11 +215,44 @@ export const LayerPalette = ({ addLayer, hide, dbModels, getTeamDatasets, teamNa
                   identifier,
                   visible: true,
                   opacity: 1,
+                  attribution
                 }}
               />
             )
-            }
-
+          }
+        </Section>
+        <Section title="OS Boundaries">
+          {
+            Array<{ name: string, identifier: string }>(
+              {
+                name: "Historic Counties",
+                identifier: "shapefiles:boundary_line_historic_counties"
+              },
+              {
+                name: "Ceremonial Counties",
+                identifier: "shapefiles:boundary_line_ceremonial_counties"
+              },
+              {
+                name: "Westminster Constituencies",
+                identifier: "shapefiles:westminster_const "
+              },
+              {
+                name: "Polling Districts",
+                identifier: "shapefiles:polling_districts_england"
+              }
+            ).sort((a, b) => (a.name < b.name) ? -1 : 1).map(({ name, identifier }) =>
+              <AddLayerButton
+                addLayer={addLayer}
+                prototype={{
+                  type: "BoundaryLayer",
+                  name,
+                  identifier,
+                  visible: true,
+                  opacity: 1,
+                }}
+              />
+            )
+          }
         </Section>
         <Section title="NEVO">
           {
@@ -190,6 +291,22 @@ export const LayerPalette = ({ addLayer, hide, dbModels, getTeamDatasets, teamNa
               visible: true,
               opacity: 1,
               year: 2021,
+            }}
+          />
+          <AddLayerButton
+            addLayer={addLayer}
+            prototype={{
+              type: "ShapeLayer",
+              name: "UKCEH Woody Linear Features",
+              identifier: "ukceh:linearwoody2",
+              colors: {
+                stroke: [0, 255, 0, 1],
+                fill: [0, 255, 0, 1],
+                strokeWidth: 3
+              },
+              visible: true,
+              opacity: 1,
+              minZoom: 15
             }}
           />
         </Section>

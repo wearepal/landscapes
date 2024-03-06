@@ -9,21 +9,27 @@
     <div class="list-group-item list-group-item-light">
       <input placeholder="Search" class="form-control" data-action="input->filter#update" autofocus>
     </div>
-    <% @team.projects.sort_by { |project| project.name.downcase }.each do |project| %>
+    <% @team_projects.sort_by { |project| project.name.downcase }.each do |project| %>
       <div class="list-group-item list-group-item-action p-0 align-items-center" data-filter-target="item" style="display: flex;">
-        <%= link_to project_path(project), class: "list-group-item list-group-item-action border-0" do %>
+        <%= link_to project_path(project.id), class: "list-group-item list-group-item-action border-0" do %>
           <div class="d-flex align-items-center justify-content-between">
-            <%= project.name %>
+            <div>
+              <%= project.name %> 
+              <br>
+              <span class="small text-secondary">
+                <%= project.updated_at.strftime("Last updated: %b %d, %Y, %H:%M") %>
+              </span>
+            </div>
             <i class="fas fa-chevron-right"></i>
           </div>
         <% end %>  
-        <%= link_to project_duplicates_path(project), method: :post, class: "px-3 py-2" do %>
+        <%= link_to project_duplicates_path(project.id), method: :post, class: "px-3 py-2" do %>
           <i class="fas fa-clone"></i>
         <% end %>
-        <%= link_to edit_project_path(project), class: "px-3 py-2" do %>
+        <%= link_to edit_project_path(project.id), class: "px-3 py-2" do %>
           <i class="fas fa-edit"></i>
         <% end %>
-        <%= link_to project_path(project), method: :delete, data: { confirm: "Are you sure you want to delete '#{project.name}'?" }, class: "px-3 py-2 text-danger" do %>
+        <%= link_to project_path(project.id), method: :delete, data: { confirm: "Are you sure you want to delete '#{project.name}'?" }, class: "px-3 py-2 text-danger" do %>
           <i class="fas fa-trash-alt"></i>
         <% end %>
       </div>

@@ -2,7 +2,7 @@ import * as React from 'react'
 import './sidebar.css'
 import { ReactSortable } from 'react-sortablejs'
 import { nevoLevelNames, nevoPropertyNames } from './nevo'
-import { AtiLayer, CropMapLayer, DatasetLayer, Layer, ModelOutputLayer, NevoLayer, OverlayLayer, State } from './state'
+import { AtiLayer, CropMapLayer, DatasetLayer, KewLayer, Layer, MLLayer, ModelOutputLayer, NevoLayer, OverlayLayer, ShapeLayer, State } from './state'
 import { iconForLayerType } from "./util"
 import { getColorStops } from './reify_layer/model_output'
 import { tileGridStats } from './modelling/tile_grid'
@@ -85,20 +85,37 @@ interface ATILayerSettingsProps {
 const ATILayerSettings = ({ layer }: ATILayerSettingsProps) => {
 
   const colors = layer.colors
+  // backwards compatibility for old layers
+  const notable = colors.notable ?? [158, 52, 235, 1]
 
   return (
     <details className="mt-3">
       <summary>Legend</summary>
       <span className="swatch" style={{ backgroundColor: `rgb(${colors.ancient[0]},${colors.ancient[1]},${colors.ancient[2]},1)` }} /> Ancient Tree<br />
       <span className="swatch" style={{ backgroundColor: `rgb(${colors.veteran[0]},${colors.veteran[1]},${colors.veteran[2]},1)` }} /> Veteran Tree<br />
-      <span className="swatch" style={{ backgroundColor: `rgb(${colors.lost_ancient[0]},${colors.lost_ancient[1]},${colors.lost_ancient[2]},1)` }} /> Lost Ancient Tree<br />
-      <span className="swatch" style={{ backgroundColor: `rgb(${colors.lost_veteran[0]},${colors.lost_veteran[1]},${colors.lost_veteran[2]},1)` }} /> Lost Veteran Tree<br />
+      <span className="swatch" style={{ backgroundColor: `rgb(${notable[0]},${notable[1]},${notable[2]},1)` }} /> Notable Tree<br />
       <br />
       <span className="swatch" style={{ backgroundColor: `rgb(${colors.public[0]},${colors.public[1]},${colors.public[2]},1)` }} /> Public<br />
       <span className="swatch" style={{ backgroundColor: `rgb(${colors.private[0]},${colors.private[1]},${colors.private[2]},1)` }} /> Private<br />
     </details>
   )
 
+}
+
+interface ShapeLayerSettingsProps {
+  layer: ShapeLayer
+}
+
+const ShapeLayerSettings = ({ layer }: ShapeLayerSettingsProps) => {
+  const colors = layer.colors.fill
+  const name = layer.name
+
+  return (
+    <details className="mt-3">
+      <summary>Legend</summary>
+      <span className="swatch" style={{ backgroundColor: `rgb(${colors.join(",")})` }} />{name}<br />
+    </details>
+  )
 }
 
 interface CropMapLayerSettingsProps {
@@ -217,6 +234,61 @@ function ModelOutputLayerSettings({ layer, mutate, layerType }: ModelOutputLayer
   }
 }
 
+interface MLLayerSettingsProps {
+  layer: MLLayer
+}
+
+const MLLayerSettings = ({ layer }: MLLayerSettingsProps) => (
+  <details className="mt-3">
+    <summary>Legend</summary>
+    <span className="swatch" style={{ backgroundColor: "#008000" }} /> Hedge<br />
+    <span className="swatch" style={{ backgroundColor: "#ffee00" }} /> Tree<br />
+  </details>
+)
+
+interface KewLayerSettingsProps {
+  layer: KewLayer
+  mutate: (data: any) => void
+}
+
+const KewLayerSettings = ({ layer, mutate }: KewLayerSettingsProps) => {
+
+
+  const handlePeriodChange = (value: string) => {
+    const updatedPeriodOptions = layer.periodOptions.map(opt => {
+      if (opt.value === value) {
+        return { ...opt, selected: !opt.selected }
+      }
+      return opt
+    })
+    mutate({ periodOptions: updatedPeriodOptions })
+  }
+
+  return (  
+    <div className="mt-3">
+        <select className="custom-select" value={layer.metric} onChange={e => mutate({ metric: e.target.value })}>
+          {
+            layer.typeOptions.map(opt =>
+              <option key={opt.value} value={opt.value}>
+                {opt.label}
+              </option>
+            )
+          }
+        </select>
+        <ul className="list-group mt-1">
+          {
+            layer.periodOptions.map(opt =>
+              <li key={opt.value} className="list-group-item" style={{border: 0, padding: 0}}>
+                <input type="checkbox" checked={opt.selected} onChange={() => handlePeriodChange(opt.value)} />
+                {opt.label}
+              </li>
+            )
+          }
+        </ul>
+    </div>
+  )
+}
+
 export function ZoomData({zoom, area, length}) {
   const unit = area < 1 ? "cm²" : (area > 1000000 ? "km²" : "m²")
   length = area < 1 ? length * 100 : (area > 1000000 ? length / 1000 : length)
@@ -269,7 +341,7 @@ export function Legend({ colors, minValue, maxValue, type, labels, mutateColors,
               <div key={label} className="color-bar-label">
               <input
                 type="color"
-                value={`#${color[0].toString(16).padStart(2, '0')}${color[1].toString(16).padStart(2, '0')}${color[2].toString(16).padStart(2, '0')}`}
+                value={`#${color[0].toString(16).padStart(2, '0')}${color[1].toString(16).padStart(2, '0')}${color[2].toString(16).padStart(2, '0')}` || "#ffffff"}
                 style={{
                   marginLeft: 4.5,
                   backgroundColor: `rgb(${color[0]}, ${color[1]}, ${color[2]})`,
@@ -428,19 +500,30 @@ export function Legend({ colors, minValue, maxValue, type, labels, mutateColors,
       <>
       <div className="color-bar-container">
         <div className="color-bar">
-          {colors.map((color) => (
-            <div
-              key={color.join(",")}
-              style={{ backgroundColor: `rgb(${color.join(",")})` }}
-              className="color-bar-item"
-            />
-          ))}
+          {
+            colors.map((color) => (
+              <div
+                key={color.join(",")}
+                style={{ backgroundColor: `rgb(${color.join(",")})`, opacity: (isFinite(min) ? 1 : 0.3)}}
+                className="color-bar-item"
+              />
+            ))
+          }
         </div>
-        <div className="color-bar-legend">
-          <div title={min.toString()} >{min.toFixed(3)}</div>
-          <div title={mean.toString()} >{mean.toFixed(3)}</div>
-          <div title={max.toString()} >{max.toFixed(3)}</div>
-        </div>
+        { 
+          isFinite(min) && 
+          <div className="color-bar-legend">
+            <div title={min.toString()} >{min.toFixed(3)}</div>
+            <div title={mean.toString()} >{mean.toFixed(3)}</div>
+            <div title={max.toString()} >{max.toFixed(3)}</div>
+          </div>
+        }
+        {
+          !isFinite(min) &&
+          <div className="color-bar-legend">
+            No numeric data found
+          </div>
+        }
         <div style={{ padding: 15, paddingTop: 0, paddingLeft: 35 }} className="form-check form-switch">
           <input
             className="form-check-input"
@@ -553,6 +636,7 @@ export const Sidebar = ({ state, selectLayer, mutateLayer, deleteLayer, setLayer
           Array.from(state.project.allLayers).reverse().map(id => {
             const layer = state.project.layers[id]
             const isDeleted = layer.type == "DatasetLayer" && layer.deleted === true
+            const iconColor = layer.type === "ShapeLayer" ? `rgb(${layer.colors.fill.join(',')})` :  "rgb(96,96,96)"
 
             return (
               <div
@@ -565,7 +649,7 @@ export const Sidebar = ({ state, selectLayer, mutateLayer, deleteLayer, setLayer
                   selectLayer(id === state.selectedLayer ? undefined : id)
                 }}
               >
-                <div><i className={`fas fa-fw ${iconForLayerType(state.project.layers[id].type)}`} /></div>
+                <div><i className={`fas fa-fw ${iconForLayerType(state.project.layers[id].type)}`} style={{color: iconColor, textShadow: "1px 1px 1px black"}} /></div>
                 <span className="ml-2 mr-3 flex-grow-1" style={{ overflowX: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                   {state.project.layers[id].name}
                 </span>
@@ -679,12 +763,30 @@ export const Sidebar = ({ state, selectLayer, mutateLayer, deleteLayer, setLayer
               selectedLayer?.type == "AtiLayer" &&
               <ATILayerSettings layer={selectedLayer} />
             }
+            {
+              selectedLayer?.type == "ShapeLayer" &&
+              <ShapeLayerSettings layer={selectedLayer}/>
+            }
+            {
+              selectedLayer?.type == "MLLayer" &&
+              <MLLayerSettings layer={selectedLayer} />
+            }
+            {
+              selectedLayer?.type == "KewLayer" &&
+              <KewLayerSettings 
+                layer={selectedLayer} 
+                mutate={
+                  data => state.selectedLayer !== undefined &&
+                  mutateLayer(state.selectedLayer, data)
+                } 
+              />
+            }
           </> :
           <em>No layer selected</em>
       }
     </div>
     <button
-      disabled={state.selectedLayer === undefined || state.project.layers[state.selectedLayer].type === "ModelOutputLayer"}
+      disabled={state.selectedLayer === undefined || state.project.layers[state.selectedLayer]?.type === "ModelOutputLayer"}
       className="btn btn-outline-danger rounded-0 border-left-0 border-right-0 border-bottom-0"
       onClick={
         () => state.selectedLayer !== undefined &&

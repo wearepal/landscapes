@@ -29,12 +29,16 @@ import { Extent } from "ol/extent"
 import { ReplaceNaNComponent } from "./replace_nan_component"
 import { BiodiversityComponent } from "./biodiversity_component"
 import { LehLandCoverComponent } from "./leh_land_cover_component"
+import { MlTreeHedgeComponent } from "./ml_tree_hedge_component"
+import { ATIComponent } from "./ati_component"
+import { DesignationsComponent } from "./designations_component"
 
 export function createDefaultComponents(saveMapLayer: SaveMapLayer, saveModel: SaveModel, getDatasets: getDatasets, extent: Extent, zoom: number): BaseComponent[] {
   return [
     // Inputs
     new UkcehLandCoverComponent(extent, zoom),
     new LehLandCoverComponent(extent, zoom),
+    new MlTreeHedgeComponent(extent, zoom),
     new BiodiversityComponent(extent, zoom),
     new NevoLayerComponent(extent, zoom),
     new OSMLandUseComponent(extent, zoom),
@@ -44,6 +48,8 @@ export function createDefaultComponents(saveMapLayer: SaveMapLayer, saveModel: S
     new CensusComponent(extent, zoom),
     new OSGreenSpacesComponent(extent, zoom),
     new CROMEComponent(extent, zoom),
+    new ATIComponent(extent, zoom),
+    new DesignationsComponent(extent, zoom),
 
     // Outputs
     new MapLayerComponent(saveMapLayer),
@@ -84,8 +90,8 @@ export function createDefaultComponents(saveMapLayer: SaveMapLayer, saveModel: S
     new BinaryOpComponent('Power', '^', numericNumberDataSocket, numericNumberDataSocket, 'Arithmetic'),
     new UnaryOpComponent('Negate', '−', 'prefix', numericDataSocket, numericDataSocket, 'Arithmetic'),
     new UnaryOpComponent('Reciprocal', '⁻¹', 'postfix', numericDataSocket, numericDataSocket, 'Arithmetic'),
-    new BinaryOpComponent('Less', '<', numericDataSocket, booleanDataSocket, 'Arithmetic'),
-    new BinaryOpComponent('Greater', '>', numericDataSocket, booleanDataSocket, 'Arithmetic'),
+    new BinaryOpComponent('Less', '<', numericNumberDataSocket, booleanDataSocket, 'Arithmetic'),
+    new BinaryOpComponent('Greater', '>', numericNumberDataSocket, booleanDataSocket, 'Arithmetic'),
     new ReplaceNaNComponent(),
 
     // DEBUG TOOLS

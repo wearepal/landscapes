@@ -10,9 +10,8 @@ interface BaseLayer {
 
 export interface ColourMapATI {
   ancient: [r: number, g: number, b: number, a: number]
-  lost_ancient: [r: number, g: number, b: number, a: number]
   veteran: [r: number, g: number, b: number, a: number]
-  lost_veteran: [r: number, g: number, b: number, a: number]
+  notable: [r: number, g: number, b: number, a: number]
   public: [r: number, g: number, b: number, a: number]
   private: [r: number, g: number, b: number, a: number]
 }
@@ -20,6 +19,14 @@ export interface ColourMapATI {
 export interface StrokeFill {
   stroke: [r: number, g: number, b: number, a: number]
   fill: [r: number, g: number, b: number, a: number]
+  strokeWidth?: number
+}
+
+export interface KewOption {
+  value: string
+  label: string
+  selected?: boolean
+  max?: number
 }
 
 type fillType = "greyscale" | "heatmap" | "jet" | "hsv" | "hot" | "cool" | "spring" | "summer" | "autumn" | "winter" | "copper" | "WIGnBu" | "greens" | "YIOrRd" | "bluered" | "RdBu" | "picnic" | "rainbow" | "portland" | "blackbody" | "earth" | "electric" | "viridis" | "inferno" | "magma" | "plasma" | "warm" | "cool" | "rainbow-soft" | "bathymetry" | "cdom" | "chlorophyll" | "density" | "freesurface-blue" | "freesurface-red" | "oxygen" | "par" | "phase" | "salinity" | "temperature" | "turbidity" | "velocity-blue" | "velocity-green" | "cubehelix"
@@ -49,6 +56,22 @@ export interface ShapeLayer extends BaseLayer {
   type: "ShapeLayer"
   identifier: string
   colors: StrokeFill
+  minZoom?: number
+  attribution?: string
+}
+
+export interface BoundaryLayer extends BaseLayer {
+  type: "BoundaryLayer"
+  identifier: string
+}
+
+export interface KewLayer extends BaseLayer {
+  type: "KewLayer"
+  location: string
+  periodOptions: KewOption[]
+  typeOptions: KewOption[]
+  metric: string
+  loc?: string
 }
 
 export interface NevoLayer extends BaseLayer {
@@ -87,7 +110,12 @@ export interface DatasetLayer extends BaseLayer {
   deleted?: boolean
 }
 
-export type Layer = OsmLayer | MapTileLayer | OverlayLayer | NevoLayer | CehLandCoverLayer | ModelOutputLayer | DatasetLayer | CropMapLayer | AtiLayer | ShapeLayer
+export interface MLLayer extends BaseLayer {
+  type: "MLLayer"
+  layerName: string
+}
+
+export type Layer = OsmLayer | MapTileLayer | OverlayLayer | NevoLayer | CehLandCoverLayer | ModelOutputLayer | DatasetLayer | CropMapLayer | AtiLayer | ShapeLayer | BoundaryLayer | MLLayer | KewLayer
 
 export interface Project {
   name: string

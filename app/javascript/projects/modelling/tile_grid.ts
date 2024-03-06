@@ -309,7 +309,7 @@ export class NumericTileGrid extends TileGrid {
   }
 
   getTotal(): number {
-    return this.data.reduce((a, b) => a + b, 0)
+    return this.data.reduce((a, b) => (isNaN(a) ? 0 : a) + (isNaN(b) ? 0 : b), 0)
   }
 
   toJSON(): TileGridJSON {
