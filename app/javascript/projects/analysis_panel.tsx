@@ -2,7 +2,7 @@ import { Extent } from 'ol/extent'
 import * as React from 'react'
 import { DatasetLayer, Layer, ModelOutputLayer } from './state'
 import { BooleanTileGrid, CategoricalTileGrid, NumericTileGrid } from './modelling/tile_grid'
-import { ChartData, extentToChartData } from './analysis_panel_tools/subsection'
+import { ChartData, extentToChartDataCached } from './analysis_panel_tools/subsection'
 import { GenerateChart } from './analysis_panel_tools/charts'
 import './analysis_panel.css'
 import { getArea } from 'ol/sphere'
@@ -160,17 +160,25 @@ export const AnalysisPanel = ({ selectedArea, setSelectedArea, setShowAP, select
 
     const [chartType, setChartType] = React.useState<ChartType>()
     const [chartData, setChartData] = React.useState<ChartData>()
-    const [bins, setBins] = React.useState<number>(10)
+    const [bins, setBins] = React.useState<number>(10) 
+    const [colors, setColors] = React.useState<any>(null)
 
     let errorMsg: string = ""
     let showChart: boolean = false
     let data: BooleanTileGrid | NumericTileGrid | CategoricalTileGrid | null = null
 
+    React.useEffect(() => {    
+        if (data !== null && selectedArea && (selectedLayer?.type == "ModelOutputLayer" || selectedLayer?.type == "DatasetLayer")) {
+            const datasetLayer = selectedLayer as DatasetLayer
+            setColors(data instanceof NumericTileGrid ? datasetLayer.fill : datasetLayer.colors)
+        }
+    }, [selectedLayer])
+
     React.useEffect(() => {
 
         if (data !== null && selectedArea && (selectedLayer?.type == "ModelOutputLayer" || selectedLayer?.type == "DatasetLayer")) {
 
-            setChartData(extentToChartData(selectedLayer.colors, data, selectedArea, selectedLayer.fill, bins))
+            setChartData(extentToChartDataCached(selectedLayer.colors, data, selectedArea, selectedLayer.fill, bins))
 
             let dataType: string | undefined = undefined
 
@@ -192,11 +200,12 @@ export const AnalysisPanel = ({ selectedArea, setSelectedArea, setShowAP, select
             setChartData(undefined)
         }
 
-    }, [selectedArea, selectedLayer, data, currentTab, bins])
+    }, [selectedArea, selectedLayer, data, currentTab, bins, colors])
 
 
     if (selectedArea === null) {
-        errorMsg = "Please select an area to analyze."
+        const isMac = navigator.platform.toUpperCase().indexOf('MAC')>=0
+        errorMsg = `${isMac ? "Press the command key and drag the mouse to select an area." : "Press the control key and drag the mouse to select an area."}`
     } else if (selectedLayer === null) {
         errorMsg = "Please select a suitable layer."
     } else if (selectedLayer.type !== "DatasetLayer" && selectedLayer.type !== "ModelOutputLayer") {
@@ -219,6 +228,22 @@ export const AnalysisPanel = ({ selectedArea, setSelectedArea, setShowAP, select
 
             <div className="flex-grow-1" style={{ overflowY: "auto", flexBasis: "0px", backgroundColor: 'white' }}>
 
+                {
+                    errorMsg.split("drag the mouse").length > 1 &&
+                    <i className="fas fa-mouse-pointer" style={{ fontSize: "2em", display: "block", textAlign: "center", padding: 20, paddingTop: 50 }} />
+                }
+                {
+                    errorMsg.split("select a suitable layer").length > 1 &&
+                    <i className="fas fa-hand-pointer" style={{ fontSize: "2em", display: "block", textAlign: "center", padding: 20, paddingTop: 50 }} />
+                }
+                {
+                    errorMsg.split("Model is not yet available").length > 1 &&
+                    <i className="fas fa-spinner" style={{ fontSize: "2em", display: "block", textAlign: "center", padding: 20, paddingTop: 50 }} />
+                }
+                {
+                    errorMsg.split("Unsuitable layer type").length > 1 &&
+                    <i className="fas fa-exclamation-triangle" style={{ fontSize: "2em", display: "block", textAlign: "center", padding: 20, paddingTop: 50 }} />
+                }
                 {
                     !!errorMsg &&
                     <div style={{ textAlign: "center", padding: 30 }}>{errorMsg}</div>

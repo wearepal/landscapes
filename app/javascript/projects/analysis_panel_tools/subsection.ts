@@ -4,10 +4,9 @@ import { createXYZ } from "ol/tilegrid"
 import { getArea } from "ol/sphere"
 import { fromExtent } from "ol/geom/Polygon"
 import { getColorStops } from "../reify_layer/model_output"
-import { sum } from "mathjs"
+import { re, sum } from "mathjs"
 
 type Color = [number, number, number, number]
-
 
 export interface NumericStats {
     sum: number
@@ -22,8 +21,11 @@ export interface NumericStats {
 
 export interface ChartData {
     count: Map<any, number>
-    colors?: Map<any, Color>
+    colors: Map<any, Color>
     numeric_stats?: NumericStats | undefined
+    inputColors: Color[] | undefined
+    inputFillType: string | undefined
+    inputHistogramBins: number
 }
 
 function findColor(value: number, colorArray: any[]): Color {
@@ -57,6 +59,98 @@ function medianFromMap(arr: [number, number][], total: number): number | undefin
     }
 
     return undefined
+
+}
+
+let currentExtent: Extent = [0, 0, 0, 0]
+const chartDataCache = new Map<BooleanTileGrid | NumericTileGrid | CategoricalTileGrid, ChartData>()
+
+export function extentToChartDataCached(colors: Color[] | undefined, model: BooleanTileGrid | NumericTileGrid | CategoricalTileGrid, extent: Extent, fillType: string | undefined, histogram_bins: number): ChartData {
+
+    if(extent !== currentExtent) {
+        // if the extent has changed, clear the cache
+        chartDataCache.clear()
+        currentExtent = extent
+    }
+
+    if(chartDataCache.has(model)) {
+        const chartData = chartDataCache.get(model) as ChartData
+
+        if(chartData.inputHistogramBins !== histogram_bins && model instanceof NumericTileGrid) {
+
+            // if the histogram bins have changed, recalculate the chart data to reflect the new bins
+
+            const newChartData = extentToChartData(colors, model, extent, fillType, histogram_bins)
+            chartDataCache.set(model, newChartData)
+
+            return newChartData
+
+        }else if(chartData.inputColors !== colors || chartData.inputFillType !== fillType ){
+
+            // if the colors or fill type have changed, update the color map
+
+            const newChartData = modifyChartDataColours(colors, fillType, histogram_bins, chartData, model)
+            chartDataCache.set(model, newChartData)
+
+            return newChartData
+
+        }else{
+
+            return chartData
+
+        }
+    }else{
+        const chartData = extentToChartData(colors, model, extent, fillType, histogram_bins)
+        chartDataCache.set(model, chartData)
+        return chartData
+    }
+}
+
+function modifyChartDataColours(colors: Color[] | undefined, fillType: string | undefined, histogram_bins: number, chartData: ChartData, model: BooleanTileGrid | NumericTileGrid | CategoricalTileGrid): ChartData {
+
+
+    if(fillType !== chartData.inputFillType && model instanceof NumericTileGrid && fillType){
+    
+        const newColorMap = new Map<any, Color>()
+        const fillMap = getColorStops((fillType == "greyscale" ? "greys" : (fillType === "heatmap" ? "jet" : fillType)), 40).reverse()
+        const [ds_min, ds_max] = [model.getStats().min, model.getStats().max]
+    
+        chartData.count.forEach((value, key) => {
+            let val = key + (chartData.numeric_stats?.step! / 2)
+            val = (val - ds_min) / (ds_max - ds_min)
+            newColorMap.set(key, findColor(val, fillMap))
+        })
+    
+        chartData.colors = newColorMap
+        chartData.inputFillType = fillType
+
+        return chartData
+
+    }
+
+    if(colors !== chartData.inputColors && colors && !(model instanceof NumericTileGrid)){
+
+        const newColorMap = new Map<any, Color>()
+        chartData.colors?.forEach((value, key) => {
+            if(model instanceof CategoricalTileGrid){
+                const labels = model.labels
+                const newKey = Array.from(labels.keys()).find(k => labels.get(k) === key)
+                newColorMap.set(key, newKey ? colors[newKey - 1] : [100, 100, 100, 1]) 
+            }else{
+                const col_value = colors[+key]
+                newColorMap.set(key, col_value ?? [100, 100, 100, 1])
+            }
+        })
+
+        chartData.colors = newColorMap
+
+        chartData.inputColors = colors
+
+        return chartData
+
+    }
+
+    return chartData
 
 }
 
@@ -107,7 +201,14 @@ export function extentToChartData(colors: Color[] | undefined, model: BooleanTil
 
         let mapEntries: [number, number][] = Array.from(counts.entries()).filter(([key, value]) => !isNaN(key) && !isNaN(value))
 
-        if(mapEntries.length === 0) return {count: new Map(), colors: new Map(), numeric_stats: undefined}
+        if(mapEntries.length === 0) return {
+            count: new Map(), 
+            colors: new Map(), 
+            numeric_stats: undefined, 
+            inputColors: colors, 
+            inputFillType: fillType, 
+            inputHistogramBins: histogram_bins
+        }
 
         mapEntries = mapEntries.sort((a, b) => a[0] - b[0])
 
@@ -164,5 +265,12 @@ export function extentToChartData(colors: Color[] | undefined, model: BooleanTil
 
     }
 
-    return { count: counts, colors: color, numeric_stats }
+    return { 
+        count: counts, 
+        colors: color, 
+        numeric_stats, 
+        inputColors: colors, 
+        inputFillType: fillType, 
+        inputHistogramBins: histogram_bins
+    }
 } 
