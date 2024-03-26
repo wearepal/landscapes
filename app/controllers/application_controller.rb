@@ -37,7 +37,16 @@ class ApplicationController < ActionController::Base
     end
 
     def current_user
-      User.find_by(token: cookies[:token]) || User.find_by(token: session[:token])
+      user = User.find_by(token: cookies[:token]) || User.find_by(token: session[:token])
+      if user && !user.deactivated
+        return user
+      else
+        if user
+          cookies.delete(:token)
+          session.delete(:token)
+        end
+        return nil
+      end
     end
 
     def set_team

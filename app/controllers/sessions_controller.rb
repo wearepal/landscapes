@@ -8,6 +8,10 @@ class SessionsController < ApplicationController
   def create
     authorize!
     user = User.find_by(params.permit(:email))
+
+    if user && user.deactivated
+      head :unprocessable_entity
+    end
     
     if user.try(:authenticate, params[:password])
       cookies.permanent[:token] = user.token

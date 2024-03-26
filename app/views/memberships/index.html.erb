@@ -9,7 +9,7 @@
     <div class="list-group-item list-group-item-light">
       <input placeholder="Search" class="form-control" data-action="input->filter#update" autofocus>
     </div>
-    <% @team.memberships.includes(:user).order('users.name').each do |membership| %>
+    <% @team.memberships.includes(:user).where.not(users: { deactivated: true }).order('users.name').each do |membership| %>
       <div class="list-group-item" data-filter-target="item">
         <div class="d-flex align-items-center justify-content-between">
           <div>
