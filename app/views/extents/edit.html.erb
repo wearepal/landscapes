@@ -1,0 +1,14 @@
+<div class="card">
+    <div class="card-header d-flex align-items-center justify-content-between">
+        <%= @extent.name %>
+    </div>
+    <div class="card-body">
+        <div class="form-group" id="extent_1">
+            <label for="extent_name">Name</label>
+            <input class="form-control" type="text" name="extent[name]" id="extent_name" value="<%= @extent.name %>">
+
+            <label for="extent_value">Value</label>
+            <input class="form-control" type="text" name="extent[value]" id="extent_value" value="<%= @extent.value.join(', ') %>">
+        </div>
+    </div>
+</div>

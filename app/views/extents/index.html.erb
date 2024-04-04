@@ -1,0 +1,26 @@
+<div class="card">
+    <div class="card-header d-flex align-items-center justify-content-between">
+        Extents    
+        <%= link_to [@team, :extent, action: :new], class: "btn btn-sm btn-outline-primary", title: "Create extent" do %>
+            <i class="fas fa-plus"></i>
+        <% end %>
+    </div>    
+
+
+    <div class="list-group list-group-flush" data-controller="filter">
+        <div class="list-group-item list-group-item-light">
+            <input placeholder="Search" class="form-control" data-action="input->filter#update" autofocus>
+        </div>
+
+        <% @team_extents.sort_by { |extent| extent.name.downcase }.each do |extent| %>
+            <%= link_to edit_extent_path(extent.id), class: "list-group-item list-group-item-action border-0" do %>
+                <div class="list-group-item list-group-item-action p-0 align-items-center" data-filter-target="item" style="display: flex;">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <%= extent.name %> 
+                    </div>
+                </div>
+            <% end %>
+        <% end %>
+
+    </div>
+</div> 

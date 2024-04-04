@@ -5,6 +5,7 @@ Rails.application.routes.draw do
     resources :overlays, only: [:index]
 
     resources :datasets, only: [:index, :edit, :create, :show, :destroy, :update]
+    resources :extents, only: [:index, :create, :new, :edit]
 
     resources :label_schemas do
       resources :duplicates, model_name: "LabelSchema"

@@ -4,13 +4,15 @@
   <% end %>
   
   <% content_for :sidebar_content do %>
-    <%= render "sidebar_link", path: [@team, :regions] do %>
-      <i class="fas fa-map-marked fa-fw"></i>
-      Regions
-    <% end %>
-    <%= render "sidebar_link", path: [@team, :label_schemas] do %>
-      <i class="fas fa-tags fa-fw"></i>
-      Label schemas
+    <% if false %>
+      <%= render "sidebar_link", path: [@team, :regions] do %>
+        <i class="fas fa-map-marked fa-fw"></i>
+        Regions
+      <% end %>
+      <%= render "sidebar_link", path: [@team, :label_schemas] do %>
+        <i class="fas fa-tags fa-fw"></i>
+        Label schemas
+      <% end %>
     <% end %>
     <%= render "sidebar_link", path: [@team, :projects] do %>
       <div class="d-flex align-items-center">
@@ -20,13 +22,21 @@
         </div>
       </div>
     <% end %>    
+    <%= render "sidebar_link", path: [@team, :extents] do %>
+      <div class="d-flex align-items-center">
+        <div class="flex-grow-1">
+          <i class="fas fa-map fa-fw"></i>
+          Extents
+        </div>
+        <span class="badge badge-primary">New!</span>
+      </div>
+    <% end %>
     <%= render "sidebar_link", path: [@team, :datasets] do %>
       <div class="d-flex align-items-center">
         <div class="flex-grow-1">
           <i class="fas fa-table fa-fw"></i>
           Datasets
         </div>
-        <span class="badge badge-primary">New!</span>
       </div>
     <% end %>
     <%= render "sidebar_link", path: [@team, :models] do %>
