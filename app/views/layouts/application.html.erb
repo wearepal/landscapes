@@ -119,7 +119,7 @@
         const exinput = document.getElementById(formGroupID)
         if(!exinput) return
 
-        let target = formGroupID === 'extent_0' ? 'extent_value' : 'project_extent'
+        let target = formGroupID === 'extent_0' || formGroupID === 'extent_1' ? 'extent_value' : 'project_extent'
 
         showZoom(target)
 

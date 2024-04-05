@@ -25,6 +25,7 @@ class DatasetsController < ApplicationController
         @dataset = Dataset.find(params[:id])
         @team = @dataset.team
         authorize_for! @team
+        render layout: "team"
     end
       
 

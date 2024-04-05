@@ -9,6 +9,15 @@
 
             <label for="extent_value">Value</label>
             <input class="form-control" type="text" name="extent[value]" id="extent_value" value="<%= @extent.value.join(', ') %>">
+
+            <span id="zoom" class="badge"></span>    
+            <div id="map" style="width: 100%; height: 400px; margin-bottom: 10px;"></div>
+            <div id="guide" style="margin-bottom: 10px"></div>
         </div>
     </div>
 </div>
+
+
+<script>
+    document.addEventListener("turbolinks:load", () => mapUpdate('extent_1'));
+</script>

@@ -18,7 +18,17 @@
   <div class="form-group" id="PROJEDIT3303">
     <%= form.label :extent %>
     <span data-form-target="error" data-field="extent"></span>
-    <%= form.text_field :extent, class: 'form-control', data: { "form-target": "field", field: "extent" }, value: "-49469.089243, 6570068.329224, 55641.379277, 6669018.450996" %>
+    <br>
+
+    <div class="row">
+      <div class="col">
+        <%= form.text_field :extent, class: 'form-control', data: { "form-target": "field", field: "extent" } %>  
+      </div>
+      <div class="col-3" style="padding-left: 1px">
+        <%= form.collection_select :value, @extents.order(:name), :value, :name, { include_blank: true }, { style: "width: 100%; height: 100%;" } %>
+      </div>
+    </div>
+
     <span id="zoom" class="badge"></span>
   </div>
 
@@ -35,8 +45,28 @@
 <% end %>
 
 <script>
-    document.addEventListener("turbolinks:load", function() {
+
+    function updateExtentVals(){
+        const value = document.getElementById('project_value').value
+        const extent = value ? value.split('[')[1].split(']')[0].split(',').map(Number) : [-49469.089243, 6570068.329224, 55641.379277, 6669018.450996]
+        document.getElementById('project_extent').value = extent.join(', ')
         mapUpdate('PROJEDIT3303')
-    });
+    }
+
+    document.addEventListener("turbolinks:load", () => mapUpdate('PROJEDIT3303'))
+
+    document.getElementById('project_value').addEventListener('change', () => {
+        const value = document.getElementById('project_value').value
+        const extent = value ? value.split('[')[1].split(']')[0].split(',').map(Number) : [-49469.089243, 6570068.329224, 55641.379277, 6669018.450996]
+        document.getElementById('project_extent').value = extent.join(', ')
+        mapUpdate('PROJEDIT3303')
+    })
+
+    document.getElementById('project_extent').addEventListener('change', () => {
+        document.getElementById('project_value').value = ""
+    })
+
+    updateExtentVals()
+
 </script>
 
