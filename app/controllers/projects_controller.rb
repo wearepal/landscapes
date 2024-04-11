@@ -10,13 +10,17 @@ class ProjectsController < ApplicationController
   end
 
   def new
+    @extents = @team.extents
     @project = @team.projects.new
     render layout: "team"
   end
 
   def edit
     @project = Project.find(params[:id])
+    @team = @project.team
+    @extents = @team.extents
     authorize_for! @project.team
+    render layout: "team"
   end
   
 

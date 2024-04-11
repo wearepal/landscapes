@@ -94,8 +94,8 @@
 
     }
 
-    function showZoom(){
-        const extent = document.getElementById('project_extent').value.split(',').map(Number)
+    function showZoom(target){
+        const extent = document.getElementById(target).value.split(',').map(Number)
         const area = (extent[2]-extent[0])*(extent[3]-extent[1])
 
         if(isNaN(area)){
@@ -114,12 +114,14 @@
 
     }
 
-    function mapUpdate(formGroupID){
+    function mapUpdate(formGroupID, fn){
 
         const exinput = document.getElementById(formGroupID)
         if(!exinput) return
 
-        showZoom()
+        let target = formGroupID === 'extent_0' || formGroupID === 'extent_1' ? 'extent_value' : 'project_extent'
+
+        showZoom(target)
 
         if(document.getElementById('map')) document.getElementById('map').innerHTML = ''
         const isMac = navigator.platform.toUpperCase().indexOf('MAC')>=0;
@@ -130,7 +132,7 @@
             document.getElementById('guide').innerHTML = 'Select a new extent by holding down the control key and dragging a box on the map.'
         }
 
-        const extentInput = document.getElementById('project_extent');
+        const extentInput = document.getElementById(target);
         const extent = extentInput.value.split(',').map(Number);
 
         const map = new ol.Map({
@@ -186,7 +188,7 @@
             const extentString = extent.join(',')
             extentInput.value = extentString
 
-            showZoom()
+            showZoom(target)
 
             extentFeature.setGeometry(
             new ol.geom.Polygon([
@@ -202,9 +204,8 @@
         })
 
         function updateMap() {
-            console.log('update map')
 
-            showZoom()
+            showZoom(target)
 
             const extent = extentInput.value.split(',').map(Number);
     
@@ -221,6 +222,8 @@
                 ],
             ])
             );
+
+            if(fn) fn()
         }
     
         extentInput.addEventListener('input', updateMap);

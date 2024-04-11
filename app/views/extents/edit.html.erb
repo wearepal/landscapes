@@ -1,0 +1,23 @@
+<div class="card">
+    <div class="card-header d-flex align-items-center justify-content-between">
+        <%= @extent.name %>
+    </div>
+    <div class="card-body">
+        <div class="form-group" id="extent_1">
+            <input class="form-control" type="text" name="extent[value]" id="extent_value" value="<%= @extent.value.join(', ') %>" disabled>
+
+            <span id="zoom" class="badge"></span> 
+            <div id="map" style="width: 100%; height: 400px; margin-bottom: 10px; margin-top: 10px;"></div>
+            <div id="guide" style="margin-bottom: 10px"></div>
+        </div>
+        
+        
+        <%= link_to 'Cancel', :back, class: 'btn btn-secondary' %>    
+        <%= link_to "Delete", [@extent], method: :delete, data: { confirm: "Are you sure you want to delete this extent?" }, class: "btn btn-danger" %>
+    </div>
+</div>
+
+
+<script>
+    document.addEventListener("turbolinks:load", () => mapUpdate('extent_1'));
+</script>

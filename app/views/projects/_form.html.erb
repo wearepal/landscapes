@@ -18,7 +18,17 @@
   <div class="form-group" id="PROJEDIT3303">
     <%= form.label :extent %>
     <span data-form-target="error" data-field="extent"></span>
-    <%= form.text_field :extent, class: 'form-control', data: { "form-target": "field", field: "extent" }, value: "-49469.089243, 6570068.329224, 55641.379277, 6669018.450996" %>
+    <br>
+
+    <div class="row"> 
+      <div class="col">
+        <%= form.text_field :extent, class: 'form-control', data: { "form-target": "field", field: "extent" } %>  
+      </div>
+      <div class="col-3" style="padding-left: 1px">
+        <%= form.collection_select :value, @extents.order(:name), :id, :name, { include_blank: true },  { style: "width: 100%; height: 100%; background-color: #efefef; border: 0px; border-radius: 5px;" }  %>
+      </div>
+    </div>
+
     <span id="zoom" class="badge"></span>
   </div>
 
@@ -36,9 +46,26 @@
 
 <script>
 
+    var extents = <%= raw @extents.to_json %>
+    
+    document.addEventListener("turbolinks:load", () => {
 
-   document.addEventListener("turbolinks:load", function() {
+      const projEx = document.getElementById('PROJEDIT3303')
+      if(!projEx) return
+
+      document.getElementById('project_extent').value = extents.length > 0 ? extents[0].value.join(', ') : [-49469.089243, 6570068.329224, 55641.379277, 6669018.450996].join(', ')
+      document.getElementById('project_value').value = extents.length > 0 ? extents[0].id : ''
+
+      document.getElementById('project_value').addEventListener('change', () => {
+        const valueId = document.getElementById('project_value').value
+        const value = extents.find(ext => ext.id == valueId).value
+        const extent = value ?? [-49469.089243, 6570068.329224, 55641.379277, 6669018.450996]
+        document.getElementById('project_extent').value = extent.join(', ')
         mapUpdate('PROJEDIT3303')
-    });
+      })
+
+      mapUpdate('PROJEDIT3303')
+    })
+
 </script>
 
