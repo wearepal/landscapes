@@ -17,6 +17,14 @@ class ExtentsController < ApplicationController
         authorize_for! @extent.team
         render layout: "team"
     end
+
+    def destroy
+        @extent = Extent.find(params[:id])
+        @team = @extent.team
+        authorize_for! @team
+        @extent.destroy
+        redirect_to team_extents_url(@team)
+    end
     
     def create
         values_array = params[:extent][:value].split(',').map(&:to_f)

@@ -1,6 +1,20 @@
-<div class="container">
-  <h3>Edit Project</h3>
-  <%= form_for @project do |f| %>
+<div class="card">
+    <div class="card-header d-flex align-items-center justify-content-between">
+        Edit Project
+    </div>
+    
+    <div class="card-body">
+  <%=
+    form_with(
+      model: [@project],
+      html: {
+        data: {
+          controller: "form",
+          action: "ajax:error->form#onError",
+        }
+      }
+    ) do |f|
+    %>
     <div class="form-group">
       <%= f.label :name %>
       <%= f.text_field :name, class: 'form-control' %>
@@ -9,7 +23,17 @@
     <div class="form-group" id="PROJEDIT303">
         <%= f.label :extent %>
         <span data-form-target="error" data-field="extent"></span>
-        <%= f.text_field :extent, value: (@project.extent.present? ? @project.extent.join(', ') : "-49469.089243, 6570068.329224, 55641.379277, 6669018.450996"), class: 'form-control', data: { "form-target": "field", field: "extent" }  %>
+        <br>
+
+        <div class="row"> 
+          <div class="col">
+            <%= f.text_field :extent, value: (@project.extent.present? ? @project.extent.join(', ') : "-49469.089243, 6570068.329224, 55641.379277, 6669018.450996"), class: 'form-control', data: { "form-target": "field", field: "extent" } %>
+          </div>
+          <div class="col-3" style="padding-left: 1px">
+            <%= f.collection_select :value, @extents.order(:name), :id, :name, { include_blank: true }, { style: "width: 100%; height: 100%; background-color: #efefef; border: 0px; border-radius: 5px;" } %>
+          </div>
+        </div>
+
         <span id="zoom" class="badge"></span>
     </div>
     <div id="map" style="width: 100%; height: 400px; margin-bottom: 10px;"></div>
@@ -21,12 +45,44 @@
     <%= f.submit 'Save and return to menus', class: 'btn btn-primary' %>
   <% end %>
 </div>
-
+</div>
 <script>
 
-    document.addEventListener("turbolinks:load", function() {
-        mapUpdate('PROJEDIT303')
-    });
+    var extents = <%= raw @extents.to_json %>;
+
+    document.addEventListener("turbolinks:load", () =>{
+      const projEx = document.getElementById('PROJEDIT303')
+      if(!projEx) return
+      
+      document.getElementById('project_value').addEventListener('change', () => {
+          const valueId = document.getElementById('project_value').value
+          const value = extents.find(ext => ext.id == valueId).value
+          const extent = value ?? [-49469.089243, 6570068.329224, 55641.379277, 6669018.450996]
+          document.getElementById('project_extent').value = extent.join(', ')
+          mapUpdate('PROJEDIT303')
+      })
+
+      function isSavedValue(){
+          const extent = document.getElementById('project_extent').value.split(',').map(Number)
+          let id = ""
+          extents.forEach((ext) => {
+              if(extent[0] == ext.value[0] && extent[1] == ext.value[1] && extent[2] == ext.value[2] && extent[3] == ext.value[3]){
+                id = ext.id
+              }
+          })
+          return id
+      }
+
+      mapUpdate('PROJEDIT303', () => {
+          document.getElementById('project_value').value = isSavedValue() 
+        }
+      )
+
+      document.getElementById('project_value').value = isSavedValue()
+
+    })
+
+
 
 
 </script>

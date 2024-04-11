@@ -114,7 +114,7 @@
 
     }
 
-    function mapUpdate(formGroupID){
+    function mapUpdate(formGroupID, fn){
 
         const exinput = document.getElementById(formGroupID)
         if(!exinput) return
@@ -222,6 +222,8 @@
                 ],
             ])
             );
+
+            if(fn) fn()
         }
     
         extentInput.addEventListener('input', updateMap);
