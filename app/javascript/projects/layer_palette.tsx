@@ -282,6 +282,28 @@ export const LayerPalette = ({ addLayer, hide, dbModels, getTeamDatasets, teamNa
             )
           }
         </Section>
+        <Section title="ORVal">
+          {
+            Array<{ name: string, source: string, style: string }>(
+              { name: "Parks" , source: "ORVAL:parks_england", style: "ORVAL:orvalparks"},
+              { name: "Beaches", source: "ORVAL:beaches_england", style: ""},
+              { name: "Paths", source: "ORVAL:paths_england", style: ""},
+              { name: "Path Access Points", source: "ORVAL:paths_england_accesspts", style: ""},
+            ).map(({ name, source, style }) =>
+              <AddLayerButton
+                addLayer={addLayer}
+                prototype={{
+                  type: "ORValLayer",
+                  name,
+                  visible: true,
+                  opacity: 1,
+                  source,
+                  style
+                }}
+              />
+            )
+          }
+        </Section>
         <Section title="UKCEH Land Cover Maps">
           <AddLayerButton
             addLayer={addLayer}

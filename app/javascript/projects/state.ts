@@ -81,6 +81,12 @@ export interface NevoLayer extends BaseLayer {
   fill: "greyscale" | "heatmap"
 }
 
+export interface ORValLayer extends BaseLayer {
+  type: "ORValLayer",
+  source: string
+  style: string
+}
+
 export interface CehLandCoverLayer extends BaseLayer {
   type: "CehLandCoverLayer"
   year: 2021 // TODO: allow the user to customise this
@@ -115,7 +121,7 @@ export interface MLLayer extends BaseLayer {
   layerName: string
 }
 
-export type Layer = OsmLayer | MapTileLayer | OverlayLayer | NevoLayer | CehLandCoverLayer | ModelOutputLayer | DatasetLayer | CropMapLayer | AtiLayer | ShapeLayer | BoundaryLayer | MLLayer | KewLayer
+export type Layer = OsmLayer | MapTileLayer | OverlayLayer | NevoLayer | CehLandCoverLayer | ModelOutputLayer | DatasetLayer | CropMapLayer | AtiLayer | ShapeLayer | BoundaryLayer | MLLayer | KewLayer | ORValLayer
 
 export interface Project {
   name: string

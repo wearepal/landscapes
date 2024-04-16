@@ -16,6 +16,7 @@ import { reifyShapeFileLayer } from './shapefile'
 import { reifyBoundaryLayer } from './boundary'
 import { reifyGeoserverWMSLayer } from './geoserver'
 import { reifyKewLayer } from './kew'
+import { reifyOrvalLayer } from './orval'
 
 export const reifyLayer = (layer: Layer, existingLayer: BaseLayer | null, dbModels: DBModels, map: Map, modelOutputCache: ModelOutputCache, DatasetCache: DatasetCache, loadteamDataset: (layer: DatasetLayer) => void): BaseLayer => {
   const layerType = layer.type
@@ -33,6 +34,7 @@ export const reifyLayer = (layer: Layer, existingLayer: BaseLayer | null, dbMode
     case "BoundaryLayer": return reifyBoundaryLayer(layer, existingLayer, map)
     case "MLLayer": return reifyGeoserverWMSLayer(layer, existingLayer)
     case "KewLayer": return reifyKewLayer(layer, existingLayer, map)
+    case "ORValLayer": return reifyOrvalLayer(layer, existingLayer, map)
     default: {
       // Ensure this switch statement is exhaustive
       const unreachable: never = layerType
