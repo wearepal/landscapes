@@ -781,10 +781,16 @@ export const Sidebar = ({ state, selectLayer, mutateLayer, deleteLayer, setLayer
                 } 
               />
             }
-          </> :
-          <em>No layer selected</em>
-      }
-    </div>
+            {
+              selectedLayer?.type == "ORValLayer" &&
+              <>
+                <img src={selectedLayer.style !== "" ? `https://landscapes.wearepal.ai/geoserver/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=20&HEIGHT=20&LAYER=${selectedLayer.source}&STYLE=${selectedLayer.style}` : ""} alt="" />
+              </>
+            }
+              </> :
+              <em>No layer selected</em>
+            }
+            </div>
     <button
       disabled={state.selectedLayer === undefined || state.project.layers[state.selectedLayer]?.type === "ModelOutputLayer"}
       className="btn btn-outline-danger rounded-0 border-left-0 border-right-0 border-bottom-0"
