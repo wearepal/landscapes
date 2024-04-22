@@ -4,7 +4,7 @@ import * as GeoTIFF from 'geotiff/dist-browser/geotiff'
 import { Extent } from 'ol/extent'
 import { bboxFromExtent } from './bounding_box'
 
-export async function retrieveModelData(extent: Extent, source: string, tileRange: any) {
+export async function retrieveModelData(extent: Extent, source: string, tileRange: any, style?: string) {
 
     // Uses WMS server: Returns data between 0 and 255
 
@@ -20,7 +20,7 @@ export async function retrieveModelData(extent: Extent, source: string, tileRang
                 version: '1.3.0',
                 request: 'GetMap',
                 layers: source,
-                styles: '',
+                styles: style || '',
                 format: 'image/geotiff',
                 transparent: 'true',
                 width,
