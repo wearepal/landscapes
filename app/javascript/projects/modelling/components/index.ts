@@ -32,6 +32,7 @@ import { LehLandCoverComponent } from "./leh_land_cover_component"
 import { MlTreeHedgeComponent } from "./ml_tree_hedge_component"
 import { ATIComponent } from "./ati_component"
 import { DesignationsComponent } from "./designations_component"
+import { ORValComponent } from "./orval_component"
 
 export function createDefaultComponents(saveMapLayer: SaveMapLayer, saveModel: SaveModel, getDatasets: getDatasets, extent: Extent, zoom: number): BaseComponent[] {
   return [
@@ -41,6 +42,7 @@ export function createDefaultComponents(saveMapLayer: SaveMapLayer, saveModel: S
     new MlTreeHedgeComponent(extent, zoom),
     new BiodiversityComponent(extent, zoom),
     new NevoLayerComponent(extent, zoom),
+    new ORValComponent(extent, zoom),
     new OSMLandUseComponent(extent, zoom),
     new NumericConstantComponent(),
     new DigitalModelComponent(extent, zoom),
