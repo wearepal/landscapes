@@ -6,7 +6,7 @@ import { booleanDataSocket, categoricalDataSocket } from "../socket_types"
 import GeoJSON from "ol/format/GeoJSON"
 import { BooleanTileGrid, CategoricalTileGrid } from "../tile_grid"
 import { Extent } from "ol/extent"
-import { bboxFromExtent } from "../bounding_box"
+import { bboxFromExtent, maskFromExtentAndShape } from "../bounding_box"
 import { TileRange } from "ol"
 import TileGrid from "ol/tilegrid/TileGrid"
 
@@ -123,7 +123,7 @@ async function fetchCROMEFromExtent(bbox: string, source: string, count: number,
   return await response.json()
 }
 
-async function loadFeaturesToGrid(grid: CategoricalTileGrid, tileRange: TileRange, tileGrid: TileGrid, features: any, map: Map<string, number>) : Promise<CategoricalTileGrid>{
+async function loadFeaturesToGrid(grid: CategoricalTileGrid, tileRange: TileRange, tileGrid: TileGrid, features: any, map: Map<string, number>, mask: BooleanTileGrid) : Promise<CategoricalTileGrid>{
   // given a grid and a set of features, load the features into the grid
 
   for (let feature of features) {
@@ -152,7 +152,7 @@ async function loadFeaturesToGrid(grid: CategoricalTileGrid, tileRange: TileRang
         ++y
       ) {
         const tileExtent = tileGrid.getTileCoordExtent([grid.zoom, x, y])
-        if (geom.intersectsExtent(tileExtent)) {
+        if (geom.intersectsExtent(tileExtent) && mask.get(x, y) === true) {
           grid.set(x, y, index)
         }
       }
@@ -162,6 +162,9 @@ async function loadFeaturesToGrid(grid: CategoricalTileGrid, tileRange: TileRang
   return grid
 }
 async function renderCategoricalData(extent: Extent, zoom: number) {
+
+  
+  const mask = await maskFromExtentAndShape(extent, zoom, "shapefiles:westminster_const", "Name='Brighton, Pavilion Boro Const'")
 
   const tileGrid = createXYZ()
   const outputTileRange = tileGrid.getTileRangeForExtentAndZ(extent, zoom)
@@ -212,9 +215,9 @@ async function renderCategoricalData(extent: Extent, zoom: number) {
 
     if (features.length === 0) break
 
-    await loadFeaturesToGrid(result, outputTileRange, tileGrid, features, map)
+    await loadFeaturesToGrid(result, outputTileRange, tileGrid, features, map, mask)
 
-    await loadFeaturesToGrid(resultOG, outputTileRange, tileGrid, features, mapOG)
+    await loadFeaturesToGrid(resultOG, outputTileRange, tileGrid, features, mapOG, mask)
 
     if (features.length < count) break
 

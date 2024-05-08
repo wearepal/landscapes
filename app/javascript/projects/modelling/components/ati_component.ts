@@ -5,7 +5,7 @@ import { booleanDataSocket, categoricalDataSocket } from "../socket_types"
 import { BooleanTileGrid, CategoricalTileGrid } from "../tile_grid"
 import { BaseComponent } from "./base_component"
 import { Extent } from "ol/extent"
-import { bboxFromExtent } from "../bounding_box"
+import { bboxFromExtent, maskFromExtentAndShape } from "../bounding_box"
 import { GeoJSON } from "ol/format";
 import { find } from "lodash"
 
@@ -71,6 +71,8 @@ async function renderCategoricalData(extent: Extent, zoom: number) : Promise<Cat
             }
         )
     )
+    
+    const mask = await maskFromExtentAndShape(extent, zoom, "shapefiles:westminster_const", "Name='Brighton, Pavilion Boro Const'")
 
     if (!response.ok) throw new Error()
 
@@ -114,7 +116,7 @@ async function renderCategoricalData(extent: Extent, zoom: number) : Promise<Cat
                 y <= Math.min(featureTileRange.maxY, outputTileRange.maxY);
                 ++y
             ) {
-                result.set(x, y, key?.id ?? 255)
+                result.set(x, y, mask.get(x, y) ? key?.id ?? 255 : 255)
             }
         }
 

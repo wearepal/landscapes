@@ -10,7 +10,7 @@ import { Extent, getArea } from "ol/extent"
 import { SelectControl } from "../controls/select"
 import { Geometry } from "ol/geom"
 import { Feature } from "ol"
-import { bboxFromExtent } from "../bounding_box"
+import { bboxFromExtent, maskFromExtentAndShape } from "../bounding_box"
 
 
 interface LayerProperty {
@@ -2087,6 +2087,8 @@ export class NevoLayerComponent extends BaseComponent {
             this.nevoOutput = new GeoJSON().readFeatures(json)
         }
 
+        const mask = await maskFromExtentAndShape(this.projectExtent, this.projectZoom, "shapefiles:westminster_const", "Name='Brighton, Pavilion Boro Const'")
+
         const features = this.nevoOutput
 
         const tileGrid = createXYZ()
@@ -2144,7 +2146,7 @@ export class NevoLayerComponent extends BaseComponent {
 
                             const factor = tileArea / featureArea
 
-                            result.set(x, y, val * factor)
+                            result.set(x, y, mask.get(x, y) ? val * factor : NaN)
                         }
                     }
                 }

@@ -10,7 +10,7 @@ import { NumericTileGrid, toIndex } from '../tile_grid'
 import { createXYZ } from 'ol/tilegrid'
 import { Coordinate } from 'ol/coordinate'
 import { Point } from 'ol/geom'
-import { EPSG3857, EPSG4326, WKTfromExtent } from '../bounding_box'
+import { EPSG3857, EPSG4326, WKTfromExtent, maskFromExtentAndShape } from '../bounding_box'
 import * as proj4 from 'proj4'
 import { speciesFamilyList, speciesList } from '../nbnatlas_species'
 
@@ -138,6 +138,9 @@ export class BiodiversityComponent extends BaseComponent {
         const editorNode = this.editor?.nodes.find(n => n.id === node.id)
         if (editorNode === undefined) { return }
 
+        
+        const mask = await maskFromExtentAndShape(this.projectExtent, this.projectZoom, "shapefiles:westminster_const", "Name='Brighton, Pavilion Boro Const'")
+
         const speciesFamilyId = node.data.speciesFamilyId || 1
         
         const tileGrid = createXYZ()
@@ -163,7 +166,7 @@ export class BiodiversityComponent extends BaseComponent {
             const v = isNaN(result.get(featureTileRange.maxX, featureTileRange.minY)) ? 1 : result.get(featureTileRange.maxX, featureTileRange.minY) + 1
             
             // Conversion from EPSG:4326 to EPSG:3857 is not perfect, so we need to check if the point is within the tile range
-            if(toIndex(result, featureTileRange.maxX, featureTileRange.minY) !== undefined) {
+            if(toIndex(result, featureTileRange.maxX, featureTileRange.minY) !== undefined && mask.get(featureTileRange.maxX, featureTileRange.minY) === true){
                 result.set(featureTileRange.maxX, featureTileRange.minY, v)
             }
             

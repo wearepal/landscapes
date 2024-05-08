@@ -9,6 +9,7 @@ import { Extent } from "ol/extent"
 import { createXYZ } from "ol/tilegrid"
 import * as proj4 from "proj4"
 import { Point, Polygon } from "ol/geom"
+import { maskFromExtentAndShape } from "../bounding_box"
 
 
 
@@ -352,6 +353,8 @@ export class OSMLandUseComponent extends BaseComponent {
             const result = editorNode.meta.output = outputs['out'] = this.outputCache.get(code)
         } else {
 
+            const mask = await maskFromExtentAndShape(this.projectExtent, this.projectZoom, "shapefiles:westminster_const", "Name='Brighton, Pavilion Boro Const'")
+
             const json = await retrieveLandUseData(this.projectExtent, code, type)
 
             const features = json.elements as Array<OverpassFeature>
@@ -411,7 +414,7 @@ export class OSMLandUseComponent extends BaseComponent {
                         ) {
                             const tileExtent = tileGrid.getTileCoordExtent([this.projectZoom, x, y])
                             if (polygon.intersectsExtent(tileExtent)) {
-                                result.set(x, y, true)
+                                result.set(x, y, mask.get(x, y) === true)
                             }
                         }
                     }

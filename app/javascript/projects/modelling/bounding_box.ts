@@ -4,6 +4,8 @@
 import { Extent, getArea } from "ol/extent"
 import { createXYZ } from "ol/tilegrid"
 import * as proj4 from "proj4"
+import { BooleanTileGrid } from "./tile_grid"
+import { GeoJSON } from "ol/format"
 
 const westHorsely = [-49469.089243, 6669018.450996]
 const bexhill = [55641.379277, 6570068.329224]
@@ -69,4 +71,68 @@ export function WKTfromExtent(extent: Extent): string {
 // Required format for some requests
 export function bboxFromExtent(extent: Extent): string {
     return `${extent.join(",")},EPSG:3857`
+}
+
+let mask: BooleanTileGrid;
+
+export async function maskFromExtentAndShape(extent: Extent, zoom: number, shapeLayer: string, shapeId: string): Promise<BooleanTileGrid> {
+    if(mask) return mask
+    else{
+        const tileGrid = createXYZ()
+        const outputTileRange = tileGrid.getTileRangeForExtentAndZ(extent, zoom)
+
+        const response = await fetch(
+            "https://landscapes.wearepal.ai/geoserver/wfs?" +
+            new URLSearchParams(
+                {
+                    outputFormat: 'application/json',
+                    request: 'GetFeature',
+                    typeName: shapeLayer,
+                    srsName: 'EPSG:3857',
+                    CQL_FILTER: shapeId
+                }
+            )
+        )
+        
+        const features = new GeoJSON().readFeatures(await response.json())
+
+        mask = new BooleanTileGrid(
+            zoom,
+            outputTileRange.minX,
+            outputTileRange.minY,
+            outputTileRange.getWidth(),
+            outputTileRange.getHeight(),
+            false
+        )
+
+        for (let feature of features) {
+            const geom = feature.getGeometry()
+            if (geom === undefined) { continue }
+            
+    
+            const featureTileRange = tileGrid.getTileRangeForExtentAndZ(
+                geom.getExtent(),
+                zoom
+            )
+            
+            for (
+            let x = Math.max(featureTileRange.minX, outputTileRange.minX);
+            x <= Math.min(featureTileRange.maxX, outputTileRange.maxX);
+            ++x
+            ) {
+            for (
+                let y = Math.max(featureTileRange.minY, outputTileRange.minY);
+                y <= Math.min(featureTileRange.maxY, outputTileRange.maxY);
+                ++y
+            ) {
+                const center = tileGrid.getTileCoordCenter([zoom, x, y])
+                if (geom.intersectsCoordinate(center)) {
+                    mask.set(x, y, true)
+                }
+            }
+            }
+        }
+
+        return mask
+    }
 }

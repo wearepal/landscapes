@@ -7,8 +7,12 @@ import { BooleanTileGrid } from "../tile_grid"
 import { designations, Designation } from "../designations"
 import { retrieveModelData } from "../model_retrieval"
 import { TypedArray } from "d3"
+import { maskFromExtentAndShape } from "../bounding_box"
 
 async function renderDesignation(extent: Extent, zoom: number, designation: Designation, cacheFn: (result : BooleanTileGrid) => BooleanTileGrid) : Promise<BooleanTileGrid>{
+
+
+    const mask = await maskFromExtentAndShape(extent, zoom, "shapefiles:westminster_const", "Name='Brighton, Pavilion Boro Const'")
 
     const tileGrid = createXYZ()
     const outputTileRange = tileGrid.getTileRangeForExtentAndZ(extent, zoom)
@@ -31,7 +35,7 @@ async function renderDesignation(extent: Extent, zoom: number, designation: Desi
         let x = (outputTileRange.minX + i % image.getWidth())
         let y = (outputTileRange.minY + Math.floor(i / image.getWidth()))
     
-        result.set(x, y, rasters[3][i] === 0 ? false : true)
+        result.set(x, y, rasters[3][i] === 0 ? false : (mask.get(x, y) === true ? true : false))
     
     }
 

@@ -9,6 +9,7 @@ import { createXYZ } from "ol/tilegrid"
 import { TypedArray } from "d3"
 import { retrieveModelDataWCS } from "../model_retrieval"
 import { Extent } from "ol/extent"
+import { maskFromExtentAndShape } from "../bounding_box"
 
 interface DigitalModel {
     id: number
@@ -80,6 +81,8 @@ export class DigitalModelComponent extends BaseComponent {
         let index = node.data.sourceId
         if (index === undefined) { index = 0 }
 
+        const mask = await maskFromExtentAndShape(this.projectExtent, this.projectZoom, "shapefiles:westminster_const", "Name='Brighton, Pavilion Boro Const'")
+
         let digitalModel = ModelList.find(a => a.id == index)
 
         if (digitalModel?.source) {
@@ -102,7 +105,7 @@ export class DigitalModelComponent extends BaseComponent {
                     let x = (outputTileRange.minX + i % image.getWidth())
                     let y = (outputTileRange.minY + Math.floor(i / image.getWidth()))
 
-                    out.set(x, y, (rasters[0][i]) === -32767 ? NaN : (rasters[0][i]))
+                    out.set(x, y, mask.get(x, y) === true ? (rasters[0][i]) === -32767 ? NaN : (rasters[0][i]) : NaN)
 
                 }
 

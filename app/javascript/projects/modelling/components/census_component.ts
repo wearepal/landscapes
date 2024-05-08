@@ -9,7 +9,7 @@ import { SelectControl } from "../controls/select"
 import { Feature } from "ol"
 import { Geometry } from "ol/geom"
 import { Extent } from "ol/extent"
-import { bboxFromExtent } from "../bounding_box"
+import { bboxFromExtent, maskFromExtentAndShape } from "../bounding_box"
 
 interface CensusDataset {
     code: string
@@ -820,6 +820,8 @@ export class CensusComponent extends BaseComponent {
         if (editorNode === undefined) { return }
 
         const features = this.cachedData ? this.cachedData : new GeoJSON().readFeatures(await fetchCensusShapefilesFromExtent(bboxFromExtent(this.projectExtent)))
+        
+        const mask = await maskFromExtentAndShape(this.projectExtent, this.projectZoom, "shapefiles:westminster_const", "Name='Brighton, Pavilion Boro Const'")
 
         const datasetIndex = node.data.censusDatasetId ? node.data.censusDatasetId as number : 0
         const options = censusDatasets[datasetIndex].options
@@ -867,7 +869,7 @@ export class CensusComponent extends BaseComponent {
                             ++y
                         ) {
                             const center = tileGrid.getTileCoordCenter([this.projectZoom, x, y])
-                            if (geom.intersectsCoordinate(center)) {
+                            if (geom.intersectsCoordinate(center) && mask.get(x, y) === true){
                                 result.set(x, y, feature.get(code) / n * 100)
                             }
                         }

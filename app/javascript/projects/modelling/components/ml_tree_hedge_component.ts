@@ -7,6 +7,7 @@ import { BaseComponent } from "./base_component"
 import { retrieveModelDataWCS } from "../model_retrieval"
 import { TypedArray } from "d3"
 import { Extent } from "ol/extent"
+import { maskFromExtentAndShape } from "../bounding_box"
 
 interface Habitat {
     agg: number
@@ -24,6 +25,8 @@ const habitats: Habitat[] = [
 
 async function renderCategoricalData(extent: Extent, zoom: number) {
     // When testing locally, disable CORS in browser settings
+
+    const mask = await maskFromExtentAndShape(extent, zoom, "shapefiles:westminster_const", "Name='Brighton, Pavilion Boro Const'")
 
     const tileGrid = createXYZ()
     const outputTileRange = tileGrid.getTileRangeForExtentAndZ(extent, zoom)
@@ -53,7 +56,7 @@ async function renderCategoricalData(extent: Extent, zoom: number) {
         let x = (outputTileRange.minX + i % image.getWidth())
         let y = (outputTileRange.minY + Math.floor(i / image.getWidth()))
 
-        result.set(x, y, rasters[0][i])
+        result.set(x, y, mask.get(x, y) === true ? rasters[0][i] : 255)
 
     }
 

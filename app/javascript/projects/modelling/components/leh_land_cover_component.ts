@@ -4,7 +4,7 @@ import { NodeData, WorkerInputs, WorkerOutputs } from "rete/types/core/data";
 import { Node, Output, Socket } from "rete";
 import { booleanDataSocket, categoricalDataSocket } from "../socket_types";
 import { createXYZ } from "ol/tilegrid";
-import { bboxFromExtent } from "../bounding_box";
+import { bboxFromExtent, maskFromExtentAndShape } from "../bounding_box";
 import { GeoJSON } from "ol/format";
 import { BooleanTileGrid, CategoricalTileGrid } from "../tile_grid";
 import { find } from "lodash";
@@ -127,6 +127,9 @@ async function renderCategoricalData(extent: Extent, zoom: number) : Promise<Cat
         )
     )
     if (!response.ok) throw new Error()
+
+    
+    const mask = await maskFromExtentAndShape(extent, zoom, "shapefiles:westminster_const", "Name='Brighton, Pavilion Boro Const'")
   
     const features = new GeoJSON().readFeatures(await response.json())
 
@@ -165,7 +168,7 @@ async function renderCategoricalData(extent: Extent, zoom: number) : Promise<Cat
         ) {
             const center = tileGrid.getTileCoordCenter([zoom, x, y])
             if (geom.intersectsCoordinate(center)) {
-                result.set(x, y, key?.id ?? 0)
+                result.set(x, y, mask.get(x, y) ? key?.id ?? 0 : 0)
             }
         }
         }

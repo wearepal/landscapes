@@ -7,7 +7,7 @@ import { createXYZ } from "ol/tilegrid";
 import { retrieveModelData } from "../model_retrieval"
 import { BooleanTileGrid } from "../tile_grid"
 import { TypedArray } from "d3"
-import { bboxFromExtent } from "../bounding_box"
+import { bboxFromExtent, maskFromExtentAndShape } from "../bounding_box"
 import { GeoJSON } from "ol/format"
 import { Feature } from "ol"
 import { Geometry } from "ol/geom"
@@ -189,6 +189,9 @@ const OutputDatas : OutputData[] = [
 
 async function retrieveCatData(extent: Extent, zoom: number, type: string, layer: string) {
 
+    
+    const mask = await maskFromExtentAndShape(extent, zoom, "shapefiles:westminster_const", "Name='Brighton, Pavilion Boro Const'")
+
     const tileGrid = createXYZ()
     const outputTileRange = tileGrid.getTileRangeForExtentAndZ(extent, zoom)
 
@@ -244,7 +247,7 @@ async function retrieveCatData(extent: Extent, zoom: number, type: string, layer
             ) {
                 const center = tileGrid.getTileCoordCenter([zoom, x, y])
                 if (geom.intersectsCoordinate(center) && feature.get("TYPE") === type) {
-                    result.set(x, y, true)
+                    result.set(x, y, mask.get(x, y))
                 }
             }
         }
@@ -255,6 +258,7 @@ async function retrieveCatData(extent: Extent, zoom: number, type: string, layer
 }
 
 async function retrievePathData(extent: Extent, zoom: number, type: string, layer: string) {
+    const mask = await maskFromExtentAndShape(extent, zoom, "shapefiles:westminster_const", "Name='Brighton, Pavilion Boro Const'")
     const tileGrid = createXYZ()
     const outputTileRange = tileGrid.getTileRangeForExtentAndZ(extent, zoom)
 
@@ -276,7 +280,7 @@ async function retrievePathData(extent: Extent, zoom: number, type: string, laye
         let x = (outputTileRange.minX + i % image.getWidth())
         let y = (outputTileRange.minY + Math.floor(i / image.getWidth()))
 
-        result.set(x, y, rasters[3][i])
+        result.set(x, y, mask.get(x,y) === true ? rasters[3][i] : false)
 
     }
 

@@ -6,7 +6,7 @@ import GeoJSON from "ol/format/GeoJSON"
 import { createXYZ } from "ol/tilegrid"
 import { BooleanTileGrid } from "../tile_grid"
 import { Extent } from "ol/extent"
-import { bboxFromExtent } from "../bounding_box"
+import { bboxFromExtent, maskFromExtentAndShape } from "../bounding_box"
 
 interface GS_Source {
     source: string
@@ -71,6 +71,8 @@ export class OSGreenSpacesComponent extends BaseComponent {
 
         const editorNode = this.editor?.nodes.find(n => n.id === node.id)
         if (editorNode === undefined) { return }
+        
+        const mask = await maskFromExtentAndShape(this.projectExtent, this.projectZoom, "shapefiles:westminster_const", "Name='Brighton, Pavilion Boro Const'")
 
         for (let i = 0; i < GS_Sources.length; i++) {
 
@@ -116,7 +118,7 @@ export class OSGreenSpacesComponent extends BaseComponent {
                             ++y
                         ) {
                             const center = tileGrid.getTileCoordCenter([this.projectZoom, x, y])
-                            if (geom.intersectsCoordinate(center)) {
+                            if (geom.intersectsCoordinate(center) && mask.get(x, y)) {
                                 result.set(x, y, true)
                             }
                         }
