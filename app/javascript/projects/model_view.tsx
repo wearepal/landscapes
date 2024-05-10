@@ -37,8 +37,11 @@ export interface ModelViewProps {
   getDatasets: getDatasets
   extent: Extent
   zoom: number
+  mask: boolean
+  maskLayer: string
+  maskCQL: string
 }
-export function ModelView({ visible, initialTransform, setTransform, initialModel, setModel, createOutputLayer, deleteOutputLayer, saveMapLayer, setProcessing, autoProcessing, process, setProcess, saveModel, getDatasets, extent, zoom }: ModelViewProps) {
+export function ModelView({ visible, initialTransform, setTransform, initialModel, setModel, createOutputLayer, deleteOutputLayer, saveMapLayer, setProcessing, autoProcessing, process, setProcess, saveModel, getDatasets, extent, zoom, mask, maskLayer, maskCQL }: ModelViewProps) {
   const ref = React.useRef<HTMLDivElement>(null)
   const [editor, setEditor] = React.useState<NodeEditor>()
   const [engine, setEngine] = React.useState<Engine>()
@@ -65,7 +68,7 @@ export function ModelView({ visible, initialTransform, setTransform, initialMode
     })
 
     const engine = new Engine("landscapes@1.0.0")
-    createDefaultComponents(saveMapLayer, saveModel, getDatasets, extent, zoom).forEach(component => {
+    createDefaultComponents(saveMapLayer, saveModel, getDatasets, extent, zoom, mask, maskLayer, maskCQL).forEach(component => {
       editor.register(component)
       engine.register(component)
     })

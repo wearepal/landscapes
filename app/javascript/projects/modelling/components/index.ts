@@ -34,11 +34,11 @@ import { ATIComponent } from "./ati_component"
 import { DesignationsComponent } from "./designations_component"
 import { ORValComponent } from "./orval_component"
 
-export function createDefaultComponents(saveMapLayer: SaveMapLayer, saveModel: SaveModel, getDatasets: getDatasets, extent: Extent, zoom: number): BaseComponent[] {
+export function createDefaultComponents(saveMapLayer: SaveMapLayer, saveModel: SaveModel, getDatasets: getDatasets, extent: Extent, zoom: number, mask: boolean, maskLayer: string, maskCQL: string): BaseComponent[] {
   return [
     // Inputs
-    new UkcehLandCoverComponent(extent, zoom),
-    new LehLandCoverComponent(extent, zoom),
+    new UkcehLandCoverComponent(extent, zoom, mask, maskLayer, maskCQL),
+    new LehLandCoverComponent(extent, zoom, mask, maskLayer, maskCQL),
     new MlTreeHedgeComponent(extent, zoom),
     new BiodiversityComponent(extent, zoom),
     new NevoLayerComponent(extent, zoom),

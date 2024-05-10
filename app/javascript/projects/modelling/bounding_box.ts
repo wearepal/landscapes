@@ -73,28 +73,14 @@ export function bboxFromExtent(extent: Extent): string {
     return `${extent.join(",")},EPSG:3857`
 }
 
+// CACHING DOESNT WORK AS THIS ISNT REFRESHED WHEN PROJECT IS CHANGED. LINK TO ShapeID AS A MAP
 let mask: BooleanTileGrid;
 
-export async function maskFromExtentAndShape(extent: Extent, zoom: number, shapeLayer: string, shapeId: string): Promise<BooleanTileGrid> {
+export async function maskFromExtentAndShape(extent: Extent, zoom: number, shapeLayer: string, shapeId: string, maskMode: boolean = false): Promise<BooleanTileGrid> {
     if(mask) return mask
     else{
         const tileGrid = createXYZ()
         const outputTileRange = tileGrid.getTileRangeForExtentAndZ(extent, zoom)
-
-        const response = await fetch(
-            "https://landscapes.wearepal.ai/geoserver/wfs?" +
-            new URLSearchParams(
-                {
-                    outputFormat: 'application/json',
-                    request: 'GetFeature',
-                    typeName: shapeLayer,
-                    srsName: 'EPSG:3857',
-                    CQL_FILTER: shapeId
-                }
-            )
-        )
-        
-        const features = new GeoJSON().readFeatures(await response.json())
 
         mask = new BooleanTileGrid(
             zoom,
@@ -102,39 +88,60 @@ export async function maskFromExtentAndShape(extent: Extent, zoom: number, shape
             outputTileRange.minY,
             outputTileRange.getWidth(),
             outputTileRange.getHeight(),
-            false
+            !maskMode
         )
 
-        for (let feature of features) {
-            const geom = feature.getGeometry()
-            if (geom === undefined) { continue }
-
-            console.log(geom.getExtent())
-            
-    
-            const featureTileRange = tileGrid.getTileRangeForExtentAndZ(
-                geom.getExtent(),
-                zoom
+        if(!maskMode) return mask
+        else{
+            const response = await fetch(
+                "https://landscapes.wearepal.ai/geoserver/wfs?" +
+                new URLSearchParams(
+                    {
+                        outputFormat: 'application/json',
+                        request: 'GetFeature',
+                        typeName: shapeLayer,
+                        srsName: 'EPSG:3857',
+                        CQL_FILTER: shapeId
+                    }
+                )
             )
             
-            for (
-            let x = Math.max(featureTileRange.minX, outputTileRange.minX);
-            x <= Math.min(featureTileRange.maxX, outputTileRange.maxX);
-            ++x
-            ) {
-            for (
-                let y = Math.max(featureTileRange.minY, outputTileRange.minY);
-                y <= Math.min(featureTileRange.maxY, outputTileRange.maxY);
-                ++y
-            ) {
-                const center = tileGrid.getTileCoordCenter([zoom, x, y])
-                if (geom.intersectsCoordinate(center)) {
-                    mask.set(x, y, true)
+            const features = new GeoJSON().readFeatures(await response.json())
+
+
+            for (let feature of features) {
+                const geom = feature.getGeometry()
+                if (geom === undefined) { continue }
+
+                console.log(geom.getExtent())
+                
+        
+                const featureTileRange = tileGrid.getTileRangeForExtentAndZ(
+                    geom.getExtent(),
+                    zoom
+                )
+                
+                for (
+                let x = Math.max(featureTileRange.minX, outputTileRange.minX);
+                x <= Math.min(featureTileRange.maxX, outputTileRange.maxX);
+                ++x
+                ) {
+                for (
+                    let y = Math.max(featureTileRange.minY, outputTileRange.minY);
+                    y <= Math.min(featureTileRange.maxY, outputTileRange.maxY);
+                    ++y
+                ) {
+                    const center = tileGrid.getTileCoordCenter([zoom, x, y])
+                    if (geom.intersectsCoordinate(center)) {
+                        mask.set(x, y, true)
+                    }
+                }
                 }
             }
-            }
+
+            return mask
         }
 
-        return mask
+
     }
 }
