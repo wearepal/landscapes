@@ -757,14 +757,20 @@ export class CensusComponent extends BaseComponent {
     cachedOutput: Map<string, NumericTileGrid>
     projectZoom: number
     projectExtent: Extent
+    maskMode: boolean
+    maskLayer: string
+    maskCQL: string
 
-    constructor(projectExtent: Extent, projectZoom: number) {
+    constructor(projectExtent: Extent, projectZoom: number, maskMode: boolean, maskLayer: string, maskCQL: string) {
         super("UK Census 2021")
         this.category = "Inputs"
         this.cachedData = undefined
         this.cachedOutput = new Map()
         this.projectExtent = projectExtent
         this.projectZoom = projectZoom
+        this.maskMode = maskMode
+        this.maskLayer = maskLayer
+        this.maskCQL = maskCQL
     }
 
     async builder(node: Node) {
@@ -821,7 +827,7 @@ export class CensusComponent extends BaseComponent {
 
         const features = this.cachedData ? this.cachedData : new GeoJSON().readFeatures(await fetchCensusShapefilesFromExtent(bboxFromExtent(this.projectExtent)))
         
-        const mask = await maskFromExtentAndShape(this.projectExtent, this.projectZoom, "shapefiles:westminster_const", "Name='Brighton, Pavilion Boro Const'")
+        const mask = await maskFromExtentAndShape(this.projectExtent, this.projectZoom, this.maskLayer, this.maskCQL, this.maskMode)
 
         const datasetIndex = node.data.censusDatasetId ? node.data.censusDatasetId as number : 0
         const options = censusDatasets[datasetIndex].options

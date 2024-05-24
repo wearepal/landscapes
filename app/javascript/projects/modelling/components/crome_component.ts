@@ -161,10 +161,10 @@ async function loadFeaturesToGrid(grid: CategoricalTileGrid, tileRange: TileRang
 
   return grid
 }
-async function renderCategoricalData(extent: Extent, zoom: number) {
+async function renderCategoricalData(extent: Extent, zoom: number, maskMode: boolean, maskLayer: string, maskCQL: string) : Promise<[CategoricalTileGrid, CategoricalTileGrid]> {
 
   
-  const mask = await maskFromExtentAndShape(extent, zoom, "shapefiles:westminster_const", "Name='Brighton, Pavilion Boro Const'")
+  const mask = await maskFromExtentAndShape(extent, zoom, maskLayer, maskCQL, maskMode)
 
   const tileGrid = createXYZ()
   const outputTileRange = tileGrid.getTileRangeForExtentAndZ(extent, zoom)
@@ -235,14 +235,20 @@ export class CROMEComponent extends BaseComponent {
   outputCache: Map<string, BooleanTileGrid>
   projectExtent: Extent
   projectZoom: number
+  maskMode: boolean
+  maskLayer: string
+  maskCQL: string
 
-  constructor(projectExtent: Extent, projectZoom: number) {
+  constructor(projectExtent: Extent, projectZoom: number, maskMode: boolean, maskLayer: string, maskCQL: string) {
     super("Crop Map of England CROME")
     this.category = "Inputs"
     this.categoricalData = null
     this.outputCache = new Map()
     this.projectExtent = projectExtent
     this.projectZoom = projectZoom
+    this.maskMode = maskMode
+    this.maskLayer = maskLayer
+    this.maskCQL = maskCQL
   }
 
   async builder(node: Node) {
@@ -263,7 +269,7 @@ export class CROMEComponent extends BaseComponent {
   async worker(node: NodeData, inputs: WorkerInputs, outputs: WorkerOutputs, ...args: unknown[]) {
 
     if (this.categoricalData === null) {
-      this.categoricalData = await renderCategoricalData(this.projectExtent, this.projectZoom)
+      this.categoricalData = await renderCategoricalData(this.projectExtent, this.projectZoom, this.maskMode, this.maskLayer, this.maskCQL)
     }
     const categoricalData = this.categoricalData!
 

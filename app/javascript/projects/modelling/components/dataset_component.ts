@@ -24,13 +24,19 @@ export class PrecompiledModelComponent extends BaseComponent {
     models: CompiledDatasetRecord[]
     projectExtent: Extent
     projectZoom: number
+    maskMode: boolean
+    maskLayer: string
+    maskCQL: string
 
-    constructor(getDatasets: getDatasets, projectExtent: Extent, projectZoom: number) {
+    constructor(getDatasets: getDatasets, projectExtent: Extent, projectZoom: number, maskMode: boolean, maskLayer: string, maskCQL: string) {
         super("Load Dataset")
         this.category = "Inputs"
         this.modelSource = getDatasets
         this.projectExtent = projectExtent
         this.projectZoom = projectZoom
+        this.maskMode = maskMode
+        this.maskLayer = maskLayer
+        this.maskCQL = maskCQL
     }
 
     async builder(node: Node) {
@@ -87,7 +93,7 @@ export class PrecompiledModelComponent extends BaseComponent {
 
         if (dataset) {
 
-            const mask = await maskFromExtentAndShape(this.projectExtent, this.projectZoom, "shapefiles:westminster_const", "Name='Brighton, Pavilion Boro Const'")
+            const mask = await maskFromExtentAndShape(this.projectExtent, this.projectZoom, this.maskLayer, this.maskCQL, this.maskMode)
 
             try {
                 const response = await fetchDataset(dataset.id, dataset.team_id);

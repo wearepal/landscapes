@@ -23,10 +23,10 @@ const habitats: Habitat[] = [
     { agg: 2, AC: "Tree", mode: 2, LC: "Tree" }
 ]
 
-async function renderCategoricalData(extent: Extent, zoom: number) {
+async function renderCategoricalData(extent: Extent, zoom: number, maskMode: boolean, maskLayer: string, maskCQL: string) {
     // When testing locally, disable CORS in browser settings
 
-    const mask = await maskFromExtentAndShape(extent, zoom, "shapefiles:westminster_const", "Name='Brighton, Pavilion Boro Const'")
+    const mask = await maskFromExtentAndShape(extent, zoom, maskLayer, maskCQL, maskMode)
 
     const tileGrid = createXYZ()
     const outputTileRange = tileGrid.getTileRangeForExtentAndZ(extent, zoom)
@@ -70,14 +70,20 @@ export class MlTreeHedgeComponent extends BaseComponent {
     outputCache: Map<number, BooleanTileGrid>
     projectExtent: Extent
     zoom: number
+    maskMode: boolean
+    maskLayer: string
+    maskCQL: string
 
-    constructor(projectExtent: Extent, projectZoom: number) {
+    constructor(projectExtent: Extent, projectZoom: number, maskMode: boolean, maskLayer: string, maskCQL: string) {
         super("ML Model Output")
         this.category = "Inputs"
         this.categoricalData = null
         this.outputCache = new Map()
         this.projectExtent = projectExtent
         this.zoom = projectZoom
+        this.maskMode = maskMode
+        this.maskLayer = maskLayer
+        this.maskCQL = maskCQL
     }
 
     async builder(node: Node) {
@@ -93,7 +99,7 @@ export class MlTreeHedgeComponent extends BaseComponent {
 
     async worker(node: NodeData, inputs: WorkerInputs, outputs: WorkerOutputs, ...args: unknown[]) {
         if (this.categoricalData === null) {
-            this.categoricalData = await renderCategoricalData(this.projectExtent, this.zoom)
+            this.categoricalData = await renderCategoricalData(this.projectExtent, this.zoom, this.maskMode, this.maskLayer, this.maskCQL)
         }
         const categoricalData = this.categoricalData!
 

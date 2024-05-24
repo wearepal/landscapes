@@ -2040,13 +2040,19 @@ export class NevoLayerComponent extends BaseComponent {
     outputCache: Map<string, NumericTileGrid>
     projectExtent: Extent
     projectZoom: number
+    maskMode: boolean
+    maskLayer: string
+    maskCQL: string
 
 
-    constructor(projectExtent: Extent, projectZoom: number) {
+    constructor(projectExtent: Extent, projectZoom: number, maskMode: boolean, maskLayer: string, maskCQL: string) {
         super("NEVO layer")
         this.category = "Inputs"
         this.projectExtent = projectExtent
         this.projectZoom = projectZoom
+        this.maskMode = maskMode
+        this.maskLayer = maskLayer
+        this.maskCQL = maskCQL
     }
 
     async builder(node: Node) {
@@ -2087,7 +2093,7 @@ export class NevoLayerComponent extends BaseComponent {
             this.nevoOutput = new GeoJSON().readFeatures(json)
         }
 
-        const mask = await maskFromExtentAndShape(this.projectExtent, this.projectZoom, "shapefiles:westminster_const", "Name='Brighton, Pavilion Boro Const'")
+        const mask = await maskFromExtentAndShape(this.projectExtent, this.projectZoom, this.maskLayer, this.maskCQL, this.maskMode)
 
         const features = this.nevoOutput
 

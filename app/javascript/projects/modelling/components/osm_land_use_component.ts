@@ -300,12 +300,18 @@ export class OSMLandUseComponent extends BaseComponent {
     outputCache: Map<string, BooleanTileGrid>
     projectZoom: number
     projectExtent: Extent
+    maskMode: boolean
+    maskLayer: string
+    maskCQL: string
 
-    constructor(projectExtent: Extent, projectZoom: number) {
+    constructor(projectExtent: Extent, projectZoom: number, maskMode: boolean, maskLayer: string, maskCQL: string) {
         super("OSM land use layer")
         this.projectExtent = projectExtent
         this.projectZoom = projectZoom
         this.category = "Inputs"
+        this.maskMode = maskMode
+        this.maskLayer = maskLayer
+        this.maskCQL = maskCQL
 
     }
 
@@ -353,7 +359,7 @@ export class OSMLandUseComponent extends BaseComponent {
             const result = editorNode.meta.output = outputs['out'] = this.outputCache.get(code)
         } else {
 
-            const mask = await maskFromExtentAndShape(this.projectExtent, this.projectZoom, "shapefiles:westminster_const", "Name='Brighton, Pavilion Boro Const'")
+            const mask = await maskFromExtentAndShape(this.projectExtent, this.projectZoom, this.maskLayer, this.maskCQL, this.maskMode)
 
             const json = await retrieveLandUseData(this.projectExtent, code, type)
 

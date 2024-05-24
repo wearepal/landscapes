@@ -52,13 +52,19 @@ export class OSGreenSpacesComponent extends BaseComponent {
     cachedData: Map<string, BooleanTileGrid | undefined>
     projectExtent: Extent
     projectZoom: number
+    maskMode: boolean
+    maskLayer: string
+    maskCQL: string
 
-    constructor(currentExtent: Extent, projectZoom: number) {
+    constructor(currentExtent: Extent, projectZoom: number, maskMode: boolean, maskLayer: string, maskCQL: string) {
         super('OS Green Spaces')
         this.category = 'Inputs'
         this.cachedData = new Map()
         this.projectExtent = currentExtent
         this.projectZoom = projectZoom
+        this.maskMode = maskMode
+        this.maskLayer = maskLayer
+        this.maskCQL = maskCQL
     }
 
     async builder(node: Node) {
@@ -72,7 +78,7 @@ export class OSGreenSpacesComponent extends BaseComponent {
         const editorNode = this.editor?.nodes.find(n => n.id === node.id)
         if (editorNode === undefined) { return }
         
-        const mask = await maskFromExtentAndShape(this.projectExtent, this.projectZoom, "shapefiles:westminster_const", "Name='Brighton, Pavilion Boro Const'")
+        const mask = await maskFromExtentAndShape(this.projectExtent, this.projectZoom, this.maskLayer, this.maskCQL, this.maskMode)
 
         for (let i = 0; i < GS_Sources.length; i++) {
 

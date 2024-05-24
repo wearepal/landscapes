@@ -20,7 +20,7 @@ interface OutputData {
     prettyName: string
     socket: Socket
     layer: string
-    fn: (extent: Extent, zoom: number, type: string, layer: string) => Promise<BooleanTileGrid>
+    fn: (extent: Extent, zoom: number, type: string, layer: string, maskMode: boolean, maskCQL: string, maskLayer: string) => Promise<BooleanTileGrid>
 }
 
 const OutputDatas : OutputData[] = [
@@ -187,10 +187,10 @@ const OutputDatas : OutputData[] = [
     }
 ]
 
-async function retrieveCatData(extent: Extent, zoom: number, type: string, layer: string) {
+async function retrieveCatData(extent: Extent, zoom: number, type: string, layer: string, maskMode: boolean, maskCQL: string, maskLayer: string) {
 
     
-    const mask = await maskFromExtentAndShape(extent, zoom, "shapefiles:westminster_const", "Name='Brighton, Pavilion Boro Const'")
+    const mask = await maskFromExtentAndShape(extent, zoom, maskLayer, maskCQL, maskMode)
 
     const tileGrid = createXYZ()
     const outputTileRange = tileGrid.getTileRangeForExtentAndZ(extent, zoom)
@@ -257,8 +257,8 @@ async function retrieveCatData(extent: Extent, zoom: number, type: string, layer
     return result
 }
 
-async function retrievePathData(extent: Extent, zoom: number, type: string, layer: string) {
-    const mask = await maskFromExtentAndShape(extent, zoom, "shapefiles:westminster_const", "Name='Brighton, Pavilion Boro Const'")
+async function retrievePathData(extent: Extent, zoom: number, type: string, layer: string, maskMode: boolean, maskCQL: string, maskLayer: string) {
+    const mask = await maskFromExtentAndShape(extent, zoom, maskLayer, maskCQL, maskMode)
     const tileGrid = createXYZ()
     const outputTileRange = tileGrid.getTileRangeForExtentAndZ(extent, zoom)
 
@@ -291,13 +291,19 @@ export class ORValComponent extends BaseComponent {
     projectExtent: Extent
     projectZoom: number
     outputCache: Map<string, BooleanTileGrid>
+    maskMode: boolean
+    maskLayer: string
+    maskCQL: string
 
-    constructor(projectExtent: Extent, projectZoom: number) {
+    constructor(projectExtent: Extent, projectZoom: number, maskMode: boolean, maskLayer: string, maskCQL: string) {
         super("ORVal")
         this.category = "Inputs"
         this.projectExtent = projectExtent
         this.projectZoom = projectZoom
         this.outputCache = new Map()
+        this.maskMode = maskMode
+        this.maskLayer = maskLayer
+        this.maskCQL = maskCQL
     }
 
     async builder(node: Node) {
@@ -313,7 +319,7 @@ export class ORValComponent extends BaseComponent {
 
         const promises = OutputDatas.filter(d => node.outputs[d.name].connections.length > 0)
             .map(d => {
-                return this.outputCache.has(d.name) ? this.outputCache.get(d.name) : d.fn(this.projectExtent, this.projectZoom, d.name, d.layer)
+                return this.outputCache.has(d.name) ? this.outputCache.get(d.name) : d.fn(this.projectExtent, this.projectZoom, d.name, d.layer, this.maskMode, this.maskCQL, this.maskLayer)
                     .then(data => {
                         data.name = d.name
                         this.outputCache.set(d.name, data)

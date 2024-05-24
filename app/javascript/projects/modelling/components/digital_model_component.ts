@@ -40,13 +40,19 @@ export class DigitalModelComponent extends BaseComponent {
     outputCache: Map<string, NumericTileGrid>
     projectZoom: number
     projectExtent: Extent
+    maskMode: boolean
+    maskLayer: string
+    maskCQL: string
 
-    constructor(projectExtent: Extent, projectZoom: number) {
+    constructor(projectExtent: Extent, projectZoom: number, maskMode: boolean, maskLayer: string, maskCQL: string) {
         super("Digital Model")
         this.category = "Inputs"
         this.projectExtent = projectExtent
         this.projectZoom = projectZoom
         this.outputCache = new Map()
+        this.maskMode = maskMode
+        this.maskLayer = maskLayer
+        this.maskCQL = maskCQL
     }
 
     async builder(node: Node) {
@@ -81,7 +87,7 @@ export class DigitalModelComponent extends BaseComponent {
         let index = node.data.sourceId
         if (index === undefined) { index = 0 }
 
-        const mask = await maskFromExtentAndShape(this.projectExtent, this.projectZoom, "shapefiles:westminster_const", "Name='Brighton, Pavilion Boro Const'")
+        const mask = await maskFromExtentAndShape(this.projectExtent, this.projectZoom, this.maskLayer, this.maskCQL, this.maskMode)
 
         let digitalModel = ModelList.find(a => a.id == index)
 

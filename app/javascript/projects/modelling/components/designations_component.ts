@@ -9,10 +9,10 @@ import { retrieveModelData } from "../model_retrieval"
 import { TypedArray } from "d3"
 import { maskFromExtentAndShape } from "../bounding_box"
 
-async function renderDesignation(extent: Extent, zoom: number, designation: Designation, cacheFn: (result : BooleanTileGrid) => BooleanTileGrid) : Promise<BooleanTileGrid>{
+async function renderDesignation(extent: Extent, zoom: number, designation: Designation, cacheFn: (result : BooleanTileGrid) => BooleanTileGrid, maskMode: boolean, maskLayer: string, maskCQL: string) : Promise<BooleanTileGrid>{
 
 
-    const mask = await maskFromExtentAndShape(extent, zoom, "shapefiles:westminster_const", "Name='Brighton, Pavilion Boro Const'")
+    const mask = await maskFromExtentAndShape(extent, zoom, maskLayer, maskCQL, maskMode)
 
     const tileGrid = createXYZ()
     const outputTileRange = tileGrid.getTileRangeForExtentAndZ(extent, zoom)
@@ -46,13 +46,19 @@ export class DesignationsComponent extends BaseComponent {
     projectExtent: Extent
     projectZoom: number
     cachedDesignations: Map<string, BooleanTileGrid>
+    maskMode: boolean
+    maskLayer: string
+    maskCQL: string
     
-    constructor(projectExtent: Extent, projectZoom: number) {
+    constructor(projectExtent: Extent, projectZoom: number, maskMode: boolean, maskLayer: string, maskCQL: string) {
         super("Designations")
         this.category = "Inputs"
         this.projectExtent = projectExtent
         this.projectZoom = projectZoom
         this.cachedDesignations = new Map()
+        this.maskMode = maskMode
+        this.maskLayer = maskLayer
+        this.maskCQL = maskCQL
     }
     
     async builder(node: Node) {
@@ -67,7 +73,8 @@ export class DesignationsComponent extends BaseComponent {
                 (r : BooleanTileGrid) => {
                     this.cachedDesignations.set(designation.value, r)
                     return r
-                }
+                },
+                this.maskMode, this.maskLayer, this.maskCQL
             )
         )
     }

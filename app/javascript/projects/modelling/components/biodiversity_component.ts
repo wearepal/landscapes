@@ -72,12 +72,18 @@ async function fetchSpeciesFromExtent(extent: Extent, familyId: number, selected
 export class BiodiversityComponent extends BaseComponent {
     projectExtent: Extent
     projectZoom: number
+    maskMode: boolean
+    maskLayer: string
+    maskCQL: string
 
-    constructor(projectExtent: Extent, projectZoom: number) {
+    constructor(projectExtent: Extent, projectZoom: number, maskMode: boolean, maskLayer: string, maskCQL: string) {
         super('Recorded species')
         this.category = 'Inputs'
         this.projectExtent = projectExtent
         this.projectZoom = projectZoom
+        this.maskMode = maskMode
+        this.maskLayer = maskLayer
+        this.maskCQL = maskCQL
     }
 
     async loadSpeciesFamilyList(node: Node) {
@@ -139,7 +145,7 @@ export class BiodiversityComponent extends BaseComponent {
         if (editorNode === undefined) { return }
 
         
-        const mask = await maskFromExtentAndShape(this.projectExtent, this.projectZoom, "shapefiles:westminster_const", "Name='Brighton, Pavilion Boro Const'")
+        const mask = await maskFromExtentAndShape(this.projectExtent, this.projectZoom, this.maskLayer, this.maskCQL, this.maskMode)
 
         const speciesFamilyId = node.data.speciesFamilyId || 1
         
