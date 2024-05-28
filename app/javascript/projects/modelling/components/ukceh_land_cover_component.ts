@@ -7,6 +7,7 @@ import { BaseComponent } from "./base_component"
 import { retrieveModelDataWCS } from "../model_retrieval"
 import { TypedArray } from "d3"
 import { Extent } from "ol/extent"
+import { maskFromExtentAndShape } from "../bounding_box"
 
 interface Habitat {
   agg: number
@@ -41,8 +42,10 @@ const habitats: Habitat[] = [
   { agg: 0, AC: "All", mode: 0, LC: "All" }
 ]
 
-async function renderCategoricalData(extent: Extent, zoom: number) {
+async function renderCategoricalData(extent: Extent, zoom: number, maskMode: boolean, maskLayer: string, maskCQL: string) {
   // When testing locally, disable CORS in browser settings
+
+  const mask = await maskFromExtentAndShape(extent, zoom, maskLayer, maskCQL, maskMode)
 
   const tileGrid = createXYZ()
   const outputTileRange = tileGrid.getTileRangeForExtentAndZ(extent, zoom)
@@ -72,7 +75,7 @@ async function renderCategoricalData(extent: Extent, zoom: number) {
     let x = (outputTileRange.minX + i % image.getWidth())
     let y = (outputTileRange.minY + Math.floor(i / image.getWidth()))
 
-    result.set(x, y, rasters[0][i])
+    result.set(x, y, mask.get(x,y) ? rasters[0][i] : 255)
 
   }
 
@@ -86,14 +89,20 @@ export class UkcehLandCoverComponent extends BaseComponent {
   outputCache: Map<number, BooleanTileGrid>
   projectExtent: Extent
   zoom: number
+  maskMode: boolean
+  maskLayer: string
+  maskCQL: string
 
-  constructor(projectExtent: Extent, projectZoom: number) {
+  constructor(projectExtent: Extent, projectZoom: number, maskMode: boolean, maskLayer: string, maskCQL: string) {
     super("UKCEH Land Cover")
     this.category = "Inputs"
     this.categoricalData = null
     this.outputCache = new Map()
     this.projectExtent = projectExtent
     this.zoom = projectZoom
+    this.maskMode = maskMode
+    this.maskLayer = maskLayer
+    this.maskCQL = maskCQL
   }
 
   async builder(node: Node) {
@@ -109,7 +118,7 @@ export class UkcehLandCoverComponent extends BaseComponent {
 
   async worker(node: NodeData, inputs: WorkerInputs, outputs: WorkerOutputs, ...args: unknown[]) {
     if (this.categoricalData === null) {
-      this.categoricalData = await renderCategoricalData(this.projectExtent, this.zoom)
+      this.categoricalData = await renderCategoricalData(this.projectExtent, this.zoom, this.maskMode, this.maskLayer, this.maskCQL)
     }
     const categoricalData = this.categoricalData!
 

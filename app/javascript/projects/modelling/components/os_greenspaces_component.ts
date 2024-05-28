@@ -6,7 +6,7 @@ import GeoJSON from "ol/format/GeoJSON"
 import { createXYZ } from "ol/tilegrid"
 import { BooleanTileGrid } from "../tile_grid"
 import { Extent } from "ol/extent"
-import { bboxFromExtent } from "../bounding_box"
+import { bboxFromExtent, maskFromExtentAndShape } from "../bounding_box"
 
 interface GS_Source {
     source: string
@@ -52,13 +52,19 @@ export class OSGreenSpacesComponent extends BaseComponent {
     cachedData: Map<string, BooleanTileGrid | undefined>
     projectExtent: Extent
     projectZoom: number
+    maskMode: boolean
+    maskLayer: string
+    maskCQL: string
 
-    constructor(currentExtent: Extent, projectZoom: number) {
+    constructor(currentExtent: Extent, projectZoom: number, maskMode: boolean, maskLayer: string, maskCQL: string) {
         super('OS Green Spaces')
         this.category = 'Inputs'
         this.cachedData = new Map()
         this.projectExtent = currentExtent
         this.projectZoom = projectZoom
+        this.maskMode = maskMode
+        this.maskLayer = maskLayer
+        this.maskCQL = maskCQL
     }
 
     async builder(node: Node) {
@@ -71,6 +77,8 @@ export class OSGreenSpacesComponent extends BaseComponent {
 
         const editorNode = this.editor?.nodes.find(n => n.id === node.id)
         if (editorNode === undefined) { return }
+        
+        const mask = await maskFromExtentAndShape(this.projectExtent, this.projectZoom, this.maskLayer, this.maskCQL, this.maskMode)
 
         for (let i = 0; i < GS_Sources.length; i++) {
 
@@ -116,7 +124,7 @@ export class OSGreenSpacesComponent extends BaseComponent {
                             ++y
                         ) {
                             const center = tileGrid.getTileCoordCenter([this.projectZoom, x, y])
-                            if (geom.intersectsCoordinate(center)) {
+                            if (geom.intersectsCoordinate(center) && mask.get(x, y)) {
                                 result.set(x, y, true)
                             }
                         }

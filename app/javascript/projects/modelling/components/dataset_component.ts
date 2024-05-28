@@ -7,6 +7,7 @@ import { SelectControl } from "../controls/select"
 import { CompiledDatasetRecord, getDataset } from "../../saved_dataset"
 import { Extent } from "ol/extent"
 import { createXYZ } from "ol/tilegrid"
+import { maskFromExtentAndShape } from "../bounding_box"
 
 async function fetchDataset(datasetId: number, teamId: number) {
     return new Promise<{ error: { message: string }; out: { model: BooleanTileGrid | NumericTileGrid | CategoricalTileGrid } }>((resolve) => {
@@ -23,13 +24,19 @@ export class PrecompiledModelComponent extends BaseComponent {
     models: CompiledDatasetRecord[]
     projectExtent: Extent
     projectZoom: number
+    maskMode: boolean
+    maskLayer: string
+    maskCQL: string
 
-    constructor(getDatasets: getDatasets, projectExtent: Extent, projectZoom: number) {
+    constructor(getDatasets: getDatasets, projectExtent: Extent, projectZoom: number, maskMode: boolean, maskLayer: string, maskCQL: string) {
         super("Load Dataset")
         this.category = "Inputs"
         this.modelSource = getDatasets
         this.projectExtent = projectExtent
         this.projectZoom = projectZoom
+        this.maskMode = maskMode
+        this.maskLayer = maskLayer
+        this.maskCQL = maskCQL
     }
 
     async builder(node: Node) {
@@ -85,6 +92,9 @@ export class PrecompiledModelComponent extends BaseComponent {
         delete editorNode.meta.errorMessage;
 
         if (dataset) {
+
+            const mask = await maskFromExtentAndShape(this.projectExtent, this.projectZoom, this.maskLayer, this.maskCQL, this.maskMode)
+
             try {
                 const response = await fetchDataset(dataset.id, dataset.team_id);
                 if (response.error) {
@@ -97,13 +107,13 @@ export class PrecompiledModelComponent extends BaseComponent {
 
                     if (model instanceof BooleanTileGrid) {
                         const out = outputs['out'] = editorNode.meta.output = new BooleanTileGrid(this.projectZoom, outputTileRange.minX, outputTileRange.minY, outputTileRange.getWidth(), outputTileRange.getHeight())
-                        out.iterate((x, y, v) => out.set(x, y, model.get(x, y, this.projectZoom)))
+                        out.iterate((x, y, v) => out.set(x, y, mask.get(x, y) === true ? model.get(x, y, this.projectZoom) : false))
                     } else if (model instanceof CategoricalTileGrid) {
                         const out = outputs['out'] = editorNode.meta.output = new CategoricalTileGrid(this.projectZoom, outputTileRange.minX, outputTileRange.minY, outputTileRange.getWidth(), outputTileRange.getHeight(), undefined, model.labels)
-                        out.iterate((x, y, v) => out.set(x, y, model.get(x, y, this.projectZoom)))
+                        out.iterate((x, y, v) => out.set(x, y, mask.get(x, y) === true ? model.get(x, y, this.projectZoom) : 255))
                     } else if (model instanceof NumericTileGrid) {
                         const out = new NumericTileGrid(this.projectZoom, outputTileRange.minX, outputTileRange.minY, outputTileRange.getWidth(), outputTileRange.getHeight(), NaN)
-                        out.iterate((x, y, v) => out.set(x, y, model.get(x, y, this.projectZoom)))
+                        out.iterate((x, y, v) => out.set(x, y, mask.get(x, y) === true ? model.get(x, y, this.projectZoom) : NaN))
 
                         if(out.getMinMax()[1] === -Infinity) {
                             editorNode.meta.errorMessage = "No valid data found in dataset. Possible cause: no coverage for selected area."

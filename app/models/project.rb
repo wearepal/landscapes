@@ -20,6 +20,22 @@ class Project < ApplicationRecord
     source["extent"] = extent
   end
 
+  def cql
+    source["cql"]
+  end
+
+  def cql=(cql)
+    source["cql"] = cql
+  end
+
+  def layer
+    source["layer"]
+  end
+
+  def layer=(layer)
+    source["layer"] = layer
+  end
+
   def parse_extent
     if extent.present?
       extent_array = extent.is_a?(String) ? extent.split(',').map(&:to_f) : extent.map(&:to_f)

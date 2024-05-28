@@ -5,7 +5,7 @@ import { booleanDataSocket, categoricalDataSocket } from "../socket_types"
 import { BooleanTileGrid, CategoricalTileGrid } from "../tile_grid"
 import { BaseComponent } from "./base_component"
 import { Extent } from "ol/extent"
-import { bboxFromExtent } from "../bounding_box"
+import { bboxFromExtent, maskFromExtentAndShape } from "../bounding_box"
 import { GeoJSON } from "ol/format";
 import { find } from "lodash"
 
@@ -54,7 +54,7 @@ const trees: TreeType[] = [
 ]
 
 
-async function renderCategoricalData(extent: Extent, zoom: number) : Promise<CategoricalTileGrid>{
+async function renderCategoricalData(extent: Extent, zoom: number, maskLayer: string, maskCQL: string, maskMode: boolean) : Promise<CategoricalTileGrid>{
 
     const tileGrid = createXYZ()
     const outputTileRange = tileGrid.getTileRangeForExtentAndZ(extent, zoom)
@@ -71,6 +71,8 @@ async function renderCategoricalData(extent: Extent, zoom: number) : Promise<Cat
             }
         )
     )
+    
+    const mask = await maskFromExtentAndShape(extent, zoom, maskLayer, maskCQL, maskMode)
 
     if (!response.ok) throw new Error()
 
@@ -114,7 +116,7 @@ async function renderCategoricalData(extent: Extent, zoom: number) : Promise<Cat
                 y <= Math.min(featureTileRange.maxY, outputTileRange.maxY);
                 ++y
             ) {
-                result.set(x, y, key?.id ?? 255)
+                result.set(x, y, mask.get(x, y) ? key?.id ?? 255 : 255)
             }
         }
 
@@ -137,14 +139,20 @@ export class ATIComponent extends BaseComponent {
     projectExtent: Extent
     projectZoom: number
     zoom: number
+    maskMode: boolean
+    maskLayer: string
+    maskCQL: string
 
-    constructor(projectExtent: Extent, projectZoom: number) {
+    constructor(projectExtent: Extent, projectZoom: number, maskMode: boolean, maskLayer: string, maskCQL: string) {
         super("Ancient Tree Inventory")
         this.category = "Inputs"
         this.categoricalData = null
         this.outputCache = new Map()
         this.projectExtent = projectExtent
         this.projectZoom = projectZoom
+        this.maskMode = maskMode
+        this.maskLayer = maskLayer
+        this.maskCQL = maskCQL
     }
 
     
@@ -166,7 +174,7 @@ export class ATIComponent extends BaseComponent {
     async worker(node: NodeData, inputs: WorkerInputs, outputs: WorkerOutputs, ...args: unknown[]) {
         
         if (this.categoricalData === null) {
-            this.categoricalData = await renderCategoricalData(this.projectExtent, this.projectZoom)
+            this.categoricalData = await renderCategoricalData(this.projectExtent, this.projectZoom, this.maskLayer, this.maskCQL, this.maskMode)
         }
         const categoricalData = this.categoricalData!
     

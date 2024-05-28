@@ -5,15 +5,26 @@ import { PreviewControl } from '../controls/preview'
 import { BooleanTileGrid, NumericTileGrid } from '../tile_grid'
 import { booleanDataSocket, numericDataSocket } from '../socket_types'
 import { workerPool } from '../../../modelling/workerPool'
-import { currentExtent } from '../bounding_box'
+import { currentExtent, maskFromExtentAndShape } from '../bounding_box'
+import { Extent } from 'ol/extent'
 
 export class DistanceMapComponent extends BaseComponent {
     cache: Map<BooleanTileGrid, NumericTileGrid>
+    maskMode: boolean
+    maskLayer: string
+    maskCQL: string
+    projectExtent: Extent
+    projectZoom: number
 
-    constructor() {
+    constructor(projectExtent: Extent , projectZoom: number, maskMode: boolean, maskLayer: string, maskCQL: string) {
         super('Distance map')
         this.category = "Calculations"
         this.cache = new Map()
+        this.maskMode = maskMode
+        this.maskLayer = maskLayer
+        this.maskCQL = maskCQL
+        this.projectExtent = projectExtent
+        this.projectZoom = projectZoom
     }
 
     async builder(node: Node) {
@@ -27,6 +38,9 @@ export class DistanceMapComponent extends BaseComponent {
     async worker(node: NodeData, inputs: WorkerInputs, outputs: WorkerOutputs, ...args: unknown[]) {
         let editorNode = this.editor?.nodes.find(n => n.id === node.id)
         if (editorNode === undefined) { return }
+
+
+        const mask = await maskFromExtentAndShape(this.projectExtent, this.projectZoom, this.maskLayer, this.maskCQL, this.maskMode)
 
         if (inputs['in'].length === 0) {
             editorNode.meta.errorMessage = 'No input'
@@ -45,7 +59,7 @@ export class DistanceMapComponent extends BaseComponent {
                 } else {
                     editorNode.meta.previousInput = input
                     editorNode.meta.output = outputs['out'] = await workerPool.queue(async worker =>
-                        worker.generateDistanceMap(input)
+                        worker.generateDistanceMap(input, mask)
                     )
                 }
                 this.cache.set(inputs['in'][0] as BooleanTileGrid, editorNode.meta.output as NumericTileGrid)

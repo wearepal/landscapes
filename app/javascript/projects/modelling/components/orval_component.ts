@@ -7,7 +7,7 @@ import { createXYZ } from "ol/tilegrid";
 import { retrieveModelData } from "../model_retrieval"
 import { BooleanTileGrid } from "../tile_grid"
 import { TypedArray } from "d3"
-import { bboxFromExtent } from "../bounding_box"
+import { bboxFromExtent, maskFromExtentAndShape } from "../bounding_box"
 import { GeoJSON } from "ol/format"
 import { Feature } from "ol"
 import { Geometry } from "ol/geom"
@@ -20,7 +20,7 @@ interface OutputData {
     prettyName: string
     socket: Socket
     layer: string
-    fn: (extent: Extent, zoom: number, type: string, layer: string) => Promise<BooleanTileGrid>
+    fn: (extent: Extent, zoom: number, type: string, layer: string, maskMode: boolean, maskCQL: string, maskLayer: string) => Promise<BooleanTileGrid>
 }
 
 const OutputDatas : OutputData[] = [
@@ -187,7 +187,10 @@ const OutputDatas : OutputData[] = [
     }
 ]
 
-async function retrieveCatData(extent: Extent, zoom: number, type: string, layer: string) {
+async function retrieveCatData(extent: Extent, zoom: number, type: string, layer: string, maskMode: boolean, maskCQL: string, maskLayer: string) {
+
+    
+    const mask = await maskFromExtentAndShape(extent, zoom, maskLayer, maskCQL, maskMode)
 
     const tileGrid = createXYZ()
     const outputTileRange = tileGrid.getTileRangeForExtentAndZ(extent, zoom)
@@ -244,7 +247,7 @@ async function retrieveCatData(extent: Extent, zoom: number, type: string, layer
             ) {
                 const center = tileGrid.getTileCoordCenter([zoom, x, y])
                 if (geom.intersectsCoordinate(center) && feature.get("TYPE") === type) {
-                    result.set(x, y, true)
+                    result.set(x, y, mask.get(x, y))
                 }
             }
         }
@@ -254,7 +257,8 @@ async function retrieveCatData(extent: Extent, zoom: number, type: string, layer
     return result
 }
 
-async function retrievePathData(extent: Extent, zoom: number, type: string, layer: string) {
+async function retrievePathData(extent: Extent, zoom: number, type: string, layer: string, maskMode: boolean, maskCQL: string, maskLayer: string) {
+    const mask = await maskFromExtentAndShape(extent, zoom, maskLayer, maskCQL, maskMode)
     const tileGrid = createXYZ()
     const outputTileRange = tileGrid.getTileRangeForExtentAndZ(extent, zoom)
 
@@ -276,7 +280,7 @@ async function retrievePathData(extent: Extent, zoom: number, type: string, laye
         let x = (outputTileRange.minX + i % image.getWidth())
         let y = (outputTileRange.minY + Math.floor(i / image.getWidth()))
 
-        result.set(x, y, rasters[3][i])
+        result.set(x, y, mask.get(x,y) === true ? rasters[3][i] : false)
 
     }
 
@@ -287,13 +291,19 @@ export class ORValComponent extends BaseComponent {
     projectExtent: Extent
     projectZoom: number
     outputCache: Map<string, BooleanTileGrid>
+    maskMode: boolean
+    maskLayer: string
+    maskCQL: string
 
-    constructor(projectExtent: Extent, projectZoom: number) {
+    constructor(projectExtent: Extent, projectZoom: number, maskMode: boolean, maskLayer: string, maskCQL: string) {
         super("ORVal")
         this.category = "Inputs"
         this.projectExtent = projectExtent
         this.projectZoom = projectZoom
         this.outputCache = new Map()
+        this.maskMode = maskMode
+        this.maskLayer = maskLayer
+        this.maskCQL = maskCQL
     }
 
     async builder(node: Node) {
@@ -309,7 +319,7 @@ export class ORValComponent extends BaseComponent {
 
         const promises = OutputDatas.filter(d => node.outputs[d.name].connections.length > 0)
             .map(d => {
-                return this.outputCache.has(d.name) ? this.outputCache.get(d.name) : d.fn(this.projectExtent, this.projectZoom, d.name, d.layer)
+                return this.outputCache.has(d.name) ? this.outputCache.get(d.name) : d.fn(this.projectExtent, this.projectZoom, d.name, d.layer, this.maskMode, this.maskCQL, this.maskLayer)
                     .then(data => {
                         data.name = d.name
                         this.outputCache.set(d.name, data)

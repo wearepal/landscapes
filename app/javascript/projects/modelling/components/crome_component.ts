@@ -6,7 +6,7 @@ import { booleanDataSocket, categoricalDataSocket } from "../socket_types"
 import GeoJSON from "ol/format/GeoJSON"
 import { BooleanTileGrid, CategoricalTileGrid } from "../tile_grid"
 import { Extent } from "ol/extent"
-import { bboxFromExtent } from "../bounding_box"
+import { bboxFromExtent, maskFromExtentAndShape } from "../bounding_box"
 import { TileRange } from "ol"
 import TileGrid from "ol/tilegrid/TileGrid"
 
@@ -123,7 +123,7 @@ async function fetchCROMEFromExtent(bbox: string, source: string, count: number,
   return await response.json()
 }
 
-async function loadFeaturesToGrid(grid: CategoricalTileGrid, tileRange: TileRange, tileGrid: TileGrid, features: any, map: Map<string, number>) : Promise<CategoricalTileGrid>{
+async function loadFeaturesToGrid(grid: CategoricalTileGrid, tileRange: TileRange, tileGrid: TileGrid, features: any, map: Map<string, number>, mask: BooleanTileGrid) : Promise<CategoricalTileGrid>{
   // given a grid and a set of features, load the features into the grid
 
   for (let feature of features) {
@@ -152,7 +152,7 @@ async function loadFeaturesToGrid(grid: CategoricalTileGrid, tileRange: TileRang
         ++y
       ) {
         const tileExtent = tileGrid.getTileCoordExtent([grid.zoom, x, y])
-        if (geom.intersectsExtent(tileExtent)) {
+        if (geom.intersectsExtent(tileExtent) && mask.get(x, y) === true) {
           grid.set(x, y, index)
         }
       }
@@ -161,7 +161,10 @@ async function loadFeaturesToGrid(grid: CategoricalTileGrid, tileRange: TileRang
 
   return grid
 }
-async function renderCategoricalData(extent: Extent, zoom: number) {
+async function renderCategoricalData(extent: Extent, zoom: number, maskMode: boolean, maskLayer: string, maskCQL: string) : Promise<[CategoricalTileGrid, CategoricalTileGrid]> {
+
+  
+  const mask = await maskFromExtentAndShape(extent, zoom, maskLayer, maskCQL, maskMode)
 
   const tileGrid = createXYZ()
   const outputTileRange = tileGrid.getTileRangeForExtentAndZ(extent, zoom)
@@ -212,9 +215,9 @@ async function renderCategoricalData(extent: Extent, zoom: number) {
 
     if (features.length === 0) break
 
-    await loadFeaturesToGrid(result, outputTileRange, tileGrid, features, map)
+    await loadFeaturesToGrid(result, outputTileRange, tileGrid, features, map, mask)
 
-    await loadFeaturesToGrid(resultOG, outputTileRange, tileGrid, features, mapOG)
+    await loadFeaturesToGrid(resultOG, outputTileRange, tileGrid, features, mapOG, mask)
 
     if (features.length < count) break
 
@@ -232,14 +235,20 @@ export class CROMEComponent extends BaseComponent {
   outputCache: Map<string, BooleanTileGrid>
   projectExtent: Extent
   projectZoom: number
+  maskMode: boolean
+  maskLayer: string
+  maskCQL: string
 
-  constructor(projectExtent: Extent, projectZoom: number) {
+  constructor(projectExtent: Extent, projectZoom: number, maskMode: boolean, maskLayer: string, maskCQL: string) {
     super("Crop Map of England CROME")
     this.category = "Inputs"
     this.categoricalData = null
     this.outputCache = new Map()
     this.projectExtent = projectExtent
     this.projectZoom = projectZoom
+    this.maskMode = maskMode
+    this.maskLayer = maskLayer
+    this.maskCQL = maskCQL
   }
 
   async builder(node: Node) {
@@ -260,7 +269,7 @@ export class CROMEComponent extends BaseComponent {
   async worker(node: NodeData, inputs: WorkerInputs, outputs: WorkerOutputs, ...args: unknown[]) {
 
     if (this.categoricalData === null) {
-      this.categoricalData = await renderCategoricalData(this.projectExtent, this.projectZoom)
+      this.categoricalData = await renderCategoricalData(this.projectExtent, this.projectZoom, this.maskMode, this.maskLayer, this.maskCQL)
     }
     const categoricalData = this.categoricalData!
 

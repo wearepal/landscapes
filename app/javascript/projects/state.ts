@@ -126,6 +126,8 @@ export type Layer = OsmLayer | MapTileLayer | OverlayLayer | NevoLayer | CehLand
 export interface Project {
   name: string
   extent?: Extent
+  layer?: string
+  cql?: string
   layers: Record<number, Layer>
   allLayers: number[]
   model: Data | null

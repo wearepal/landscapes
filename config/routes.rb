@@ -49,6 +49,8 @@ Rails.application.routes.draw do
   resource :user
 
   resource :session
+  
+  resource :masks, only: [:create, :index, :show]
 
   # New route for the new app
   root to: "teams#select_team"
@@ -57,4 +59,5 @@ Rails.application.routes.draw do
   get "legacy", to: "maps#show" 
 
   get "modelling_worker.js", to: redirect(status: 302) { Webpacker.manifest.lookup("modelling_worker.js") }
+
 end

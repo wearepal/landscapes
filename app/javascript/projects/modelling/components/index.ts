@@ -34,24 +34,24 @@ import { ATIComponent } from "./ati_component"
 import { DesignationsComponent } from "./designations_component"
 import { ORValComponent } from "./orval_component"
 
-export function createDefaultComponents(saveMapLayer: SaveMapLayer, saveModel: SaveModel, getDatasets: getDatasets, extent: Extent, zoom: number): BaseComponent[] {
+export function createDefaultComponents(saveMapLayer: SaveMapLayer, saveModel: SaveModel, getDatasets: getDatasets, extent: Extent, zoom: number, mask: boolean, maskLayer: string, maskCQL: string): BaseComponent[] {
   return [
     // Inputs
-    new UkcehLandCoverComponent(extent, zoom),
-    new LehLandCoverComponent(extent, zoom),
-    new MlTreeHedgeComponent(extent, zoom),
-    new BiodiversityComponent(extent, zoom),
-    new NevoLayerComponent(extent, zoom),
-    new ORValComponent(extent, zoom),
-    new OSMLandUseComponent(extent, zoom),
+    new UkcehLandCoverComponent(extent, zoom, mask, maskLayer, maskCQL),
+    new LehLandCoverComponent(extent, zoom, mask, maskLayer, maskCQL),
+    new MlTreeHedgeComponent(extent, zoom, mask, maskLayer, maskCQL),
+    new BiodiversityComponent(extent, zoom, mask, maskLayer, maskCQL),
+    new NevoLayerComponent(extent, zoom, mask, maskLayer, maskCQL),
+    new ORValComponent(extent, zoom, mask, maskLayer, maskCQL),
+    new OSMLandUseComponent(extent, zoom, mask, maskLayer, maskCQL),
     new NumericConstantComponent(),
-    new DigitalModelComponent(extent, zoom),
-    new PrecompiledModelComponent(getDatasets, extent, zoom), //TODO: Work out how this should use project extent and zoom
-    new CensusComponent(extent, zoom),
-    new OSGreenSpacesComponent(extent, zoom),
-    new CROMEComponent(extent, zoom),
-    new ATIComponent(extent, zoom),
-    new DesignationsComponent(extent, zoom),
+    new DigitalModelComponent(extent, zoom, mask, maskLayer, maskCQL),
+    new PrecompiledModelComponent(getDatasets, extent, zoom, mask, maskLayer, maskCQL),
+    new CensusComponent(extent, zoom, mask, maskLayer, maskCQL),
+    new OSGreenSpacesComponent(extent, zoom, mask, maskLayer, maskCQL),
+    new CROMEComponent(extent, zoom, mask, maskLayer, maskCQL),
+    new ATIComponent(extent, zoom, mask, maskLayer, maskCQL),
+    new DesignationsComponent(extent, zoom, mask, maskLayer, maskCQL),
 
     // Outputs
     new MapLayerComponent(saveMapLayer),
@@ -64,7 +64,7 @@ export function createDefaultComponents(saveMapLayer: SaveMapLayer, saveModel: S
 
     // Calculations
     new AreaComponent(),
-    new DistanceMapComponent(),
+    new DistanceMapComponent(extent, zoom, mask, maskLayer, maskCQL),
     new ScaleFactorComponent(),
 
     // Charts

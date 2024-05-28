@@ -29,7 +29,12 @@
       </div>
     </div>
 
-    <span id="zoom" class="badge"></span>
+    <div class="row">
+      <%= form.hidden_field :layer, class: 'form-control', value: '' %>
+      <%= form.hidden_field :cql, class: 'form-control', value: '' %>
+    </div>
+    <span id="zoom" class="badge"></span>  
+
   </div>
 
   <div id="map" style="width: 100%; height: 400px; margin-bottom: 10px;"></div>
@@ -46,12 +51,32 @@
 
 <script>
 
-    var extents = <%= raw @extents.to_json %>
     
     document.addEventListener("turbolinks:load", () => {
+      
+      var extents = <%= raw @extents.to_json %>
 
       const projEx = document.getElementById('PROJEDIT3303')
       if(!projEx) return
+
+      
+      const hardcoded_extents = [
+        { id: -1, name: "✨Wealden", value:  [ -4034.29345383, 6591225.55995304, 44295.78978777, 6647418.730598 ], layer_source: "shapefiles:westminster_const", layer_cql: "Name='Wealden Co Const'" },
+        { id: -2, name: "✨Brighton Pravilion", value: [ -21125.72504206, 6589221.35051539, -9227.54925854, 6602279.95570845 ], layer_source: "shapefiles:westminster_const", layer_cql: "Name='Brighton, Pavilion Boro Const'" },
+      ]
+
+      extents = [...extents, ...hardcoded_extents]
+
+      const extent_select = document.getElementById('project_value')
+      if(!extent_select) return
+      extent_select.innerHTML = ''
+
+      extents.forEach(extent => {
+        const option = document.createElement('option')
+        option.value = extent.id
+        option.text = extent.name
+        extent_select.appendChild(option)
+      })
 
       document.getElementById('project_extent').value = extents.length > 0 ? extents[0].value.join(', ') : [-49469.089243, 6570068.329224, 55641.379277, 6669018.450996].join(', ')
       document.getElementById('project_value').value = extents.length > 0 ? extents[0].id : ''
@@ -60,6 +85,13 @@
         const valueId = document.getElementById('project_value').value
         const value = extents.find(ext => ext.id == valueId).value
         const extent = value ?? [-49469.089243, 6570068.329224, 55641.379277, 6669018.450996]
+
+        // Layer and CQL for advanced extents
+        const layer = extents.find(ext => ext.id == valueId).layer_source || ''
+        const cql = extents.find(ext => ext.id == valueId).layer_cql || ''
+        document.getElementById('project_layer').value = layer
+        document.getElementById('project_cql').value = cql
+
         document.getElementById('project_extent').value = extent.join(', ')
         mapUpdate('PROJEDIT3303')
       })

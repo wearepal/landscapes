@@ -9,6 +9,7 @@ import { createXYZ } from "ol/tilegrid"
 import { TypedArray } from "d3"
 import { retrieveModelDataWCS } from "../model_retrieval"
 import { Extent } from "ol/extent"
+import { maskFromExtentAndShape } from "../bounding_box"
 
 interface DigitalModel {
     id: number
@@ -39,13 +40,19 @@ export class DigitalModelComponent extends BaseComponent {
     outputCache: Map<string, NumericTileGrid>
     projectZoom: number
     projectExtent: Extent
+    maskMode: boolean
+    maskLayer: string
+    maskCQL: string
 
-    constructor(projectExtent: Extent, projectZoom: number) {
+    constructor(projectExtent: Extent, projectZoom: number, maskMode: boolean, maskLayer: string, maskCQL: string) {
         super("Digital Model")
         this.category = "Inputs"
         this.projectExtent = projectExtent
         this.projectZoom = projectZoom
         this.outputCache = new Map()
+        this.maskMode = maskMode
+        this.maskLayer = maskLayer
+        this.maskCQL = maskCQL
     }
 
     async builder(node: Node) {
@@ -80,6 +87,8 @@ export class DigitalModelComponent extends BaseComponent {
         let index = node.data.sourceId
         if (index === undefined) { index = 0 }
 
+        const mask = await maskFromExtentAndShape(this.projectExtent, this.projectZoom, this.maskLayer, this.maskCQL, this.maskMode)
+
         let digitalModel = ModelList.find(a => a.id == index)
 
         if (digitalModel?.source) {
@@ -102,7 +111,7 @@ export class DigitalModelComponent extends BaseComponent {
                     let x = (outputTileRange.minX + i % image.getWidth())
                     let y = (outputTileRange.minY + Math.floor(i / image.getWidth()))
 
-                    out.set(x, y, (rasters[0][i]) === -32767 ? NaN : (rasters[0][i]))
+                    out.set(x, y, mask.get(x, y) === true ? (rasters[0][i]) === -32767 ? NaN : (rasters[0][i]) : NaN)
 
                 }
 

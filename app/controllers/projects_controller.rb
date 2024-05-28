@@ -25,7 +25,7 @@ class ProjectsController < ApplicationController
   
 
   def create
-    @project = @team.projects.new(params.require(:project).permit(:name, :extent))
+    @project = @team.projects.new(params.require(:project).permit(:name, :extent, :cql, :layer))
     if @project.save
       redirect_to team_projects_url(@team)
     else
@@ -48,7 +48,10 @@ class ProjectsController < ApplicationController
       @team = @project.team
       existing_source = @project.source || {}
       existing_source["name"] = params.require(:project).require(:name)
-      existing_source["extent"] = params.require(:project).require(:extent).split(",").map(&:to_f)
+      existing_source["extent"] = params.require(:project).require(:extent).split(",").map(&:to_f)  
+      existing_source["cql"] = params.require(:project).require(:cql)
+      existing_source["layer"] = params.require(:project).require(:layer)
+
       if @project.update(source: existing_source)
         if params[:commit] == 'Save and open project'
           redirect_to project_url(@project)

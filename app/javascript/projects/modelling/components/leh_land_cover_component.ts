@@ -4,7 +4,7 @@ import { NodeData, WorkerInputs, WorkerOutputs } from "rete/types/core/data";
 import { Node, Output, Socket } from "rete";
 import { booleanDataSocket, categoricalDataSocket } from "../socket_types";
 import { createXYZ } from "ol/tilegrid";
-import { bboxFromExtent } from "../bounding_box";
+import { bboxFromExtent, maskFromExtentAndShape } from "../bounding_box";
 import { GeoJSON } from "ol/format";
 import { BooleanTileGrid, CategoricalTileGrid } from "../tile_grid";
 import { find } from "lodash";
@@ -109,7 +109,7 @@ const habitats: Habitat[] = [
 ]
   
 
-async function renderCategoricalData(extent: Extent, zoom: number) : Promise<CategoricalTileGrid> {
+async function renderCategoricalData(extent: Extent, zoom: number, maskMode: boolean, maskLayer: string, maskCQL: string) : Promise<CategoricalTileGrid> {
 
     const tileGrid = createXYZ()
     const outputTileRange = tileGrid.getTileRangeForExtentAndZ(extent, zoom)
@@ -127,6 +127,9 @@ async function renderCategoricalData(extent: Extent, zoom: number) : Promise<Cat
         )
     )
     if (!response.ok) throw new Error()
+
+    
+    const mask = await maskFromExtentAndShape(extent, zoom, maskLayer, maskCQL, maskMode)
   
     const features = new GeoJSON().readFeatures(await response.json())
 
@@ -165,7 +168,7 @@ async function renderCategoricalData(extent: Extent, zoom: number) : Promise<Cat
         ) {
             const center = tileGrid.getTileCoordCenter([zoom, x, y])
             if (geom.intersectsCoordinate(center)) {
-                result.set(x, y, key?.id ?? 0)
+                result.set(x, y, mask.get(x, y) ? key?.id ?? 0 : 0)
             }
         }
         }
@@ -186,15 +189,21 @@ export class LehLandCoverComponent extends BaseComponent {
     projectZoom: number
     categoricalData: CategoricalTileGrid | null
     outputCache: Map<number, BooleanTileGrid>
+    maskMode: boolean
+    maskLayer: string
+    maskCQL: string
 
-  constructor(projectExtent: Extent, projectZoom: number) {
-    super("Living England Land Cover")
-    this.category = "Inputs"
-    this.projectExtent = projectExtent
-    this.projectZoom = projectZoom
-    this.categoricalData = null
-    this.outputCache = new Map()
-  }
+    constructor(projectExtent: Extent, projectZoom: number, maskMode: boolean, maskLayer: string, maskCQL: string) {
+        super("Living England Land Cover")
+        this.category = "Inputs"
+        this.projectExtent = projectExtent
+        this.projectZoom = projectZoom
+        this.categoricalData = null
+        this.outputCache = new Map()
+        this.maskMode = maskMode
+        this.maskLayer = maskLayer
+        this.maskCQL = maskCQL
+    }
 
   async builder(node: Node) {
     node.meta.toolTip = "Living England is a multi-year project which delivers a habitat probability map for the whole of England, created using satellite imagery, field data records and other geospatial data in a machine learning framework. The Living England habitat probability map shows the extent and distribution of broad habitats across England."
@@ -208,7 +217,7 @@ export class LehLandCoverComponent extends BaseComponent {
   async worker(node: NodeData, inputs: WorkerInputs, outputs: WorkerOutputs, ...args: unknown[]) {
 
     if (this.categoricalData === null) {
-        this.categoricalData = await renderCategoricalData(this.projectExtent, this.projectZoom)
+        this.categoricalData = await renderCategoricalData(this.projectExtent, this.projectZoom, this.maskMode, this.maskLayer, this.maskCQL)
     }
       const categoricalData = this.categoricalData!
   

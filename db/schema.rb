@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_04_03_133929) do
+ActiveRecord::Schema.define(version: 2024_05_21_101847) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -161,6 +161,13 @@ ActiveRecord::Schema.define(version: 2024_04_03_133929) do
     t.bigint "map_tile_layer_id", null: false
     t.index ["map_tile_layer_id", "x", "y", "zoom"], name: "index_map_tiles_on_map_tile_layer_id_and_x_and_y_and_zoom", unique: true
     t.index ["map_tile_layer_id"], name: "index_map_tiles_on_map_tile_layer_id"
+  end
+
+  create_table "masks", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["name"], name: "index_masks_on_name", unique: true
   end
 
   create_table "memberships", force: :cascade do |t|
