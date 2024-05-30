@@ -33,12 +33,14 @@ import { MlTreeHedgeComponent } from "./ml_tree_hedge_component"
 import { ATIComponent } from "./ati_component"
 import { DesignationsComponent } from "./designations_component"
 import { ORValComponent } from "./orval_component"
+import { IMDComponent } from "./imd_component"
 
 export function createDefaultComponents(saveMapLayer: SaveMapLayer, saveModel: SaveModel, getDatasets: getDatasets, extent: Extent, zoom: number, mask: boolean, maskLayer: string, maskCQL: string): BaseComponent[] {
   return [
     // Inputs
     new UkcehLandCoverComponent(extent, zoom, mask, maskLayer, maskCQL),
     new LehLandCoverComponent(extent, zoom, mask, maskLayer, maskCQL),
+    new IMDComponent(extent, zoom, mask, maskLayer, maskCQL),
     new MlTreeHedgeComponent(extent, zoom, mask, maskLayer, maskCQL),
     new BiodiversityComponent(extent, zoom, mask, maskLayer, maskCQL),
     new NevoLayerComponent(extent, zoom, mask, maskLayer, maskCQL),

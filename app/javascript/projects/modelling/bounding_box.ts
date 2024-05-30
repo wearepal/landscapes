@@ -79,11 +79,8 @@ const maskMap = new Map<string, BooleanTileGrid>()
 export async function maskFromExtentAndShape(extent: Extent, zoom: number, shapeLayer: string, shapeId: string, maskMode: boolean = false): Promise<BooleanTileGrid> {
     const id = `${shapeLayer}${shapeId}`
     if(maskMap.has(id)) return maskMap.get(id) as BooleanTileGrid
-
     else{
-
         const cachedMask = await loadMask(id)
-        console.log(cachedMask)
         if(cachedMask !== null) {
             maskMap.set(id, cachedMask)
             return cachedMask
@@ -144,7 +141,7 @@ export async function maskFromExtentAndShape(extent: Extent, zoom: number, shape
                         ++y
                     ) {
 
-                        // DEBUG, shows progress percentage in console
+                        // TODO: Add progress bar
                         if (i % seg === 0) {
                             console.log(Math.floor((i / len) * 100) + "%")
                         }
