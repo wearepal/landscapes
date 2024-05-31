@@ -59,18 +59,33 @@ const outputFormats: OutputFormat[] = [
         socket: numericDataSocket
     },
     {
-        name: "Education Rank",
+        name: "Education, Skills and Training Rank",
         typeName: "EduRank",
         socket: numericDataSocket
     },
     {
-        name: "Education Decile",
+        name: "Education, Skills and Training Decile",
         typeName: "EduDec",
         socket: numericDataSocket
     },
     {
-        name: "Education Score",
+        name: "Education, Skills and Training Score",
         typeName: "EduScore",
+        socket: numericDataSocket
+    },
+    {
+        name: "Heath Deprevation and Disability Rank",
+        typeName: "HDDRank",
+        socket: numericDataSocket
+    },
+    {
+        name: "Heath Deprevation and Disability Decile",
+        typeName: "HDDDec",
+        socket: numericDataSocket
+    },
+    {
+        name: "Heath Deprevation and Disability Score",
+        typeName: "HDDScore",
         socket: numericDataSocket
     },
     {
@@ -86,6 +101,36 @@ const outputFormats: OutputFormat[] = [
     {
         name: "Crime Score",
         typeName: "CriScore",
+        socket: numericDataSocket
+    },
+    {
+        name: "Barriers to Housing and Services Rank",
+        typeName: "BHSRank",
+        socket: numericDataSocket
+    },
+    {
+        name: "Barriers to Housing and Services Decile",
+        typeName: "BHSDec",
+        socket: numericDataSocket
+    },
+    {
+        name: "Barriers to Housing and Services Score",
+        typeName: "BHSScore",
+        socket: numericDataSocket
+    },
+    {
+        name: "Living Environment Rank",
+        typeName: "EnvRank",
+        socket: numericDataSocket
+    },
+    {
+        name: "Living Environment Decile",
+        typeName: "EnvDec",
+        socket: numericDataSocket
+    },
+    {
+        name: "Living Environment Score",
+        typeName: "EnvScore",
         socket: numericDataSocket
     },
     {
