@@ -1,6 +1,7 @@
 import { Data } from "rete/types/core/data"
 import { NevoLevel, NevoProperty } from "./nevo"
 import { Extent } from "ol/extent"
+import { IMDProp } from "./reify_layer/imd"
 
 interface BaseLayer {
   name: string
@@ -87,6 +88,13 @@ export interface ORValLayer extends BaseLayer {
   style: string
 }
 
+export interface IMDLayer extends BaseLayer {
+  type: "IMDLayer"
+  year: number
+  fill: fillType
+  property: IMDProp
+}
+
 export interface CehLandCoverLayer extends BaseLayer {
   type: "CehLandCoverLayer"
   year: 2021 // TODO: allow the user to customise this
@@ -121,7 +129,7 @@ export interface MLLayer extends BaseLayer {
   layerName: string
 }
 
-export type Layer = OsmLayer | MapTileLayer | OverlayLayer | NevoLayer | CehLandCoverLayer | ModelOutputLayer | DatasetLayer | CropMapLayer | AtiLayer | ShapeLayer | BoundaryLayer | MLLayer | KewLayer | ORValLayer
+export type Layer = OsmLayer | MapTileLayer | OverlayLayer | NevoLayer | CehLandCoverLayer | ModelOutputLayer | DatasetLayer | CropMapLayer | AtiLayer | ShapeLayer | BoundaryLayer | MLLayer | KewLayer | ORValLayer | IMDLayer
 
 export interface Project {
   name: string

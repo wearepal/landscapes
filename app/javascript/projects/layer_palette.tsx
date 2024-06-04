@@ -5,6 +5,7 @@ import { KewOption, Layer } from './state'
 import { iconForLayerType } from "./util"
 import { CompiledDatasetRecord } from './saved_dataset'
 import { designations } from './modelling/designations'
+import { IMDProperties } from './reify_layer/imd'
 
 interface AddLayerButtonProps {
   prototype: Layer
@@ -299,6 +300,26 @@ export const LayerPalette = ({ addLayer, hide, dbModels, getTeamDatasets, teamNa
                   opacity: 1,
                   source,
                   style
+                }}
+              />
+            )
+          }
+        </Section>
+        <Section title="Indices of Multiple Deprivation">
+          {
+            Array<{ year: number }>(
+              { year: 2019 }
+            ).map(({ year }) => 
+              <AddLayerButton
+                addLayer={addLayer}
+                prototype={{
+                  type: "IMDLayer",
+                  name: `Indices of Multiple Deprivation ${year}`,
+                  visible: true,
+                  opacity: 1,
+                  fill: "jet",
+                  property: IMDProperties[0],
+                  year
                 }}
               />
             )
