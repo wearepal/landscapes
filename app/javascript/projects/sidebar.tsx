@@ -2,10 +2,11 @@ import * as React from 'react'
 import './sidebar.css'
 import { ReactSortable } from 'react-sortablejs'
 import { nevoLevelNames, nevoPropertyNames } from './nevo'
-import { AtiLayer, CropMapLayer, DatasetLayer, KewLayer, Layer, MLLayer, ModelOutputLayer, NevoLayer, OverlayLayer, ShapeLayer, State } from './state'
+import { AtiLayer, CropMapLayer, DatasetLayer, IMDLayer, KewLayer, Layer, MLLayer, ModelOutputLayer, NevoLayer, OverlayLayer, ShapeLayer, State } from './state'
 import { iconForLayerType } from "./util"
 import { getColorStops } from './reify_layer/model_output'
 import { tileGridStats } from './modelling/tile_grid'
+import { IMDProperties } from './reify_layer/imd'
 
 interface OverlayLayerSettingsProps {
   layer: OverlayLayer
@@ -160,6 +161,53 @@ const CehLandCoverLayerSettings = () => (
   </>
 )
 
+const colMapList = <>
+  <optgroup label="Greyscale"></optgroup>
+  <option value="greyscale">Greyscale</option>
+  <optgroup label="Heatmap"></optgroup>
+  <option value="jet">Jet</option>
+  <option value="hsv">HSV</option>
+  <option value="hot">Hot</option>
+  <option value="cool">Cool</option>
+  <option value="spring">Spring</option>
+  <option value="summer">Summer</option>
+  <option value="autumn">Autumn</option>
+  <option value="winter">Winter</option>
+  <option value="copper">Copper</option>
+  <option value="YIGnBu">YIGnBu</option>
+  <option value="greens">Greens</option>
+  <option value="YIOrRd">YIOrRd</option>
+  <option value="bluered">Bluered</option>
+  <option value="RdBu">RdBu</option>
+  <option value="picnic">Picnic</option>
+  <option value="rainbow">Rainbow</option>
+  <option value="portland">Portland</option>
+  <option value="blackbody">Blackbody</option>
+  <option value="earth">Earth</option>
+  <option value="electric">Electric</option>
+  <option value="viridis">Viridis</option>
+  <option value="inferno">Inferno</option>
+  <option value="magma">Magma</option>
+  <option value="plasma">Plasma</option>
+  <option value="warm">Warm</option>
+  <option value="rainbow-soft">Rainbow-soft</option>
+  <option value="bathymetry">Bathymetry</option>
+  <option value="cdom">Cdom</option>
+  <option value="chlorophyll">Chlorophyll</option>
+  <option value="density">Density</option>
+  <option value="freesurface-blue">Freesurface-Blue</option>
+  <option value="freesurface-red">Freesurface-Red</option>
+  <option value="oxygen">Oxygen</option>
+  <option value="par">Par</option>
+  <option value="phase">Phase</option>
+  <option value="salinity">Salinity</option>
+  <option value="temperature">Temperature</option>
+  <option value="turbidity">Turbidity</option>
+  <option value="velocity-blue">Velocity-Blue</option>
+  <option value="velocity-green">Velocity-Green</option>
+  <option value="cubehelix">Cubehelix</option>
+</>
+
 interface ModelOutputLayerSettingsProps {
   layer: ModelOutputLayer | DatasetLayer
   mutate: (data: any) => void
@@ -184,55 +232,40 @@ function ModelOutputLayerSettings({ layer, mutate, layerType }: ModelOutputLayer
       <div className="d-flex align-items-center mt-3">
         Fill mode
         <select className="custom-select ml-3" value={layer.fill} onChange={e => mutate({ fill: e.target.value })}>
-          <optgroup label="Greyscale"></optgroup>
-          <option value="greyscale">Greyscale</option>
-          <optgroup label="Heatmap"></optgroup>
-          <option value="jet">Jet</option>
-          <option value="hsv">HSV</option>
-          <option value="hot">Hot</option>
-          <option value="cool">Cool</option>
-          <option value="spring">Spring</option>
-          <option value="summer">Summer</option>
-          <option value="autumn">Autumn</option>
-          <option value="winter">Winter</option>
-          <option value="copper">Copper</option>
-          <option value="YIGnBu">YIGnBu</option>
-          <option value="greens">Greens</option>
-          <option value="YIOrRd">YIOrRd</option>
-          <option value="bluered">Bluered</option>
-          <option value="RdBu">RdBu</option>
-          <option value="picnic">Picnic</option>
-          <option value="rainbow">Rainbow</option>
-          <option value="portland">Portland</option>
-          <option value="blackbody">Blackbody</option>
-          <option value="earth">Earth</option>
-          <option value="electric">Electric</option>
-          <option value="viridis">Viridis</option>
-          <option value="inferno">Inferno</option>
-          <option value="magma">Magma</option>
-          <option value="plasma">Plasma</option>
-          <option value="warm">Warm</option>
-          <option value="rainbow-soft">Rainbow-soft</option>
-          <option value="bathymetry">Bathymetry</option>
-          <option value="cdom">Cdom</option>
-          <option value="chlorophyll">Chlorophyll</option>
-          <option value="density">Density</option>
-          <option value="freesurface-blue">Freesurface-Blue</option>
-          <option value="freesurface-red">Freesurface-Red</option>
-          <option value="oxygen">Oxygen</option>
-          <option value="par">Par</option>
-          <option value="phase">Phase</option>
-          <option value="salinity">Salinity</option>
-          <option value="temperature">Temperature</option>
-          <option value="turbidity">Turbidity</option>
-          <option value="velocity-blue">Velocity-Blue</option>
-          <option value="velocity-green">Velocity-Green</option>
-          <option value="cubehelix">Cubehelix</option>
+          {colMapList}
         </select>
       </div>
     )
   }
 }
+
+interface IMDLayerSettingsProps {
+  layer: IMDLayer
+  mutate: (data: any) => void
+}
+
+const IMDLayerSettings = ({ layer, mutate }: IMDLayerSettingsProps) => (
+  <>
+    <div className="d-flex align-items-center mt-3">
+      Property
+      <select className="custom-select ml-3" value={layer.property.propName} onChange={e => mutate({ property: IMDProperties.find(prop => prop.propName === e.target.value) })}>
+        {
+          IMDProperties.map(prop =>
+            <option key={prop.propName} value={prop.propName}>
+              {prop.name}
+            </option>
+          )
+        }
+      </select>
+    </div>
+    <div className="d-flex align-items-center mt-3">
+      Fill mode
+      <select className="custom-select ml-3" value={layer.fill} onChange={e => mutate({ fill: e.target.value })}>
+        {colMapList}
+      </select>
+    </div>
+  </>
+)
 
 interface MLLayerSettingsProps {
   layer: MLLayer
@@ -615,6 +648,45 @@ interface SidebarProps {
   setSelectedLayer: (layer: Layer | null) => void
 }
 
+interface GenericLegendProps {
+  min: string | number
+  max: number | string
+  fill: string
+}
+
+function GenericLegend({ min, max, fill }: GenericLegendProps) {
+  // Generic legend component for continuous data
+
+  const cols = getColorStops(fill == "greyscale" ? "greys" : fill, 30).filter(c => typeof c !== "number").reverse()
+
+  return (
+    <>
+      <div className="color-bar-container">
+        <div className="color-bar">
+          {
+            cols.map((color) => (
+              <div
+                key={color.join(",")}
+                style={
+                  { 
+                    backgroundColor: `rgb(${color.join(",")})`, 
+                    opacity: 1
+                  }
+                }
+                className="color-bar-item"
+              />
+            ))
+          }
+        </div>
+      </div>
+      <div className="color-bar-legend">
+        <div title={min.toString()} >{min}</div>
+        <div title={max.toString()} >{max}</div>
+      </div>
+    </>
+  )
+}
+
 export const Sidebar = ({ state, selectLayer, mutateLayer, deleteLayer, setLayerOrder, showLayerPalette, hide, getLayerData, selectedLayer, setSelectedLayer }: SidebarProps) => {
   setSelectedLayer(state.selectedLayer === undefined ? null : state.project.layers[state.selectedLayer])
   return <div className="d-flex flex-column" style={{ width: "300px" }}>
@@ -673,7 +745,7 @@ export const Sidebar = ({ state, selectLayer, mutateLayer, deleteLayer, setLayer
       </ReactSortable>
     </div>
     {
-      (selectedLayer?.type == "ModelOutputLayer" || selectedLayer?.type == "DatasetLayer") &&
+      (selectedLayer?.type == "ModelOutputLayer" || selectedLayer?.type == "DatasetLayer" || selectedLayer?.type == "IMDLayer") &&
       (
         <div className="px-3 py-2 border-top border-bottom bg-light">Layer legend</div>
       )
@@ -685,6 +757,14 @@ export const Sidebar = ({ state, selectLayer, mutateLayer, deleteLayer, setLayer
         getLayerData={getLayerData}
         mutateColors={colors => state.selectedLayer !== undefined && mutateLayer(state.selectedLayer, { colors })}
         updateBounds={(overrideBounds, bounds) => state.selectedLayer !== undefined && mutateLayer(state.selectedLayer, { overrideBounds, bounds })}
+      />
+    }
+    {
+      selectedLayer?.type == "IMDLayer" &&
+      <GenericLegend
+        min={`Least (${selectedLayer.property.min}${selectedLayer.property.min == 10 ? "th Decile" : ""})`}
+        max={`Most (${selectedLayer.property.max}${selectedLayer.property.min == 10 ? "st Decile" : ""})`}
+        fill={selectedLayer.fill}
       />
     }
     <div className="px-3 py-2 border-top border-bottom bg-light">Layer settings</div>
@@ -786,6 +866,16 @@ export const Sidebar = ({ state, selectLayer, mutateLayer, deleteLayer, setLayer
               <>
                 <img src={selectedLayer.style !== "" ? `https://landscapes.wearepal.ai/geoserver/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=20&HEIGHT=20&LAYER=${selectedLayer.source}&STYLE=${selectedLayer.style}` : ""} alt="" />
               </>
+            }
+            {
+              selectedLayer?.type == "IMDLayer" &&
+              <IMDLayerSettings 
+                layer={selectedLayer}
+                mutate={
+                  data => state.selectedLayer !== undefined &&
+                    mutateLayer(state.selectedLayer, data)
+                }
+               />
             }
               </> :
               <em>No layer selected</em>

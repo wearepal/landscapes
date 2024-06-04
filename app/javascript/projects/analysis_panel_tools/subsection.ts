@@ -28,7 +28,7 @@ export interface ChartData {
     inputHistogramBins: number
 }
 
-function findColor(value: number, colorArray: any[]): Color {
+export function findColor(value: number, colorArray: any[]): Color {
     var index = Math.floor(value * (colorArray.length / 2))
     index = Math.min(index, colorArray.length / 2 - 1)
     var alpha = colorArray[index * 2]

@@ -9,7 +9,6 @@ import { Feature } from "ol"
 import { Geometry } from "ol/geom"
 import { NumericTileGrid } from "../tile_grid"
 import { createXYZ } from "ol/tilegrid"
-import { format } from "mathjs"
 
 interface OutputFormat {
     name: string
