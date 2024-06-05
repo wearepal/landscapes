@@ -41,7 +41,9 @@ export function performOperation(operationName, ...inputs) {
 
   for (let x = out.x; x < out.x + out.width; ++x) {
     for (let y = out.y; y < out.y + out.height; ++y) {
-      out.set(x, y, operation.fn(...inputs.map(i => i.get(x, y, zoom))))
+      out.set(x, y, 
+        operation.fn(...inputs.map(i => i.get(x, y, zoom)))
+      )
     }
   }
   return out

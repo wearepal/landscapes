@@ -7,14 +7,17 @@ import { PreviewControl } from '../controls/preview'
 import { isEqual } from 'lodash'
 import { NumericConstant } from '../numeric_constant'
 import { numericNumberDataSocket } from '../socket_types'
+import { ProjectProperties } from '.'
+import { maskFromExtentAndShape } from '../bounding_box'
 
 export class BinaryOpComponent extends BaseComponent {
   operator: string
   operation: string
   inputSocket: Socket
   outputSocket: Socket
+  projectProperties: ProjectProperties
 
-  constructor(operation: string, operator: string, inputSocket: Socket, outputSocket: Socket, category: string) {
+  constructor(operation: string, operator: string, inputSocket: Socket, outputSocket: Socket, category: string, projectProperties: ProjectProperties) {
     super(operation)
     this.operator = operator
     this.operation = operation
@@ -22,6 +25,7 @@ export class BinaryOpComponent extends BaseComponent {
     this.outputSocket = outputSocket
     this.category = category
     this.contextMenuName = operator ? `${operation} (${operator})` : operation
+    this.projectProperties = projectProperties
   }
 
   async builder(node: Node) {
@@ -66,6 +70,7 @@ export class BinaryOpComponent extends BaseComponent {
 
     if (outputs['out'] instanceof BooleanTileGrid || outputs['out'] instanceof NumericConstant) outputs['out'].name = (editorNode.data.name as string !== undefined && editorNode.data.name as string !== "") ? editorNode.data.name as string : `${this.operation} data`
 
+    
 
     const previewControl: any = editorNode.controls.get('Preview')
     previewControl.update()
