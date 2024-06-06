@@ -34,6 +34,7 @@ import { ATIComponent } from "./ati_component"
 import { DesignationsComponent } from "./designations_component"
 import { ORValComponent } from "./orval_component"
 import { IMDComponent } from "./imd_component"
+import { HedgerowComponent } from "./hedgerow_component"
 
 export interface ProjectProperties {
   extent: Extent
@@ -45,75 +46,83 @@ export interface ProjectProperties {
 
 export function createDefaultComponents(saveMapLayer: SaveMapLayer, saveModel: SaveModel, getDatasets: getDatasets, extent: Extent, zoom: number, mask: boolean, maskLayer: string, maskCQL: string): BaseComponent[] {
 
-  const projectProps = { extent, zoom, mask, maskLayer, maskCQL }
+    const projectProps: ProjectProperties = { extent, zoom, mask, maskLayer, maskCQL }
 
-  return [
-    // TODO: Replace extent, mask, zoom, maskLayer, maskCQL with projectProps in all components
+    const restrictedComponents: BaseComponent[] = []
 
-    // Inputs
-    new UkcehLandCoverComponent(extent, zoom, mask, maskLayer, maskCQL),
-    new LehLandCoverComponent(extent, zoom, mask, maskLayer, maskCQL),
-    new IMDComponent(extent, zoom, mask, maskLayer, maskCQL),
-    new MlTreeHedgeComponent(extent, zoom, mask, maskLayer, maskCQL),
-    new BiodiversityComponent(extent, zoom, mask, maskLayer, maskCQL),
-    new NevoLayerComponent(extent, zoom, mask, maskLayer, maskCQL),
-    new ORValComponent(extent, zoom, mask, maskLayer, maskCQL),
-    new OSMLandUseComponent(extent, zoom, mask, maskLayer, maskCQL),
-    new NumericConstantComponent(),
-    new DigitalModelComponent(extent, zoom, mask, maskLayer, maskCQL),
-    new PrecompiledModelComponent(getDatasets, extent, zoom, mask, maskLayer, maskCQL),
-    new CensusComponent(extent, zoom, mask, maskLayer, maskCQL),
-    new OSGreenSpacesComponent(extent, zoom, mask, maskLayer, maskCQL),
-    new CROMEComponent(extent, zoom, mask, maskLayer, maskCQL),
-    new ATIComponent(extent, zoom, mask, maskLayer, maskCQL),
-    new DesignationsComponent(extent, zoom, mask, maskLayer, maskCQL),
+    // Team permissions restrict some components. Add them here.
+    if (true) restrictedComponents.push(new HedgerowComponent(projectProps))
 
-    // Outputs
-    new MapLayerComponent(saveMapLayer),
-    new SaveModelOutputComponent(saveModel),
+    // Freely available components here.
+    const components : BaseComponent[] = [
+      // TODO: Replace extent, mask, zoom, maskLayer, maskCQL with projectProps in all components
 
-    // Conversions
-    new NumberToNumericDatasetComponent(),
-    new NumericDatasetToNumberComponent(),
-    new CategoricalComponent(),
+      // Inputs
+      new UkcehLandCoverComponent(extent, zoom, mask, maskLayer, maskCQL),
+      new LehLandCoverComponent(extent, zoom, mask, maskLayer, maskCQL),
+      new IMDComponent(extent, zoom, mask, maskLayer, maskCQL),
+      new MlTreeHedgeComponent(extent, zoom, mask, maskLayer, maskCQL),
+      new BiodiversityComponent(extent, zoom, mask, maskLayer, maskCQL),
+      new NevoLayerComponent(extent, zoom, mask, maskLayer, maskCQL),
+      new ORValComponent(extent, zoom, mask, maskLayer, maskCQL),
+      new OSMLandUseComponent(extent, zoom, mask, maskLayer, maskCQL),
+      new NumericConstantComponent(),
+      new DigitalModelComponent(extent, zoom, mask, maskLayer, maskCQL),
+      new PrecompiledModelComponent(getDatasets, extent, zoom, mask, maskLayer, maskCQL),
+      new CensusComponent(extent, zoom, mask, maskLayer, maskCQL),
+      new OSGreenSpacesComponent(extent, zoom, mask, maskLayer, maskCQL),
+      new CROMEComponent(extent, zoom, mask, maskLayer, maskCQL),
+      new ATIComponent(extent, zoom, mask, maskLayer, maskCQL),
+      new DesignationsComponent(extent, zoom, mask, maskLayer, maskCQL),
 
-    // Calculations
-    new AreaComponent(),
-    new DistanceMapComponent(extent, zoom, mask, maskLayer, maskCQL),
-    new ScaleFactorComponent(),
+      // Outputs
+      new MapLayerComponent(saveMapLayer),
+      new SaveModelOutputComponent(saveModel),
 
-    // Charts
-    new BarChartComponent(),
+      // Conversions
+      new NumberToNumericDatasetComponent(),
+      new NumericDatasetToNumberComponent(),
+      new CategoricalComponent(),
 
-    // Set operations
-    new VariadicOpComponent('Union', '⋃', booleanDataSocket, booleanDataSocket, 'Set operations'),
-    new VariadicOpComponent('Intersection', '⋂', booleanDataSocket, booleanDataSocket, 'Set operations'),
-    new BinaryOpComponent('Set difference', '−', booleanDataSocket, booleanDataSocket, 'Set operations', projectProps),
-    new VariadicOpComponent('Symmetric difference', 'Δ', booleanDataSocket, booleanDataSocket, 'Set operations'),
-    new UnaryOpComponent('Complement', '′', 'postfix', booleanDataSocket, booleanDataSocket, 'Set operations', projectProps),
+      // Calculations
+      new AreaComponent(),
+      new DistanceMapComponent(extent, zoom, mask, maskLayer, maskCQL),
+      new ScaleFactorComponent(),
 
-    // Arithmetic
-    new MaskNumericDataComponent(),
-    new ExpressionComponent(),
-    new BinaryOpComponent('Min', '', numericNumberDataSocket, numericNumberDataSocket, 'Arithmetic', projectProps),
-    new BinaryOpComponent('Max', '', numericNumberDataSocket, numericNumberDataSocket, 'Arithmetic', projectProps),
-    new VariadicOpComponent('Sum', '∑', numericDataSocket, numericDataSocket, 'Arithmetic', 'Sum all inputs'),
-    new VariadicOpComponent('Merge', '', numericDataSocket, numericDataSocket, 'Arithmetic', 'Merge all inputs into a single dataset, NaN logic is overridden'),
-    new VariadicOpComponent('Product', '∏', numericDataSocket, numericDataSocket, 'Arithmetic'),
-    new BinaryOpComponent('Add', '+', numericNumberDataSocket, numericNumberDataSocket, 'Arithmetic', projectProps),
-    new BinaryOpComponent('Subtract', '−', numericNumberDataSocket, numericNumberDataSocket, 'Arithmetic', projectProps),
-    new BinaryOpComponent('Multiply', '×', numericNumberDataSocket, numericNumberDataSocket, 'Arithmetic', projectProps),
-    new BinaryOpComponent('Divide', '÷', numericNumberDataSocket, numericNumberDataSocket, 'Arithmetic', projectProps),
-    new BinaryOpComponent('Power', '^', numericNumberDataSocket, numericNumberDataSocket, 'Arithmetic', projectProps),
-    new UnaryOpComponent('Negate', '−', 'prefix', numericDataSocket, numericDataSocket, 'Arithmetic', projectProps),
-    new UnaryOpComponent('Reciprocal', '⁻¹', 'postfix', numericDataSocket, numericDataSocket, 'Arithmetic', projectProps),
-    new BinaryOpComponent('Less', '<', numericNumberDataSocket, booleanDataSocket, 'Arithmetic', projectProps),
-    new BinaryOpComponent('Greater', '>', numericNumberDataSocket, booleanDataSocket, 'Arithmetic', projectProps),
-    new ReplaceNaNComponent(),
+      // Charts
+      new BarChartComponent(),
 
-    // DEBUG TOOLS
-    new CellAreaComponent(),
-    new RescaleComponent(),
+      // Set operations
+      new VariadicOpComponent('Union', '⋃', booleanDataSocket, booleanDataSocket, 'Set operations'),
+      new VariadicOpComponent('Intersection', '⋂', booleanDataSocket, booleanDataSocket, 'Set operations'),
+      new BinaryOpComponent('Set difference', '−', booleanDataSocket, booleanDataSocket, 'Set operations', projectProps),
+      new VariadicOpComponent('Symmetric difference', 'Δ', booleanDataSocket, booleanDataSocket, 'Set operations'),
+      new UnaryOpComponent('Complement', '′', 'postfix', booleanDataSocket, booleanDataSocket, 'Set operations', projectProps),
 
-  ]
+      // Arithmetic
+      new MaskNumericDataComponent(),
+      new ExpressionComponent(),
+      new BinaryOpComponent('Min', '', numericNumberDataSocket, numericNumberDataSocket, 'Arithmetic', projectProps),
+      new BinaryOpComponent('Max', '', numericNumberDataSocket, numericNumberDataSocket, 'Arithmetic', projectProps),
+      new VariadicOpComponent('Sum', '∑', numericDataSocket, numericDataSocket, 'Arithmetic', 'Sum all inputs'),
+      new VariadicOpComponent('Merge', '', numericDataSocket, numericDataSocket, 'Arithmetic', 'Merge all inputs into a single dataset, NaN logic is overridden'),
+      new VariadicOpComponent('Product', '∏', numericDataSocket, numericDataSocket, 'Arithmetic'),
+      new BinaryOpComponent('Add', '+', numericNumberDataSocket, numericNumberDataSocket, 'Arithmetic', projectProps),
+      new BinaryOpComponent('Subtract', '−', numericNumberDataSocket, numericNumberDataSocket, 'Arithmetic', projectProps),
+      new BinaryOpComponent('Multiply', '×', numericNumberDataSocket, numericNumberDataSocket, 'Arithmetic', projectProps),
+      new BinaryOpComponent('Divide', '÷', numericNumberDataSocket, numericNumberDataSocket, 'Arithmetic', projectProps),
+      new BinaryOpComponent('Power', '^', numericNumberDataSocket, numericNumberDataSocket, 'Arithmetic', projectProps),
+      new UnaryOpComponent('Negate', '−', 'prefix', numericDataSocket, numericDataSocket, 'Arithmetic', projectProps),
+      new UnaryOpComponent('Reciprocal', '⁻¹', 'postfix', numericDataSocket, numericDataSocket, 'Arithmetic', projectProps),
+      new BinaryOpComponent('Less', '<', numericNumberDataSocket, booleanDataSocket, 'Arithmetic', projectProps),
+      new BinaryOpComponent('Greater', '>', numericNumberDataSocket, booleanDataSocket, 'Arithmetic', projectProps),
+      new ReplaceNaNComponent(),
+
+      // DEBUG TOOLS
+      new CellAreaComponent(),
+      new RescaleComponent(),
+
+    ]
+
+    return components.concat(restrictedComponents)
 }
