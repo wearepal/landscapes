@@ -267,6 +267,51 @@ export const speciesFamilyList: SpeciesFamilySelectControlOptions[] = [
         name: 'Viola (Violaceae)',
         id: 51,
         family: 'Violaceae'
+    },
+    {
+        name: 'Larks (Alaudidae)',
+        id: 52,
+        family: 'Alaudidae'
+    },
+    {
+        name: 'Finches (Fringillidae)',
+        id: 53,
+        family: 'Fringillidae'
+    },
+    {
+        name: 'Buntings (Emberizidae)',
+        id: 54,
+        family: 'Emberizidae'
+    },
+    {
+        name: 'Sandpipers (Scolopacidae)',
+        id: 55,
+        family: 'Scolopacidae'
+    },
+    {
+        name: 'Passerine finches (Passeridae)',
+        id: 56,
+        family: 'Passeridae'
+    },
+    {
+        name: 'Grouse (Phasianidae)',
+        id: 57,
+        family: 'Phasianidae'
+    },
+    {
+        name: 'Starlings (Sturnidae)',
+        id: 58,
+        family: 'Sturnidae'
+    },
+    {
+        name: 'Thrushes (Turdidae)',
+        id: 59,
+        family: 'Turdidae'
+    },
+    {
+        name: 'Doves (Columbidae)',
+        id: 60,
+        family: 'Columbidae'
     }
 ]
 
@@ -986,6 +1031,72 @@ export const speciesList: SpeciesCheckboxControlOptions[] = [
         name: 'Ivy-leaved Bellflower (Wahlenbergia hederacea)',
         id: 119,
         scientificSpeciesName: 'Wahlenbergia hederacea'
+    },
+    {
+        familyId: 52,
+        name: 'Skylark (Alauda arvensis)',
+        id: 120,
+        scientificSpeciesName: 'Alauda arvensis'
+    },
+    {
+        familyId: 53,
+        name: 'Linnet (Linaria cannabina)',
+        id: 121,
+        scientificSpeciesName: 'Linaria cannabina'
+    },
+    {
+        familyId: 54,
+        name: 'Yellowhammer (Emberiza citrinella)',
+        id: 122,
+        scientificSpeciesName: 'Emberiza citrinella'
+    },
+    {
+        familyId: 54,
+        name: 'Reed Bunting (Emberiza schoeniclus)',
+        id: 123,
+        scientificSpeciesName: 'Emberiza schoeniclus'
+    },
+    {
+        familyId: 55,
+        name: 'Curlew (Numenius arquata)',
+        id: 124,
+        scientificSpeciesName: 'Numenius arquata'
+    },
+    {
+        familyId: 56,
+        name: 'Tree Sparrow (Passer montanus)',
+        id: 125,
+        scientificSpeciesName: 'Passer montanus'
+    },
+    {
+        familyId: 57,
+        name: 'Grey Partridge (Perdix perdix)',
+        id: 126,
+        scientificSpeciesName: 'Perdix perdix'
+    },
+    {
+        familyId: 53,
+        name: 'Bullfinch (Pyrrhula pyrrhula)',
+        id: 127,
+        scientificSpeciesName: 'Pyrrhula pyrrhula'
+    },
+    {
+        familyId: 58,
+        name: 'Starling (Sturnus vulgaris)',
+        id: 128,
+        scientificSpeciesName: 'Sturnus vulgaris'
+    },
+    {
+        familyId: 59,
+        name: 'Song Thrush (Turdus philomelos)',
+        id: 129,
+        scientificSpeciesName: 'Turdus philomelos'
+    },
+    {
+        familyId: 60,
+        name: 'Turtle Dove (Streptopelia turtur)',
+        id: 130,
+        scientificSpeciesName: 'Streptopelia turtur'
     }
 
 ]
