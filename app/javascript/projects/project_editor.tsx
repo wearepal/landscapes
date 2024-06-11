@@ -21,6 +21,10 @@ export enum Tab {
   ModelView,
 }
 
+export interface ProjectPermissions {
+  DefraHedgerows: boolean
+}
+
 interface ProjectEditorProps {
   projectId: number
   projectSource: Project
@@ -28,8 +32,9 @@ interface ProjectEditorProps {
   dbModels: DBModels
   teamId: number
   teamName: string
+  permissions: ProjectPermissions
 }
-export function ProjectEditor({ projectId, projectSource, backButtonPath, dbModels, teamId, teamName }: ProjectEditorProps) {
+export function ProjectEditor({ projectId, projectSource, backButtonPath, dbModels, teamId, teamName, permissions }: ProjectEditorProps) {
   const [state, dispatch] = React.useReducer(reduce, {
     project: { ...defaultProject, ...projectSource },
     hasUnsavedChanges: false,
@@ -249,6 +254,7 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
           mask={projectMask}
           maskLayer={projectMaskSource}
           maskCQL={projectMaskCQL}
+          permissions={permissions}
         />
       </div>
     </div>

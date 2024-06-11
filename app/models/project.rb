@@ -46,4 +46,13 @@ class Project < ApplicationRecord
   def duplicate    
     dup
   end
+
+  def defra_hedgerow_permission
+    p = Permission.find_by(name: 'defra_hedgerow')
+    return false unless p
+
+    tp = team.team_permissions.find_by(permission: p)
+    tp ? tp.enabled : false
+  end
+
 end

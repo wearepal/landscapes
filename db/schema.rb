@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_05_21_101847) do
+ActiveRecord::Schema.define(version: 2024_06_11_101639) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -216,6 +216,12 @@ ActiveRecord::Schema.define(version: 2024_05_21_101847) do
     t.index ["region_id"], name: "index_overlays_on_region_id"
   end
 
+  create_table "permissions", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   create_table "projects", force: :cascade do |t|
     t.bigint "team_id", null: false
     t.jsonb "source", default: {}, null: false
@@ -230,6 +236,16 @@ ActiveRecord::Schema.define(version: 2024_05_21_101847) do
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "team_id", null: false
     t.index ["team_id"], name: "index_regions_on_team_id"
+  end
+
+  create_table "team_permissions", force: :cascade do |t|
+    t.bigint "team_id", null: false
+    t.bigint "permission_id", null: false
+    t.boolean "enabled"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["permission_id"], name: "index_team_permissions_on_permission_id"
+    t.index ["team_id"], name: "index_team_permissions_on_team_id"
   end
 
   create_table "teams", force: :cascade do |t|
@@ -284,5 +300,7 @@ ActiveRecord::Schema.define(version: 2024_05_21_101847) do
   add_foreign_key "overlays", "regions"
   add_foreign_key "projects", "teams"
   add_foreign_key "regions", "teams"
+  add_foreign_key "team_permissions", "permissions", on_delete: :cascade
+  add_foreign_key "team_permissions", "teams", on_delete: :cascade
   add_foreign_key "training_data_downloads", "labelling_groups"
 end
