@@ -35,6 +35,7 @@ import { DesignationsComponent } from "./designations_component"
 import { ORValComponent } from "./orval_component"
 import { IMDComponent } from "./imd_component"
 import { HedgerowComponent } from "./hedgerow_component"
+import { ProjectPermissions } from "../../project_editor"
 
 export interface ProjectProperties {
   extent: Extent
@@ -44,14 +45,14 @@ export interface ProjectProperties {
   maskCQL: string
 }
 
-export function createDefaultComponents(saveMapLayer: SaveMapLayer, saveModel: SaveModel, getDatasets: getDatasets, extent: Extent, zoom: number, mask: boolean, maskLayer: string, maskCQL: string): BaseComponent[] {
+export function createDefaultComponents(saveMapLayer: SaveMapLayer, saveModel: SaveModel, getDatasets: getDatasets, extent: Extent, zoom: number, mask: boolean, maskLayer: string, maskCQL: string, permissions: ProjectPermissions): BaseComponent[] {
 
     const projectProps: ProjectProperties = { extent, zoom, mask, maskLayer, maskCQL }
 
     const restrictedComponents: BaseComponent[] = []
 
     // Team permissions restrict some components. Add them here.
-    if (true) restrictedComponents.push(new HedgerowComponent(projectProps))
+    if (permissions.DefraHedgerows) restrictedComponents.push(new HedgerowComponent(projectProps))
 
     // Freely available components here.
     const components : BaseComponent[] = [

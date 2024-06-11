@@ -11,5 +11,19 @@ class Team < ApplicationRecord
   has_many :map_tile_layers, through: :regions
   has_many :overlays, through: :regions
 
+  has_many :team_permissions
+  has_many :permissions, through: :team_permissions
+
+  after_create :assign_permissions
+
   validates :name, presence: true
+
+  private
+
+  def assign_permissions
+    Permission.all.each do |permission|
+      TeamPermission.create(team: self, permission: permission, enabled: false)
+    end
+  end
+  
 end

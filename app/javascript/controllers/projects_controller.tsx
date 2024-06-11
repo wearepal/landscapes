@@ -11,6 +11,7 @@ export default class extends Controller {
     projectSource: Object,
     projectTeamId: Number,
     projectTeamName: String,
+    projectDefraHedgerowPermission: Boolean,
     backButtonPath: String,
     dbModels: Object,
   }
@@ -19,9 +20,9 @@ export default class extends Controller {
   declare readonly projectSourceValue: Project
   declare readonly projectTeamIdValue: number
   declare readonly projectTeamNameValue: string
+  declare readonly projectDefraHedgerowPermissionValue: boolean
   declare readonly backButtonPathValue: string
   declare readonly dbModelsValue: DBModels
-
 
   connect() {
     ReactDOM.render(
@@ -32,6 +33,11 @@ export default class extends Controller {
         dbModels={this.dbModelsValue}
         teamId={this.projectTeamIdValue}
         teamName={this.projectTeamNameValue}
+        permissions={
+          { 
+            DefraHedgerows: this.projectDefraHedgerowPermissionValue 
+          }
+        }
       />,
       this.element
     )
