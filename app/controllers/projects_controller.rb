@@ -49,8 +49,9 @@ class ProjectsController < ApplicationController
       existing_source = @project.source || {}
       existing_source["name"] = params.require(:project).require(:name)
       existing_source["extent"] = params.require(:project).require(:extent).split(",").map(&:to_f)  
-      existing_source["cql"] = params.require(:project).require(:cql)
-      existing_source["layer"] = params.require(:project).require(:layer)
+      existing_source["cql"] = params[:project][:cql] if params[:project].key?(:cql)
+      existing_source["layer"] = params[:project][:layer] if params[:project].key?(:layer)
+    
 
       if @project.update(source: existing_source)
         if params[:commit] == 'Save and open project'
