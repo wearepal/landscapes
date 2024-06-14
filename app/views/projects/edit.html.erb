@@ -60,6 +60,15 @@
       const projEx = document.getElementById('PROJEDIT303')
       if(!projEx) return
 
+        const fn = () => {
+            const savedVal = isSavedValue()
+            document.getElementById('project_value').value = savedVal
+            if(!savedVal){
+              document.getElementById('project_layer').value = null
+              document.getElementById('project_cql').value = null
+            }
+        }
+
         const hardcoded_extents = [
           { id: -1, name: "✨Wealden", value:  [ -4034.29345383, 6591225.55995304, 44295.78978777, 6647418.730598 ], layer_source: "shapefiles:westminster_const", layer_cql: "Name='Wealden Co Const'" },
           { id: -2, name: "✨Brighton Pravilion", value: [ -21125.72504206, 6589221.35051539, -9227.54925854, 6602279.95570845 ], layer_source: "shapefiles:westminster_const", layer_cql: "Name='Brighton, Pavilion Boro Const'" },
@@ -90,7 +99,7 @@
           document.getElementById('project_cql').value = cql
 
           document.getElementById('project_extent').value = extent.join(', ')
-          mapUpdate('PROJEDIT303')
+          mapUpdate('PROJEDIT303', fn)
       })
 
       function isSavedValue(){
@@ -104,10 +113,7 @@
           return id
       }
 
-      mapUpdate('PROJEDIT303', () => {
-          document.getElementById('project_value').value = isSavedValue() 
-        }
-      )
+      mapUpdate('PROJEDIT303', fn)
 
       document.getElementById('project_value').value = isSavedValue()
 
