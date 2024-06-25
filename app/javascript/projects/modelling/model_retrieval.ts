@@ -4,6 +4,7 @@ import * as GeoTIFF from 'geotiff/dist-browser/geotiff'
 import { Extent } from 'ol/extent'
 import { bboxFromExtent } from './bounding_box'
 
+// Returns a GeoTIFF object from a WMS server. Useful for some categorical/boolean data but may be susceptible to data loss. Fatest option usually
 export async function retrieveModelData(extent: Extent, source: string, tileRange: any, style?: string) {
 
     // Uses WMS server: Returns data between 0 and 255
@@ -39,6 +40,7 @@ export async function retrieveModelData(extent: Extent, source: string, tileRang
 
 }
 
+// Returns a GeoTIFF object from a WCS server. Useful for continuous data but may be slower.
 export async function retrieveModelDataWCS(extent: Extent, source: string, tileRange: any) {
 
     // Uses WCS server: Returns raw data
@@ -68,4 +70,33 @@ export async function retrieveModelDataWCS(extent: Extent, source: string, tileR
     const tiff = await GeoTIFF.fromArrayBuffer(arrayBuffer)
 
     return tiff
+}
+
+// For interaction with ISRIC SoilGrids API
+export async function retrieveISRICData(extent: Extent, coverageId: string, map: string, tileRange: any) {
+
+    const server = `https://maps.isric.org/mapserv?map=/map/${map}.map&`
+    const [width, height] = [tileRange.getWidth(), tileRange.getHeight()]
+    const response = await fetch(
+        server + new URLSearchParams(
+            {
+                service: 'WCS',
+                version: '1.0.0',
+                request: 'GetCoverage',
+                COVERAGE: coverageId,
+                FORMAT: 'GEOTIFF_INT16',
+                WIDTH: width,
+                HEIGHT: height,
+                CRS: 'EPSG:3857',
+                RESPONSE_CRS: 'EPSG:3857',
+                BBOX: extent.toString()
+            }
+        )
+    )
+
+    const arrayBuffer = await response.arrayBuffer()
+    const tiff = await GeoTIFF.fromArrayBuffer(arrayBuffer)
+
+    return tiff
+
 }
