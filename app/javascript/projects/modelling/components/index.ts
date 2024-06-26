@@ -36,6 +36,7 @@ import { ORValComponent } from "./orval_component"
 import { IMDComponent } from "./imd_component"
 import { HedgerowComponent } from "./hedgerow_component"
 import { ProjectPermissions } from "../../project_editor"
+import { SoilComponent } from "./soil_component"
 
 export interface ProjectProperties {
   extent: Extent
@@ -75,6 +76,7 @@ export function createDefaultComponents(saveMapLayer: SaveMapLayer, saveModel: S
       new CROMEComponent(extent, zoom, mask, maskLayer, maskCQL),
       new ATIComponent(extent, zoom, mask, maskLayer, maskCQL),
       new DesignationsComponent(extent, zoom, mask, maskLayer, maskCQL),
+      new SoilComponent(projectProps),
 
       // Outputs
       new MapLayerComponent(saveMapLayer),

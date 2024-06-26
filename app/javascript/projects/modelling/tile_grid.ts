@@ -390,6 +390,22 @@ export class CategoricalTileGrid extends TileGrid {
     this.minMax = [0, this.labels.size]
   }
 
+  getBoolFromLabel(label: string): BooleanTileGrid {
+
+    const boolGrid = new BooleanTileGrid(this.zoom, this.x, this.y, this.width, this.height)
+
+    const key = Array.from(this.labels).find(([key, value]) => value === label)?.[0]
+
+    this.iterate((x, y, value) => {
+      if (value === key) {
+        boolGrid.set(x, y, true)
+      }
+    })
+
+    return boolGrid
+
+  }
+
   getMinMax() {
     if (this.minMax == null) {
       //no labels given.
