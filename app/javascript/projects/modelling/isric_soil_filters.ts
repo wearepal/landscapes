@@ -2,6 +2,16 @@ import { Socket } from "rete"
 import { SelectControlOptions } from "./controls/select"
 import { categoricalDataSocket, numericDataSocket, booleanDataSocket } from "./socket_types"
 
+
+interface SoilGridOptions {
+    SCOId : number
+    name : string
+    map: string
+    coverageId: string
+    outputSocket: Socket
+}
+
+// Soil types from the World Reference Base for Soil Resources, used for labelling cat data
 export const ERBSoilTypes = [
     "Acrisols",
     "Albeluvisols",
@@ -35,22 +45,27 @@ export const ERBSoilTypes = [
     "Vertisols"
 ]
 
-interface SoilGridOptions {
-    SCOId : number
-    name : string
-    map: string
-    coverageId: string
-    outputSocket: Socket
-}
-
+// Categories for SoilGrids
 export const SoilGrids : SelectControlOptions[] = [
     { id: 0, name: 'WRB (most probable)'},
     { id: 1, name: 'WRB (probability)' },
     { id: 2, name: 'Soil Organic Carbon Stock'},
     { id: 3, name: 'Soil Organic Carbon Density'},
     { id: 4, name: 'Soil Organic Carbon Content'},
+    { id: 5, name: 'Bulk Density'},
+    { id: 6, name: 'Cation Exchange Capacity at ph 7'},
+    { id: 7, name: 'Coarse fragments volumetric'},
+    { id: 8, name: 'Clay content'},
+    { id: 9, name: 'Nitrogen'},
+    { id: 10, name: 'Soil pH in H2O'},
+    { id: 11, name: 'Sand content'},
+    { id: 12, name: 'Silt content'},
+    { id: 13, name: 'Water Layer wv1500'},
+    { id: 14, name: 'Water Layer wv0033'},
+    { id: 15, name: 'Water Layer wv0010'},
 ]
 
+// Filters for SoilGrids
 export const SoilGridOptions : SoilGridOptions[] = [
     {
         SCOId: 0,
@@ -95,429 +110,55 @@ export const SoilGridOptions : SoilGridOptions[] = [
         map: 'ocs',
         coverageId: 'ocs_0-30cm_uncertainty',
         outputSocket: numericDataSocket
-    },
-    {
-        SCOId: 3,
-        name: 'Mean (<5cm)',
-        map: 'ocd',
-        coverageId: 'ocd_0-5cm_mean',
-        outputSocket: numericDataSocket
-    },
-    {
-        SCOId: 3,
-        name: 'Q0.05 (<5cm)',
-        map: 'ocd',
-        coverageId: 'ocd_0-5cm_Q0.05',
-        outputSocket: numericDataSocket
-    },
-    {
-        SCOId: 3,
-        name: 'Q0.5 (<5cm)',
-        map: 'ocd',
-        coverageId: 'ocd_0-5cm_Q0.5',
-        outputSocket: numericDataSocket
-    },
-    {
-        SCOId: 3,
-        name: 'Q0.95 (<5cm)',
-        map: 'ocd',
-        coverageId: 'ocd_0-5cm_Q0.95',
-        outputSocket: numericDataSocket
-    },
-    {
-        SCOId: 3,
-        name: 'Uncertainty (<5cm)',
-        map: 'ocd',
-        coverageId: 'ocd_0-5cm_uncertainty',
-        outputSocket: numericDataSocket
-    },
-    {
-        SCOId: 3,
-        name: 'Mean (5-15cm)',
-        map: 'ocd',
-        coverageId: 'ocd_5-15cm_mean',
-        outputSocket: numericDataSocket
-    },
-    {
-        SCOId: 3,
-        name: 'Q0.05 (5-15cm)',
-        map: 'ocd',
-        coverageId: 'ocd_5-15cm_Q0.05',
-        outputSocket: numericDataSocket
-    },
-    {
-        SCOId: 3,
-        name: 'Q0.5 (5-15cm)',
-        map: 'ocd',
-        coverageId: 'ocd_5-15cm_Q0.5',
-        outputSocket: numericDataSocket
-    },
-    {
-        SCOId: 3,
-        name: 'Q0.95 (5-15cm)',
-        map: 'ocd',
-        coverageId: 'ocd_5-15cm_Q0.95',
-        outputSocket: numericDataSocket
-    },
-    {
-        SCOId: 3,
-        name: 'Uncertainty (5-15cm)',
-        map: 'ocd',
-        coverageId: 'ocd_5-15cm_uncertainty',
-        outputSocket: numericDataSocket
-    },
-    {
-        SCOId: 3,
-        name: 'Mean (15-30cm)',
-        map: 'ocd',
-        coverageId: 'ocd_15-30cm_mean',
-        outputSocket: numericDataSocket
-    },
-    {
-        SCOId: 3,
-        name: 'Q0.05 (15-30cm)',
-        map: 'ocd',
-        coverageId: 'ocd_15-30cm_Q0.05',
-        outputSocket: numericDataSocket
-    },
-    {
-        SCOId: 3,
-        name: 'Q0.5 (15-30cm)',
-        map: 'ocd',
-        coverageId: 'ocd_15-30cm_Q0.5',
-        outputSocket: numericDataSocket
-    },
-    {
-        SCOId: 3,
-        name: 'Q0.95 (15-30cm)',
-        map: 'ocd',
-        coverageId: 'ocd_15-30cm_Q0.95',
-        outputSocket: numericDataSocket
-    },
-    {
-        SCOId: 3,
-        name: 'Uncertainty (15-30cm)',
-        map: 'ocd',
-        coverageId: 'ocd_15-30cm_uncertainty',
-        outputSocket: numericDataSocket
-    },
-    {
-        SCOId: 3,
-        name: 'Mean (30-60cm)',
-        map: 'ocd',
-        coverageId: 'ocd_30-60cm_mean',
-        outputSocket: numericDataSocket
-    },
-    {
-        SCOId: 3,
-        name: 'Q0.05 (30-60cm)',
-        map: 'ocd',
-        coverageId: 'ocd_30-60cm_Q0.05',
-        outputSocket: numericDataSocket
-    },
-    {
-        SCOId: 3,
-        name: 'Q0.5 (30-60cm)',
-        map: 'ocd',
-        coverageId: 'ocd_30-60cm_Q0.5',
-        outputSocket: numericDataSocket
-    },
-    {
-        SCOId: 3,
-        name: 'Q0.95 (30-60cm)',
-        map: 'ocd',
-        coverageId: 'ocd_30-60cm_Q0.95',
-        outputSocket: numericDataSocket
-    },
-    {
-        SCOId: 3,
-        name: 'Uncertainty (30-60cm)',
-        map: 'ocd',
-        coverageId: 'ocd_30-60cm_uncertainty',
-        outputSocket: numericDataSocket
-    },
-    {
-        SCOId: 3,
-        name: 'Mean (60-100cm)',
-        map: 'ocd',
-        coverageId: 'ocd_60-100cm_mean',
-        outputSocket: numericDataSocket
-    },
-    {
-        SCOId: 3,
-        name: 'Q0.05 (60-100cm)',
-        map: 'ocd',
-        coverageId: 'ocd_60-100cm_Q0.05',
-        outputSocket: numericDataSocket
-    },
-    {
-        SCOId: 3,
-        name: 'Q0.5 (60-100cm)',
-        map: 'ocd',
-        coverageId: 'ocd_60-100cm_Q0.5',
-        outputSocket: numericDataSocket
-    },
-    {
-        SCOId: 3,
-        name: 'Q0.95 (60-100cm)',
-        map: 'ocd',
-        coverageId: 'ocd_60-100cm_Q0.95',
-        outputSocket: numericDataSocket
-    },
-    {
-        SCOId: 3,
-        name: 'Uncertainty (60-100cm)',
-        map: 'ocd',
-        coverageId: 'ocd_60-100cm_uncertainty',
-        outputSocket: numericDataSocket
-    },
-    {
-        SCOId: 3,
-        name: 'Mean (100-200cm)',
-        map: 'ocd',
-        coverageId: 'ocd_100-200cm_mean',
-        outputSocket: numericDataSocket
-    },
-    {
-        SCOId: 3,
-        name: 'Q0.05 (100-200cm)',
-        map: 'ocd',
-        coverageId: 'ocd_100-200cm_Q0.05',
-        outputSocket: numericDataSocket
-    },
-    {
-        SCOId: 3,
-        name: 'Q0.5 (100-200cm)',
-        map: 'ocd',
-        coverageId: 'ocd_100-200cm_Q0.5',
-        outputSocket: numericDataSocket
-    },
-    {
-        SCOId: 3,
-        name: 'Q0.95 (100-200cm)',
-        map: 'ocd',
-        coverageId: 'ocd_100-200cm_Q0.95',
-        outputSocket: numericDataSocket
-    },
-    {
-        SCOId: 3,
-        name: 'Uncertainty (100-200cm)',
-        map: 'ocd',
-        coverageId: 'ocd_100-200cm_uncertainty',
-        outputSocket: numericDataSocket
-    },
-    {
-        SCOId: 4,
-        name: 'Mean (<5cm)',
-        map: 'soc',
-        coverageId: 'soc_0-5cm_mean',
-        outputSocket: numericDataSocket
-    },
-    {
-        SCOId: 4,
-        name: 'Q0.05 (<5cm)',
-        map: 'soc',
-        coverageId: 'soc_0-5cm_Q0.05',
-        outputSocket: numericDataSocket
-    },
-    {
-        SCOId: 4,
-        name: 'Q0.5 (<5cm)',
-        map: 'soc',
-        coverageId: 'soc_0-5cm_Q0.5',
-        outputSocket: numericDataSocket
-    },
-    {
-        SCOId: 4,
-        name: 'Q0.95 (<5cm)',
-        map: 'soc',
-        coverageId: 'soc_0-5cm_Q0.95',
-        outputSocket: numericDataSocket
-    },
-    {
-        SCOId: 4,
-        name: 'Uncertainty (<5cm)',
-        map: 'soc',
-        coverageId: 'soc_0-5cm_uncertainty',
-        outputSocket: numericDataSocket
-    },
-    {
-        SCOId: 4,
-        name: 'Mean (5-15cm)',
-        map: 'soc',
-        coverageId: 'soc_5-15cm_mean',
-        outputSocket: numericDataSocket
-    },
-    {
-        SCOId: 4,
-        name: 'Q0.05 (5-15cm)',
-        map: 'soc',
-        coverageId: 'soc_5-15cm_Q0.05',
-        outputSocket: numericDataSocket
-    },
-    {
-        SCOId: 4,
-        name: 'Q0.5 (5-15cm)',
-        map: 'soc',
-        coverageId: 'soc_5-15cm_Q0.5',
-        outputSocket: numericDataSocket
-    },
-    {
-        SCOId: 4,
-        name: 'Q0.95 (5-15cm)',
-        map: 'soc',
-        coverageId: 'soc_5-15cm_Q0.95',
-        outputSocket: numericDataSocket
-    },
-    {
-        SCOId: 4,
-        name: 'Uncertainty (5-15cm)',
-        map: 'soc',
-        coverageId: 'soc_5-15cm_uncertainty',
-        outputSocket: numericDataSocket
-    },
-    {
-        SCOId: 4,
-        name: 'Mean (15-30cm)',
-        map: 'soc',
-        coverageId: 'soc_15-30cm_mean',
-        outputSocket: numericDataSocket
-    },
-    {
-        SCOId: 4,
-        name: 'Q0.05 (15-30cm)',
-        map: 'soc',
-        coverageId: 'soc_15-30cm_Q0.05',
-        outputSocket: numericDataSocket
-    },
-    {
-        SCOId: 4,
-        name: 'Q0.5 (15-30cm)',
-        map: 'soc',
-        coverageId: 'soc_15-30cm_Q0.5',
-        outputSocket: numericDataSocket
-    },
-    {
-        SCOId: 4,
-        name: 'Q0.95 (15-30cm)',
-        map: 'soc',
-        coverageId: 'soc_15-30cm_Q0.95',
-        outputSocket: numericDataSocket
-    },
-    {
-        SCOId: 4,
-        name: 'Uncertainty (15-30cm)',
-        map: 'soc',
-        coverageId: 'soc_15-30cm_uncertainty',
-        outputSocket: numericDataSocket
-    },
-    {
-        SCOId: 4,
-        name: 'Mean (30-60cm)',
-        map: 'soc',
-        coverageId: 'soc_30-60cm_mean',
-        outputSocket: numericDataSocket
-    },
-    {
-        SCOId: 4,
-        name: 'Q0.05 (30-60cm)',
-        map: 'soc',
-        coverageId: 'soc_30-60cm_Q0.05',
-        outputSocket: numericDataSocket
-    },
-    {
-        SCOId: 4,
-        name: 'Q0.5 (30-60cm)',
-        map: 'soc',
-        coverageId: 'soc_30-60cm_Q0.5',
-        outputSocket: numericDataSocket
-    },
-    {
-        SCOId: 4,
-        name: 'Q0.95 (30-60cm)',
-        map: 'soc',
-        coverageId: 'soc_30-60cm_Q0.95',
-        outputSocket: numericDataSocket
-    },
-    {
-        SCOId: 4,
-        name: 'Uncertainty (30-60cm)',
-        map: 'soc',
-        coverageId: 'soc_30-60cm_uncertainty',
-        outputSocket: numericDataSocket
-    },
-    {
-        SCOId: 4,
-        name: 'Mean (60-100cm)',
-        map: 'soc',
-        coverageId: 'soc_60-100cm_mean',
-        outputSocket: numericDataSocket
-    },
-    {
-        SCOId: 4,
-        name: 'Q0.05 (60-100cm)',
-        map: 'soc',
-        coverageId: 'soc_60-100cm_Q0.05',
-        outputSocket: numericDataSocket
-    },
-    {
-        SCOId: 4,
-        name: 'Q0.5 (60-100cm)',
-        map: 'soc',
-        coverageId: 'soc_60-100cm_Q0.5',
-        outputSocket: numericDataSocket
-    },
-    {
-        SCOId: 4,
-        name: 'Q0.95 (60-100cm)',
-        map: 'soc',
-        coverageId: 'soc_60-100cm_Q0.95',
-        outputSocket: numericDataSocket
-    },
-    {
-        SCOId: 4,
-        name: 'Uncertainty (60-100cm)',
-        map: 'soc',
-        coverageId: 'soc_60-100cm_uncertainty',
-        outputSocket: numericDataSocket
-    },
-    {
-        SCOId: 4,
-        name: 'Mean (100-200cm)',
-        map: 'soc',
-        coverageId: 'soc_100-200cm_mean',
-        outputSocket: numericDataSocket
-    },
-    {
-        SCOId: 4,
-        name: 'Q0.05 (100-200cm)',
-        map: 'soc',
-        coverageId: 'soc_100-200cm_Q0.05',
-        outputSocket: numericDataSocket
-    },
-    {
-        SCOId: 4,
-        name: 'Q0.5 (100-200cm)',
-        map: 'soc',
-        coverageId: 'soc_100-200cm_Q0.5',
-        outputSocket: numericDataSocket
-    },
-    {
-        SCOId: 4,
-        name: 'Q0.95 (100-200cm)',
-        map: 'soc',
-        coverageId: 'soc_100-200cm_Q0.95',
-        outputSocket: numericDataSocket
-    },
-    {
-        SCOId: 4,
-        name: 'Uncertainty (100-200cm)',
-        map: 'soc',
-        coverageId: 'soc_100-200cm_uncertainty',
-        outputSocket: numericDataSocket
     }
+
 ]
 
+const ranges = [0, 5, 15, 30, 60, 100, 200]
+const maps = ['ocd', 'soc', 'bdod', 'cec', 'cfvo', 'clay', 'nitrogen', 'phh2o', 'sand', 'silt', 'wv1500', 'wv0033', 'wv0010']
+
+for(let i = 0; i < ranges.length - 1; i++) {
+    const range = `${ranges[i]}-${ranges[i+1]}cm`
+    maps.forEach((map, x) => {
+        SoilGridOptions.push({
+            SCOId: 3+x,
+            name: `Mean (${i === 0 ? '<5cm' : range})`,
+            map,
+            coverageId: `${map}_${range}_mean`,
+            outputSocket: numericDataSocket
+        })
+        SoilGridOptions.push({
+            SCOId: 3+x,
+            name: `Q0.05 (${i === 0 ? '<5cm' : range})`,
+            map,
+            coverageId: `${map}_${range}_Q0.05`,
+            outputSocket: numericDataSocket
+        })
+        SoilGridOptions.push({
+            SCOId: 3+x,
+            name: `Q0.5 (${i === 0 ? '<5cm' : range})`,
+            map,
+            coverageId: `${map}_${range}_Q0.5`,
+            outputSocket: numericDataSocket
+        })
+        SoilGridOptions.push({
+            SCOId: 3+x,
+            name: `Q0.95 (${i === 0 ? '<5cm' : range})`,
+            map,
+            coverageId: `${map}_${range}_Q0.95`,
+            outputSocket: numericDataSocket
+        })
+        SoilGridOptions.push({
+            SCOId: 3+x,
+            name: `Uncertainty (${i === 0 ? '<5cm' : range})`,
+            map,
+            coverageId: `${map}_${range}_uncertainty`,
+            outputSocket: numericDataSocket
+        })
+    })
+}
+
+// Adding entry for each WRB classifcation
 ERBSoilTypes.forEach((soilType, index) => {
     SoilGridOptions.push({
         SCOId: 0,
