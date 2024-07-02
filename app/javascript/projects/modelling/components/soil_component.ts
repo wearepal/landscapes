@@ -3,87 +3,13 @@ import { NodeData, WorkerInputs, WorkerOutputs } from 'rete/types/core/data'
 import { Input, Node, Output, Socket } from 'rete'
 import { ProjectProperties } from "."
 import { Extent } from "ol/extent"
-import { booleanDataSocket, categoricalDataSocket, numericDataSocket } from "../socket_types"
 import { createXYZ } from "ol/tilegrid"
 import { retrieveISRICData } from "../model_retrieval"
 import { CategoricalTileGrid, NumericTileGrid } from "../tile_grid"
 import { TypedArray } from "d3"
 import { maskFromExtentAndShape } from "../bounding_box"
-import { SelectControl, SelectControlOptions } from "../controls/select"
-
-const ERBSoilTypes = [
-    "Acrisols",
-    "Albeluvisols",
-    "Alisols",
-    "Andosols",
-    "Arenosols",
-    "Calcisols",
-    "Cambisols",
-    "Chernozems",
-    "Cryosols",
-    "Durisols",
-    "Ferralsols",
-    "Fluvisols",
-    "Gleysols",
-    "Gypsisols",
-    "Histosols",
-    "Kastanozems",
-    "Leptosols",
-    "Lixisols",
-    "Luvisols",
-    "Nitisols",
-    "Phaeozems",
-    "Planosols",
-    "Plinthosols",
-    "Podzols",
-    "Regosols",
-    "Solonchaks",
-    "Solonetz",
-    "Stagnosols",
-    "Umbrisols",
-    "Vertisols"
-]
-
-interface SoilGridOptions {
-    SCOId : number
-    name : string
-    map: string
-    coverageId: string
-    outputSocket: Socket
-}
-
-const SoilGrids : SelectControlOptions[] = [
-    { id: 0, name: 'WRB (most probable)'},
-    { id: 1, name: 'WRB (probability)' }
-]
-
-const SoilGridOptions : SoilGridOptions[] = [
-    {
-        SCOId: 0,
-        name: 'All',
-        map: 'wrb',
-        coverageId: 'MostProbable',
-        outputSocket: categoricalDataSocket
-    }
-]
-
-ERBSoilTypes.forEach((soilType, index) => {
-    SoilGridOptions.push({
-        SCOId: 0,
-        name: soilType,
-        map: 'wrb',
-        coverageId: 'MostProbable',
-        outputSocket: booleanDataSocket
-    })
-    SoilGridOptions.push({
-        SCOId: 1,
-        name: soilType,
-        map: 'wrb',
-        coverageId: soilType,
-        outputSocket: numericDataSocket
-    
-    })
-})
+import { SelectControl } from "../controls/select"
+import { SoilGrids, SoilGridOptions, ERBSoilTypes } from "../isric_soil_filters"
 
 async function renderCategoricalData(extent: Extent, zoom: number, maskMode: boolean, maskLayer: string, maskCQL: string) {
 
@@ -144,7 +70,7 @@ async function renderNumericData(extent: Extent, zoom: number, maskMode: boolean
         let y = (outputTileRange.minY + Math.floor(i / image.getWidth()))
 
         const value = rasters[0][i]
-        result.set(x, y, mask.get(x, y) ? (value === 255 ? NaN : value) : NaN)
+        result.set(x, y, mask.get(x, y) ? ((value === 255 || value < 0 || value === 32767) ? NaN : value) : NaN)
 
     }
 
@@ -187,7 +113,6 @@ export class SoilComponent extends BaseComponent {
     updateOutputs(node: Node) {
 
         const soilgridId = node.data.soilgridId || 0
-        // TODO - add outputs based on soilgridId
         const soilGridOpts = SoilGridOptions.filter(opt => opt.SCOId == soilgridId)
         soilGridOpts.forEach(
             opt => node.addOutput(new Output(`${opt.name}-${opt.map}`, opt.name, opt.outputSocket))
@@ -249,8 +174,6 @@ export class SoilComponent extends BaseComponent {
         })
 
         await Promise.all(promises)
-
-        //outputs["WRB"] = await renderCategoricalData(this.projectExtent, this.projectZoom, this.maskMode, this.maskLayer, this.maskCQL)
 
     }
 
