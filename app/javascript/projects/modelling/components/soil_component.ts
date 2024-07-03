@@ -45,7 +45,7 @@ async function renderCategoricalData(extent: Extent, zoom: number, maskMode: boo
     return result
 }
 
-async function renderNumericData(extent: Extent, zoom: number, maskMode: boolean, maskLayer: string, maskCQL: string, map: string, coverageId: string) {
+async function renderNumericData(extent: Extent, zoom: number, maskMode: boolean, maskLayer: string, maskCQL: string, map: string, coverageId: string, factor: number = 1.0) {
 
     const tileGrid = createXYZ()
     const mask = await maskFromExtentAndShape(extent, zoom, maskLayer, maskCQL, maskMode)
@@ -70,7 +70,7 @@ async function renderNumericData(extent: Extent, zoom: number, maskMode: boolean
         let y = (outputTileRange.minY + Math.floor(i / image.getWidth()))
 
         const value = rasters[0][i]
-        result.set(x, y, mask.get(x, y) ? ((value === 255 || value < 0 || value === 32767) ? NaN : value) : NaN)
+        result.set(x, y, mask.get(x, y) ? ((value === 255 || value < 0 || value === 32767) ? NaN : value / factor) : NaN)
 
     }
 
@@ -168,7 +168,7 @@ export class SoilComponent extends BaseComponent {
                 
             }else{
 
-                outputs[`${opt.name}-${opt.map}`] = await renderNumericData(this.projectExtent, this.projectZoom, this.maskMode, this.maskLayer, this.maskCQL, opt.map, opt.coverageId)
+                outputs[`${opt.name}-${opt.map}`] = await renderNumericData(this.projectExtent, this.projectZoom, this.maskMode, this.maskLayer, this.maskCQL, opt.map, opt.coverageId, opt.factor)
 
             }
         })
