@@ -9,6 +9,7 @@ interface SoilGridOptions {
     map: string
     coverageId: string
     outputSocket: Socket
+    factor?: number
 }
 
 // Soil types from the World Reference Base for Soil Resources, used for labelling cat data
@@ -79,21 +80,24 @@ export const SoilGridOptions : SoilGridOptions[] = [
         name: 'Mean (<30cm)',
         map: 'ocs',
         coverageId: 'ocs_0-30cm_mean',
-        outputSocket: numericDataSocket
+        outputSocket: numericDataSocket,
+        factor: 10
     },
     {
         SCOId: 2,
         name: 'Q0.05 (<30cm)',
         map: 'ocs',
         coverageId: 'ocs_0-30cm_Q0.05',
-        outputSocket: numericDataSocket
+        outputSocket: numericDataSocket,
+        factor: 10
     },
     {
         SCOId: 2,
         name: 'Q0.5 (<30cm)',
         map: 'ocs',
         coverageId: 'ocs_0-30cm_Q0.5',
-        outputSocket: numericDataSocket
+        outputSocket: numericDataSocket,
+        factor: 10
     
     },
     {
@@ -101,7 +105,8 @@ export const SoilGridOptions : SoilGridOptions[] = [
         name: 'Q0.95 (<30cm)',
         map: 'ocs',
         coverageId: 'ocs_0-30cm_Q0.95',
-        outputSocket: numericDataSocket
+        outputSocket: numericDataSocket,
+        factor: 10
     
     },
     {
@@ -109,13 +114,15 @@ export const SoilGridOptions : SoilGridOptions[] = [
         name: 'Uncertainty (<30cm)',
         map: 'ocs',
         coverageId: 'ocs_0-30cm_uncertainty',
-        outputSocket: numericDataSocket
+        outputSocket: numericDataSocket,
+        factor: 10
     }
 
 ]
 
 const ranges = [0, 5, 15, 30, 60, 100, 200]
 const maps = ['ocd', 'soc', 'bdod', 'cec', 'cfvo', 'clay', 'nitrogen', 'phh2o', 'sand', 'silt', 'wv1500', 'wv0033', 'wv0010']
+const factors = [10, 10, 100, 10, 10, 10, 100, 10, 10, 10, 10, 10, 10]
 
 for(let i = 0; i < ranges.length - 1; i++) {
     const range = `${ranges[i]}-${ranges[i+1]}cm`
@@ -125,35 +132,40 @@ for(let i = 0; i < ranges.length - 1; i++) {
             name: `Mean (${i === 0 ? '<5cm' : range})`,
             map,
             coverageId: `${map}_${range}_mean`,
-            outputSocket: numericDataSocket
+            outputSocket: numericDataSocket,
+            factor: factors[x]
         })
         SoilGridOptions.push({
             SCOId: 3+x,
             name: `Q0.05 (${i === 0 ? '<5cm' : range})`,
             map,
             coverageId: `${map}_${range}_Q0.05`,
-            outputSocket: numericDataSocket
+            outputSocket: numericDataSocket,
+            factor: factors[x]
         })
         SoilGridOptions.push({
             SCOId: 3+x,
             name: `Q0.5 (${i === 0 ? '<5cm' : range})`,
             map,
             coverageId: `${map}_${range}_Q0.5`,
-            outputSocket: numericDataSocket
+            outputSocket: numericDataSocket,
+            factor: factors[x]
         })
         SoilGridOptions.push({
             SCOId: 3+x,
             name: `Q0.95 (${i === 0 ? '<5cm' : range})`,
             map,
             coverageId: `${map}_${range}_Q0.95`,
-            outputSocket: numericDataSocket
+            outputSocket: numericDataSocket,
+            factor: factors[x]
         })
         SoilGridOptions.push({
             SCOId: 3+x,
             name: `Uncertainty (${i === 0 ? '<5cm' : range})`,
             map,
             coverageId: `${map}_${range}_uncertainty`,
-            outputSocket: numericDataSocket
+            outputSocket: numericDataSocket,
+            factor: factors[x]
         })
     })
 }
@@ -165,14 +177,16 @@ ERBSoilTypes.forEach((soilType, index) => {
         name: soilType,
         map: 'wrb',
         coverageId: 'MostProbable',
-        outputSocket: booleanDataSocket
+        outputSocket: booleanDataSocket,
+        factor: 1
     })
     SoilGridOptions.push({
         SCOId: 1,
         name: soilType,
         map: 'wrb',
         coverageId: soilType,
-        outputSocket: numericDataSocket
+        outputSocket: numericDataSocket,
+        factor: 1
     
     })
 })
