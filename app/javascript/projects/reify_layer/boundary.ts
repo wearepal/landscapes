@@ -29,8 +29,9 @@ const getSource = memoize((id: string) => {
 const getStyle = (layer: BoundaryLayer, zoom: number | undefined) => (
         (feature) => {
             const properties = feature.getProperties()
-            const col = boundaryColourMap.get(properties.geometry.ol_uid) || [Math.random() * 255, Math.random() * 255, Math.random() * 255, 1]
-            boundaryColourMap.set(properties.geometry.ol_uid, col)
+            const id = properties.geometry?.ol_uid ?? properties.Admin_Unit_ID
+            const col = boundaryColourMap.get(id) || [Math.random() * 255, Math.random() * 255, Math.random() * 255, 1]
+            boundaryColourMap.set(id, col)
             return new Style({
                 fill : new Fill({
                     color: `rgba(${col[0]}, ${col[1]}, ${col[2]}, ${col[3]})`
