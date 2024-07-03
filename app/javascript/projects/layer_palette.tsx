@@ -234,8 +234,12 @@ export const LayerPalette = ({ addLayer, hide, dbModels, getTeamDatasets, teamNa
                 identifier: "shapefiles:boundary_line_ceremonial_counties"
               },
               {
-                name: "Westminster Constituencies",
+                name: "Westminster Constituencies (2010-2024)",
                 identifier: "shapefiles:westminster_const "
+              },
+              {
+                name: "Westminster Constituencies (2024 onwards)",
+                identifier: "shapefiles:bdline_gb__westminster_const"
               },
               {
                 name: "Polling Districts",
