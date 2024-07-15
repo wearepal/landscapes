@@ -8,6 +8,7 @@ import { retrieveModelDataWCS } from "../model_retrieval"
 import { TypedArray } from "d3"
 import { Extent } from "ol/extent"
 import { maskFromExtentAndShape } from "../bounding_box"
+import { ProjectProperties } from "."
 
 interface Habitat {
     agg: number
@@ -74,16 +75,16 @@ export class MlTreeHedgeComponent extends BaseComponent {
     maskLayer: string
     maskCQL: string
 
-    constructor(projectExtent: Extent, projectZoom: number, maskMode: boolean, maskLayer: string, maskCQL: string) {
+    constructor(projectProps: ProjectProperties) {
         super("ML Model Output")
         this.category = "Inputs"
         this.categoricalData = null
         this.outputCache = new Map()
-        this.projectExtent = projectExtent
-        this.zoom = projectZoom
-        this.maskMode = maskMode
-        this.maskLayer = maskLayer
-        this.maskCQL = maskCQL
+        this.projectExtent = projectProps.extent
+        this.zoom = projectProps.zoom
+        this.maskMode = projectProps.mask
+        this.maskLayer = projectProps.maskLayer
+        this.maskCQL = projectProps.maskCQL
     }
 
     async builder(node: Node) {

@@ -9,6 +9,7 @@ import { Extent } from "ol/extent"
 import { bboxFromExtent, maskFromExtentAndShape } from "../bounding_box"
 import { TileRange } from "ol"
 import TileGrid from "ol/tilegrid/TileGrid"
+import { ProjectProperties } from "."
 
 interface CropSpecies {
   LUCODE: string
@@ -239,22 +240,21 @@ export class CROMEComponent extends BaseComponent {
   maskLayer: string
   maskCQL: string
 
-  constructor(projectExtent: Extent, projectZoom: number, maskMode: boolean, maskLayer: string, maskCQL: string) {
-    super("Crop Map of England CROME")
+  constructor(projectProps: ProjectProperties) {
+    super("CROME 2021")
     this.category = "Inputs"
     this.categoricalData = null
     this.outputCache = new Map()
-    this.projectExtent = projectExtent
-    this.projectZoom = projectZoom
-    this.maskMode = maskMode
-    this.maskLayer = maskLayer
-    this.maskCQL = maskCQL
+    this.projectExtent = projectProps.extent
+    this.projectZoom = projectProps.zoom
+    this.maskMode = projectProps.mask
+    this.maskLayer = projectProps.maskLayer
+    this.maskCQL = projectProps.maskCQL
   }
 
   async builder(node: Node) {
 
     node.meta.toolTip = "The Crop Map of England (CROME) is a polygon vector dataset mainly containing the crop types of England. The dataset contains approximately 32 million hexagonal cells classifying England into over 15 main crop types, grassland, and non-agricultural land covers, such as Woodland, Water Bodies, Fallow Land and other non-agricultural land covers."
-
     node.meta.toolTipLink = "https://www.data.gov.uk/dataset/aaedb588-fc86-498f-acab-5fa1b261fdd5/crop-map-of-england-crome-2021"
 
     const cropcats = new Set<string>()

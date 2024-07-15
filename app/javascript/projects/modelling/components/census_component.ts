@@ -10,6 +10,7 @@ import { Feature } from "ol"
 import { Geometry } from "ol/geom"
 import { Extent } from "ol/extent"
 import { bboxFromExtent, maskFromExtentAndShape } from "../bounding_box"
+import { ProjectProperties } from "."
 
 interface CensusDataset {
     code: string
@@ -761,21 +762,21 @@ export class CensusComponent extends BaseComponent {
     maskLayer: string
     maskCQL: string
 
-    constructor(projectExtent: Extent, projectZoom: number, maskMode: boolean, maskLayer: string, maskCQL: string) {
+    constructor(projectProps: ProjectProperties) {
         super("UK Census 2021")
         this.category = "Inputs"
         this.cachedData = undefined
         this.cachedOutput = new Map()
-        this.projectExtent = projectExtent
-        this.projectZoom = projectZoom
-        this.maskMode = maskMode
-        this.maskLayer = maskLayer
-        this.maskCQL = maskCQL
+        this.projectExtent = projectProps.extent
+        this.projectZoom = projectProps.zoom
+        this.maskMode = projectProps.mask
+        this.maskLayer = projectProps.maskLayer
+        this.maskCQL = projectProps.maskCQL
     }
 
     async builder(node: Node) {
 
-        node.meta.toolTip = "Experimental Feature - Census data for highest education per Output Area. Returns percentage value."
+        node.meta.toolTip = "Using data from the 2021 UK Census, this component generates a numeric dataset based on the selected census dataset and option"
 
         node.addControl(
             new SelectControl(

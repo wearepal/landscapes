@@ -7,6 +7,7 @@ import { booleanDataSocket, numericDataSocket } from '../socket_types'
 import { workerPool } from '../../../modelling/workerPool'
 import { currentExtent, maskFromExtentAndShape } from '../bounding_box'
 import { Extent } from 'ol/extent'
+import { ProjectProperties } from '.'
 
 export class DistanceMapComponent extends BaseComponent {
     cache: Map<BooleanTileGrid, NumericTileGrid>
@@ -16,15 +17,15 @@ export class DistanceMapComponent extends BaseComponent {
     projectExtent: Extent
     projectZoom: number
 
-    constructor(projectExtent: Extent , projectZoom: number, maskMode: boolean, maskLayer: string, maskCQL: string) {
+    constructor(projectProps: ProjectProperties) {
         super('Distance map')
         this.category = "Calculations"
         this.cache = new Map()
-        this.maskMode = maskMode
-        this.maskLayer = maskLayer
-        this.maskCQL = maskCQL
-        this.projectExtent = projectExtent
-        this.projectZoom = projectZoom
+        this.maskMode = projectProps.mask
+        this.maskLayer = projectProps.maskLayer
+        this.maskCQL = projectProps.maskCQL
+        this.projectExtent = projectProps.extent
+        this.projectZoom = projectProps.zoom
     }
 
     async builder(node: Node) {

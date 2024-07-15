@@ -10,6 +10,7 @@ import { createXYZ } from "ol/tilegrid"
 import * as proj4 from "proj4"
 import { Point, Polygon } from "ol/geom"
 import { maskFromExtentAndShape } from "../bounding_box"
+import { ProjectProperties } from "."
 
 
 
@@ -304,14 +305,14 @@ export class OSMLandUseComponent extends BaseComponent {
     maskLayer: string
     maskCQL: string
 
-    constructor(projectExtent: Extent, projectZoom: number, maskMode: boolean, maskLayer: string, maskCQL: string) {
-        super("OSM land use layer")
-        this.projectExtent = projectExtent
-        this.projectZoom = projectZoom
+    constructor(projectProps: ProjectProperties) {
+        super("OpenStreetMap Land Use")
         this.category = "Inputs"
-        this.maskMode = maskMode
-        this.maskLayer = maskLayer
-        this.maskCQL = maskCQL
+        this.projectExtent = projectProps.extent
+        this.projectZoom = projectProps.zoom
+        this.maskMode = projectProps.mask
+        this.maskLayer = projectProps.maskLayer
+        this.maskCQL = projectProps.maskCQL
 
     }
 

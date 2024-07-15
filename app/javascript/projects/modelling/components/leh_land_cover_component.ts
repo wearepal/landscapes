@@ -8,6 +8,7 @@ import { bboxFromExtent, maskFromExtentAndShape } from "../bounding_box";
 import { GeoJSON } from "ol/format";
 import { BooleanTileGrid, CategoricalTileGrid } from "../tile_grid";
 import { find } from "lodash";
+import { ProjectProperties } from ".";
 
 interface Habitat {
     name: string
@@ -193,16 +194,16 @@ export class LehLandCoverComponent extends BaseComponent {
     maskLayer: string
     maskCQL: string
 
-    constructor(projectExtent: Extent, projectZoom: number, maskMode: boolean, maskLayer: string, maskCQL: string) {
+    constructor(projectProps: ProjectProperties) {
         super("Living England Land Cover")
         this.category = "Inputs"
-        this.projectExtent = projectExtent
-        this.projectZoom = projectZoom
+        this.projectExtent = projectProps.extent
+        this.projectZoom = projectProps.zoom
+        this.maskMode = projectProps.mask
+        this.maskLayer = projectProps.maskLayer
+        this.maskCQL = projectProps.maskCQL
         this.categoricalData = null
         this.outputCache = new Map()
-        this.maskMode = maskMode
-        this.maskLayer = maskLayer
-        this.maskCQL = maskCQL
     }
 
   async builder(node: Node) {
