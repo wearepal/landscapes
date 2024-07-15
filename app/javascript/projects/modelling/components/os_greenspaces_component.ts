@@ -7,6 +7,7 @@ import { createXYZ } from "ol/tilegrid"
 import { BooleanTileGrid } from "../tile_grid"
 import { Extent } from "ol/extent"
 import { bboxFromExtent, maskFromExtentAndShape } from "../bounding_box"
+import { ProjectProperties } from "."
 
 interface GS_Source {
     source: string
@@ -56,15 +57,15 @@ export class OSGreenSpacesComponent extends BaseComponent {
     maskLayer: string
     maskCQL: string
 
-    constructor(currentExtent: Extent, projectZoom: number, maskMode: boolean, maskLayer: string, maskCQL: string) {
+    constructor(projectProps: ProjectProperties) {
         super('OS Green Spaces')
         this.category = 'Inputs'
         this.cachedData = new Map()
-        this.projectExtent = currentExtent
-        this.projectZoom = projectZoom
-        this.maskMode = maskMode
-        this.maskLayer = maskLayer
-        this.maskCQL = maskCQL
+        this.projectExtent = projectProps.extent
+        this.projectZoom = projectProps.zoom
+        this.maskMode = projectProps.mask
+        this.maskLayer = projectProps.maskLayer
+        this.maskCQL = projectProps.maskCQL
     }
 
     async builder(node: Node) {

@@ -13,6 +13,7 @@ import { Point } from 'ol/geom'
 import { EPSG3857, EPSG4326, WKTfromExtent, maskFromExtentAndShape } from '../bounding_box'
 import * as proj4 from 'proj4'
 import { speciesFamilyList, speciesList } from '../nbnatlas_species'
+import { ProjectProperties } from '.'
 
 const cache = new Map<number, any>()
 
@@ -76,14 +77,14 @@ export class BiodiversityComponent extends BaseComponent {
     maskLayer: string
     maskCQL: string
 
-    constructor(projectExtent: Extent, projectZoom: number, maskMode: boolean, maskLayer: string, maskCQL: string) {
+    constructor(projectProps: ProjectProperties) {
         super('Recorded species')
         this.category = 'Inputs'
-        this.projectExtent = projectExtent
-        this.projectZoom = projectZoom
-        this.maskMode = maskMode
-        this.maskLayer = maskLayer
-        this.maskCQL = maskCQL
+        this.projectExtent = projectProps.extent
+        this.projectZoom = projectProps.zoom
+        this.maskMode = projectProps.mask
+        this.maskLayer = projectProps.maskLayer
+        this.maskCQL = projectProps.maskCQL
     }
 
     async loadSpeciesFamilyList(node: Node) {

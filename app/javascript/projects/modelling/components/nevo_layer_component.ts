@@ -11,6 +11,7 @@ import { SelectControl } from "../controls/select"
 import { Geometry } from "ol/geom"
 import { Feature } from "ol"
 import { bboxFromExtent, maskFromExtentAndShape } from "../bounding_box"
+import { ProjectProperties } from "."
 
 
 interface LayerProperty {
@@ -2045,14 +2046,14 @@ export class NevoLayerComponent extends BaseComponent {
     maskCQL: string
 
 
-    constructor(projectExtent: Extent, projectZoom: number, maskMode: boolean, maskLayer: string, maskCQL: string) {
-        super("NEVO layer")
+    constructor(projectProps: ProjectProperties) {
+        super("NEVO")
         this.category = "Inputs"
-        this.projectExtent = projectExtent
-        this.projectZoom = projectZoom
-        this.maskMode = maskMode
-        this.maskLayer = maskLayer
-        this.maskCQL = maskCQL
+        this.projectExtent = projectProps.extent
+        this.projectZoom = projectProps.zoom
+        this.maskMode = projectProps.mask
+        this.maskLayer = projectProps.maskLayer
+        this.maskCQL = projectProps.maskCQL
     }
 
     async builder(node: Node) {

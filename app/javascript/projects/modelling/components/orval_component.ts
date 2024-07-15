@@ -11,6 +11,7 @@ import { bboxFromExtent, maskFromExtentAndShape } from "../bounding_box"
 import { GeoJSON } from "ol/format"
 import { Feature } from "ol"
 import { Geometry } from "ol/geom"
+import { ProjectProperties } from "."
 
 
 const FeaturesCache : Feature<Geometry>[] | null = null
@@ -295,15 +296,15 @@ export class ORValComponent extends BaseComponent {
     maskLayer: string
     maskCQL: string
 
-    constructor(projectExtent: Extent, projectZoom: number, maskMode: boolean, maskLayer: string, maskCQL: string) {
+    constructor(projectProps: ProjectProperties) {
         super("ORVal")
         this.category = "Inputs"
-        this.projectExtent = projectExtent
-        this.projectZoom = projectZoom
         this.outputCache = new Map()
-        this.maskMode = maskMode
-        this.maskLayer = maskLayer
-        this.maskCQL = maskCQL
+        this.projectExtent = projectProps.extent
+        this.projectZoom = projectProps.zoom
+        this.maskMode = projectProps.mask
+        this.maskLayer = projectProps.maskLayer
+        this.maskCQL = projectProps.maskCQL
     }
 
     async builder(node: Node) {

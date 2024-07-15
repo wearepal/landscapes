@@ -10,6 +10,7 @@ import { TypedArray } from "d3"
 import { retrieveModelDataWCS } from "../model_retrieval"
 import { Extent } from "ol/extent"
 import { maskFromExtentAndShape } from "../bounding_box"
+import { ProjectProperties } from "."
 
 interface DigitalModel {
     id: number
@@ -44,15 +45,15 @@ export class DigitalModelComponent extends BaseComponent {
     maskLayer: string
     maskCQL: string
 
-    constructor(projectExtent: Extent, projectZoom: number, maskMode: boolean, maskLayer: string, maskCQL: string) {
+    constructor(projectProps: ProjectProperties) {
         super("Digital Model")
         this.category = "Inputs"
-        this.projectExtent = projectExtent
-        this.projectZoom = projectZoom
         this.outputCache = new Map()
-        this.maskMode = maskMode
-        this.maskLayer = maskLayer
-        this.maskCQL = maskCQL
+        this.projectExtent = projectProps.extent
+        this.projectZoom = projectProps.zoom
+        this.maskMode = projectProps.mask
+        this.maskLayer = projectProps.maskLayer
+        this.maskCQL = projectProps.maskCQL
     }
 
     async builder(node: Node) {

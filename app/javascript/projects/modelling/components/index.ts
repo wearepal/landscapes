@@ -57,25 +57,23 @@ export function createDefaultComponents(saveMapLayer: SaveMapLayer, saveModel: S
 
     // Freely available components here.
     const components : BaseComponent[] = [
-      // TODO: Replace extent, mask, zoom, maskLayer, maskCQL with projectProps in all components
-
       // Inputs
-      new UkcehLandCoverComponent(extent, zoom, mask, maskLayer, maskCQL),
-      new LehLandCoverComponent(extent, zoom, mask, maskLayer, maskCQL),
-      new IMDComponent(extent, zoom, mask, maskLayer, maskCQL),
-      new MlTreeHedgeComponent(extent, zoom, mask, maskLayer, maskCQL),
-      new BiodiversityComponent(extent, zoom, mask, maskLayer, maskCQL),
-      new NevoLayerComponent(extent, zoom, mask, maskLayer, maskCQL),
-      new ORValComponent(extent, zoom, mask, maskLayer, maskCQL),
-      new OSMLandUseComponent(extent, zoom, mask, maskLayer, maskCQL),
       new NumericConstantComponent(),
-      new DigitalModelComponent(extent, zoom, mask, maskLayer, maskCQL),
-      new PrecompiledModelComponent(getDatasets, extent, zoom, mask, maskLayer, maskCQL),
-      new CensusComponent(extent, zoom, mask, maskLayer, maskCQL),
-      new OSGreenSpacesComponent(extent, zoom, mask, maskLayer, maskCQL),
-      new CROMEComponent(extent, zoom, mask, maskLayer, maskCQL),
-      new ATIComponent(extent, zoom, mask, maskLayer, maskCQL),
-      new DesignationsComponent(extent, zoom, mask, maskLayer, maskCQL),
+      new UkcehLandCoverComponent(projectProps),
+      new LehLandCoverComponent(projectProps),
+      new IMDComponent(projectProps),
+      new MlTreeHedgeComponent(projectProps),
+      new BiodiversityComponent(projectProps),
+      new NevoLayerComponent(projectProps),
+      new ORValComponent(projectProps),
+      new OSMLandUseComponent(projectProps),
+      new DigitalModelComponent(projectProps),
+      new PrecompiledModelComponent(getDatasets, projectProps),
+      new CensusComponent(projectProps),
+      new OSGreenSpacesComponent(projectProps),
+      new CROMEComponent(projectProps),
+      new ATIComponent(projectProps),
+      new DesignationsComponent(projectProps),
       new SoilComponent(projectProps),
 
       // Outputs
@@ -89,7 +87,7 @@ export function createDefaultComponents(saveMapLayer: SaveMapLayer, saveModel: S
 
       // Calculations
       new AreaComponent(),
-      new DistanceMapComponent(extent, zoom, mask, maskLayer, maskCQL),
+      new DistanceMapComponent(projectProps),
       new ScaleFactorComponent(),
 
       // Charts
@@ -126,6 +124,6 @@ export function createDefaultComponents(saveMapLayer: SaveMapLayer, saveModel: S
       new RescaleComponent(),
 
     ]
-
+    
     return components.concat(restrictedComponents)
 }

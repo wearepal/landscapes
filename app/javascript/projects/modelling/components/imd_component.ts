@@ -9,6 +9,7 @@ import { Feature } from "ol"
 import { Geometry } from "ol/geom"
 import { NumericTileGrid } from "../tile_grid"
 import { createXYZ } from "ol/tilegrid"
+import { ProjectProperties } from "."
 
 interface OutputFormat {
     name: string
@@ -238,14 +239,14 @@ export class IMDComponent extends BaseComponent {
     cachedData: Feature<Geometry>[]
     cachedGrids: Map<string, NumericTileGrid>
 
-    constructor(projectExtent: Extent, projectZoom: number, maskMode: boolean, maskLayer: string, maskCQL: string) {
+    constructor(projectProps : ProjectProperties) {
         super("Indices of Multiple Deprivation")
         this.category = "Inputs"
-        this.projectExtent = projectExtent
-        this.projectZoom = projectZoom
-        this.maskMode = maskMode
-        this.maskLayer = maskLayer
-        this.maskCQL = maskCQL
+        this.projectExtent = projectProps.extent
+        this.projectZoom = projectProps.zoom
+        this.maskMode = projectProps.mask
+        this.maskLayer = projectProps.maskLayer
+        this.maskCQL = projectProps.maskCQL
         this.cachedGrids = new Map()
     }
 

@@ -8,6 +8,7 @@ import { CompiledDatasetRecord, getDataset } from "../../saved_dataset"
 import { Extent } from "ol/extent"
 import { createXYZ } from "ol/tilegrid"
 import { maskFromExtentAndShape } from "../bounding_box"
+import { ProjectProperties } from "."
 
 async function fetchDataset(datasetId: number, teamId: number) {
     return new Promise<{ error: { message: string }; out: { model: BooleanTileGrid | NumericTileGrid | CategoricalTileGrid } }>((resolve) => {
@@ -28,15 +29,15 @@ export class PrecompiledModelComponent extends BaseComponent {
     maskLayer: string
     maskCQL: string
 
-    constructor(getDatasets: getDatasets, projectExtent: Extent, projectZoom: number, maskMode: boolean, maskLayer: string, maskCQL: string) {
+    constructor(getDatasets: getDatasets, projectProps: ProjectProperties) {
         super("Load Dataset")
         this.category = "Inputs"
         this.modelSource = getDatasets
-        this.projectExtent = projectExtent
-        this.projectZoom = projectZoom
-        this.maskMode = maskMode
-        this.maskLayer = maskLayer
-        this.maskCQL = maskCQL
+        this.projectExtent = projectProps.extent
+        this.projectZoom = projectProps.zoom
+        this.maskMode = projectProps.mask
+        this.maskLayer = projectProps.maskLayer
+        this.maskCQL = projectProps.maskCQL
     }
 
     async builder(node: Node) {
