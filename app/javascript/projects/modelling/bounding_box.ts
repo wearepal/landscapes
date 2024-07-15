@@ -80,7 +80,7 @@ export async function maskFromExtentAndShape(extent: Extent, zoom: number, shape
     const id = `${shapeLayer}${shapeId}`
     if(maskMap.has(id)) return maskMap.get(id) as BooleanTileGrid
     else{
-        const cachedMask = await loadMask(id)
+        const cachedMask : BooleanTileGrid | null = !maskMode ? null : await loadMask(id)
         if(cachedMask !== null) {
             maskMap.set(id, cachedMask)
             return cachedMask
