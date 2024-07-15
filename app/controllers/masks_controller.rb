@@ -12,8 +12,12 @@ class MasksController < ApplicationController
 
     def show
         authorize!
-        @mask = Mask.find_by(:name => params[:name])
-        redirect_to @mask.file
+        @mask = Mask.find_by(name: params[:name])
+        if @mask
+          redirect_to @mask.file
+        else
+          render json: { error: 'Mask not found' }, status: :not_found
+        end
     end
 
     def index
