@@ -92,15 +92,4 @@ class ProjectsController < ApplicationController
       redirect_to root_url, alert: 'Project not found'
     end
   end
-
-  private
-
-    def set_team
-      begin
-        @team = Team.find(params[:team_id])
-      rescue ActiveRecord::RecordNotFound => e
-        Rails.logger.error "Team not found: #{e.message}"
-        redirect_to root_url, alert: 'Team not found'
-      end
-    end
 end
