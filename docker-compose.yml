@@ -20,6 +20,7 @@ services:
       - caddy_traefik
       - caddy_astute
       - default
+    restart: always
 
   db:
     image: postgres:14
@@ -27,6 +28,7 @@ services:
       - POSTGRES_HOST_AUTH_METHOD=trust
     volumes:
       - postgres:/var/lib/postgresql/data
+    restart: always
 
   geoserver:
     image: docker.osgeo.org/geoserver:2.21.2
@@ -35,6 +37,7 @@ services:
       - EXTRA_JAVA_OPTS=-Xmx10g
     volumes:
       - geoserver:/opt/geoserver_data
+    restart: always
 
   queue:
     image: redis:7
@@ -62,6 +65,7 @@ services:
       - secret_key_base
     volumes:
       - storage:/app/storage
+    restart: always
 
   worker:
     image: "wearepal/landscapes:${VERSION}"
@@ -75,6 +79,7 @@ services:
       - secret_key_base
     volumes:
       - storage:/app/storage
+    restart: always
 
 configs:
   caddyfile:
