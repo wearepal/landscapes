@@ -20,9 +20,14 @@ class TrainingDataSamplingsController < ApplicationController
   private
 
     def set_labelling_group
-      @labelling_group = LabellingGroup.find params[:labelling_group_id]
-      @region = @labelling_group.region
-      @team = @region.team
-      authorize_for! @team
+      begin
+        @labelling_group = LabellingGroup.find(params[:labelling_group_id])
+        @region = @labelling_group.region
+        @team = @region.team
+        authorize_for! @team
+      rescue ActiveRecord::RecordNotFound => e
+        Rails.logger.error "Labelling group not found: #{e.message}"
+        redirect_to root_url, alert: 'Labelling group not found'
+      end
     end
 end

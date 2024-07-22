@@ -7,23 +7,40 @@ class MembershipsController < ApplicationController
   end
 
   def create
-    user = User.find_by email: params.dig(:membership, :email).try(&:downcase)
-    if user.nil?
-      # TODO: create the user then send them an invitation by email to reset their password
-      render json: { email: ["is not present in the system - please have them sign up first"] }, status: :unprocessable_entity
-    elsif @team.users.include? user
-      render json: { email: ["is already a member of this team"] }, status: :unprocessable_entity
-    else
-      @team.memberships.create! user: user
-      redirect_to team_memberships_url(@team)
+    begin
+      user = User.find_by(email: params.dig(:membership, :email).try(&:downcase))
+      if user.nil?
+        render json: { email: ["is not present in the system - please have them sign up first"] }, status: :unprocessable_entity
+      elsif @team.users.include? user
+        render json: { email: ["is already a member of this team"] }, status: :unprocessable_entity
+      else
+        @team.memberships.create!(user: user)
+        redirect_to team_memberships_url(@team)
+      end
     end
   end
 
   def destroy
-    membership = Membership.find(params[:id])
-    authorize_for! membership.team
-    raise Forbidden if membership.user == current_user
-    membership.destroy
-    redirect_to team_memberships_url(membership.team)
+    begin
+      membership = Membership.find(params[:id])
+      authorize_for! membership.team
+      raise Forbidden if membership.user == current_user
+      membership.destroy
+      redirect_to team_memberships_url(membership.team)
+    rescue ActiveRecord::RecordNotFound => e
+      Rails.logger.error "Membership not found: #{e.message}"
+      redirect_to root_url, alert: 'Membership not found'
+    end
   end
+
+  private
+
+    def set_team
+      begin
+        @team = Team.find(params[:team_id])
+      rescue ActiveRecord::RecordNotFound => e
+        Rails.logger.error "Team not found: #{e.message}"
+        redirect_to root_url, alert: 'Team not found'
+      end
+    end
 end

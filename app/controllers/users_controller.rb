@@ -16,5 +16,8 @@ class UsersController < ApplicationController
     else
       render json: @user.errors, status: :unprocessable_entity
     end
+  rescue ActionController::ParameterMissing => e
+    Rails.logger.error "Required parameter missing: #{e.message}"
+    render json: { error: 'Required parameter missing' }, status: :bad_request
   end
 end

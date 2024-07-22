@@ -3,54 +3,64 @@ class LabellingsController < ApplicationController
   before_action :set_labelling, only: [:edit, :update, :destroy]
   
   def show
-    @labelling = Labelling.find(params[:id])
-    @labelling_group = @labelling.labelling_group
-    authorize!
+    begin
+      @labelling = Labelling.find(params[:id])
+      @labelling_group = @labelling.labelling_group
+      authorize!
 
-    respond_to do |format|
-      format.json do
-        render json: {
-          zoom: @labelling_group.zoom,
-          x: @labelling_group.x,
-          y: @labelling_group.y,
-          width: @labelling_group.width,
-          height: @labelling_group.height,
-          data: Base64.strict_encode64(@labelling.data),
-        }
-      end
-      format.png do
-        colours = @labelling_group.label_schema.labels.select do |label|
-          params.fetch(:labels, []).include? label.index.to_s
-        end.map do |label|
-          [label.index, ChunkyPNG::Color(label.colour)]
-        end.to_h
+      respond_to do |format|
+        format.json do
+          render json: {
+            zoom: @labelling_group.zoom,
+            x: @labelling_group.x,
+            y: @labelling_group.y,
+            width: @labelling_group.width,
+            height: @labelling_group.height,
+            data: Base64.strict_encode64(@labelling.data),
+          }
+        end
+        format.png do
+          colours = @labelling_group.label_schema.labels.select do |label|
+            params.fetch(:labels, []).include? label.index.to_s
+          end.map do |label|
+            [label.index, ChunkyPNG::Color(label.colour)]
+          end.to_h
 
-        # TODO: If Labelling.data had the same pixel ordering as the PNG file format,
-        # then this transpose would be unnecessary and we could render faster
-        bytes = @labelling.data.unpack("C*").each_slice(@labelling_group.height).to_a.transpose.flatten.flat_map do |label_index|
-          colours[label_index] || ChunkyPNG::Color::TRANSPARENT
-        end.pack "L>*"
-        
-        image = ChunkyPNG::Image.from_rgba_stream(@labelling_group.width, @labelling_group.height, bytes)
-        send_data image.to_datastream, type: "image/png", disposition: "inline"
+          # TODO: If Labelling.data had the same pixel ordering as the PNG file format,
+          # then this transpose would be unnecessary and we could render faster
+          bytes = @labelling.data.unpack("C*").each_slice(@labelling_group.height).to_a.transpose.flatten.flat_map do |label_index|
+            colours[label_index] || ChunkyPNG::Color::TRANSPARENT
+          end.pack "L>*"
+
+          image = ChunkyPNG::Image.from_rgba_stream(@labelling_group.width, @labelling_group.height, bytes)
+          send_data image.to_datastream, type: "image/png", disposition: "inline"
+        end
       end
+    rescue ActiveRecord::RecordNotFound => e
+      Rails.logger.error "Labelling not found: #{e.message}"
+      redirect_to root_url, alert: 'Labelling not found'
     end
   end
 
   def create
-    @labelling_group = LabellingGroup.find(params[:labelling_group_id])
-    authorize_for! @labelling_group.region.team
-    @labelling = @labelling_group.labellings.new(params.require(:labelling).permit(:map_tile_layer_id))
-    if params[:labelling].has_key? :data
-      @labelling.data = Base64.decode64(params[:labelling][:data])
-    end
-    if @labelling.save
-      respond_to do |format|
-        format.html { redirect_to @labelling_group }
-        format.json { head :no_content }
+    begin
+      @labelling_group = LabellingGroup.find(params[:labelling_group_id])
+      authorize_for! @labelling_group.region.team
+      @labelling = @labelling_group.labellings.new(params.require(:labelling).permit(:map_tile_layer_id))
+      if params[:labelling].has_key? :data
+        @labelling.data = Base64.decode64(params[:labelling][:data])
       end
-    else
-      head :unprocessable_entity
+      if @labelling.save
+        respond_to do |format|
+          format.html { redirect_to @labelling_group }
+          format.json { head :no_content }
+        end
+      else
+        head :unprocessable_entity
+      end
+    rescue ActiveRecord::RecordNotFound => e
+      Rails.logger.error "Labelling group not found: #{e.message}"
+      redirect_to root_url, alert: 'Labelling group not found'
     end
   end
 
@@ -77,9 +87,14 @@ class LabellingsController < ApplicationController
   private
 
     def set_labelling
-      @labelling = Labelling.find params[:id]
-      @labelling_group = @labelling.labelling_group
-      @team = @labelling_group.region.team
-      authorize_for! @team
+      begin
+        @labelling = Labelling.find params[:id]
+        @labelling_group = @labelling.labelling_group
+        @team = @labelling_group.region.team
+        authorize_for! @team
+      rescue ActiveRecord::RecordNotFound => e
+        Rails.logger.error "Labelling not found: #{e.message}"
+        redirect_to root_url, alert: 'Labelling not found'
+      end
     end
 end

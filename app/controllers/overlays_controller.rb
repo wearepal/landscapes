@@ -12,8 +12,13 @@ class OverlaysController < ApplicationController
   end
   
   def show
-    authorize!
-    redirect_to Overlay.find(params[:id]).source
+    begin
+      authorize!
+      redirect_to Overlay.find(params[:id]).source
+    rescue ActiveRecord::RecordNotFound => e
+      Rails.logger.error "Overlay not found: #{e.message}"
+      redirect_to root_url, alert: 'Overlay not found'
+    end
   end
 
   def new
@@ -46,19 +51,32 @@ class OverlaysController < ApplicationController
   private
 
     def set_region
-      @region = Region.find params[:region_id]
-      @team = @region.team
-      authorize_for! @team
+      begin
+        @region = Region.find(params[:region_id])
+        @team = @region.team
+        authorize_for! @team
+      rescue ActiveRecord::RecordNotFound => e
+        Rails.logger.error "Region not found: #{e.message}"
+        redirect_to root_url, alert: 'Region not found'
+      end
     end
 
     def set_overlay
-      @overlay = Overlay.find params[:id]
-      @region = @overlay.region
-      @team = @region.team
-      authorize_for! @team
+      begin
+        @overlay = Overlay.find(params[:id])
+        @region = @overlay.region
+        @team = @region.team
+        authorize_for! @team
+      rescue ActiveRecord::RecordNotFound => e
+        Rails.logger.error "Overlay not found: #{e.message}"
+        redirect_to root_url, alert: 'Overlay not found'
+      end
     end
 
     def overlay_params
       params.require(:overlay).permit(:name, :source, :colour)
+    rescue ActionController::ParameterMissing => e
+      Rails.logger.error "Required parameter missing: #{e.message}"
+      render json: { error: 'Required parameter missing' }, status: :bad_request
     end
 end

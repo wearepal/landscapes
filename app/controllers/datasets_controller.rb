@@ -2,57 +2,84 @@ class DatasetsController < ApplicationController
     before_action :set_team, only: [:index, :new, :create, :show]
 
     def create
-                
+      begin
         name = params[:name]
-
         existing_dataset = Dataset.find_by(:name => name)
-
+    
         if existing_dataset.present?
-            name = generate_unique_name(name)
+          name = generate_unique_name(name)
         end
-            
+    
         @dataset = @team.datasets.new(:name => name, :file => params[:file], :gridtype => params[:gridtype])
-
+    
         if @dataset.save
-            render json: @compiled, status: :created
+          render json: @compiled, status: :created
         else
-            render json: @compiled.errors, status: :unprocessable_entity
+          render json: @dataset.errors, status: :unprocessable_entity
         end
-
-    end
+      rescue ActiveRecord::RecordInvalid => e
+        Rails.logger.error "Invalid record: #{e.message}"
+        render json: { error: 'Invalid record' }, status: :unprocessable_entity
+      rescue ActiveRecord::RecordNotFound => e
+        Rails.logger.error "Record not found: #{e.message}"
+        render json: { error: 'Record not found' }, status: :not_found
+      end
+      end
 
     def edit
-        @dataset = Dataset.find(params[:id])
-        @team = @dataset.team
-        authorize_for! @team
-        render layout: "team"
+      begin
+          @dataset = Dataset.find(params[:id])
+          @team = @dataset.team
+          authorize_for! @team
+          render layout: "team"
+      rescue ActiveRecord::RecordNotFound => e
+          Rails.logger.error "Dataset not found: #{e.message}"
+          redirect_to root_url, alert: 'Dataset not found'
+      end
     end
       
 
     def update
+      begin
         @dataset = Dataset.find(params[:id])
         @team = @dataset.team
         authorize_for! @team
-      
+    
         new_name = params.require(:dataset).permit(:name)[:name]
-      
+    
         if @dataset.name != new_name && Dataset.exists?(name: new_name)
-          new_name = generate_unique_name(new_name)
+        new_name = generate_unique_name(new_name)
         end
-      
+    
         if @dataset.update(name: new_name)
-          redirect_to team_datasets_url(@team)
+        redirect_to team_datasets_url(@team)
         else
-          render json: { errors: @dataset.errors.full_messages }, status: :unprocessable_entity
+        render json: { errors: @dataset.errors.full_messages }, status: :unprocessable_entity
         end
+      rescue ActiveRecord::RecordNotFound => e
+        Rails.logger.error "Dataset not found: #{e.message}"
+        redirect_to root_url, alert: 'Dataset not found'
+      rescue ActionController::ParameterMissing => e
+        Rails.logger.error "Required parameter missing: #{e.message}"
+        render json: { error: 'Required parameter missing' }, status: :bad_request
       end
+    end
       
     def destroy
+      begin
         @dataset = Dataset.find(params[:id])
         @team = @dataset.team
         authorize_for! @team
-        @dataset.destroy
-        redirect_to team_datasets_url(@team)
+    
+        if @dataset.destroy
+          redirect_to team_datasets_url(@team), notice: 'Dataset was successfully deleted.'
+        else
+          redirect_to team_datasets_url(@team), alert: 'Dataset could not be deleted.'
+        end
+      rescue ActiveRecord::RecordNotFound => e
+        Rails.logger.error "Dataset not found: #{e.message}"
+        redirect_to root_url, alert: 'Dataset not found'
+      end
     end
 
     def index
@@ -66,7 +93,12 @@ class DatasetsController < ApplicationController
     end
 
     def show
+      begin
         redirect_to Dataset.find(params[:id]).file
+      rescue ActiveRecord::RecordNotFound => e
+        Rails.logger.error "Dataset not found: #{e.message}"
+        redirect_to root_url, alert: 'Dataset not found'
+      end
     end
 
     private
@@ -85,8 +117,13 @@ class DatasetsController < ApplicationController
       
 
     def set_team
+      begin
         @team = Team.find(params[:team_id])
         authorize_for! @team
+      rescue ActiveRecord::RecordNotFound => e
+        Rails.logger.error "Team not found: #{e.message}"
+        redirect_to root_url, alert: 'Team not found'
+      end
     end
 
 end

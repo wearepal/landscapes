@@ -24,12 +24,20 @@ class MapTileDownloadsController < ApplicationController
   private
 
     def set_region
-      @region = Region.find(params[:region_id])
-      @team = @region.team
-      authorize_for! @team
+      begin
+        @region = Region.find(params[:region_id])
+        @team = @region.team
+        authorize_for! @team
+      rescue ActiveRecord::RecordNotFound => e
+        Rails.logger.error "Region not found: #{e.message}"
+        redirect_to root_url, alert: 'Region not found'
+      end
     end
 
     def download_params
       params.require(:map_tile_download).permit(:year, :zoom)
+    rescue ActionController::ParameterMissing => e
+      Rails.logger.error "Required parameter missing: #{e.message}"
+      render json: { error: 'Required parameter missing' }, status: :bad_request
     end
 end
