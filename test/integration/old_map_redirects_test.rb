@@ -5,7 +5,7 @@ class OldMapRedirectsTest < ActionDispatch::IntegrationTest
     get labelling_group_url(labelling_groups(:one))
     assert_redirected_to 'http://www.example.com/#1C1ehCwcgSpaBS1eTSDm74sSBsfcEgwjoPbjSaArj'
 
-    page.driver.browser.switch_to.alert.accept # This accepts the alert
+    get labelling_group_url(labelling_groups(:two))
     assert_redirected_to 'http://www.example.com/' # Should redirect to root_url on failure
   end
 
