@@ -12,18 +12,22 @@ class TeamsController < ApplicationController
       @team.memberships.create! user: current_user
     end
     redirect_to team_regions_url(@team)
-  rescue ActiveRecord::RecordInvalid
+  rescue ActiveRecord::RecordInvalid => e
+    Rails.logger.error "Error creating team: #{e.message}"
     render json: @team.errors, status: :unprocessable_entity
   end
 
   def edit
-    @team = Team.find params[:id]
+    @team = Team.find(params[:id])
     authorize_for! @team
     render layout: 'team'
+  rescue ActiveRecord::RecordNotFound => e
+    Rails.logger.error "Team not found: #{e.message}"
+    redirect_to root_url, alert: 'Team not found'
   end
 
   def update
-    @team = Team.find params[:id]
+    @team = Team.find(params[:id])
     authorize_for! @team
 
     if @team.update(team_params)
@@ -31,18 +35,22 @@ class TeamsController < ApplicationController
     else
       render json: @team.errors, status: :unprocessable_entity
     end
+  rescue ActiveRecord::RecordNotFound => e
+    Rails.logger.error "Team not found: #{e.message}"
+    redirect_to root_url, alert: 'Team not found'
   end
 
   def select_team
     authorize!
-
     @teams = current_user.teams
-
   end
 
   private
 
     def team_params
       params.require(:team).permit(:name)
+    rescue ActionController::ParameterMissing => e
+      Rails.logger.error "Required parameter missing: #{e.message}"
+      render json: { error: 'Required parameter missing' }, status: :bad_request
     end
 end

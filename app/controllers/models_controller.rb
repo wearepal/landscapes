@@ -3,8 +3,13 @@ class ModelsController < ApplicationController
   before_action :set_model, only: [:edit, :update, :destroy]
   
   def index
-    @team = Team.find(params[:team_id])
-    render layout: "team"
+    begin
+      @team = Team.find(params[:team_id])
+      render layout: "team"
+    rescue ActiveRecord::RecordNotFound => e
+      Rails.logger.error "Team not found: #{e.message}"
+      redirect_to root_url, alert: 'Team not found'
+    end
   end
   
   def create
@@ -17,13 +22,15 @@ class ModelsController < ApplicationController
   end
 
   def update
-    if @model.update(model_params)
-      render json: @model
-    else
-      head :unprocessable_entity
+    begin
+      if @model.update(model_params)
+        render json: @model
+      else
+        head :unprocessable_entity
+      end
+    rescue ActiveRecord::StaleObjectError
+      render json: { lock_version: @model.reload.lock_version }, status: :conflict
     end
-  rescue ActiveRecord::StaleObjectError
-    render json: { lock_version: @model.reload.lock_version }, status: :conflict
   end
 
   def destroy
@@ -34,12 +41,20 @@ class ModelsController < ApplicationController
   private
 
     def set_model
-      @model = Model.find params[:id]
-      @team = @model.team
-      authorize_for! @team
+      begin
+        @model = Model.find(params[:id])
+        @team = @model.team
+        authorize_for! @team
+      rescue ActiveRecord::RecordNotFound => e
+        Rails.logger.error "Model not found: #{e.message}"
+        redirect_to root_url, alert: 'Model not found'
+      end
     end
 
     def model_params
       params.require(:model).permit(:name, :source, :lock_version)
+    rescue ActionController::ParameterMissing => e
+      Rails.logger.error "Required parameter missing: #{e.message}"
+      render json: { error: 'Required parameter missing' }, status: :bad_request
     end
 end

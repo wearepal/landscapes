@@ -44,19 +44,32 @@ class LabelsController < ApplicationController
   private
 
     def set_label_schema
-      @label_schema = LabelSchema.find params[:label_schema_id]
-      @team = @label_schema.team
-      authorize_for! @team
+      begin
+        @label_schema = LabelSchema.find params[:label_schema_id]
+        @team = @label_schema.team
+        authorize_for! @team
+      rescue ActiveRecord::RecordNotFound => e
+        Rails.logger.error "Label schema not found: #{e.message}"
+        redirect_to root_url, alert: 'Label schema not found'
+      end
     end
 
     def set_label
-      @label = Label.find(params[:id])
-      @label_schema = @label.label_schema
-      @team = @label_schema.team
-      authorize_for! @team
+      begin
+        @label = Label.find(params[:id])
+        @label_schema = @label.label_schema
+        @team = @label_schema.team
+        authorize_for! @team
+      rescue ActiveRecord::RecordNotFound => e
+        Rails.logger.error "Label not found: #{e.message}"
+        redirect_to root_url, alert: 'Label not found'
+      end
     end
 
     def label_params
       params.require(:label).permit(:index, :label, :name, :colour)
+    rescue ActionController::ParameterMissing => e
+      Rails.logger.error "Required parameter missing: #{e.message}"
+      render json: { error: 'Required parameter missing' }, status: :bad_request
     end
 end

@@ -5,9 +5,8 @@ class OldMapRedirectsTest < ActionDispatch::IntegrationTest
     get labelling_group_url(labelling_groups(:one))
     assert_redirected_to 'http://www.example.com/#1C1ehCwcgSpaBS1eTSDm74sSBsfcEgwjoPbjSaArj'
 
-    assert_raises(ActiveRecord::RecordNotFound) do
-      get labelling_group_url(labelling_groups(:two))
-    end
+    get labelling_group_url(labelling_groups(:two))
+    assert_redirected_to 'http://www.example.com/' # Should redirect to root_url on failure
   end
 
   test "region redirects" do

@@ -11,6 +11,7 @@ class SessionsController < ApplicationController
 
     if user && user.deactivated
       head :unprocessable_entity
+      return
     end
     
     if user.try(:authenticate, params[:password])
