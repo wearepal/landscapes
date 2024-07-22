@@ -49,13 +49,4 @@ class RegionsController < ApplicationController
 
       Base58.binary_to_base58 io.string.b, :bitcoin
     end
-
-    def set_team
-      begin
-        @team = Team.find(params[:team_id])
-      rescue ActiveRecord::RecordNotFound => e
-        Rails.logger.error "Team not found: #{e.message}"
-        redirect_to root_url, alert: 'Team not found'
-      end
-    end
 end
