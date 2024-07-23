@@ -2,6 +2,9 @@ version: "3.9"
 services:
   caddy:
     image: caddy:2
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
     configs:
       - source: caddyfile
         target: /etc/caddy/Caddyfile
