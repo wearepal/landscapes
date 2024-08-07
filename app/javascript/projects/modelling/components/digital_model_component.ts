@@ -16,6 +16,8 @@ interface DigitalModel {
     id: number
     name: string
     source: string
+    toolTip?: string
+    toolTipURL?: string
 }
 
 //TODO: hardcoded scale factors, find an effective way of retrieving them from the geoserver?
@@ -38,12 +40,16 @@ const ModelList: Array<DigitalModel> = [
     {
         id: 3,
         name: 'Canopy Height (Sentinel-2, Equal-Earth)',
-        source: 'eth:ch'
+        source: 'eth:ch',
+        toolTip: '(Height) Global canopy top height map for the year 2020, visualized in Equal-Earth projection. The underlying data product, estimated from Sentinel-2 imagery, has 10 m ground sampling distance.',
+        toolTipURL: 'https://langnico.github.io/globalcanopyheight/'
     },
     {
         id: 4,
         name: 'SD (Sentinel-2, Equal-Earth)',
-        source: 'eth:sd'
+        source: 'eth:sd',
+        toolTip: '(Standard Deviation) Global canopy top height map for the year 2020, visualized in Equal-Earth projection. The underlying data product, estimated from Sentinel-2 imagery, has 10 m ground sampling distance.',
+        toolTipURL: 'https://langnico.github.io/globalcanopyheight/'
     }
 ]
 
@@ -68,15 +74,20 @@ export class DigitalModelComponent extends BaseComponent {
 
     async builder(node: Node) {
 
-        node.meta.toolTip = "Component is still in testing phase! This component uses LIDAR data (Digital Surface and Terrian Models) to generate a numeric dataset. Coverage is limited, areas with missing data will be set to 0."
+        const dft = 'Digital models are generated via LIDAR or satellite data. They can be used to calculate canopy height, feature height, and more.'
 
+        node.meta.toolTip = ModelList.find(a => a.id == node.data.sourceId)?.toolTip || dft
+        node.meta.toolTipLink = ModelList.find(a => a.id == node.data.sourceId)?.toolTipURL || ''
 
         node.addControl(
             new SelectControl(
                 this.editor,
                 'sourceId',
                 () => ModelList,
-                () => [],
+                () => {
+                    node.meta.toolTip = ModelList.find(a => a.id == node.data.sourceId)?.toolTip || dft
+                    node.meta.toolTipLink = ModelList.find(a => a.id == node.data.sourceId)?.toolTipURL || ''
+                },
                 'Model'
             )
         )
