@@ -34,6 +34,16 @@ const ModelList: Array<DigitalModel> = [
         id: 2,
         name: 'Feature Height',
         source: 'lidar:Depth'
+    },
+    {
+        id: 3,
+        name: 'Canopy Height (Sentinel-2, Equal-Earth)',
+        source: 'eth:ch'
+    },
+    {
+        id: 4,
+        name: 'SD (Sentinel-2, Equal-Earth)',
+        source: 'eth:sd'
     }
 ]
 
@@ -109,10 +119,10 @@ export class DigitalModelComponent extends BaseComponent {
 
                 for (let i = 0; i < (rasters[0] as TypedArray).length; i++) {
 
-                    let x = (outputTileRange.minX + i % image.getWidth())
+                    let x = (outputTileRange.minX + i % image.getWidth()) 
                     let y = (outputTileRange.minY + Math.floor(i / image.getWidth()))
 
-                    out.set(x, y, mask.get(x, y) === true ? (rasters[0][i]) === -32767 ? NaN : (rasters[0][i]) : NaN)
+                    out.set(x, y, mask.get(x, y) === true ? ((rasters[0][i]) === -32767 || ((rasters[0][i]) === 255) && (digitalModel.source === 'eth:ch' || digitalModel.source === 'eth:sd'))  ? NaN : (rasters[0][i]) : NaN)
 
                 }
 
