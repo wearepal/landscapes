@@ -191,6 +191,7 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
                 return cache[id] ? cache[id] : null
               }}
               currentTab={currentTab}
+              projectExtent={projectExtent}
             />
           }
           {
