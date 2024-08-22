@@ -145,6 +145,7 @@ interface AnalysisPanelProps {
     selectedLayer: Layer | null
     layerStats: (layer: DatasetLayer | ModelOutputLayer) => BooleanTileGrid | NumericTileGrid | CategoricalTileGrid | null
     currentTab: number
+    projectExtent: Extent
 }
 
 let dataSourceType: string = "null"
@@ -156,7 +157,7 @@ ChartTypeArray.set("NumericTileGrid", ["hist"])
 
 
 
-export const AnalysisPanel = ({ selectedArea, setSelectedArea, setShowAP, selectedLayer, layerStats, currentTab }: AnalysisPanelProps) => {
+export const AnalysisPanel = ({ selectedArea, setSelectedArea, setShowAP, selectedLayer, layerStats, currentTab, projectExtent }: AnalysisPanelProps) => {
 
     const [chartType, setChartType] = React.useState<ChartType>()
     const [chartData, setChartData] = React.useState<ChartData>()
@@ -341,7 +342,7 @@ export const AnalysisPanel = ({ selectedArea, setSelectedArea, setShowAP, select
                             <button className="btn btn-sm btn-outline-primary">
                                 <i className="fas fa-square" /> Set extent
                             </button>
-                        </div>                        
+                        </div>          
                         <div className="btn-group mr-2" style={{paddingBottom: 15}} onClick={()=>{navigator.clipboard.writeText(selectedArea ? selectedArea.join(",") : ""); alert("Copied selected area to clipboard.")}}>
                             <button className="btn btn-sm btn-outline-primary">
                                 <i className="fas fa-copy" /> Copy extent
@@ -382,6 +383,8 @@ export const AnalysisPanel = ({ selectedArea, setSelectedArea, setShowAP, select
                     </div>
                     <div className="modal-footer">
                         <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+
+                        <button type='button' className='btn btn-primary' data-dismiss="modal" onClick={()=>setSelectedArea(projectExtent)}>Use project extent</button>
                         <button 
                             id="save-snapshot-extent-btn" 
                             type="button" 
