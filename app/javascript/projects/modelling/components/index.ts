@@ -102,7 +102,7 @@ export function createDefaultComponents(saveMapLayer: SaveMapLayer, saveModel: S
 
       // Arithmetic
       new MaskNumericDataComponent(),
-      new ExpressionComponent(),
+      new ExpressionComponent(projectProps),
       new BinaryOpComponent('Min', '', numericNumberDataSocket, numericNumberDataSocket, 'Arithmetic', projectProps),
       new BinaryOpComponent('Max', '', numericNumberDataSocket, numericNumberDataSocket, 'Arithmetic', projectProps),
       new VariadicOpComponent('Sum', '∑', numericDataSocket, numericDataSocket, 'Arithmetic', 'Sum all inputs'),
