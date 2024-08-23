@@ -7,6 +7,8 @@ import { numericDataSocket, numericNumberDataSocket } from "../socket_types"
 import { exp, isSymbolNode, parse, parser } from 'mathjs'
 import { PreviewControl } from "../controls/preview"
 import { isEqual } from "lodash"
+import { ProjectProperties } from "."
+import { createXYZ } from "ol/tilegrid"
 
 
 interface Expression {
@@ -15,14 +17,17 @@ interface Expression {
 }
 
 const ExpressionList: Array<Expression> = [
-    { id: 1, name: `height * scale + error` }
+    { id: 1, name: `height * scale + error` },
+    { id: 2, name: `H^2 * scale + error` },
 ]
 
 export class ExpressionComponent extends BaseComponent {
+    projectProps: ProjectProperties
 
-    constructor() {
+    constructor(ProjectProps: ProjectProperties) {
         super("Expression")
         this.category = "Arithmetic"
+        this.projectProps = ProjectProps
     }
 
     async builder(node: Node) {
@@ -128,22 +133,31 @@ export class ExpressionComponent extends BaseComponent {
 
             const v = inputs[variables[0]][0] as NumericTileGrid
 
-            const out = editorNode.meta.output = outputs['out'] = new NumericTileGrid(v.zoom, v.x, v.y, v.width, v.height)
 
-            for (let x = v.x; x < v.x + v.width; ++x) {
-                for (let y = v.y; y < v.y + v.height; ++y) {
+            const tileGrid = createXYZ()
+            const outputTileRange = tileGrid.getTileRangeForExtentAndZ(this.projectProps.extent, this.projectProps.zoom)
 
-                    variables.forEach((i) => {
-                        const variableSource: any = inputs[i][0]
-                        p.set(i, variableSource.get(x, y))
-                    })
+            const out = editorNode.meta.output = outputs['out'] = new NumericTileGrid(
+                this.projectProps.zoom, 
+                outputTileRange.minX, 
+                outputTileRange.minY, 
+                outputTileRange.getWidth(), 
+                outputTileRange.getHeight()
+            )
 
-                    let r = p.evaluate(expression)
+            out.iterate((x, y) => {
 
-                    out.set(x, y, r);
-                    p.clear();
-                }
-            }
+                variables.forEach((i) => {
+                    const variableSource: any = inputs[i][0]
+                    p.set(i, variableSource.get(x, y))
+                })
+
+                let r = p.evaluate(expression)
+
+                out.set(x, y, r);
+                p.clear();
+
+            })
 
             editorNode.data.previousInputs = [inputs, expression]
             editorNode.data.previewsOutput = out
