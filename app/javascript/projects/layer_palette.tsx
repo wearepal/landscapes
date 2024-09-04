@@ -244,6 +244,14 @@ export const LayerPalette = ({ addLayer, hide, dbModels, getTeamDatasets, teamNa
               {
                 name: "Polling Districts",
                 identifier: "shapefiles:polling_districts_england"
+              },
+              {
+                name: "District Councils",
+                identifier: "shapefiles:district_borough_unitary"
+              },
+              {
+                name: "District Councils - Wealden District Council",
+                identifier: "shapefiles:district_borough_unitary"
               }
             ).sort((a, b) => (a.name < b.name) ? -1 : 1).map(({ name, identifier }) =>
               <AddLayerButton

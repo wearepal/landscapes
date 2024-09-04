@@ -26,18 +26,20 @@ const getSource = memoize((id: string) => {
     return source
 })
 
-const getStyle = (layer: BoundaryLayer, zoom: number | undefined) => (
+const getStyle = (layer: BoundaryLayer, zoom: number | undefined, name: string) => (
         (feature) => {
             const properties = feature.getProperties()
             const id = properties.geometry?.ol_uid ?? properties.Admin_Unit_ID
             const col = boundaryColourMap.get(id) || [Math.random() * 255, Math.random() * 255, Math.random() * 255, 1]
             boundaryColourMap.set(id, col)
+
+            const wealdenOnly = (properties.Name === "Wealden District" && name == "District Councils - Wealden District Council")
             return new Style({
                 fill : new Fill({
-                    color: `rgba(${col[0]}, ${col[1]}, ${col[2]}, ${col[3]})`
+                    color: `rgba(${col[0]}, ${col[1]}, ${col[2]}, ${!wealdenOnly && name == "District Councils - Wealden District Council" ? 0 : col[3]})`
                 }),
                 stroke: new Stroke({
-                    color: `rgba(0, 0, 122, 1)`,
+                    color: `rgba(0, 0, 122, ${!wealdenOnly && name == "District Councils - Wealden District Council" ? 0 : 1})`,
                     width: 2
                 }),
                 text: new Text({
@@ -59,7 +61,7 @@ export function reifyBoundaryLayer (layer: BoundaryLayer, existingLayer: BaseLay
 
     const vectLayer =  new VectorLayer({
         source: getSource(layer.identifier),
-        style: getStyle(layer, map.getView().getZoom())
+        style: getStyle(layer, map.getView().getZoom(), layer.name)
     })
 
     return vectLayer
