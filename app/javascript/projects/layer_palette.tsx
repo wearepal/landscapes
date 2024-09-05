@@ -224,36 +224,43 @@ export const LayerPalette = ({ addLayer, hide, dbModels, getTeamDatasets, teamNa
         </Section>
         <Section title="OS Boundaries">
           {
-            Array<{ name: string, identifier: string }>(
+            Array<{ name: string, identifier: string, target: string }>(
               {
                 name: "Historic Counties",
-                identifier: "shapefiles:boundary_line_historic_counties"
+                identifier: "shapefiles:boundary_line_historic_counties",
+                target: "all"
               },
               {
                 name: "Ceremonial Counties",
-                identifier: "shapefiles:boundary_line_ceremonial_counties"
+                identifier: "shapefiles:boundary_line_ceremonial_counties",
+                target: "all"
               },
               {
                 name: "Westminster Constituencies (2010-2024)",
-                identifier: "shapefiles:westminster_const "
+                identifier: "shapefiles:westminster_const ",
+                target: "all"
               },
               {
                 name: "Westminster Constituencies (2024 onwards)",
-                identifier: "shapefiles:bdline_gb__westminster_const"
+                identifier: "shapefiles:bdline_gb__westminster_const",
+                target: "all"
               },
               {
                 name: "Polling Districts",
-                identifier: "shapefiles:polling_districts_england"
+                identifier: "shapefiles:polling_districts_england",
+                target: "all"
               },
               {
                 name: "District Councils",
-                identifier: "shapefiles:district_borough_unitary"
+                identifier: "shapefiles:district_borough_unitary",
+                target: "all"
               },
               {
-                name: "District Councils - Wealden District Council",
-                identifier: "shapefiles:district_borough_unitary"
+                name: "Wealden District Council",
+                identifier: "shapefiles:district_borough_unitary",
+                target: "Wealden District"
               }
-            ).sort((a, b) => (a.name < b.name) ? -1 : 1).map(({ name, identifier }) =>
+            ).sort((a, b) => (a.name < b.name) ? -1 : 1).map(({ name, identifier, target }) =>
               <AddLayerButton
                 addLayer={addLayer}
                 prototype={{
@@ -262,6 +269,7 @@ export const LayerPalette = ({ addLayer, hide, dbModels, getTeamDatasets, teamNa
                   identifier,
                   visible: true,
                   opacity: 1,
+                  target
                 }}
               />
             )
