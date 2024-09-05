@@ -192,6 +192,7 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
               }}
               currentTab={currentTab}
               projectExtent={projectExtent}
+              ExtentList={[]}
             />
           }
           {

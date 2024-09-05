@@ -55,4 +55,8 @@ class Project < ApplicationRecord
     tp ? tp.enabled : false
   end
 
+  def extents
+    team_extents = Extent.where(team_id: team.id).to_json
+  end
+
 end

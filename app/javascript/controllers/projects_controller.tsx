@@ -12,8 +12,9 @@ export default class extends Controller {
     projectTeamId: Number,
     projectTeamName: String,
     projectDefraHedgerowPermission: Boolean,
+    projectExtents: Object,
     backButtonPath: String,
-    dbModels: Object,
+    dbModels: Object
   }
 
   declare readonly projectIdValue: number
@@ -21,10 +22,14 @@ export default class extends Controller {
   declare readonly projectTeamIdValue: number
   declare readonly projectTeamNameValue: string
   declare readonly projectDefraHedgerowPermissionValue: boolean
+  declare readonly projectExtentsValue: any
   declare readonly backButtonPathValue: string
   declare readonly dbModelsValue: DBModels
 
   connect() {
+    console.log('ProjectsController connected')
+    console.log(this.projectIdValue)
+    console.log(this.projectExtentsValue)
     ReactDOM.render(
       <ProjectEditor
         projectId={this.projectIdValue}
