@@ -64,6 +64,7 @@ export interface ShapeLayer extends BaseLayer {
 export interface BoundaryLayer extends BaseLayer {
   type: "BoundaryLayer"
   identifier: string
+  target: string
 }
 
 export interface KewLayer extends BaseLayer {
