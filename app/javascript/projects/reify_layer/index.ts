@@ -33,7 +33,7 @@ export const reifyLayer = (layer: Layer, existingLayer: BaseLayer | null, dbMode
     case "AtiLayer" : return reifyAtiLayer(layer, existingLayer, map)
     case "ShapeLayer": return reifyShapeFileLayer(layer, existingLayer, map)
     case "BoundaryLayer": return reifyBoundaryLayer(layer, existingLayer, map)
-    case "MLLayer": return reifyGeoserverWMSLayer(layer, existingLayer)
+    case "GeoserverLayer": return reifyGeoserverWMSLayer(layer, existingLayer)
     case "KewLayer": return reifyKewLayer(layer, existingLayer, map)
     case "ORValLayer": return reifyOrvalLayer(layer, existingLayer, map)
     case "IMDLayer": return reifyIMDLayer(layer, existingLayer, map)

@@ -125,12 +125,14 @@ export interface DatasetLayer extends BaseLayer {
   deleted?: boolean
 }
 
-export interface MLLayer extends BaseLayer {
-  type: "MLLayer"
+export interface GeoserverLayer extends BaseLayer {
+  type: "GeoserverLayer"
   layerName: string
+  xOffset?: number
+  yOffset?: number
 }
 
-export type Layer = OsmLayer | MapTileLayer | OverlayLayer | NevoLayer | CehLandCoverLayer | ModelOutputLayer | DatasetLayer | CropMapLayer | AtiLayer | ShapeLayer | BoundaryLayer | MLLayer | KewLayer | ORValLayer | IMDLayer
+export type Layer = OsmLayer | MapTileLayer | OverlayLayer | NevoLayer | CehLandCoverLayer | ModelOutputLayer | DatasetLayer | CropMapLayer | AtiLayer | ShapeLayer | BoundaryLayer | GeoserverLayer | KewLayer | ORValLayer | IMDLayer
 
 export interface Project {
   name: string
