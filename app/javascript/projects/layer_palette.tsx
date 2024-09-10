@@ -6,6 +6,7 @@ import { iconForLayerType } from "./util"
 import { CompiledDatasetRecord } from './saved_dataset'
 import { designations } from './modelling/designations'
 import { IMDProperties } from './reify_layer/imd'
+import { ProjectPermissions } from './project_editor'
 
 interface AddLayerButtonProps {
   prototype: Layer
@@ -41,9 +42,10 @@ interface LayerPaletteProps {
   dbModels: DBModels
   getTeamDatasets: () => Promise<Array<CompiledDatasetRecord>>
   teamName: string
+  permissions: ProjectPermissions
 }
 
-export const LayerPalette = ({ addLayer, hide, dbModels, getTeamDatasets, teamName }: LayerPaletteProps) => {
+export const LayerPalette = ({ addLayer, hide, dbModels, getTeamDatasets, teamName, permissions }: LayerPaletteProps) => {
 
   const [teamDatasets, setTeamDatasets] = React.useState<CompiledDatasetRecord[]>([])
 
@@ -414,16 +416,18 @@ export const LayerPalette = ({ addLayer, hide, dbModels, getTeamDatasets, teamNa
         }
         {
           <Section title="Aerial/Satellite imagery">
-            <AddLayerButton
-              addLayer={addLayer}
-              prototype={{
-                layerName: "rgb:full_mosaic_3857",
-                type: "GeoserverLayer",
-                name: "RGB 25cm",
-                visible: true,
-                opacity: 1,
-              }}
-            />
+            {permissions.KewRgb25cm &&          
+              <AddLayerButton
+                addLayer={addLayer}
+                prototype={{
+                  layerName: "rgb:full_mosaic_3857",
+                  type: "GeoserverLayer",
+                  name: "RGB 25cm",
+                  visible: true,
+                  opacity: 1,
+                }}
+              />
+            }
             {
               dbModels.mapTileLayers.map(layer => (
                 <AddLayerButton
