@@ -87,18 +87,18 @@ export const LayerPalette = ({ addLayer, hide, dbModels, getTeamDatasets, teamNa
             ))}
           </Section>
         }
-        <Section title="Machine Learning Output">
+        {/* <Section title="Machine Learning Output">
           <AddLayerButton
             addLayer={addLayer}
             prototype={{
-              type: "MLLayer",
+              type: "GeoserverLayer",
               layerName: "ml:tree_hedge_predictions",
               name: "Trees & Hedges Classification",
               visible: true,
               opacity: 1,
             }}
           />
-        </Section>
+        </Section> */}
         <Section title="Kew Samples">
           {
             Array<{ name: string, location: string, metric: string, loc : string | undefined, periodOptions: KewOption[], typeOptions: KewOption[] }>(
@@ -413,8 +413,17 @@ export const LayerPalette = ({ addLayer, hide, dbModels, getTeamDatasets, teamNa
           </Section>
         }
         {
-          dbModels.mapTileLayers.length > 0 &&
           <Section title="Aerial/Satellite imagery">
+            <AddLayerButton
+              addLayer={addLayer}
+              prototype={{
+                layerName: "rgb:full_mosaic_3857",
+                type: "GeoserverLayer",
+                name: "RGB 25cm",
+                visible: true,
+                opacity: 1,
+              }}
+            />
             {
               dbModels.mapTileLayers.map(layer => (
                 <AddLayerButton
