@@ -7,6 +7,7 @@ import { GenerateChart } from './analysis_panel_tools/charts'
 import './analysis_panel.css'
 import { getArea } from 'ol/sphere'
 import { fromExtent } from 'ol/geom/Polygon'
+import { TeamExtentData } from './project_editor'
 
 export type ChartType = "pie" | "hist" | "bar" | "kde"
 
@@ -146,6 +147,7 @@ interface AnalysisPanelProps {
     layerStats: (layer: DatasetLayer | ModelOutputLayer) => BooleanTileGrid | NumericTileGrid | CategoricalTileGrid | null
     currentTab: number
     projectExtent: Extent
+    ExtentList: TeamExtentData[]
 }
 
 let dataSourceType: string = "null"
@@ -157,7 +159,7 @@ ChartTypeArray.set("NumericTileGrid", ["hist"])
 
 
 
-export const AnalysisPanel = ({ selectedArea, setSelectedArea, setShowAP, selectedLayer, layerStats, currentTab, projectExtent }: AnalysisPanelProps) => {
+export const AnalysisPanel = ({ selectedArea, setSelectedArea, setShowAP, selectedLayer, layerStats, currentTab, projectExtent, ExtentList }: AnalysisPanelProps) => {
 
     const [chartType, setChartType] = React.useState<ChartType>()
     const [chartData, setChartData] = React.useState<ChartData>()
@@ -364,22 +366,40 @@ export const AnalysisPanel = ({ selectedArea, setSelectedArea, setShowAP, select
                         </button>
                     </div>
                     <div className="modal-body">
-                    <input
-                        id="extent-input"
-                        style={{width: '100%'}}
-                        type="text"
-                        placeholder='min x, min y, max x, max y'
-                        onChange={(e) => {
-                            let valid = false
-                            const extent = e.target.value.split(',').map(Number)
-                            valid = extent.length === 4 && extent.every((coord) => !isNaN(coord)) && extent[0] < extent[2] && extent[1] < extent[3]
-                            if(!valid){
-                                (document.getElementById('save-snapshot-extent-btn') as HTMLButtonElement).disabled = true
-                            }else{
-                                (document.getElementById('save-snapshot-extent-btn') as HTMLButtonElement).disabled = false
-                            }
-                        }}
-                    />
+                        <div className='row'>
+                            <div className='col-8'>
+                                <input
+                                    id="extent-input"
+                                    style={{width: '100%'}}
+                                    type="text"
+                                    placeholder='min x, min y, max x, max y'
+                                    onChange={(e) => {
+                                        let valid = false
+                                        const extent = e.target.value.split(',').map(Number)
+                                        valid = extent.length === 4 && extent.every((coord) => !isNaN(coord)) && extent[0] < extent[2] && extent[1] < extent[3]
+                                        if(!valid){
+                                            (document.getElementById('save-snapshot-extent-btn') as HTMLButtonElement).disabled = true
+                                        }else{
+                                            (document.getElementById('save-snapshot-extent-btn') as HTMLButtonElement).disabled = false
+                                        }
+                                    }}
+                                />
+                            </div>
+                            <select onChange={(e) => 
+                                    {
+                                        const selectedIndex = Number(e.target.value)
+                                        const selectedExtent = ExtentList[selectedIndex]
+                                        if (selectedExtent) {
+                                            document.getElementById('extent-input')!.setAttribute('value', selectedExtent.value.join(','))
+                                        }
+                                    }}
+                                    className='form-select'>
+                                <option value=''>Select project extent</option>
+                                {ExtentList.map((extent, index) => (
+                                    <option key={index} value={index}>{extent.name}</option>
+                                ))}
+                            </select>
+                        </div>
                     </div>
                     <div className="modal-footer">
                         <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>

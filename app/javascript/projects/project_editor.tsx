@@ -26,6 +26,11 @@ export interface ProjectPermissions {
   KewRgb25cm: boolean
 }
 
+export interface TeamExtentData {
+  name: string
+  value: Extent
+}
+
 interface ProjectEditorProps {
   projectId: number
   projectSource: Project
@@ -34,8 +39,9 @@ interface ProjectEditorProps {
   teamId: number
   teamName: string
   permissions: ProjectPermissions
+  teamExtents: TeamExtentData[]
 }
-export function ProjectEditor({ projectId, projectSource, backButtonPath, dbModels, teamId, teamName, permissions }: ProjectEditorProps) {
+export function ProjectEditor({ projectId, projectSource, backButtonPath, dbModels, teamId, teamName, permissions, teamExtents }: ProjectEditorProps) {
   const [state, dispatch] = React.useReducer(reduce, {
     project: { ...defaultProject, ...projectSource },
     hasUnsavedChanges: false,
@@ -194,6 +200,7 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
               }}
               currentTab={currentTab}
               projectExtent={projectExtent}
+              ExtentList={teamExtents}
             />
           }
           {

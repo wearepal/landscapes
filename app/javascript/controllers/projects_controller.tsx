@@ -1,7 +1,7 @@
 import { Controller } from "stimulus"
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
-import { ProjectEditor } from '../projects/project_editor'
+import { ProjectEditor, TeamExtentData } from '../projects/project_editor'
 import { Project } from "../projects/state"
 import { DBModels } from "../projects/db_models"
 
@@ -13,8 +13,9 @@ export default class extends Controller {
     projectTeamName: String,
     projectDefraHedgerowPermission: Boolean,
     projectKewRgb25cmPermission: Boolean,
+    projectExtents: Array,
     backButtonPath: String,
-    dbModels: Object,
+    dbModels: Object
   }
 
   declare readonly projectIdValue: number
@@ -23,6 +24,7 @@ export default class extends Controller {
   declare readonly projectTeamNameValue: string
   declare readonly projectDefraHedgerowPermissionValue: boolean
   declare readonly projectKewRgb25cmPermissionValue: boolean
+  declare readonly projectExtentsValue: Array<any>
   declare readonly backButtonPathValue: string
   declare readonly dbModelsValue: DBModels
 
@@ -41,6 +43,7 @@ export default class extends Controller {
             KewRgb25cm: this.projectKewRgb25cmPermissionValue
           }
         }
+        teamExtents={this.projectExtentsValue as TeamExtentData[]}
       />,
       this.element
     )

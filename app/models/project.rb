@@ -54,7 +54,7 @@ class Project < ApplicationRecord
     tp = team.team_permissions.find_by(permission: p)
     tp ? tp.enabled : false
   end
-
+  
   def kew_rgb25cm_permission
     p = Permission.find_by(name: 'kew_rgb25cm')
     puts "p: #{p}"
@@ -62,6 +62,10 @@ class Project < ApplicationRecord
 
     tp = team.team_permissions.find_by(permission: p)
     tp ? tp.enabled : false
+  end
+  
+  def extents
+    team_extents = Extent.where(team_id: team.id).to_json
   end
 
 end
