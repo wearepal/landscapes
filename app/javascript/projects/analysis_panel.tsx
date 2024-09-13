@@ -7,6 +7,7 @@ import { GenerateChart } from './analysis_panel_tools/charts'
 import './analysis_panel.css'
 import { getArea } from 'ol/sphere'
 import { fromExtent } from 'ol/geom/Polygon'
+import { TeamExtentData } from './project_editor'
 
 export type ChartType = "pie" | "hist" | "bar" | "kde"
 
@@ -146,7 +147,7 @@ interface AnalysisPanelProps {
     layerStats: (layer: DatasetLayer | ModelOutputLayer) => BooleanTileGrid | NumericTileGrid | CategoricalTileGrid | null
     currentTab: number
     projectExtent: Extent
-    ExtentList: any[]
+    ExtentList: TeamExtentData[]
 }
 
 let dataSourceType: string = "null"
@@ -366,7 +367,7 @@ export const AnalysisPanel = ({ selectedArea, setSelectedArea, setShowAP, select
                     </div>
                     <div className="modal-body">
                         <div className='row'>
-                            <div className='col-10'>
+                            <div className='col-8'>
                                 <input
                                     id="extent-input"
                                     style={{width: '100%'}}
@@ -384,7 +385,19 @@ export const AnalysisPanel = ({ selectedArea, setSelectedArea, setShowAP, select
                                     }}
                                 />
                             </div>
-                            <select className='form-select'>
+                            <select onChange={(e) => 
+                                    {
+                                        const selectedIndex = Number(e.target.value)
+                                        const selectedExtent = ExtentList[selectedIndex]
+                                        if (selectedExtent) {
+                                            document.getElementById('extent-input')!.setAttribute('value', selectedExtent.value.join(','))
+                                        }
+                                    }}
+                                    className='form-select'>
+                                <option value=''>Select project extent</option>
+                                {ExtentList.map((extent, index) => (
+                                    <option key={index} value={index}>{extent.name}</option>
+                                ))}
                             </select>
                         </div>
                     </div>
