@@ -12,6 +12,7 @@ export default class extends Controller {
     projectTeamId: Number,
     projectTeamName: String,
     projectDefraHedgerowPermission: Boolean,
+    projectKewRgb25cmPermission: Boolean,
     projectExtents: Array,
     backButtonPath: String,
     dbModels: Object
@@ -22,6 +23,7 @@ export default class extends Controller {
   declare readonly projectTeamIdValue: number
   declare readonly projectTeamNameValue: string
   declare readonly projectDefraHedgerowPermissionValue: boolean
+  declare readonly projectKewRgb25cmPermissionValue: boolean
   declare readonly projectExtentsValue: Array<any>
   declare readonly backButtonPathValue: string
   declare readonly dbModelsValue: DBModels
@@ -37,7 +39,8 @@ export default class extends Controller {
         teamName={this.projectTeamNameValue}
         permissions={
           { 
-            DefraHedgerows: this.projectDefraHedgerowPermissionValue 
+            DefraHedgerows: this.projectDefraHedgerowPermissionValue,
+            KewRgb25cm: this.projectKewRgb25cmPermissionValue
           }
         }
         teamExtents={this.projectExtentsValue as TeamExtentData[]}

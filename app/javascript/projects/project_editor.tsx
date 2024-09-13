@@ -23,6 +23,7 @@ export enum Tab {
 
 export interface ProjectPermissions {
   DefraHedgerows: boolean
+  KewRgb25cm: boolean
 }
 
 export interface TeamExtentData {
@@ -182,6 +183,7 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
               dbModels={dbModels}
               getTeamDatasets={() => getDatasets(teamId)}
               teamName={teamName}
+              permissions={permissions}
             />
           }
           {
