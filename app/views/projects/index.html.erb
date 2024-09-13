@@ -7,7 +7,14 @@
   </div>
   <div class="list-group list-group-flush" data-controller="filter">
     <div class="list-group-item list-group-item-light">
-      <input placeholder="Search" class="form-control" data-action="input->filter#update" autofocus>
+      <input
+        type="text"
+        placeholder="Search"
+        class="form-control"
+        data-action="input->filter#update"
+        data-filter-target="input" 
+        autofocus
+      >
     </div>
     <% @team_projects.sort_by { |project| project.name.downcase }.each do |project| %>
       <div class="list-group-item list-group-item-action p-0 align-items-center" data-filter-target="item" style="display: flex;">
