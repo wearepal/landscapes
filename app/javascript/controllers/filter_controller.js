@@ -1,4 +1,4 @@
-import { Controller } from "stimulus";
+import { Controller } from "stimulus"
 
 export default class extends Controller {
   static targets = ["input", "item"]
@@ -13,20 +13,20 @@ export default class extends Controller {
 
   update(event) {
 
-    const query = this.inputTarget.value.toLowerCase()
+    const query = !this.hasInputTarget ? event.target.value.toLocaleLowerCase() : this.inputTarget.value.toLowerCase()
 
-    localStorage.setItem("searchQuery", query)
-
+    if(this.hasInputTarget) {
+      localStorage.setItem("searchQuery", query)
+    }
+    
     this.itemTargets.forEach(target => {
       const searchText = target.innerText.toLowerCase()
       const searchTerms = query.split(" ")
       
       if (searchTerms.every(term => searchText.includes(term))) {
         target.classList.remove("d-none")
-        target.style.display = "flex"
       } else {
         target.classList.add("d-none")
-        target.style.display = "none"
       }
     });
   }

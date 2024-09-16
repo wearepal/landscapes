@@ -9,7 +9,7 @@
     </div>
 
     <% @team.datasets.order(:name).each do |dataset| %>
-      <div class="list-group-item">
+      <div class="list-group-item list-group-item-action" data-filter-target="item">
         <div class="d-flex align-items-center justify-content-between">
           <div>
             <% if dataset.gridtype == 'BooleanTileGrid' %>
@@ -19,8 +19,6 @@
             <% else %>
                 <span class="badge badge-warning">Categorical</span>
             <% end %>
-
-            
             <%= dataset.name %>
             <span class="text-muted fs-5">
             (<%= dataset.created_at.strftime("%d/%m/%Y")  %>)
