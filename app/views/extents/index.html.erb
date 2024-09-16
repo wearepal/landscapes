@@ -13,8 +13,8 @@
         </div>
 
         <% @team_extents.sort_by { |extent| extent.name.downcase }.each do |extent| %>
-            <%= link_to edit_extent_path(extent.id), class: "list-group-item list-group-item-action border-0" do %>
-                <div class="list-group-item list-group-item-action p-0 align-items-center" data-filter-target="item" style="display: flex;">
+            <%= link_to edit_extent_path(extent.id), class: "list-group-item list-group-item-action p-0" do %>
+                <div class="list-group-item list-group-item-action align-items-center" data-filter-target="item" style="display: flex;">
                     <div class="d-flex align-items-center justify-content-between">
                         <%= extent.name %> 
                     </div>
