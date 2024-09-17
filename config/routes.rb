@@ -60,4 +60,7 @@ Rails.application.routes.draw do
 
   get "modelling_worker.js", to: redirect(status: 302) { Webpacker.manifest.lookup("modelling_worker.js") }
 
+  get '/users/autocomplete', to: 'users#autocomplete'
+
+
 end
