@@ -1,0 +1,28 @@
+.autocomplete-suggestions {
+    max-height: 200px;
+    overflow-y: auto;
+    position: absolute;
+    background-color: white;
+    width: 100%;
+    z-index: 1000;
+    border: none; /* Hide border by default */
+  }
+  
+  .autocomplete-suggestions.has-suggestions {
+    border: 1px solid #ccc; /* Only show the border when suggestions exist */
+  }
+  
+  .suggestion-item {
+    padding: 10px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .suggestion-item strong {
+    font-weight: bold;
+  }
+  
+  .suggestion-item:hover {
+    background-color: #f1f1f1;
+  }
