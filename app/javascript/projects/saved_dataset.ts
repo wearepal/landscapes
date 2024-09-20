@@ -1,3 +1,4 @@
+import { Expression } from "./modelling/components/expression_component";
 import { BooleanTileGrid, CategoricalTileGrid, NumericTileGrid, TileGridJSON, fromJSON } from "./modelling/tile_grid";
 
 export interface CompiledDatasetRecord {
@@ -69,4 +70,23 @@ export function getDataset(datasetId: number, teamId: number, callback) {
     };
 
     request.send()
+}
+
+export function getExpressions(teamId: number): Promise<Array<Expression>> {
+    return new Promise((resolve, reject) => {
+        const request = new XMLHttpRequest()
+        request.open('GET', `/teams/${teamId}/expressions?json=true`)
+        request.setRequestHeader('X-CSRF-Token', (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement).content)
+        request.onload = () => {
+            if (request.status === 200) {
+                resolve(JSON.parse(request.response))
+            } else {
+                reject(new Error('Failed to fetch expressions'))
+            }
+        }
+        request.onerror = () => {
+            reject(new Error('Request error'))
+        }
+        request.send()
+    })
 }

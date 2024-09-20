@@ -6,6 +6,7 @@ Rails.application.routes.draw do
 
     resources :datasets, only: [:index, :edit, :create, :show, :destroy, :update]
     resources :extents, only: [:index, :create, :new, :edit, :destroy]
+    resources :expressions, only: [:index, :create, :new, :edit, :destroy, :update]
 
     resources :label_schemas do
       resources :duplicates, model_name: "LabelSchema"

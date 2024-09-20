@@ -9,8 +9,8 @@ import { reduce } from './reducer'
 import { CollapsedSidebar, Sidebar } from './sidebar'
 import { DatasetLayer, defaultProject, Layer, ModelOutputLayer, Project } from './state'
 import { Toolbar } from './toolbar'
-import { debounce } from 'lodash'
-import { getDataset, getDatasets, saveModelOutput } from './saved_dataset'
+import { debounce, get } from 'lodash'
+import { getExpressions, getDataset, getDatasets, saveModelOutput } from './saved_dataset'
 import { TileGridJSON } from './modelling/tile_grid'
 import { AnalysisPanel } from './analysis_panel'
 import { Extent } from 'ol/extent'
@@ -265,6 +265,7 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
           maskLayer={projectMaskSource}
           maskCQL={projectMaskCQL}
           permissions={permissions}
+          getCustomExpressions={() => getExpressions(teamId)}
         />
       </div>
     </div>

@@ -1,0 +1,25 @@
+<div class="card">
+  <div class="card-header d-flex align-items-center justify-content-between">
+    Expressions
+    <%= link_to [@team, :expression, action: :new], class: "btn btn-sm btn-outline-primary", title: "Create new expression" do %>
+      <i class="fas fa-plus"></i>
+    <% end %>
+  </div>
+
+
+  <div class="list-group list-group-flush" data-controller="filter">
+    <div class="list-group-item list-group-item-light">
+        <input placeholder="Search" class="form-control" data-action="input->filter#update" autofocus>
+    </div>
+
+    <% @team_expressions.sort_by { |extent| extent.name.downcase }.each do |expression| %>
+        <div class="list-group-item list-group-item-action align-items-center" data-filter-target="item" style="display: flex;">
+            <div class="d-flex align-items-center justify-content-between">
+                <%= expression.name %> 
+            </div>
+        </div>
+    <% end %>
+
+    </div>
+
+</div>

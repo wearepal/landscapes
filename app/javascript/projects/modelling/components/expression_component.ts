@@ -6,11 +6,12 @@ import { SelectControl } from "../controls/select"
 import { numericDataSocket, numericNumberDataSocket } from "../socket_types"
 import { exp, isSymbolNode, parse, parser } from 'mathjs'
 import { PreviewControl } from "../controls/preview"
-import { isEqual } from "lodash"
+import { get, isEqual } from "lodash"
 import { ProjectProperties } from "."
 import { createXYZ } from "ol/tilegrid"
 import { getMedianCellSize } from "./cell_area_component"
 import { NumericConstant } from "../numeric_constant"
+import { LabelControl } from "../controls/label"
 
 interface customFunction {
     name: string
@@ -29,6 +30,9 @@ const definedFnsCnsts: string[] = [
     'sqrt'
 ]
 
+
+export type getExpressionsType = () => Promise<Expression[]>
+
 const customFns: customFunction[] = [
     { name: 'AREA_M2', fn: (x: NumericTileGrid) => getMedianCellSize(x).area },
     { name: 'AREA_KM2', fn: (x: NumericTileGrid) => getMedianCellSize(x).area / 1000000 },
@@ -37,27 +41,31 @@ const customFns: customFunction[] = [
 ]
 
 
-interface Expression {
+export interface Expression {
     id: number
     name: string
+    expression: string
 }
 
-const ExpressionList: Array<Expression> = [
-    { id: 1, name: `height * scale + error` },
+const HardcodedExpressionList: Array<Expression> = [
+    { id: 1, name: `Linear carbon model`, expression: `height * scale + error` },
     //{ id: 2, name: `H^2 * scale + error` },
-    { id: 3, name: `exp(A + (B * log(H * CD)) + error) / AREA_M2` },
+    { id: 3, name: `Log log carbon model`, expression: `exp(A + (B * log(H * CD)) + error) / AREA_M2` },
     //{ id: 4, name: `log(0.016 + alpha) + (0.204^2/2)`},
     //{ id: 5, name: `2.013 + beta` },
-    { id: 6, name: `sqrt(PI/4 * AREA_M2)` },
+    { id: 6, name: `sqrt(PI/4 * AREA_M2)`, expression: `sqrt(PI/4 * AREA_M2)` },
 ]
 
 export class ExpressionComponent extends BaseComponent {
     projectProps: ProjectProperties
     cache: Map<string, NumericConstant | NumericTileGrid>
     inputCache: Map<string, any>
+    expressionList: Array<Expression>
+    expressionSource: getExpressionsType
 
-    constructor(ProjectProps: ProjectProperties) {
+    constructor(ProjectProps: ProjectProperties, getCustomExpressions: getExpressionsType) {
         super("Expression")
+        this.expressionSource = getCustomExpressions
         this.category = "Arithmetic"
         this.projectProps = ProjectProps
         this.cache = new Map()
@@ -65,6 +73,9 @@ export class ExpressionComponent extends BaseComponent {
     }
 
     async builder(node: Node) {
+
+        const customExpressions = await this.expressionSource()
+        this.expressionList = HardcodedExpressionList.concat(customExpressions)
 
         if (node.data.expressionId === undefined) {
             node.data.expressionId = 1
@@ -74,7 +85,7 @@ export class ExpressionComponent extends BaseComponent {
             new SelectControl(
                 this.editor,
                 'expressionId',
-                () => ExpressionList,
+                () => this.expressionList,
                 () => this.updateInputs(node),
                 "Expression"
             )
@@ -83,6 +94,11 @@ export class ExpressionComponent extends BaseComponent {
         this.calculateVariables(node)
 
         node.addOutput(new Output('out', 'Output', numericNumberDataSocket))
+
+
+        node.data.expression = this.getExpression(node.data.expressionId as number) as string
+
+        node.addControl(new LabelControl("expression"))
 
         //node.addControl(new PreviewControl(() =>
         //    node.meta.output as any || new NumericTileGrid(0, 0, 0, 1, 1)
@@ -94,9 +110,9 @@ export class ExpressionComponent extends BaseComponent {
 
     getExpression(expressionId: number | string): string | undefined {
 
-        let r = ExpressionList.find(a => a.id == expressionId)
+        let r = this.expressionList.find(a => a.id == expressionId)
 
-        return r?.name;
+        return r?.expression;
     }
 
     retrieveVariables(node: Node, expression: string): Set<String> {
@@ -113,6 +129,13 @@ export class ExpressionComponent extends BaseComponent {
     calculateVariables(node: Node): void {
         
         const expression = this.getExpression(node.data.expressionId as number) as string
+
+        node.data.expression = expression
+        const label = node.controls.get('expression') as any
+        if(label) label.update()
+
+        console.log(node)
+
         const uniqueSymbols = this.retrieveVariables(node, expression)
 
         const symbolArray = Array.from(uniqueSymbols)

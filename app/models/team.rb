@@ -13,6 +13,7 @@ class Team < ApplicationRecord
 
   has_many :team_permissions
   has_many :permissions, through: :team_permissions
+  has_many :expressions, dependent: :destroy
 
   after_create :assign_permissions
 

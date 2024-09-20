@@ -1,0 +1,27 @@
+<%=
+    form_with(
+        model: [@team, @expression],
+        html: {
+        data: {
+            controller: "form",
+            action: "ajax:error->form#onError",
+        }
+        }
+    ) do |form|
+%>
+    <div class="form-group">
+        <%= form.label :name %>
+        <span data-form-target="error" data-field="name"></span>
+        <%= form.text_field :name, class: 'form-control', data: { "form-target": "field", field: "name" }, placeholder: "Expression name" %>
+    </div>
+
+    <div class="form-group">
+        <%= form.label :expression %>
+        <span data-form-target="error" data-field="value"></span>
+        <%= form.text_field :expression, class: 'form-control', data: { "form-target": "field", field: "expression" }, placeholder: "ex: wx + b" %>
+    </div>
+
+    <%= form.submit "Save", class: "btn btn-primary" %>
+    <%= link_to "Cancel", [@team, :extents], class: "btn btn-secondary" %>
+
+<% end %>

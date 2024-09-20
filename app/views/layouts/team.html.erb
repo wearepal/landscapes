@@ -28,6 +28,14 @@
           <i class="fas fa-map fa-fw"></i>
           Extents
         </div>
+      </div>
+    <% end %>
+    <%= render "sidebar_link", path: [@team, :expressions] do %>
+      <div class="d-flex align-items-center">
+        <div class="flex-grow-1">
+          <i class="fas fa-superscript fa-fw"></i>
+          Expressions
+        </div>
         <span class="badge badge-primary">New!</span>
       </div>
     <% end %>

@@ -14,6 +14,7 @@ import { SaveModel } from './modelling/components/save_model_component'
 import { getDatasets } from './modelling/components/dataset_component'
 import { Extent } from 'ol/extent'
 import { ProjectPermissions } from './project_editor'
+import { getExpressionsType } from './modelling/components/expression_component'
 
 // Rete doesn't export `Transform`, so we have to re-define it ourselves
 export interface Transform {
@@ -42,8 +43,9 @@ export interface ModelViewProps {
   maskLayer: string
   maskCQL: string
   permissions: ProjectPermissions
+  getCustomExpressions: getExpressionsType
 }
-export function ModelView({ visible, initialTransform, setTransform, initialModel, setModel, createOutputLayer, deleteOutputLayer, saveMapLayer, setProcessing, autoProcessing, process, setProcess, saveModel, getDatasets, extent, zoom, mask, maskLayer, maskCQL, permissions }: ModelViewProps) {
+export function ModelView({ visible, initialTransform, setTransform, initialModel, setModel, createOutputLayer, deleteOutputLayer, saveMapLayer, setProcessing, autoProcessing, process, setProcess, saveModel, getDatasets, extent, zoom, mask, maskLayer, maskCQL, permissions, getCustomExpressions }: ModelViewProps) {
   const ref = React.useRef<HTMLDivElement>(null)
   const [editor, setEditor] = React.useState<NodeEditor>()
   const [engine, setEngine] = React.useState<Engine>()
@@ -70,7 +72,7 @@ export function ModelView({ visible, initialTransform, setTransform, initialMode
     })
 
     const engine = new Engine("landscapes@1.0.0")
-    createDefaultComponents(saveMapLayer, saveModel, getDatasets, extent, zoom, mask, maskLayer, maskCQL, permissions).forEach(component => {
+    createDefaultComponents(saveMapLayer, saveModel, getDatasets, extent, zoom, mask, maskLayer, maskCQL, permissions, getCustomExpressions).forEach(component => {
       editor.register(component)
       engine.register(component)
     })
