@@ -19,13 +19,14 @@ interface customFunction {
 }
 
 // functions and constants that are already defined in mathjs therefore don't need to be added as inputs
-const definedFnsCnsts: string[] = [
+export const definedFnsCnsts: string[] = [
     'exp',
     'log',
     'sin',
     'cos',
     'tan',
     'PI',
+    'pi',
     'E',
     'sqrt'
 ]
@@ -33,7 +34,7 @@ const definedFnsCnsts: string[] = [
 
 export type getExpressionsType = () => Promise<Expression[]>
 
-const customFns: customFunction[] = [
+export const customFns: customFunction[] = [
     { name: 'AREA_M2', fn: (x: NumericTileGrid) => getMedianCellSize(x).area },
     { name: 'AREA_KM2', fn: (x: NumericTileGrid) => getMedianCellSize(x).area / 1000000 },
     { name: 'LENGTH_KM', fn: (x: NumericTileGrid) => getMedianCellSize(x).length },
