@@ -1,6 +1,6 @@
 import { Controller } from "stimulus"
 import { isSymbolNode, parse, isFunctionNode } from "mathjs"
-import { definedFnsCnsts } from "../projects/modelling/components/expression_component"
+import { customFns, definedFnsCnsts } from "../projects/modelling/components/expression_component"
 import * as d3 from "d3"
 
 function badgeFor(errors) {
@@ -172,8 +172,11 @@ export default class extends Controller {
         const label = document.createElement("label");
         label.textContent = `${variable}`;
   
+        const isConstant = customFns.find(fn => fn.name === variable)
         const input = document.createElement("input");
-        input.value = 0;
+        input.value = isConstant !== undefined ? isConstant.valueAtZ20 : 0;
+        input.disabled = isConstant !== undefined;
+        input.title = isConstant !== undefined ? `Est Value at Zoom 20. ${isConstant.desc}`: variable;
         //input.type = "number";
         input.className = "form-control";
         input.name = `variable_${variable}`;

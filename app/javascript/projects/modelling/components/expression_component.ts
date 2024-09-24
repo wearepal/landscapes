@@ -5,17 +5,20 @@ import { NumericTileGrid } from "../tile_grid"
 import { SelectControl } from "../controls/select"
 import { numericDataSocket, numericNumberDataSocket } from "../socket_types"
 import { exp, isSymbolNode, parse, parser } from 'mathjs'
-import { PreviewControl } from "../controls/preview"
-import { get, isEqual } from "lodash"
+import { isEqual } from "lodash"
 import { ProjectProperties } from "."
 import { createXYZ } from "ol/tilegrid"
 import { getMedianCellSize } from "./cell_area_component"
 import { NumericConstant } from "../numeric_constant"
-import { LabelControl } from "../controls/label"
+import { MathLabelControl } from "../controls/mathlabel"
 
 interface customFunction {
     name: string
     fn: (x: NumericTileGrid) => number
+
+    // for defining custom expressions
+    valueAtZ20? : number
+    desc? : string
 }
 
 // functions and constants that are already defined in mathjs therefore don't need to be added as inputs
@@ -31,16 +34,16 @@ export const definedFnsCnsts: string[] = [
     'sqrt'
 ]
 
-
 export type getExpressionsType = () => Promise<Expression[]>
 
-export const customFns: customFunction[] = [
-    { name: 'AREA_M2', fn: (x: NumericTileGrid) => getMedianCellSize(x).area },
-    { name: 'AREA_KM2', fn: (x: NumericTileGrid) => getMedianCellSize(x).area / 1000000 },
-    { name: 'LENGTH_KM', fn: (x: NumericTileGrid) => getMedianCellSize(x).length },
-    { name: 'LENGTH_M', fn: (x: NumericTileGrid) => getMedianCellSize(x).length * 1000 },
-]
+const len_m = 24 // length of a cell in meters at zoom 20
 
+export const customFns: customFunction[] = [
+    { name: 'AREA_M2', fn: (x: NumericTileGrid) => getMedianCellSize(x).area, desc: 'Cell Area in square meters', valueAtZ20: len_m ** 2 },
+    { name: 'AREA_KM2', fn: (x: NumericTileGrid) => getMedianCellSize(x).area / 1000000, desc: 'Cell Area in square kilometers', valueAtZ20: len_m ** 2 / 1000000 },
+    { name: 'LENGTH_KM', fn: (x: NumericTileGrid) => getMedianCellSize(x).length, desc: 'Cell Length in kilometers', valueAtZ20: len_m / 1000 },
+    { name: 'LENGTH_M', fn: (x: NumericTileGrid) => getMedianCellSize(x).length * 1000, desc: 'Cell Length in meters', valueAtZ20: len_m },
+]
 
 export interface Expression {
     id: number
@@ -99,7 +102,7 @@ export class ExpressionComponent extends BaseComponent {
 
         node.data.expression = this.getExpression(node.data.expressionId as number) as string
 
-        node.addControl(new LabelControl("expression"))
+        node.addControl(new MathLabelControl("expression"))
 
         //node.addControl(new PreviewControl(() =>
         //    node.meta.output as any || new NumericTileGrid(0, 0, 0, 1, 1)
@@ -135,8 +138,6 @@ export class ExpressionComponent extends BaseComponent {
         const label = node.controls.get('expression') as any
         if(label) label.update()
 
-        console.log(node)
-
         const uniqueSymbols = this.retrieveVariables(node, expression)
 
         const symbolArray = Array.from(uniqueSymbols)
@@ -150,8 +151,6 @@ export class ExpressionComponent extends BaseComponent {
 
 
     updateInputs(node: Node) {
-
-        console.log("updating inputs")
 
         node.getConnections().forEach(c => {
             if (c.input.node !== node) {
@@ -177,8 +176,6 @@ export class ExpressionComponent extends BaseComponent {
         if (editorNode === undefined) { return }
 
         const expression = this.getExpression(editorNode.data.expressionId as string) as string
-
-        console.log(expression)
 
         let variables: string[] = []
 
@@ -221,11 +218,7 @@ export class ExpressionComponent extends BaseComponent {
             const customConsts = Array.from(this.retrieveVariables(editorNode, expression)).filter(symb => customFns.map(f => f.name).includes(symb as string))
             const ConstMap = new Map(customConsts.map(c => [c, customFns.find(f => f.name === c)?.fn(t)]))
 
-            console.log(numericConstantOutput)
-
             if (numericConstantOutput) {
-
-                console.log("numeric constant output")
 
                 ConstMap.forEach((v, k) => p.set(k as string, v))
                 variables.forEach(i => p.set(i, (inputs[i][0] as NumericConstant).value))
@@ -242,8 +235,6 @@ export class ExpressionComponent extends BaseComponent {
                 this.inputCache.set(expression, inputs)
 
             }else{
-
-                console.log("tile grid output")
 
                 const out = outputs['out'] = t
 
