@@ -1,0 +1,64 @@
+<%=
+    form_with(
+        model: [@team, @expression],
+        html: {
+        data: {
+            controller: "form",
+            action: "ajax:error->form#onError",
+        }
+        }
+    ) do |form|
+%>
+    <div class="form-group">
+        <%= form.label :name %>
+        <span data-form-target="error" data-field="name"></span>
+        <%= form.text_field :name, class: 'form-control', data: { "form-target": "field", field: "name" }, placeholder: "Expression name" %>
+    </div>
+
+
+
+    <div class="form-group">
+        <%= form.label :expression %>
+        <span data-form-target="error" data-field="value"></span>
+        <%= form.text_field :expression, class: 'form-control', data: { "form-target": "expression", action: "input->form#updateInputs" }, placeholder: "ex: w * x + b" %>
+    </div>
+
+    <div class="card mt-2 mb-2">
+        <div class="card-header d-flex align-items-center justify-content-between">
+            Test expression
+            <a data-toggle="collapse" href="#collapseTest" role="button" aria-expanded="false" aria-controls="collapseTest">
+                <span class="toggle-icon">+</span> <!-- Symbol for toggle -->
+            </a>
+        </div>
+
+        <div class="collapse" id="collapseTest">
+            <div class="card-body">
+                Please use the area below to test your new expression with some sample data. The result will appear on the side, entering a range (ex: 0-100) will generate a graph.
+                <div class="row p-2">
+                    <div class="col-md-4">
+                        <div data-form-target="inputContainer"></div>
+                    </div>
+                    <div class="col">
+                        <div data-form-target="result" class="result-box"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <%= form.submit "Save", class: "btn btn-primary" %>
+    <%= link_to "Cancel", [@team, :extents], class: "btn btn-secondary" %>    
+
+    <script>
+        document.querySelector('[href="#collapseTest"]').addEventListener('click', function() {
+            var icon = this.querySelector('.toggle-icon');
+            if (icon.innerHTML === "+") {
+                icon.innerHTML = "-";
+            } else {
+                icon.innerHTML = "+";
+            }
+        });
+    </script>
+
+<% end %>
+

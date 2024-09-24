@@ -14,7 +14,7 @@ import { BarChartComponent } from "./bar_chart_component"
 import { DistanceMapComponent } from "./distance_map_component"
 import { CategoricalComponent } from "./categorical_component"
 import { DigitalModelComponent } from "./digital_model_component"
-import { ExpressionComponent } from "./expression_component"
+import { ExpressionComponent, getExpressionsType } from "./expression_component"
 import { NumericDatasetToNumberComponent } from "./numeric_dataset_to_numeric_component"
 import { SaveModelOutputComponent, SaveModel } from "./save_model_component"
 import { PrecompiledModelComponent, getDatasets } from "./dataset_component"
@@ -46,7 +46,7 @@ export interface ProjectProperties {
   maskCQL: string
 }
 
-export function createDefaultComponents(saveMapLayer: SaveMapLayer, saveModel: SaveModel, getDatasets: getDatasets, extent: Extent, zoom: number, mask: boolean, maskLayer: string, maskCQL: string, permissions: ProjectPermissions): BaseComponent[] {
+export function createDefaultComponents(saveMapLayer: SaveMapLayer, saveModel: SaveModel, getDatasets: getDatasets, extent: Extent, zoom: number, mask: boolean, maskLayer: string, maskCQL: string, permissions: ProjectPermissions, getCustomExpressions: getExpressionsType): BaseComponent[] {
 
     const projectProps: ProjectProperties = { extent, zoom, mask, maskLayer, maskCQL }
 
@@ -102,7 +102,7 @@ export function createDefaultComponents(saveMapLayer: SaveMapLayer, saveModel: S
 
       // Arithmetic
       new MaskNumericDataComponent(),
-      new ExpressionComponent(projectProps),
+      new ExpressionComponent(projectProps, getCustomExpressions),
       new BinaryOpComponent('Min', '', numericNumberDataSocket, numericNumberDataSocket, 'Arithmetic', projectProps),
       new BinaryOpComponent('Max', '', numericNumberDataSocket, numericNumberDataSocket, 'Arithmetic', projectProps),
       new VariadicOpComponent('Sum', '∑', numericDataSocket, numericDataSocket, 'Arithmetic', 'Sum all inputs'),
