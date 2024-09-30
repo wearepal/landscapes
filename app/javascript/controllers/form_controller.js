@@ -81,7 +81,7 @@ export default class extends Controller {
 
       try {
         const result = parse(expression).evaluate(scope)
-        this.resultTarget.innerHTML = !isNaN(result) ? result : "..."
+        this.resultTarget.innerHTML = !isNaN(result) ? `<div class="p-3"> Result: ${result} </div>` : "..."
       } catch (error) {
         this.resultTarget.innerHTML = "Error"
       }

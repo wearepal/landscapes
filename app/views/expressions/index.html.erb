@@ -13,9 +13,14 @@
     </div>
 
     <% @team_expressions.sort_by { |extent| extent.name.downcase }.each do |expression| %>
-        <div class="list-group-item list-group-item-action align-items-center" data-filter-target="item" style="display: flex;">
-            <div class="d-flex align-items-center justify-content-between">
-                <%= expression.name %> 
+        <div class="list-group-item list-group-item-action align-items-center" data-filter-target="item" style="display: flex; justify-content: space-between;">
+            <div class="d-flex align-items-center">
+                <%= expression.name %>
+            </div>
+            <div class="ms-auto">
+                <%= link_to expression_path(expression.id), method: :delete, data: { confirm: "Are you sure you want to delete '#{expression.name}'?" }, class: "px-3 py-2 text-danger" do %>
+                    <i class="fas fa-trash-alt"></i>
+                <% end %>
             </div>
         </div>
     <% end %>
