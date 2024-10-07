@@ -5,6 +5,7 @@ import { getArea } from "ol/sphere"
 import { fromExtent } from "ol/geom/Polygon"
 import { getColorStops } from "../reify_layer/model_output"
 import { re, sum } from "mathjs"
+import { Geometry } from "ol/geom"
 
 type Color = [number, number, number, number]
 
@@ -63,14 +64,16 @@ function medianFromMap(arr: [number, number][], total: number): number | undefin
 }
 
 let currentExtent: Extent = [0, 0, 0, 0]
+let currentShape: Geometry | null = null
 const chartDataCache = new Map<BooleanTileGrid | NumericTileGrid | CategoricalTileGrid, ChartData>()
 
-export function extentToChartDataCached(colors: Color[] | undefined, model: BooleanTileGrid | NumericTileGrid | CategoricalTileGrid, extent: Extent, fillType: string | undefined, histogram_bins: number): ChartData {
+export function extentToChartDataCached(colors: Color[] | undefined, model: BooleanTileGrid | NumericTileGrid | CategoricalTileGrid, extent: Extent, fillType: string | undefined, histogram_bins: number, shape: Geometry | null): ChartData {
 
-    if(extent !== currentExtent) {
+    if(extent !== currentExtent || shape !== currentShape) {
         // if the extent has changed, clear the cache
         chartDataCache.clear()
         currentExtent = extent
+        currentShape = shape
     }
 
     if(chartDataCache.has(model)) {
@@ -80,7 +83,7 @@ export function extentToChartDataCached(colors: Color[] | undefined, model: Bool
 
             // if the histogram bins have changed, recalculate the chart data to reflect the new bins
 
-            const newChartData = extentToChartData(colors, model, extent, fillType, histogram_bins)
+            const newChartData = extentToChartData(colors, model, extent, fillType, histogram_bins, shape)
             chartDataCache.set(model, newChartData)
 
             return newChartData
@@ -100,7 +103,7 @@ export function extentToChartDataCached(colors: Color[] | undefined, model: Bool
 
         }
     }else{
-        const chartData = extentToChartData(colors, model, extent, fillType, histogram_bins)
+        const chartData = extentToChartData(colors, model, extent, fillType, histogram_bins, shape)
         chartDataCache.set(model, chartData)
         return chartData
     }
@@ -154,7 +157,7 @@ function modifyChartDataColours(colors: Color[] | undefined, fillType: string | 
 
 }
 
-export function extentToChartData(colors: Color[] | undefined, model: BooleanTileGrid | NumericTileGrid | CategoricalTileGrid, extent: Extent, fillType: string | undefined, histogram_bins: number): ChartData {
+export function extentToChartData(colors: Color[] | undefined, model: BooleanTileGrid | NumericTileGrid | CategoricalTileGrid, extent: Extent, fillType: string | undefined, histogram_bins: number, shape: Geometry | null): ChartData {
 
     const tileGrid = createXYZ()
     const outputTileRange = tileGrid.getTileRangeForExtentAndZ(extent, model.zoom)
@@ -165,6 +168,8 @@ export function extentToChartData(colors: Color[] | undefined, model: BooleanTil
 
     for (let x = outputTileRange.minX; x <= outputTileRange.maxX; x++) {
         for (let y = outputTileRange.minY; y <= outputTileRange.maxY; y++) {
+
+            if (shape && !shape.intersectsExtent(tileGrid.getTileCoordExtent([model.zoom, x, y]))) continue
 
             if (model instanceof CategoricalTileGrid) {
 

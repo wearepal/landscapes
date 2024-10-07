@@ -8,6 +8,7 @@ import './analysis_panel.css'
 import { getArea } from 'ol/sphere'
 import { fromExtent } from 'ol/geom/Polygon'
 import { TeamExtentData } from './project_editor'
+import { Geometry } from 'ol/geom'
 
 export type ChartType = "pie" | "hist" | "bar" | "kde"
 
@@ -142,6 +143,7 @@ const ChartLegend = ({ chartData, sourceType }: ChartLegendProps) => {
 interface AnalysisPanelProps {
     setShowAP: () => void
     selectedArea: Extent | null
+    selectedAreaShape: Geometry | null
     setSelectedArea: (extent: Extent | null) => void
     selectedLayer: Layer | null
     layerStats: (layer: DatasetLayer | ModelOutputLayer) => BooleanTileGrid | NumericTileGrid | CategoricalTileGrid | null
@@ -159,7 +161,7 @@ ChartTypeArray.set("NumericTileGrid", ["hist"])
 
 
 
-export const AnalysisPanel = ({ selectedArea, setSelectedArea, setShowAP, selectedLayer, layerStats, currentTab, projectExtent, ExtentList }: AnalysisPanelProps) => {
+export const AnalysisPanel = ({ selectedArea, selectedAreaShape, setSelectedArea, setShowAP, selectedLayer, layerStats, currentTab, projectExtent, ExtentList }: AnalysisPanelProps) => {
 
     const [chartType, setChartType] = React.useState<ChartType>()
     const [chartData, setChartData] = React.useState<ChartData>()
@@ -181,7 +183,7 @@ export const AnalysisPanel = ({ selectedArea, setSelectedArea, setShowAP, select
 
         if (data !== null && selectedArea && (selectedLayer?.type == "ModelOutputLayer" || selectedLayer?.type == "DatasetLayer")) {
 
-            setChartData(extentToChartDataCached(selectedLayer.colors, data, selectedArea, selectedLayer.fill, bins))
+            setChartData(extentToChartDataCached(selectedLayer.colors, data, selectedArea, selectedLayer.fill, bins, selectedAreaShape))
 
             let dataType: string | undefined = undefined
 

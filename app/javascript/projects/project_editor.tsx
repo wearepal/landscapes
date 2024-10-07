@@ -15,6 +15,8 @@ import { TileGridJSON } from './modelling/tile_grid'
 import { AnalysisPanel } from './analysis_panel'
 import { Extent } from 'ol/extent'
 import { currentExtent, zoomFromExtent } from './modelling/bounding_box'
+import MultiPolygon from 'ol/geom/MultiPolygon'
+import { Geometry } from 'ol/geom'
 
 export enum Tab {
   MapView,
@@ -66,6 +68,7 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
 
   const [showAP, setShowAP] = React.useState(false)
   const [selectedArea, setSelectedArea] = React.useState<Extent | null>(null)
+  const [selectedAreaShape, setSelectedAreaShape] = React.useState<Geometry | null>(null)
   const [selectedLayer, setSelectedLayer] = React.useState<Layer | null>(null)
 
   // Set the initial map view zoom and center to the project extent.
@@ -170,6 +173,8 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
             }
             setSelectedArea={setSelectedArea}
             selectedArea={selectedArea}
+            setSelectedAreaShape={setSelectedAreaShape}
+            selectedAreaShape={selectedAreaShape}
             selected={showAP}
             setSelected={setShowAP}
             projectExtent={projectExtent}
@@ -191,6 +196,7 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
             <AnalysisPanel
               setShowAP={() => setShowAP(false)}
               selectedArea={selectedArea}
+              selectedAreaShape={selectedAreaShape}
               setSelectedArea={setSelectedArea}
               selectedLayer={selectedLayer}
               layerStats={(layer: ModelOutputLayer | DatasetLayer) => {

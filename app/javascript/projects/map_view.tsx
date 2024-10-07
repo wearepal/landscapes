@@ -12,8 +12,10 @@ import { BooleanTileGrid, CategoricalTileGrid, NumericTileGrid } from './modelli
 import VectorSource from 'ol/source/Vector'
 import { Fill, Stroke, Style } from 'ol/style'
 import { fromExtent } from 'ol/geom/Polygon'
-import { DragBox, Select } from 'ol/interaction'
+import { DragBox, Draw, Select } from 'ol/interaction'
 import { platformModifierKeyOnly } from 'ol/events/condition'
+import { Geometry, MultiPolygon } from 'ol/geom'
+import { set } from 'lodash'
 
 function getLayerExtent(layer: olBaseLayer) {
   if (layer instanceof VectorLayer) {
@@ -74,7 +76,9 @@ interface MapViewProps {
   loadTeamDataset: (layer: DatasetLayer) => void
 
   selectedArea: Extent | null
+  selectedAreaShape: Geometry | null
   setSelectedArea: (area: Extent | null) => void
+  setSelectedAreaShape: (shape: Geometry | null) => void
 
   selected: boolean
   setSelected: (boolean) => void
@@ -82,7 +86,7 @@ interface MapViewProps {
   projectExtent: Extent
   showProjectExtent: boolean
 }
-export const MapView = ({ layers, dbModels, initialZoom, setZoom, initialCenter, setCenter, modelOutputCache, datasetCache, loadTeamDataset, selectedArea, setSelectedArea, selected, setSelected, projectExtent, showProjectExtent }: MapViewProps) => {
+export const MapView = ({ layers, dbModels, initialZoom, setZoom, initialCenter, setCenter, modelOutputCache, datasetCache, loadTeamDataset, selectedArea, selectedAreaShape, setSelectedArea, setSelectedAreaShape  ,selected, setSelected, projectExtent, showProjectExtent }: MapViewProps) => {
   const mapRef = React.useRef<HTMLDivElement>()
   const [map, setMap] = React.useState<Map | null>(null)
   const [allLayersVisible, setAllLayersVisible] = React.useState(true)
@@ -165,7 +169,7 @@ export const MapView = ({ layers, dbModels, initialZoom, setZoom, initialCenter,
           })
         })
       })
-      const polygon = fromExtent(selectedArea)
+      const polygon = selectedAreaShape ? selectedAreaShape : fromExtent(selectedArea)
 
       vectorSource.clear()
       vectorSource.addFeature(new Feature(polygon))
@@ -200,7 +204,27 @@ export const MapView = ({ layers, dbModels, initialZoom, setZoom, initialCenter,
       condition: platformModifierKeyOnly
     })
 
-    map.addInteraction(dragBox)
+    const drawInteraction = new Draw({
+      source: new VectorSource(),
+      type: 'Polygon',
+    })
+
+    map.addInteraction(drawInteraction)
+
+    drawInteraction.on('drawend', (e) => {
+      const feature = e.feature
+      const geom = feature.getGeometry()!
+
+      setSelectedArea(geom.getExtent())
+      setSelectedAreaShape(geom)
+
+      if (!selected) setSelected(true)
+    })
+
+    drawInteraction.on('drawstart', () => {
+      setSelectedArea(null)
+      setSelectedAreaShape(null)
+    })
 
     dragBox.on('boxend', () => {
       setSelectedArea(dragBox.getGeometry().getExtent())
