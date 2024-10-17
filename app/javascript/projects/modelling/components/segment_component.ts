@@ -15,7 +15,7 @@ async function retrieveSegmentationMasks(prompts: string, threshold: string, pro
 
     const outputTileRange = tileGrid.getTileRangeForExtentAndZ(projectProps.extent, projectProps.zoom)
 
-    const segs = await fetch("http://127.0.0.1:5001/v1/segment?" + new URLSearchParams(
+    const segs = await fetch("http://landscapes.wearepal.ai/api/v1/segment?" + new URLSearchParams(
         {
             labels: prompts,
             threshold,
