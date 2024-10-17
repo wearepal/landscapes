@@ -37,6 +37,7 @@ import { IMDComponent } from "./imd_component"
 import { HedgerowComponent } from "./hedgerow_component"
 import { ProjectPermissions } from "../../project_editor"
 import { SoilComponent } from "./soil_component"
+import { SegmentComponent } from "./segment_component"
 
 export interface ProjectProperties {
   extent: Extent
@@ -75,6 +76,7 @@ export function createDefaultComponents(saveMapLayer: SaveMapLayer, saveModel: S
       new ATIComponent(projectProps),
       new DesignationsComponent(projectProps),
       new SoilComponent(projectProps),
+      new SegmentComponent(projectProps),
 
       // Outputs
       new MapLayerComponent(saveMapLayer),
