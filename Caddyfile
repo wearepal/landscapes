@@ -5,6 +5,8 @@ $LMTADDRESS {
   reverse_proxy web:3000 {
     lb_try_duration 30s
   }
+
+  reverse_proxy /api* landscapes-services:5001
   
   encode gzip
   log

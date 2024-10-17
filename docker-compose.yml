@@ -23,6 +23,7 @@ services:
       - caddy_traefik
       - caddy_astute
       - default
+      - landscapes_services
 
   db:
     image: postgres:14
@@ -101,4 +102,6 @@ networks:
   caddy_traefik:
     external: true
   caddy_astute:
+    external: true
+  landscapes_services:
     external: true
