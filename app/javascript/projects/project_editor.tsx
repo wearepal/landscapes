@@ -24,6 +24,7 @@ export enum Tab {
 export interface ProjectPermissions {
   DefraHedgerows: boolean
   KewRgb25cm: boolean
+  KewSamples: boolean
 }
 
 export interface TeamExtentData {

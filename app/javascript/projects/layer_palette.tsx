@@ -101,20 +101,23 @@ export const LayerPalette = ({ addLayer, hide, dbModels, getTeamDatasets, teamNa
             }}
           />
         </Section> */}
-        <Section title="Kew Samples">
-          {
-            <AddLayerButton
-                addLayer={addLayer}
-                prototype={{
-                  type: "KewPointLayer",
-                  name: "Wakehurst Soil",
-                  identifier: "kew:wakehurst_soil_rp3857",
-                  visible: true,
-                  opacity: 1,
-                }}
-            />
-          }
-        </Section>
+        {
+          permissions.KewSamples &&
+          <Section title="Kew Samples">
+            {
+              <AddLayerButton
+                  addLayer={addLayer}
+                  prototype={{
+                    type: "KewPointLayer",
+                    name: "Wakehurst Soil",
+                    identifier: "kew:wakehurst_soil_rp3857",
+                    visible: true,
+                    opacity: 1,
+                  }}
+              />
+            }
+          </Section>
+        }
         <Section title="Ancient Tree Inventory">
           <AddLayerButton
             addLayer={addLayer}
@@ -345,6 +348,7 @@ export const LayerPalette = ({ addLayer, hide, dbModels, getTeamDatasets, teamNa
           </Section>
         }
         {
+          (dbModels.mapTileLayers.length > 0 || permissions.KewRgb25cm) &&
           <Section title="Aerial/Satellite imagery">
             {permissions.KewRgb25cm &&          
               <AddLayerButton

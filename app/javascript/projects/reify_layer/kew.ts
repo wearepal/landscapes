@@ -7,7 +7,6 @@ import GeoJSON from "ol/format/GeoJSON"
 import { bbox } from "ol/loadingstrategy"
 import { Fill, RegularShape, Stroke, Style, Text } from "ol/style"
 import { Map, Overlay } from "ol"
-import CircleStyle from "ol/style/Circle"
 
 
 
