@@ -1,12 +1,13 @@
 import BaseLayer from "ol/layer/Base"
-import { KewLayer } from "../state"
+import { KewLayer, KewPointLayer } from "../state"
 import VectorLayer from "ol/layer/Vector"
 import { memoize } from "lodash"
 import VectorSource from "ol/source/Vector"
 import GeoJSON from "ol/format/GeoJSON"
 import { bbox } from "ol/loadingstrategy"
-import { Fill, Stroke, Style, Text } from "ol/style"
+import { Fill, RegularShape, Stroke, Style, Text } from "ol/style"
 import { Map, Overlay } from "ol"
+import CircleStyle from "ol/style/Circle"
 
 
 
@@ -19,6 +20,8 @@ const getSource = memoize((location: string) => {
         strategy: bbox,
         attributions: '&copy; <a href="https://www.kew.org/">Kew</a> Partners',
     })
+
+    console.log(source)
 
     return source
 
@@ -59,6 +62,32 @@ const getStyle = (layer: KewLayer, zoom: number | undefined) => (
     }
 )
 
+const getPointStyle = (map: Map) => (
+    (feature) => {
+
+        const props = feature.getProperties()
+        const metric = props.crbn_st || -1
+        const realWorldSize = 4; 
+        const resolution = map.getView().getResolution()! 
+        const pixelSize = realWorldSize / resolution;
+
+        return new Style({
+            image: new RegularShape({
+                points: 4, 
+                radius: pixelSize, 
+                angle: Math.PI / 4,
+                fill: new Fill({
+                    color: `rgba(${metric * 2},0,0,${metric === -1 ? 0 : 1 })` 
+                }),
+                stroke: new Stroke({
+                    color: 'rgba(0,0,0,.1)',
+                    width: 1
+                })
+            })
+        })
+    }
+)
+
 
 export function reifyKewLayer (layer: KewLayer, existingLayer: BaseLayer | null , map: Map) {
 
@@ -69,4 +98,13 @@ export function reifyKewLayer (layer: KewLayer, existingLayer: BaseLayer | null 
 
     return vectLayer
 
+}
+
+export function reifyKewPointLayer(layer: KewPointLayer, existingLayer: BaseLayer | null, map: Map) {
+    const vectLayer = new VectorLayer({
+        source: getSource(layer.identifier),
+        style: getPointStyle(map)
+    })
+
+    return vectLayer
 }

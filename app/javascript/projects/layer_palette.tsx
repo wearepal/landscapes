@@ -103,86 +103,16 @@ export const LayerPalette = ({ addLayer, hide, dbModels, getTeamDatasets, teamNa
         </Section> */}
         <Section title="Kew Samples">
           {
-            Array<{ name: string, location: string, metric: string, loc : string | undefined, periodOptions: KewOption[], typeOptions: KewOption[] }>(
-              {
-                name: "SSSI Woodland",
-                location: "kew:sssi_wood_os_bng_04m_grid",
-                metric: "grasses",
-                loc: undefined,
-                periodOptions: [
-                  { value: "Summer22", label: "Summer 22", selected: false },
-                  { value: "Autumn22", label: "Autumn 22", selected: false },
-                  { value: "Spring23", label: "Spring 23", selected: false },
-                  { value: "Summer23", label: "Summer 23", selected: false },
-                  { value: "Autumn23", label: "Autumn 23", selected: true },
-                ],
-                typeOptions: [
-                  { value: "grasses", label: "Grass", max : 100 },
-                  { value: "forbs", label: "Forbs" , max : 100},
-                  { value: "bryos", label: "Bryos" , max : 100},
-                  { value: "leaf_litter", label: "Leaf Liter", max : 100 },
-                  { value: "bare_ground", label: "Bare Ground" , max : 100},
-                  { value: "canopy_cover", label: "Canopy" , max : 100},
-                ]
-              },
-              {
-                name: "Young Conifer",
-                location: "kew:young_conifer_os_bng_04m_grid",
-                metric: "totalCarbon",
-                loc: "DenseCon",
-                periodOptions: [
-                  { value: "Sp21", label: "Spring 2022", selected: false },
-                  { value: "Aut21", label: "Autumn 2021", selected: false },
-                  { value: "Su22", label: "Summer 2022", selected: false },
-                  { value: "Su22_2", label: "Summer 2022 - 2" , selected: false},
-                  { value: "Aut22", label: "Autumn 2022", selected: false },
-                  { value: "Sp23", label: "Spring 2023" , selected: false},
-                  { value: "Su23", label: "Summer 2023", selected: true }
-                ],
-                typeOptions: [
-                  { value: "totalCarbon", label: "Total Carbon", max : 7},
-                  { value: "soil_density", label: "Soil Density", max : 1200 },
-                  { value: "pH", label: "pH", max : 14},
-                  { value: "dry_matter", label: "Dry Matter", max : 100},
-                ]
-              },
-              {
-                name: "Coronation Meadow",
-                location: "kew:coronation_meadow_os_bng_02m_grid",
-                metric: "totalCarbon",
-                loc: "Meadow",
-                periodOptions: [
-                  { value: "Sp21", label: "Spring 2022", selected: false },
-                  { value: "Aut21", label: "Autumn 2021", selected: false },
-                  { value: "Su22", label: "Summer 2022", selected: false },
-                  { value: "Su22_2", label: "Summer 2022 - 2" , selected: false},
-                  { value: "Aut22", label: "Autumn 2022", selected: false },
-                  { value: "Sp23", label: "Spring 2023" , selected: false},
-                  { value: "Su23", label: "Summer 2023", selected: true }
-                ],
-                typeOptions: [
-                  { value: "totalCarbon", label: "Total Carbon", max : 7},
-                  { value: "soil_density", label: "Soil Density", max : 1200 },
-                  { value: "pH", label: "pH", max : 14},
-                  { value: "dry_matter", label: "Dry Matter", max : 100},
-                ]
-              }
-            ).map(({ name, location, metric, periodOptions, typeOptions, loc }) =>
-              <AddLayerButton
+            <AddLayerButton
                 addLayer={addLayer}
                 prototype={{
-                  type: "KewLayer",
-                  name,
-                  location,
-                  metric,
-                  periodOptions,
-                  typeOptions,
+                  type: "KewPointLayer",
+                  name: "Wakehurst Soil",
+                  identifier: "kew:wakehurst_soil_rp3857",
                   visible: true,
                   opacity: 1,
-                  loc
                 }}
-              />
-            )
+            />
           }
         </Section>
         <Section title="Ancient Tree Inventory">

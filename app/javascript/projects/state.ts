@@ -76,6 +76,11 @@ export interface KewLayer extends BaseLayer {
   loc?: string
 }
 
+export interface KewPointLayer extends BaseLayer {
+  type: "KewPointLayer"
+  identifier: string
+}
+
 export interface NevoLayer extends BaseLayer {
   type: "NevoLayer"
   level: NevoLevel
@@ -132,7 +137,7 @@ export interface GeoserverLayer extends BaseLayer {
   yOffset?: number
 }
 
-export type Layer = OsmLayer | MapTileLayer | OverlayLayer | NevoLayer | CehLandCoverLayer | ModelOutputLayer | DatasetLayer | CropMapLayer | AtiLayer | ShapeLayer | BoundaryLayer | GeoserverLayer | KewLayer | ORValLayer | IMDLayer
+export type Layer = OsmLayer | MapTileLayer | OverlayLayer | NevoLayer | CehLandCoverLayer | ModelOutputLayer | DatasetLayer | CropMapLayer | AtiLayer | ShapeLayer | BoundaryLayer | GeoserverLayer | KewLayer | ORValLayer | IMDLayer | KewPointLayer
 
 export interface Project {
   name: string

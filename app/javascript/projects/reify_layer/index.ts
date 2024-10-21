@@ -15,7 +15,7 @@ import { reifyAtiLayer } from './ati'
 import { reifyShapeFileLayer } from './shapefile'
 import { reifyBoundaryLayer } from './boundary'
 import { reifyGeoserverWMSLayer } from './geoserver'
-import { reifyKewLayer } from './kew'
+import { reifyKewLayer, reifyKewPointLayer } from './kew'
 import { reifyOrvalLayer } from './orval'
 import { reifyIMDLayer } from './imd'
 
@@ -37,6 +37,7 @@ export const reifyLayer = (layer: Layer, existingLayer: BaseLayer | null, dbMode
     case "KewLayer": return reifyKewLayer(layer, existingLayer, map)
     case "ORValLayer": return reifyOrvalLayer(layer, existingLayer, map)
     case "IMDLayer": return reifyIMDLayer(layer, existingLayer, map)
+    case "KewPointLayer": return reifyKewPointLayer(layer, existingLayer, map)
     default: {
       // Ensure this switch statement is exhaustive
       const unreachable: never = layerType
