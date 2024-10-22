@@ -1,5 +1,5 @@
 import BaseLayer from "ol/layer/Base"
-import { KewLayer, KewPointLayer } from "../state"
+import { KewLayer, KewOption, KewPointLayer } from "../state"
 import VectorLayer from "ol/layer/Vector"
 import { memoize } from "lodash"
 import VectorSource from "ol/source/Vector"
@@ -7,8 +7,111 @@ import GeoJSON from "ol/format/GeoJSON"
 import { bbox } from "ol/loadingstrategy"
 import { Fill, RegularShape, Stroke, Style, Text } from "ol/style"
 import { Map, Overlay } from "ol"
+import { getColorStops } from "./model_output"
+import { findColor } from "../analysis_panel_tools/subsection"
 
+export const KewPointOptions: KewOption[] = [
+    {
+        value: "carbon",
+        label: "Carbon",
+    },
+    {
+        value: "nitrogn",
+        label: "Nitrogen",
+    },
+    {
+        value: "ph",
+        label: "pH",
+        max: 14
+    },
+    {
+        value: "sl_dnst",
+        label: "Soil Density"
+    },
+    {
+        value: "dry_mtt",
+        label: "Dry Matter"
+    },
+    {
+        value: "sodium",
+        label: "Sodium"
+    },
+    {
+        value: "calcium",
+        label: "Calcium"
+    },
+    {
+        value: "magnesm",
+        label: "Magnesium"
+    },
+    {
+        value: "potassm",
+        label: "Potassium"
+    },
+    {
+        value: "sulphat",
+        label: "Sulphate"
+    },
+    {
+        value: "phsphrs",
+        label: "Phosphorus"
+    },
+    {
+        value: "cndctvt",
+        label: "cndctvt"
+    },
+    {
+        value: "ctn_xch",
+        label: "ctn_xch"
+    },
+    {
+        value: "sand",
+        label: "Sand"
+    },
+    {
+        value: "silt",
+        label: "Silt"
+    },
+    {
+        value: "clay",
+        label: "Clay"
+    },
+    {
+        value: "avrg_dp",
+        label: "Average Depth"
+    },
+    {
+        value: "crbn_st",
+        label: "Carbon Stock"
+    },
+    {
+        value: "cn_rati",
+        label: "cn_rati"
+    },
+    {
+        value: "np_rati",
+        label: "np_rati"
+    }
+]
 
+function getMinMaxMetric(vectorSource: VectorSource, metricKey: string) {
+    const features = vectorSource.getFeatures()
+
+    const metricValues = features
+        .map(feature => feature.getProperties()[metricKey])
+        .filter(value => value !== undefined && value !== null)
+
+    if (metricValues.length === 0) {
+        return { min: null, max: null };
+    }
+
+    const min = Math.min(...metricValues);
+    const max = Math.max(...metricValues);
+
+    return { min, max };
+}
+
+// Collection of functions that reify a KewLayer or KewPointLayer into an OpenLayers layer
 
 const getSource = memoize((location: string) => {
     const source = new VectorSource({
@@ -19,8 +122,6 @@ const getSource = memoize((location: string) => {
         strategy: bbox,
         attributions: '&copy; <a href="https://www.kew.org/">Kew</a> Partners',
     })
-
-    console.log(source)
 
     return source
 
@@ -61,14 +162,23 @@ const getStyle = (layer: KewLayer, zoom: number | undefined) => (
     }
 )
 
-const getPointStyle = (map: Map) => (
+const getPointStyle = (map: Map, layer: KewPointLayer, min: number | null, max: number | null, colMap: any[]) => (
     (feature) => {
 
         const props = feature.getProperties()
-        const metric = props.crbn_st || -1
+        const metric = props[layer.metric.value] || -99999
         const realWorldSize = 4; 
         const resolution = map.getView().getResolution()! 
         const pixelSize = realWorldSize / resolution;
+
+        let normalizedMetric = 0
+
+        if(min !== null && max !== null) {
+            normalizedMetric = (metric - min) / (max - min)
+            normalizedMetric = isNaN(normalizedMetric) || metric === -99999 ? 0 : normalizedMetric
+        }
+
+        const col = findColor(normalizedMetric, colMap)
 
         return new Style({
             image: new RegularShape({
@@ -76,11 +186,11 @@ const getPointStyle = (map: Map) => (
                 radius: pixelSize, 
                 angle: Math.PI / 4,
                 fill: new Fill({
-                    color: `rgba(${metric * 2},0,0,${metric === -1 ? 0 : 1 })` 
-                }),
+                    color: `rgba(${col[0]}, ${col[1]}, ${col[2]}, ${metric === -99999 ? 0 : 1})`}
+                ),
                 stroke: new Stroke({
-                    color: 'rgba(0,0,0,.1)',
-                    width: 1
+                    color: 'rgba(0,0,0,1)',
+                    width: .3 / resolution
                 })
             })
         })
@@ -100,10 +210,21 @@ export function reifyKewLayer (layer: KewLayer, existingLayer: BaseLayer | null 
 }
 
 export function reifyKewPointLayer(layer: KewPointLayer, existingLayer: BaseLayer | null, map: Map) {
-    const vectLayer = new VectorLayer({
-        source: getSource(layer.identifier),
-        style: getPointStyle(map)
+
+    const vectorSource = getSource(layer.identifier)
+
+    const { min, max } = layer.metric.max ? {min: 0, max: layer.metric.max}  : getMinMaxMetric(vectorSource, layer.metric.value)
+
+    const colMap = getColorStops(layer.fill, 100).reverse()
+
+    layer.min = min ?? 0
+    layer.max = max ?? 0
+
+    const v = new VectorLayer({
+        source: vectorSource,
+        style: getPointStyle(map, layer, min, max, colMap)
     })
 
-    return vectLayer
+    return v
+
 }

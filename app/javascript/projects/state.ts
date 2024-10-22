@@ -79,6 +79,11 @@ export interface KewLayer extends BaseLayer {
 export interface KewPointLayer extends BaseLayer {
   type: "KewPointLayer"
   identifier: string
+  metric: KewOption
+  metricOpts: KewOption[]
+  min?: number
+  max?: number
+  fill: fillType
 }
 
 export interface NevoLayer extends BaseLayer {

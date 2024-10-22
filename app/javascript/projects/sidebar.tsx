@@ -2,11 +2,12 @@ import * as React from 'react'
 import './sidebar.css'
 import { ReactSortable } from 'react-sortablejs'
 import { nevoLevelNames, nevoPropertyNames } from './nevo'
-import { AtiLayer, CropMapLayer, DatasetLayer, IMDLayer, KewLayer, Layer, MLLayer, ModelOutputLayer, NevoLayer, OverlayLayer, ShapeLayer, State } from './state'
+import { AtiLayer, CropMapLayer, DatasetLayer, IMDLayer, KewLayer, KewPointLayer, Layer, ModelOutputLayer, NevoLayer, OverlayLayer, ShapeLayer, State } from './state'
 import { iconForLayerType } from "./util"
 import { getColorStops } from './reify_layer/model_output'
 import { tileGridStats } from './modelling/tile_grid'
 import { IMDProperties } from './reify_layer/imd'
+import { KewPointOptions } from './reify_layer/kew'
 
 interface OverlayLayerSettingsProps {
   layer: OverlayLayer
@@ -267,21 +268,53 @@ const IMDLayerSettings = ({ layer, mutate }: IMDLayerSettingsProps) => (
   </>
 )
 
-interface MLLayerSettingsProps {
-  layer: MLLayer
-}
+// interface MLLayerSettingsProps {
+//   layer: MLLayer
+// }
 
-const MLLayerSettings = ({ layer }: MLLayerSettingsProps) => (
-  <details className="mt-3">
-    <summary>Legend</summary>
-    <span className="swatch" style={{ backgroundColor: "#008000" }} /> Hedge<br />
-    <span className="swatch" style={{ backgroundColor: "#ffee00" }} /> Tree<br />
-  </details>
-)
+// const MLLayerSettings = ({ layer }: MLLayerSettingsProps) => (
+//   <details className="mt-3">
+//     <summary>Legend</summary>
+//     <span className="swatch" style={{ backgroundColor: "#008000" }} /> Hedge<br />
+//     <span className="swatch" style={{ backgroundColor: "#ffee00" }} /> Tree<br />
+//   </details>
+// )
 
 interface KewLayerSettingsProps {
   layer: KewLayer
   mutate: (data: any) => void
+}
+
+interface KewPointLayerSettingsProps {
+  layer: KewPointLayer
+  mutate: (data: any) => void
+}
+
+const KewPointLayerSettings = ({ layer, mutate }: KewPointLayerSettingsProps) => {
+
+  return (
+    <>
+      <div className="d-flex align-items-center mt-3">
+        Property
+        <select className="custom-select ml-3" value={layer.metric.value} onChange={e => mutate({ metric: KewPointOptions.filter(f => f.value === e.target.value)[0] })}>
+          {
+            layer.metricOpts.map(opt =>
+              <option key={opt.value} value={opt.value}>
+                {opt.label}
+              </option>
+            )
+
+          }
+        </select>
+      </div>
+      <div className="d-flex align-items-center mt-3">
+        Fill
+          <select className="custom-select ml-3" value={layer.fill} onChange={e => mutate({ fill: e.target.value })}>
+            {colMapList}
+          </select>
+      </div>
+    </>
+  )
 }
 
 const KewLayerSettings = ({ layer, mutate }: KewLayerSettingsProps) => {
@@ -342,9 +375,17 @@ interface ModelOutputLayerLegendProps {
   getLayerData: (layer: DatasetLayer | ModelOutputLayer) => tileGridStats
   mutateColors: (color: [number, number, number, number][]) => void
   updateBounds: (overrideBounds: boolean, bounds: [min: number, max: number]) => void
+  toggle: boolean
 }
 
-export function Legend({ colors, minValue, maxValue, type, labels, mutateColors, updateBounds, overrideBounds, bounds, zoom, area, length }) {
+export function Legend({ colors, minValue, maxValue, type, labels, mutateColors, updateBounds, overrideBounds, bounds, zoom, area, length, toggleCollapse }) {
+
+  if(toggleCollapse)
+  {
+    return (
+      <></>
+    )
+  }
 
   if (type === undefined) {
     // if layer is still loading stats will be unavailable.
@@ -610,7 +651,7 @@ export function Legend({ colors, minValue, maxValue, type, labels, mutateColors,
 
 }
 
-function ModelOutputLayerLegend({ layer, getLayerData, mutateColors, updateBounds }: ModelOutputLayerLegendProps) {
+function ModelOutputLayerLegend({ layer, getLayerData, mutateColors, updateBounds, toggle }: ModelOutputLayerLegendProps) {
 
   const stats = getLayerData(layer)
 
@@ -630,7 +671,8 @@ function ModelOutputLayerLegend({ layer, getLayerData, mutateColors, updateBound
         bounds={layer.bounds} 
         zoom={stats.zoom} 
         area={stats.area} 
-        length={stats.length} />
+        length={stats.length} 
+        toggleCollapse={toggle}/>
     </div>
   )
 }
@@ -652,10 +694,17 @@ interface GenericLegendProps {
   min: string | number
   max: number | string
   fill: string
+  toggle: boolean
 }
 
-function GenericLegend({ min, max, fill }: GenericLegendProps) {
+function GenericLegend({ min, max, fill, toggle }: GenericLegendProps) {
   // Generic legend component for continuous data
+
+  if(toggle){
+    return (
+      <></>
+    )
+  }
 
   const cols = getColorStops(fill == "greyscale" ? "greys" : fill, 30).filter(c => typeof c !== "number").reverse()
 
@@ -689,6 +738,9 @@ function GenericLegend({ min, max, fill }: GenericLegendProps) {
 
 export const Sidebar = ({ state, selectLayer, mutateLayer, deleteLayer, setLayerOrder, showLayerPalette, hide, getLayerData, selectedLayer, setSelectedLayer }: SidebarProps) => {
   setSelectedLayer(state.selectedLayer === undefined ? null : state.project.layers[state.selectedLayer])
+  const [isLegCollapsed, setIsLegCollapsed] = React.useState<boolean>(false)
+  const toggleLegend = () => setIsLegCollapsed(prevState => !prevState)
+
   return <div className="d-flex flex-column" style={{ width: "300px" }}>
     <div className="px-3 py-2 border-top border-bottom d-flex align-items-center bg-light">
       <div className="flex-grow-1">Layers</div>
@@ -745,9 +797,19 @@ export const Sidebar = ({ state, selectLayer, mutateLayer, deleteLayer, setLayer
       </ReactSortable>
     </div>
     {
-      (selectedLayer?.type == "ModelOutputLayer" || selectedLayer?.type == "DatasetLayer" || selectedLayer?.type == "IMDLayer") &&
+      (selectedLayer?.type == "ModelOutputLayer" || selectedLayer?.type == "DatasetLayer" || selectedLayer?.type == "IMDLayer" || selectedLayer?.type == "KewPointLayer") &&
       (
-        <div className="px-3 py-2 border-top border-bottom bg-light">Layer legend</div>
+        <div className="px-3 py-2 border-top border-bottom bg-light d-flex justify-content-between align-items-center">
+          <span className="flex-grow-1">Layer legend</span>
+          <button className="btn btn-sm btn-link p-0" onClick={toggleLegend}>
+            {
+              isLegCollapsed ? 
+              <i className="fas fa-fw fa-chevron-up text-dark"></i> 
+              : 
+              <i className="fas fa-fw fa-chevron-down text-dark"></i>
+            }
+          </button>
+        </div>
       )
     }
     {
@@ -757,6 +819,7 @@ export const Sidebar = ({ state, selectLayer, mutateLayer, deleteLayer, setLayer
         getLayerData={getLayerData}
         mutateColors={colors => state.selectedLayer !== undefined && mutateLayer(state.selectedLayer, { colors })}
         updateBounds={(overrideBounds, bounds) => state.selectedLayer !== undefined && mutateLayer(state.selectedLayer, { overrideBounds, bounds })}
+        toggle={isLegCollapsed}
       />
     }
     {
@@ -765,6 +828,16 @@ export const Sidebar = ({ state, selectLayer, mutateLayer, deleteLayer, setLayer
         min={`Least (${selectedLayer.property.min}${selectedLayer.property.min == 10 ? "th Decile" : ""})`}
         max={`Most (${selectedLayer.property.max}${selectedLayer.property.min == 10 ? "st Decile" : ""})`}
         fill={selectedLayer.fill}
+        toggle={isLegCollapsed}
+      />
+    }
+    {
+      selectedLayer?.type == "KewPointLayer" && 
+      <GenericLegend
+        min={`${selectedLayer.min ?? "Least"}`}
+        max={`${selectedLayer.max ?? "Most"}`}
+        fill={selectedLayer.fill}
+        toggle={isLegCollapsed}
       />
     }
     <div className="px-3 py-2 border-top border-bottom bg-light">Layer settings</div>
@@ -848,10 +921,6 @@ export const Sidebar = ({ state, selectLayer, mutateLayer, deleteLayer, setLayer
               <ShapeLayerSettings layer={selectedLayer}/>
             }
             {
-              selectedLayer?.type == "MLLayer" &&
-              <MLLayerSettings layer={selectedLayer} />
-            }
-            {
               selectedLayer?.type == "KewLayer" &&
               <KewLayerSettings 
                 layer={selectedLayer} 
@@ -859,6 +928,16 @@ export const Sidebar = ({ state, selectLayer, mutateLayer, deleteLayer, setLayer
                   data => state.selectedLayer !== undefined &&
                   mutateLayer(state.selectedLayer, data)
                 } 
+              />
+            }
+            {
+              selectedLayer?.type == "KewPointLayer" &&
+              <KewPointLayerSettings
+                layer={selectedLayer}
+                mutate={
+                  data => state.selectedLayer !== undefined &&
+                  mutateLayer(state.selectedLayer, data)
+                }
               />
             }
             {

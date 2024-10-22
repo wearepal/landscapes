@@ -7,6 +7,7 @@ import { CompiledDatasetRecord } from './saved_dataset'
 import { designations } from './modelling/designations'
 import { IMDProperties } from './reify_layer/imd'
 import { ProjectPermissions } from './project_editor'
+import { KewPointOptions } from './reify_layer/kew'
 
 interface AddLayerButtonProps {
   prototype: Layer
@@ -111,6 +112,9 @@ export const LayerPalette = ({ addLayer, hide, dbModels, getTeamDatasets, teamNa
                     type: "KewPointLayer",
                     name: "Wakehurst Soil",
                     identifier: "kew:wakehurst_soil_rp3857",
+                    fill: "hsv",
+                    metric: KewPointOptions[0],
+                    metricOpts: KewPointOptions,
                     visible: true,
                     opacity: 1,
                   }}
