@@ -7,8 +7,9 @@ interface TextFieldProps {
   getValue: () => string
   setValue: (value: string) => void
   title: string
+  width: string
 }
-const TextField = ({ getValue, setValue, title }: TextFieldProps) => {
+const TextField = ({ getValue, setValue, title, width }: TextFieldProps) => {
   // https://reactjs.org/docs/hooks-faq.html#is-there-something-like-forceupdate
   const [, forceUpdate] = React.useReducer(x => x + 1, 0)
 
@@ -26,6 +27,7 @@ const TextField = ({ getValue, setValue, title }: TextFieldProps) => {
       }}
       onPointerDown={e => e.stopPropagation()}
       onDoubleClick={e => e.stopPropagation()}
+      style={{ width }} 
     />
   </>
 }
@@ -34,7 +36,7 @@ export class TextControl extends Control {
   props: TextFieldProps
   component: (props: TextFieldProps) => JSX.Element
 
-  constructor(emitter: Emitter<EventsTypes> | null, key: string, title: string = "") {
+  constructor(emitter: Emitter<EventsTypes> | null, key: string, title: string = "", width: string = "100%") {
     super(key)
 
     const process = debounce(() => emitter?.trigger("process"), 1000)
@@ -47,7 +49,8 @@ export class TextControl extends Control {
         this.putData(key, value)
         process()
       },
-      title: title
+      title: title,
+      width: width
     }
     this.component = TextField
   }
