@@ -113,8 +113,8 @@ export class SegmentComponent extends BaseComponent {
         node.addOutput(new Output('conf', 'Segmentation Mask (Confidence)', numericDataSocket))
         node.addOutput(new Output('box', 'Segmentation Box', booleanDataSocket))
 
-        node.addControl(new TextControl(this.editor, 'prompt', 'Prompt'))
-        node.addControl(new TextControl(this.editor, 'threshold', 'Threshold'))
+        node.addControl(new TextControl(this.editor, 'prompt', 'Prompt', '500px'))
+        node.addControl(new TextControl(this.editor, 'threshold', 'Threshold', '100px'))
 
     }
 
