@@ -15,7 +15,7 @@ export function iconForLayerType(type: Layer['type']) {
     case "OverlayLayer":
       return "fa-draw-polygon"
     case "ModelOutputLayer":
-    case "MLLayer":
+    //case "MLLayer":
       return "fa-project-diagram"
     case "ShapeLayer":
     case "BoundaryLayer":
@@ -23,6 +23,7 @@ export function iconForLayerType(type: Layer['type']) {
     case "AtiLayer":
       return "fa-tree"
     case "KewLayer":
+    case "KewPointLayer":
       return "fa-leaf"
     default:
       return "fa-layer-group"

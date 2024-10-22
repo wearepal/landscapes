@@ -63,6 +63,14 @@ class Project < ApplicationRecord
     tp = team.team_permissions.find_by(permission: p)
     tp ? tp.enabled : false
   end
+
+  def kew_samples_permission
+    p = Permission.find_by(name: 'kew_samples')
+    return false unless p
+
+    tp = team.team_permissions.find_by(permission: p)
+    tp ? tp.enabled : false
+  end
   
   def extents
     team_extents = Extent.where(team_id: team.id).to_json
