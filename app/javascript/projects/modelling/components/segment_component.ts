@@ -74,8 +74,6 @@ async function retrieveSegmentationMasks(prompts: string, confidence: string, pr
         const predBox = pred.box
         const predExtent = [predBox.xmin, predBox.ymin, predBox.xmax, predBox.ymax]
 
-        console.log(predExtent)
-
         const featureTileRange = tileGrid.getTileRangeForExtentAndZ(
             predExtent,
             projectProps.zoom
