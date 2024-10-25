@@ -91,12 +91,14 @@ async function retrieveSegmentationMasks(prompts: string, confidence: string, pr
 }
 
 export class SegmentComponent extends BaseComponent {
+    cache: Map<string, any[]>
     projectProps: ProjectProperties
 
     constructor(projectProps: ProjectProperties) {
         super("Segmentation Model")
         this.category = "Inputs"
         this.projectProps = projectProps
+        this.cache = new Map<string, any[]>()
     }
 
     async builder(node: Node) {
@@ -114,7 +116,7 @@ export class SegmentComponent extends BaseComponent {
         node.addOutput(new Output('box', 'Detection Box', booleanDataSocket))
 
         node.addControl(new TextControl(this.editor, 'prompt', 'Prompt', '500px'))
-        node.addControl(new TextControl(this.editor, 'confidence', 'Confidence', '100px'))
+        node.addControl(new TextControl(this.editor, 'confidence', 'Confidence (%)', '100px'))
 
     }
 
@@ -126,11 +128,18 @@ export class SegmentComponent extends BaseComponent {
         const prompts = node.data.prompt as string
         const confidence = node.data.confidence as string
 
-        const result = await retrieveSegmentationMasks(prompts, confidence, this.projectProps)
-
-        outputs['mask'] = result[0]
-        outputs['box'] = result[1]
-        outputs['conf'] = result[2]
+        if (this.cache.has(`${prompts}_${confidence}%`)) {
+            const result = this.cache.get(`${prompts}_${confidence}%`)!
+            outputs['mask'] = result[0]
+            outputs['box'] = result[1]
+            outputs['conf'] = result[2]
+        }else{
+            const result = await retrieveSegmentationMasks(prompts, confidence, this.projectProps)
+            this.cache.set(`${prompts}_${confidence}%`, result)
+            outputs['mask'] = result[0]
+            outputs['box'] = result[1]
+            outputs['conf'] = result[2]
+        }
 
     }
 }
