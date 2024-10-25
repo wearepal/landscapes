@@ -68,7 +68,7 @@ async function retrieveSegmentationMasks(prompts: string, threshold: string, pro
             )
 
             result.set(featureTileRange.maxX, featureTileRange.minY, true)
-            confBox.set(featureTileRange.maxX, featureTileRange.minY, pred.score)
+            confBox.set(featureTileRange.maxX, featureTileRange.minY, pred.confidence)
         })
 
         const predBox = pred.box
