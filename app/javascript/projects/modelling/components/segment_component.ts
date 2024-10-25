@@ -9,7 +9,7 @@ import { createXYZ } from "ol/tilegrid"
 import { Point, Polygon } from "ol/geom"
 import { Coordinate } from "ol/coordinate"
 
-async function retrieveSegmentationMasks(prompts: string, threshold: string, projectProps: ProjectProperties) : Promise<any[]>{
+async function retrieveSegmentationMasks(prompts: string, confidence: string, projectProps: ProjectProperties) : Promise<any[]>{
 
     const tileGrid = createXYZ()
 
@@ -18,7 +18,7 @@ async function retrieveSegmentationMasks(prompts: string, threshold: string, pro
     const segs = await fetch("https://landscapes.wearepal.ai/api/v1/segment?" + new URLSearchParams(
         {
             labels: prompts,
-            threshold,
+            confidence,
             bbox: projectProps.extent.join(","),
             layer: "rgb:full_mosaic_3857",
             height: outputTileRange.getHeight().toString(),
@@ -74,6 +74,8 @@ async function retrieveSegmentationMasks(prompts: string, threshold: string, pro
         const predBox = pred.box
         const predExtent = [predBox.xmin, predBox.ymin, predBox.xmax, predBox.ymax]
 
+        console.log(predExtent)
+
         const featureTileRange = tileGrid.getTileRangeForExtentAndZ(
             predExtent,
             projectProps.zoom
@@ -101,8 +103,8 @@ export class SegmentComponent extends BaseComponent {
 
     async builder(node: Node) {
 
-        if (!('threshold' in node.data)) {
-            node.data.threshold = "0.1"
+        if (!('confidence' in node.data)) {
+            node.data.confidence = "10"
         }
 
         if (!('prompt' in node.data)) {
@@ -114,7 +116,7 @@ export class SegmentComponent extends BaseComponent {
         node.addOutput(new Output('box', 'Detection Box', booleanDataSocket))
 
         node.addControl(new TextControl(this.editor, 'prompt', 'Prompt', '500px'))
-        node.addControl(new TextControl(this.editor, 'threshold', 'Threshold', '100px'))
+        node.addControl(new TextControl(this.editor, 'confidence', 'Confidence', '100px'))
 
     }
 
@@ -124,9 +126,9 @@ export class SegmentComponent extends BaseComponent {
         if (editorNode === undefined) { return }
 
         const prompts = node.data.prompt as string
-        const threshold = node.data.threshold as string
+        const confidence = node.data.confidence as string
 
-        const result = await retrieveSegmentationMasks(prompts, threshold, this.projectProps)
+        const result = await retrieveSegmentationMasks(prompts, confidence, this.projectProps)
 
         outputs['mask'] = result[0]
         outputs['box'] = result[1]
