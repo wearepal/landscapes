@@ -9,6 +9,7 @@ import { Fill, RegularShape, Stroke, Style, Text } from "ol/style"
 import { Map, Overlay } from "ol"
 import { getColorStops } from "./model_output"
 import { findColor } from "../analysis_panel_tools/subsection"
+import { useEffect } from "react"
 
 export const KewPointOptions: KewOption[] = [
     {
@@ -224,6 +225,28 @@ export function reifyKewPointLayer(layer: KewPointLayer, existingLayer: BaseLaye
         source: vectorSource,
         style: getPointStyle(map, layer, min, max, colMap)
     })
+
+    // TODO: remove previous map click interaction
+
+    const handleClick = (e) => {
+        map.forEachFeatureAtPixel(e.pixel, (feature) => {
+            if(feature){
+                const plotIds = vectorSource.getFeatures().map(f => f.getProperties().plot_id)
+                if(plotIds.includes(feature.getProperties().plot_id)){
+                    console.log(feature.getProperties().plot_id)
+                }
+            }
+        })
+    }
+
+    map.getListeners('click')?.forEach(listener => 
+        {
+            if(listener === handleClick){
+                map.un('click', listener)
+            }
+        }
+    )
+    map.on('click', handleClick)
 
     return v
 
