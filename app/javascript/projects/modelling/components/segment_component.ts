@@ -72,7 +72,7 @@ async function retrieveSegmentationMasks(prompts: string, threshold: string, pro
         })
 
         const predBox = pred.box
-        const predExtent = [Math.min(predBox.xmin, predBox.xmin), Math.min(predBox.ymin, predBox.ymax), Math.max(predBox.xmin, predBox.xmax), Math.max(predBox.ymin, predBox.ymax)]
+        const predExtent = [predBox.xmin, predBox.ymin, predBox.xmax, predBox.ymax]
 
         const featureTileRange = tileGrid.getTileRangeForExtentAndZ(
             predExtent,
@@ -110,8 +110,8 @@ export class SegmentComponent extends BaseComponent {
         }
 
         node.addOutput(new Output('mask', 'Segmentation Mask', booleanDataSocket))
-        node.addOutput(new Output('conf', 'Segmentation Mask (Confidence)', numericDataSocket))
-        node.addOutput(new Output('box', 'Segmentation Box', booleanDataSocket))
+        node.addOutput(new Output('conf', 'Confidence', numericDataSocket))
+        node.addOutput(new Output('box', 'Detection Box', booleanDataSocket))
 
         node.addControl(new TextControl(this.editor, 'prompt', 'Prompt', '500px'))
         node.addControl(new TextControl(this.editor, 'threshold', 'Threshold', '100px'))
