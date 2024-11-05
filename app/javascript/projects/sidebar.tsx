@@ -8,6 +8,7 @@ import { getColorStops } from './reify_layer/model_output'
 import { tileGridStats } from './modelling/tile_grid'
 import { IMDProperties } from './reify_layer/imd'
 import { KewPointOptions } from './reify_layer/kew'
+import { seasonYearOptions } from './modelling/components/kew_samples_component'
 
 interface OverlayLayerSettingsProps {
   layer: OverlayLayer
@@ -307,6 +308,19 @@ const KewPointLayerSettings = ({ layer, mutate }: KewPointLayerSettingsProps) =>
           }
         </select>
       </div>
+      {/* <div className="d-flex align-items-center mt-3">
+        Season
+        <select className="custom-select ml-3" value={layer.seasonYear.id} onChange={e => mutate({ seasonYear: seasonYearOptions.filter(f => f.id === +e.target.value)[0] })}>
+          {
+            seasonYearOptions.map(opt =>
+              <option key={opt.id} value={opt.id}>
+                {opt.name}
+              </option>
+            )
+          }
+        </select>
+      </div> */}
+
       <div className="d-flex align-items-center mt-3">
         Fill
           <select className="custom-select ml-3" value={layer.fill} onChange={e => mutate({ fill: e.target.value })}>

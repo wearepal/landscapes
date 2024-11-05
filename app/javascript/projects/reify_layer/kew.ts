@@ -9,52 +9,64 @@ import { Fill, RegularShape, Stroke, Style, Text } from "ol/style"
 import { Map, Overlay } from "ol"
 import { getColorStops } from "./model_output"
 import { findColor } from "../analysis_panel_tools/subsection"
+import { numericDataSocket } from "../modelling/socket_types"
 
 export const KewPointOptions: KewOption[] = [
     {
         value: "carbon",
         label: "Carbon",
+        socket: numericDataSocket
     },
     {
         value: "nitrogn",
         label: "Nitrogen",
+        socket: numericDataSocket
     },
     {
         value: "ph",
         label: "pH",
-        max: 14
+        max: 14,
+        socket: numericDataSocket
     },
     {
         value: "sl_dnst",
-        label: "Soil Density"
+        label: "Soil Density",
+        socket: numericDataSocket
     },
     {
         value: "dry_mtt",
-        label: "Dry Matter"
+        label: "Dry Matter",
+        socket: numericDataSocket
     },
     {
         value: "sodium",
-        label: "Sodium"
+        label: "Sodium",
+        socket: numericDataSocket
     },
     {
         value: "calcium",
-        label: "Calcium"
+        label: "Calcium",
+        socket: numericDataSocket
     },
     {
         value: "magnesm",
-        label: "Magnesium"
+        label: "Magnesium",
+        socket: numericDataSocket
     },
     {
         value: "potassm",
-        label: "Potassium"
+        label: "Potassium",
+        socket: numericDataSocket
     },
     {
         value: "sulphat",
-        label: "Sulphate"
+        label: "Sulphate",
+        socket: numericDataSocket
     },
     {
         value: "phsphrs",
-        label: "Phosphorus"
+        label: "Phosphorus",
+        socket: numericDataSocket
     },
     {
         value: "cndctvt",
@@ -66,23 +78,28 @@ export const KewPointOptions: KewOption[] = [
     },
     {
         value: "sand",
-        label: "Sand"
+        label: "Sand",
+        socket: numericDataSocket
     },
     {
         value: "silt",
-        label: "Silt"
+        label: "Silt",
+        socket: numericDataSocket
     },
     {
         value: "clay",
-        label: "Clay"
+        label: "Clay",
+        socket: numericDataSocket
     },
     {
         value: "avrg_dp",
-        label: "Average Depth"
+        label: "Average Depth",
+        socket: numericDataSocket
     },
     {
         value: "crbn_st",
-        label: "Carbon Stock"
+        label: "Carbon Stock",
+        socket: numericDataSocket
     },
     {
         value: "cn_rati",
@@ -173,6 +190,8 @@ const getPointStyle = (map: Map, layer: KewPointLayer, min: number | null, max: 
 
         let normalizedMetric = 0
 
+        
+
         if(min !== null && max !== null) {
             normalizedMetric = (metric - min) / (max - min)
             normalizedMetric = isNaN(normalizedMetric) || metric === -99999 ? 0 : normalizedMetric
@@ -186,7 +205,7 @@ const getPointStyle = (map: Map, layer: KewPointLayer, min: number | null, max: 
                 radius: pixelSize, 
                 angle: Math.PI / 4,
                 fill: new Fill({
-                    color: `rgba(${col[0]}, ${col[1]}, ${col[2]}, ${metric === -99999 ? 0 : 1})`}
+                    color: `rgba(${col[0]}, ${col[1]}, ${col[2]}, ${(metric === -99999) ? 0 : 1})`}
                 ),
                 stroke: new Stroke({
                     color: 'rgba(0,0,0,1)',
@@ -224,6 +243,88 @@ export function reifyKewPointLayer(layer: KewPointLayer, existingLayer: BaseLaye
         source: vectorSource,
         style: getPointStyle(map, layer, min, max, colMap)
     })
+
+    const popupContainer = document.getElementById("popup")
+    const popupCloser = document.getElementById("popup-closer")
+    const popupContent = document.getElementById("popup-content")
+
+    const overlay = new Overlay({
+        element: popupContainer!,
+        autoPan: true,
+        autoPanAnimation: { duration: 450 },
+    })
+
+    popupCloser!.onclick = () => {
+        overlay.setPosition(undefined)
+        popupCloser?.blur()
+        return false
+    }
+
+    map.addOverlay(overlay)
+
+    const handleClick = (event) => {
+        map.forEachFeatureAtPixel(event.pixel, (feature, clickedLayer) => {
+            if (feature && clickedLayer === v) {
+                const properties = feature.getProperties()
+
+                const plotId = properties.plot_id
+                popupContainer!.style.display = "block"
+                popupContent!.innerHTML = `
+                    <div class="border-top bg-light border-bottom text-center fw-bold mb-3">
+                        Plot ID: ${plotId}
+                    </div>
+                    
+                    <div class="row text-center">
+                        <div class="col-6"><strong>Season:</strong> ${properties?.season || 'N/A'}</div>
+                        <div class="col-6"><strong>Date:</strong> ${properties?.date || 'N/A'}</div>
+                    </div>
+
+                    <div class="row text-center">
+                        <div class="col-6"><strong>Carbon Stock:</strong> ${(properties?.crbn_st as number).toFixed(3) || 'N/A'} t/ha </div>
+                        <div class="col-6"><strong>pH:</strong> ${properties?.ph || 'N/A'} ph </div>
+                    </div>
+
+                    <div class="row text-center">
+                        <div class="col-6"><strong>Soil Density:</strong> ${(properties?.sl_dnst) || 'N/A'}</div>
+                        <div class="col-6"><strong>Dry Matter</strong> ${properties?.dry_mtt || 'N/A'}</div>
+                    </div>
+
+                    <div class="row text-center">
+                        <div class="col-6"><strong>Carbon:</strong> ${(properties?.carbon) || 'N/A'}</div>
+                        <div class="col-6"><strong>Magnesium</strong> ${properties?.magnesm || 'N/A'}</div>
+                    </div>
+
+                    <div class="row text-center">
+                        <div class="col-6"><strong>Potassium:</strong> ${(properties?.potassm) || 'N/A'}</div>
+                        <div class="col-6"><strong>Sodium</strong> ${properties?.sodium || 'N/A'}</div>
+                    </div>
+
+                    <div class="row text-center">
+                        <div class="col-6"><strong>Phosphorus</strong> ${(properties?.phsphrs) || 'N/A'}</div>
+                        <div class="col-6"><strong>Sulphate</strong> ${properties?.sulphat || 'N/A'}</div>
+                    </div>
+
+
+                    <div class="row text-center">
+                        <div class="col-6"><strong>Calcium</strong> ${(properties?.calcium) || 'N/A'}</div>
+                        <div class="col-6"><strong>Sand</strong> ${properties?.sand || 'N/A'}</div>
+                    </div>
+
+                    <div class="row text-center">
+                        <div class="col-6"><strong>Silt</strong> ${(properties?.silt) || 'N/A'}</div>
+                        <div class="col-6"><strong>Clay</strong> ${properties?.clay || 'N/A'}</div>
+                    </div>
+
+
+                `;
+            
+
+                overlay.setPosition(event.coordinate)
+            }
+        })
+    }
+
+    map.on('click', handleClick)
 
     return v
 

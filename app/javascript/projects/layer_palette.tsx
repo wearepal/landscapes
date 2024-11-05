@@ -8,6 +8,7 @@ import { designations } from './modelling/designations'
 import { IMDProperties } from './reify_layer/imd'
 import { ProjectPermissions } from './project_editor'
 import { KewPointOptions } from './reify_layer/kew'
+import { seasonYearOptions } from './modelling/components/kew_samples_component'
 
 interface AddLayerButtonProps {
   prototype: Layer
@@ -113,10 +114,11 @@ export const LayerPalette = ({ addLayer, hide, dbModels, getTeamDatasets, teamNa
                     name: "Wakehurst Soil",
                     identifier: "kew:wakehurst_soil_rp3857",
                     fill: "hsv",
-                    metric: KewPointOptions[0],
+                    metric: KewPointOptions.find(option => option.value === "ph")!,
                     metricOpts: KewPointOptions,
                     visible: true,
                     opacity: 1,
+                    seasonYear: seasonYearOptions[0]
                   }}
               />
             }

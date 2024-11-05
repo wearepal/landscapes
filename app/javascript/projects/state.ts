@@ -2,11 +2,19 @@ import { Data } from "rete/types/core/data"
 import { NevoLevel, NevoProperty } from "./nevo"
 import { Extent } from "ol/extent"
 import { IMDProp } from "./reify_layer/imd"
+import { Socket } from "rete"
 
 interface BaseLayer {
   name: string
   visible: boolean
   opacity: number
+}
+
+interface SeasonYearOption {
+  id: number
+  name: string
+  year: string
+  season: string
 }
 
 export interface ColourMapATI {
@@ -28,6 +36,7 @@ export interface KewOption {
   label: string
   selected?: boolean
   max?: number
+  socket?: Socket
 }
 
 type fillType = "greyscale" | "heatmap" | "jet" | "hsv" | "hot" | "cool" | "spring" | "summer" | "autumn" | "winter" | "copper" | "WIGnBu" | "greens" | "YIOrRd" | "bluered" | "RdBu" | "picnic" | "rainbow" | "portland" | "blackbody" | "earth" | "electric" | "viridis" | "inferno" | "magma" | "plasma" | "warm" | "cool" | "rainbow-soft" | "bathymetry" | "cdom" | "chlorophyll" | "density" | "freesurface-blue" | "freesurface-red" | "oxygen" | "par" | "phase" | "salinity" | "temperature" | "turbidity" | "velocity-blue" | "velocity-green" | "cubehelix"
@@ -84,6 +93,7 @@ export interface KewPointLayer extends BaseLayer {
   min?: number
   max?: number
   fill: fillType
+  seasonYear: SeasonYearOption
 }
 
 export interface NevoLayer extends BaseLayer {

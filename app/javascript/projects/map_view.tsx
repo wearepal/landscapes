@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Feature, Map, View } from 'ol'
+import { Feature, Map, Overlay, View } from 'ol'
 import { Control, ScaleLine, defaults as defaultControls } from 'ol/control'
 import { Extent, createEmpty as createEmptyExtent, extend, isEmpty } from 'ol/extent'
 import olBaseLayer from 'ol/layer/Base'
@@ -14,6 +14,7 @@ import { Fill, Stroke, Style } from 'ol/style'
 import { fromExtent } from 'ol/geom/Polygon'
 import { DragBox, Select } from 'ol/interaction'
 import { platformModifierKeyOnly } from 'ol/events/condition'
+import './map_view.css'
 
 function getLayerExtent(layer: olBaseLayer) {
   if (layer instanceof VectorLayer) {
@@ -221,6 +222,12 @@ export const MapView = ({ layers, dbModels, initialZoom, setZoom, initialCenter,
 
   return <div className="flex-grow-1 position-relative">
     <div className="bg-dark" style={{ width: "100%", height: "100%" }} ref={mapRef as any} />
+    
+    <div id="popup" className="ol-popup">
+      <a href="#" id="popup-closer" className="ol-popup-closer"></a>
+      <div id="popup-content"></div>
+    </div>
+    
     {
       !allLayersVisible &&
       <div className="bg-dark text-light rounded-sm px-3 py-2 position-absolute" style={{ bottom: "1em", left: "50%", transform: "translateX(-50%)" }}>
