@@ -2,8 +2,10 @@ import { getMedianCellSize } from "../../projects/modelling/components/cell_area
 import { BooleanTileGrid, NumericTileGrid } from "../../projects/modelling/tile_grid"
 import { kdTree } from 'kd-tree-javascript'
 
+export type InterpolationType = "NearestNeighbour" | "Bilinear"
 
-export function interpolateGrid(input : NumericTileGrid, mask : BooleanTileGrid, type: "NearestNeighbour" | "Bilinear", maxDist: number) : NumericTileGrid {
+
+export function interpolateGrid(input : NumericTileGrid, mask : BooleanTileGrid, type: InterpolationType, maxDist: number) : NumericTileGrid {
 
     const result = new NumericTileGrid(input.zoom, input.x, input.y, input.width, input.height)
 

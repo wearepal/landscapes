@@ -179,11 +179,11 @@ const getStyle = (layer: KewLayer, zoom: number | undefined) => (
     }
 )
 
-const getPointStyle = (map: Map, layer: KewPointLayer, min: number | null, max: number | null, colMap: any[]) => (
+const getPointStyle = (map: Map, layer: KewPointLayer, min: number | null, max: number | null, colMap: any[], opt: KewOption) => (
     (feature) => {
 
         const props = feature.getProperties()
-        const metric = props[layer.metric.value] || -99999
+        const metric = props[opt.value] || -99999
         const realWorldSize = 4; 
         const resolution = map.getView().getResolution()! 
         const pixelSize = realWorldSize / resolution;
@@ -232,7 +232,9 @@ export function reifyKewPointLayer(layer: KewPointLayer, existingLayer: BaseLaye
 
     const vectorSource = getSource(layer.identifier)
 
-    const { min, max } = layer.metric.max ? {min: 0, max: layer.metric.max}  : getMinMaxMetric(vectorSource, layer.metric.value)
+    const metric = KewPointOptions[layer.metric]
+
+    const { min, max } = metric.max ? {min: 0, max: metric.max}  : getMinMaxMetric(vectorSource, metric.value)
 
     const colMap = getColorStops(layer.fill, 100).reverse()
 
@@ -241,7 +243,7 @@ export function reifyKewPointLayer(layer: KewPointLayer, existingLayer: BaseLaye
 
     const v = new VectorLayer({
         source: vectorSource,
-        style: getPointStyle(map, layer, min, max, colMap)
+        style: getPointStyle(map, layer, min, max, colMap, metric)
     })
 
     const popupContainer = document.getElementById("popup")
