@@ -114,8 +114,7 @@ export const LayerPalette = ({ addLayer, hide, dbModels, getTeamDatasets, teamNa
                     name: "Wakehurst Soil",
                     identifier: "kew:wakehurst_soil_rp3857",
                     fill: "hsv",
-                    metric: KewPointOptions.find(option => option.value === "ph")!,
-                    metricOpts: KewPointOptions,
+                    metric: KewPointOptions.indexOf(KewPointOptions.find(option => option.value === "ph")!),
                     visible: true,
                     opacity: 1,
                     seasonYear: seasonYearOptions[0]

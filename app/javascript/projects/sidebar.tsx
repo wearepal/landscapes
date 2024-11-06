@@ -297,9 +297,9 @@ const KewPointLayerSettings = ({ layer, mutate }: KewPointLayerSettingsProps) =>
     <>
       <div className="d-flex align-items-center mt-3">
         Property
-        <select className="custom-select ml-3" value={layer.metric.value} onChange={e => mutate({ metric: KewPointOptions.filter(f => f.value === e.target.value)[0] })}>
+        <select className="custom-select ml-3" value={KewPointOptions[layer.metric].value} onChange={e => mutate({ metric: KewPointOptions.indexOf(KewPointOptions.filter(f => f.value === e.target.value)[0]) })}>
           {
-            layer.metricOpts.map(opt =>
+            KewPointOptions.map(opt =>
               <option key={opt.value} value={opt.value}>
                 {opt.label}
               </option>
