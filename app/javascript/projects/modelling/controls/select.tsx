@@ -104,9 +104,11 @@ const SelectInput = ({ emitter, getId, setId, getOptions, change, label }: Selec
 export class SelectControl extends Control {
     props: SelectControlProps
     component: (props: SelectControlProps) => JSX.Element
+    type: string
 
     constructor(emitter: Emitter<EventsTypes> | null, key: string, getOptions: () => Array<SelectControlOptions>, change: () => void, label: string | undefined = undefined) {
         super(key)
+        this.type = 'SelectControl'
 
         this.props = {
             emitter,

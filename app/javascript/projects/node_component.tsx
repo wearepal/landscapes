@@ -28,6 +28,10 @@ export class NodeComponent extends Node {
     const { node, editor, bindSocket, bindControl } = this.props
     const { outputs, controls, inputs, selected } = this.state
 
+    const select_controls = controls.filter((control: any) => control.type && control.type === "SelectControl")
+    const date_controls = controls.filter((control: any) => control.type && control.type === "DateControl")
+    const non_select_controls = controls.filter((control: any) => control.type !== "SelectControl" && control.type !== "DateControl")
+
     setTimeout(() => $('[title]').tooltip('dispose').tooltip())
 
     return (
@@ -73,6 +77,14 @@ export class NodeComponent extends Node {
             />
           }
         </div>
+
+        {select_controls.map(control => (
+          <Control className="control" key={control.key} control={control} innerRef={bindControl} />
+        ))}   
+        {date_controls.map(control => (
+          <Control className="control" key={control.key} control={control} innerRef={bindControl} />
+        ))}
+
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           <div>
             {inputs.map(input => (
@@ -92,7 +104,7 @@ export class NodeComponent extends Node {
             ))}
           </div>
         </div>
-        {controls.map(control => (
+        {non_select_controls.map(control => (
           <Control className="control" key={control.key} control={control} innerRef={bindControl} />
         ))}
       </div>

@@ -35,9 +35,11 @@ const DateField = ({ getValue, setValue, label }: DateFieldProps) => {
 export class DateControl extends Control {
     props: DateFieldProps
     component: (props: DateFieldProps) => JSX.Element
+    type: string
 
     constructor(emitter: Emitter<EventsTypes> | null, key: string) {
         super(key)
+        this.type = "DateControl"
 
         const process = debounce(() => emitter?.trigger("process"), 1000)
         this.props = {
