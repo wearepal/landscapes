@@ -67,8 +67,8 @@ function applyFeaturesToGrid(features: Feature[], grid: NumericTileGrid, project
                 if(value && geom){
                     // geom is point data
                     const [fx, fy] = (geom as any).getCoordinates()
-                    const extent = [fx-2, fy-2, fx+2, fy+2]
-                    //const extent = [fx, fy, fx, fy]
+                    //const extent = [fx-2, fy-2, fx+2, fy+2]
+                    const extent = [fx, fy, fx, fy]
 
                     const tileGrid = createXYZ() 
 

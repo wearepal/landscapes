@@ -5,12 +5,33 @@ import { ProjectProperties } from "."
 import { numberSocket, numericDataSocket } from "../socket_types"
 import { workerPool } from '../../../modelling/workerPool'
 import { maskFromExtentAndShape } from "../bounding_box"
-import { NumericConstant } from "../numeric_constant"
 import { NumericTileGrid } from "../tile_grid"
+import { SelectControl, SelectControlOptions } from "../controls/select"
+import { InterpolationType } from "../../../modelling/worker/interpolation"
+import { NumericConstant } from "../numeric_constant"
+
+interface InterpolationMethodOption extends SelectControlOptions {
+    value: InterpolationType
+}
+
+const InterpolationMethods : InterpolationMethodOption[] = [
+    {
+        id: 0,
+        name: 'Nearest Neighbour',
+        value: 'NearestNeighbour'
+    },
+    {
+        id: 1,
+        name: "Inverse Distance Weighting",
+        value: 'InverseDistanceWeighting'
+    }
+]
 
 export class InterpolationComponent extends BaseComponent {
     projectProps : ProjectProperties
     maxdist : number
+    p : number
+    closest_points : number
     cache : Map<number, Map<NumericTileGrid, NumericTileGrid>>
 
     constructor(projectProps : ProjectProperties) {
@@ -18,12 +39,21 @@ export class InterpolationComponent extends BaseComponent {
         this.category = "Calculations"
         this.projectProps = projectProps
         this.maxdist = 50
+        this.p = 2
+        this.closest_points = 10
         this.cache = new Map()
     }
 
     async builder(node: Node) {
+
+        node.addControl(new SelectControl(this.editor, 'methodId', () => InterpolationMethods, () => {}, 'Method'))
+
         node.addInput(new Input('input', 'Input', numericDataSocket))
-        node.addInput(new Input('maxdist', `maxdist (default: ${this.maxdist})`, numberSocket))
+        node.addInput(new Input('maxdist', `Max Distance (default: ${this.maxdist})`, numberSocket))
+        node.addInput(new Input('p', `Power (default: ${this.p})`, numberSocket))
+        node.addInput(new Input('closest_points', `Closest Points (default: ${this.closest_points})`, numberSocket))
+
+
         node.addOutput(new Output('output', 'Output', numericDataSocket))
     }
     
@@ -40,7 +70,12 @@ export class InterpolationComponent extends BaseComponent {
             this.projectProps.mask
         )
 
-        const maxDist = inputs['maxdist'].length > 0 ? (inputs['maxdist'][0] as NumericConstant).value : this.maxdist
+
+        const method = InterpolationMethods[node.data.methodId as number ?? 0]
+
+        const maxDist =  inputs['maxdist'].length > 0 ? (inputs['maxdist'][0] as NumericConstant).value : this.maxdist 
+        const p = inputs['p'].length > 0 ? (inputs['p'][0] as NumericConstant).value : this.p 
+        const closest_points = inputs['closest_points'].length > 0 ? (inputs['closest_points'][0] as NumericConstant).value : this.closest_points 
         const input = inputs['input'][0] as NumericTileGrid
 
         // TODO: Caching doesn't work
@@ -53,9 +88,8 @@ export class InterpolationComponent extends BaseComponent {
             }
         }
 
-
         const out = await workerPool.queue(async worker =>
-            worker.interpolateGrid(inputs['input'][0], mask, "NearestNeighbour", maxDist)
+            worker.interpolateGrid(inputs['input'][0], mask, method.value, maxDist, p, closest_points)
         )
 
         const map = this.cache.get(maxDist) || new Map()
