@@ -239,6 +239,10 @@ export class NumericTileGrid extends TileGrid {
     this.minMax = null
   }
 
+  getData(): Float32Array {
+    return this.data
+  }
+
   iterate(callback: (x: number, y: number, value: number) => void) {
     const { x, y, width, height } = this
     for (let i = x; i < x + width; i++) {

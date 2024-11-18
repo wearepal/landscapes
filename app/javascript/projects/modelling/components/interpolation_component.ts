@@ -5,10 +5,11 @@ import { ProjectProperties } from "."
 import { numberSocket, numericDataSocket } from "../socket_types"
 import { workerPool } from '../../../modelling/workerPool'
 import { maskFromExtentAndShape } from "../bounding_box"
-import { NumericTileGrid } from "../tile_grid"
+import { NumericTileGrid, TileGridJSON } from "../tile_grid"
 import { SelectControl, SelectControlOptions } from "../controls/select"
 import { InterpolationType } from "../../../modelling/worker/interpolation"
 import { NumericConstant } from "../numeric_constant"
+import { isEqual } from "lodash"
 
 interface InterpolationMethodOption extends SelectControlOptions {
     value: InterpolationType
@@ -32,16 +33,21 @@ export class InterpolationComponent extends BaseComponent {
     maxdist : number
     p : number
     closest_points : number
-    cache : Map<number, Map<NumericTileGrid, NumericTileGrid>>
+    cachedInputs: NumericTileGrid[]
+    cachedOutputs: Map<string, NumericTileGrid>
+
 
     constructor(projectProps : ProjectProperties) {
         super("Interpolation")
         this.category = "Calculations"
         this.projectProps = projectProps
+        this.cachedInputs = []
+        this.cachedOutputs = new Map()
+
+        // default values
         this.maxdist = 50
         this.p = 2
         this.closest_points = 10
-        this.cache = new Map()
     }
 
     async builder(node: Node) {
@@ -76,27 +82,29 @@ export class InterpolationComponent extends BaseComponent {
         const maxDist =  inputs['maxdist'].length > 0 ? (inputs['maxdist'][0] as NumericConstant).value : this.maxdist 
         const p = inputs['p'].length > 0 ? (inputs['p'][0] as NumericConstant).value : this.p 
         const closest_points = inputs['closest_points'].length > 0 ? (inputs['closest_points'][0] as NumericConstant).value : this.closest_points 
+
         const input = inputs['input'][0] as NumericTileGrid
 
-        // TODO: Caching doesn't work
-        if(this.cache.has(maxDist)){
-            
-            if(this.cache.get(maxDist)?.has(input)){
+        let cacheIdx = this.cachedInputs.findIndex(cachedInput => isEqual(cachedInput.getData(), input.getData()))
 
-                outputs['output'] = this.cache.get(maxDist)?.get(input)
+        if(cacheIdx === -1) {
+            this.cachedInputs.push(input)
+            cacheIdx = this.cachedInputs.length - 1
+        }else{
+            const code = `${cacheIdx}_${method.value}_${maxDist}_${p}_${closest_points}`
+            if(this.cachedOutputs.has(code)){
+                outputs['output'] = this.cachedOutputs.get(code)
                 return
             }
         }
 
-        const out = await workerPool.queue(async worker =>
-            worker.interpolateGrid(inputs['input'][0], mask, method.value, maxDist, p, closest_points)
-        )
-
-        const map = this.cache.get(maxDist) || new Map()
-        map.set(input, out)
-        this.cache.set(maxDist, map)
-
-        outputs['output'] = out
+        if(outputs['output'] === undefined) {
+            const out = await workerPool.queue(async worker =>
+                worker.interpolateGrid(input, mask, method.value, maxDist, p, closest_points)
+            )
+            this.cachedOutputs.set(`${cacheIdx}_${method.value}_${maxDist}_${p}_${closest_points}`, out)
+            outputs['output'] = out
+        }
     }
 
 }
