@@ -72,6 +72,14 @@ class Project < ApplicationRecord
     tp ? tp.enabled : false
   end
   
+  def natmap_soil_permission
+    p = Permission.find_by(name: 'natmap_soil')
+    return false unless p
+
+    tp = team.team_permissions.find_by(permission: p)
+    tp ? tp.enabled : false
+  end
+  
   def extents
     team_extents = Extent.where(team_id: team.id).to_json
   end

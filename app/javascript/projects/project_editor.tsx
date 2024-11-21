@@ -25,6 +25,7 @@ export interface ProjectPermissions {
   DefraHedgerows: boolean
   KewRgb25cm: boolean
   KewSamples: boolean
+  NATMAPSoil: boolean
 }
 
 export interface TeamExtentData {

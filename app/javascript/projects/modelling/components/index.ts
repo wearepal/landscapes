@@ -59,7 +59,7 @@ export function createDefaultComponents(saveMapLayer: SaveMapLayer, saveModel: S
     // Team permissions restrict some components. Add them here.
     if (permissions.DefraHedgerows) restrictedComponents.push(new HedgerowComponent(projectProps))
     if (permissions.KewSamples) restrictedComponents.push(new KewSamplesComponent(projectProps))
-    if (true) restrictedComponents.push(new NatmapSoilComponent(projectProps))
+    if (permissions.NATMAPSoil) restrictedComponents.push(new NatmapSoilComponent(projectProps))
 
     // Freely available components here.
     const components : BaseComponent[] = [
