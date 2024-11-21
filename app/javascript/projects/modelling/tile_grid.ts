@@ -3,6 +3,7 @@ import { Extent } from "ol/extent"
 import { createXYZ } from "ol/tilegrid"
 import { registerSerializer } from "threads"
 import { getMedianCellSize } from "./components/cell_area_component"
+import { TileRange } from "ol"
 
 function validateZoom(zoom: number) {
   if (!(
@@ -244,12 +245,30 @@ export class NumericTileGrid extends TileGrid {
   }
 
   iterate(callback: (x: number, y: number, value: number) => void) {
+
     const { x, y, width, height } = this
     for (let i = x; i < x + width; i++) {
       for (let j = y; j < y + height; j++) {
         callback(i, j, this.get(i, j))
       }
     }
+    
+  }
+
+  iterateOverTileRange(range: TileRange, callback: (x: number, y: number, value: number) => void) {
+
+    const { x, y, width, height } = this
+    const minX = Math.max(x, range.minX)
+    const maxX = Math.min(x + width, range.maxX)
+    const minY = Math.max(y, range.minY)
+    const maxY = Math.min(y + height, range.maxY)
+
+    for (let i = minX; i < maxX; i++) {
+      for (let j = minY; j < maxY; j++) {
+        callback(i, j, this.get(i, j))
+      }
+    }
+
   }
 
   get(x: number, y: number, zoom = this.zoom): number {
