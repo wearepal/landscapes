@@ -23,7 +23,7 @@
             <th>Name</th>
             <th>Kew RGB 25cm</th>
             <th>Kew Samples</th>
-            <th>DEFRA Hedgerows</th>
+            <th>DEFRA Hedgerow</th>
             <th>NATMAP</th>
          </tr>
       </thead>
@@ -44,8 +44,8 @@
                     class: "btn btn-sm btn-light" %>
                 </td>
                 <td>
-                    <%= button_to team.permission('defra_hedgerows') ? "✅" : "❌", 
-                    toggle_permission_team_path(team, permission_key: 'defra_hedgerows'), 
+                    <%= button_to team.permission('defra_hedgerow') ? "✅" : "❌", 
+                    toggle_permission_team_path(team, permission_key: 'defra_hedgerow'), 
                     method: :patch, 
                     class: "btn btn-sm btn-light" %>
                 </td>
