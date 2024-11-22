@@ -1,0 +1,62 @@
+<div class="card">
+    <table class="table table-striped">
+      <thead>
+         <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Admin</th>
+         </tr>
+      </thead>
+      <tbody>
+         <% User.order(:name).each do |user| %>
+            <tr>
+              <td><%= user.name %></td>
+              <td><%= user.email %></td>
+              <td><%= user.admin? ? "✅" : "❌" %></td>
+            </tr>
+         <% end %>
+      </tbody>
+    </table>
+    <table class="table table-striped">
+      <thead>
+         <tr>
+            <th>Name</th>
+            <th>Kew RGB 25cm</th>
+            <th>Kew Samples</th>
+            <th>DEFRA Hedgerows</th>
+            <th>NATMAP</th>
+         </tr>
+      </thead>
+      <tbody>
+         <% @teams.each do |team| %>
+            <tr>
+                <td><%=  team.name  %></td>
+                <td>
+                    <%= button_to team.permission('kew_rgb25cm') ? "✅" : "❌", 
+                    toggle_permission_team_path(team, permission_key: 'kew_rgb25cm'), 
+                    method: :patch, 
+                    class: "btn btn-sm btn-light" %>
+                </td>
+                <td>
+                    <%= button_to team.permission('kew_samples') ? "✅" : "❌", 
+                    toggle_permission_team_path(team, permission_key: 'kew_samples'), 
+                    method: :patch, 
+                    class: "btn btn-sm btn-light" %>
+                </td>
+                <td>
+                    <%= button_to team.permission('defra_hedgerows') ? "✅" : "❌", 
+                    toggle_permission_team_path(team, permission_key: 'defra_hedgerows'), 
+                    method: :patch, 
+                    class: "btn btn-sm btn-light" %>
+                </td>
+                <td>
+                    <%= button_to team.permission('natmap_soil') ? "✅" : "❌", 
+                    toggle_permission_team_path(team, permission_key: 'natmap_soil'), 
+                    method: :patch, 
+                    class: "btn btn-sm btn-light" %>
+                </td>
+            </tr>
+         <% end %>
+      </tbody>
+    </table>
+</div>

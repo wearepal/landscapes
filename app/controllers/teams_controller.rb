@@ -40,6 +40,20 @@ class TeamsController < ApplicationController
     redirect_to root_url, alert: 'Team not found'
   end
 
+  def toggle_permission
+    admin = current_user.admin?
+    if admin
+      authorize!
+    else
+      redirect_to root_path
+    end
+    team = Team.find(params[:id])
+    permission = Permission.find_or_create_by(name: params[:permission_key])
+    team_permission = TeamPermission.find_or_create_by(team: team, permission: permission)
+    team_permission.update(enabled: !team_permission.enabled)
+    redirect_to admin_index_path
+  end
+
   def select_team
     authorize!
     @teams = current_user.teams
