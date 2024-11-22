@@ -19,6 +19,18 @@ class Team < ApplicationRecord
 
   validates :name, presence: true
 
+  def permission(name)
+    @p = Permission.find_by(name: name)
+    tp = TeamPermission.find_by(team: self, permission: @p)
+    tp ? tp.enabled : false
+  end
+
+  def update_permission(name)
+    @p = Permission.find_or_create_by(name: name)
+    tp = TeamPermission.find_or_create_by(team: self, permission: @p)
+    tp.update(enabled: tp.enabled ? false : true)
+  end
+
   private
 
   def assign_permissions
@@ -26,5 +38,5 @@ class Team < ApplicationRecord
       TeamPermission.create(team: self, permission: permission, enabled: false)
     end
   end
-  
+
 end

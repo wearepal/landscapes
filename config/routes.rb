@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
+  get 'admin/index'
   resources :teams, shallow: true do
+    patch :toggle_permission, on: :member
     resources :map_tile_layers, only: [:index]
     resources :memberships
     resources :overlays, only: [:index]
@@ -55,6 +57,7 @@ Rails.application.routes.draw do
 
   # New route for the new app
   root to: "teams#select_team"
+  
 
   # legacy content from the old app content
   get "legacy", to: "maps#show" 
