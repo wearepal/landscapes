@@ -9,6 +9,7 @@ import { IMDProperties } from './reify_layer/imd'
 import { ProjectPermissions } from './project_editor'
 import { KewPointOptions } from './reify_layer/kew'
 import { seasonYearOptions } from './modelling/components/kew_samples_component'
+import { natmap_outputs } from './modelling/components/natmap_soil_component'
 
 interface AddLayerButtonProps {
   prototype: Layer
@@ -330,6 +331,25 @@ export const LayerPalette = ({ addLayer, hide, dbModels, getTeamDatasets, teamNa
               />)
           }
         </Section>
+        {
+          permissions.NATMAPSoil &&
+          <Section title="Natmap Soil">
+              <AddLayerButton
+                addLayer={addLayer}
+                prototype={{
+                  type: "WFSLayer",
+                  name: "Natmap Soil Carbon",
+                  layer: "cranfield_soil:NATMAPcarbon",
+                  attribution: "Cranfield University",
+                  propIdx: 0,
+                  visible: true,
+                  opacity: 1,
+                  fill: "jet"
+                }}
+              />
+            
+          </Section>
+        }
         {
           dbModels.overlays.length > 0 &&
           <Section title="Overlays">
