@@ -15,134 +15,172 @@ interface NatmapSoilOptions extends SelectControlOptions {
     key: string
     socket: Socket
     unit: string
+    min: number
+    max: number
 }
 
-const natmap_outputs : NatmapSoilOptions[] = [
+export const natmap_outputs : NatmapSoilOptions[] = [
     {
         id: 0,
         name: 'Min Carbon stock 0-10cm (kg/m²)',
         key: 'MIN_STK_10',
         socket: numericDataSocket,
-        unit: 'kg/m^2'
+        unit: 'kg/m^2',
+        min: 0,
+        max: 82.32000000000
     },
     {
         id: 1,
         name: 'Max Carbon stock 0-10cm (kg/m²)',
         key: 'MAX_STK_10',
         socket: numericDataSocket,
-        unit: 'kg/m^2'
+        unit: 'kg/m^2',
+        min: 0,
+        max: 95.13000000000
     },
     {
         id: 2,
         name: 'Min Carbon stock 0-15cm (kg/m²)',
         key: 'MIN_STK_15',
         socket: numericDataSocket,
-        unit: 'kg/m^2'
+        unit: 'kg/m^2',
+        min: 0,
+        max: 59.64000000000
     },
     {
         id: 3,
         name: 'Max Carbon stock 0-15cm (kg/m²)',
         key: 'MAX_STK_15',
         socket: numericDataSocket,
-        unit: 'kg/m^2'
+        unit: 'kg/m^2',
+        min: 0,
+        max: 59.64000000000
     },
     {
         id: 4,
         name: 'Min Carbon stock 0-30cm (kg/m²)',
         key: 'MIN_STK_30',
         socket: numericDataSocket,
-        unit: 'kg/m^2'
+        unit: 'kg/m^2',
+        min: 0,
+        max: 35.45000000000
     },
     {
         id: 5,
         name: 'Max Carbon stock 0-30cm (kg/m²)',
         key: 'MAX_STK_30',
         socket: numericDataSocket,
-        unit: 'kg/m^2'
+        unit: 'kg/m^2',
+        min: 0,
+        max: 63.23000000000
     },
     {
         id: 6,
         name: 'Average Carbon stock 0-30cm (kg/m²)',
         key: 'AV_STK_30',
         socket: numericDataSocket,
-        unit: 'kg/m^2'
+        unit: 'kg/m^2',
+        min: 0,
+        max: 51.07000000000
     },
     {
         id: 7,
         name: 'Average Carbon stock 30-100cm (kg/m²)',
         key: 'AV_STK_100',
         socket: numericDataSocket,
-        unit: 'kg/m^2'
+        unit: 'kg/m^2',
+        min: 0,
+        max: 86.19000000000
     },
     {
         id: 8,
         name: 'Average Carbon stock 100-150cm (kg/m²)',
         key: 'AV_STK_150',
         socket: numericDataSocket,
-        unit: 'kg/m^2'
+        unit: 'kg/m^2',
+        min: 0,
+        max: 59.64000000000
     },
     {
         id: 9,
         name: 'Average Organic Carbon 0-30cm (%)',
         key: 'AV_OC_30',
         socket: numericDataSocket,
-        unit: '%'
+        unit: '%',
+        min: 0,
+        max: 100
     },
     {
         id: 10,
         name: 'Min Organic Carbon 0-30cm (%)',
         key: 'MIN_OC_30',
         socket: numericDataSocket,
-        unit: '%'
+        unit: '%',
+        min: 0,
+        max: 100
     },
     {
         id: 11,
         name: 'Max Organic Carbon 0-30cm (%)',
         key: 'MAX_OC_30',
         socket: numericDataSocket,
-        unit: '%'
+        unit: '%',
+        min: 0,
+        max: 100
     },
     {
         id: 12,
         name: 'Average Organic Carbon 30-100cm (%)',
         key: 'AV_OC_100',
         socket: numericDataSocket,
-        unit: '%'
+        unit: '%',
+        min: 0,
+        max: 100
     },
     {
         id: 13,
         name: 'Min Organic Carbon 30-100cm (%)',
         key: 'MIN_OC_100',
         socket: numericDataSocket,
-        unit: '%'
+        unit: '%',
+        min: 0,
+        max: 100
     },
     {
         id: 14,
         name: 'Max Organic Carbon 30-100cm (%)',
         key: 'MAX_OC_100',
         socket: numericDataSocket,
-        unit: '%'
+        unit: '%',
+        min: 0,
+        max: 100
     },
     {
         id: 15,
         name: 'Average Organic Carbon 100-150cm (%)',
         key: 'AV_OC_150',
         socket: numericDataSocket,
-        unit: '%'
+        unit: '%',
+        min: 0,
+        max: 100
     },
     {
         id: 16,
         name: 'Min Organic Carbon 100-150cm (%)',
         key: 'MIN_OC_150',
         socket: numericDataSocket,
-        unit: '%'
+        unit: '%',
+        min: 0,
+        max: 100
     },
     {
         id: 17,
         name: 'Max Organic Carbon 100-150cm (%)',
         key: 'MAX_OC_150',
         socket: numericDataSocket,
-        unit: '%'
+        unit: '%',
+        min: 0,
+        max: 100
     }
 
 ]

@@ -18,6 +18,7 @@ import { reifyGeoserverWMSLayer } from './geoserver'
 import { reifyKewLayer, reifyKewPointLayer } from './kew'
 import { reifyOrvalLayer } from './orval'
 import { reifyIMDLayer } from './imd'
+import { reifyWFSLayer } from './wfs'
 
 export const reifyLayer = (layer: Layer, existingLayer: BaseLayer | null, dbModels: DBModels, map: Map, modelOutputCache: ModelOutputCache, DatasetCache: DatasetCache, loadteamDataset: (layer: DatasetLayer) => void): BaseLayer => {
   const layerType = layer.type
@@ -38,6 +39,7 @@ export const reifyLayer = (layer: Layer, existingLayer: BaseLayer | null, dbMode
     case "ORValLayer": return reifyOrvalLayer(layer, existingLayer, map)
     case "IMDLayer": return reifyIMDLayer(layer, existingLayer, map)
     case "KewPointLayer": return reifyKewPointLayer(layer, existingLayer, map)
+    case "WFSLayer": return reifyWFSLayer(layer, existingLayer, map)
     default: {
       // Ensure this switch statement is exhaustive
       const unreachable: never = layerType

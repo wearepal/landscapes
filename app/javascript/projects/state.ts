@@ -151,7 +151,15 @@ export interface GeoserverLayer extends BaseLayer {
   yOffset?: number
 }
 
-export type Layer = OsmLayer | MapTileLayer | OverlayLayer | NevoLayer | CehLandCoverLayer | ModelOutputLayer | DatasetLayer | CropMapLayer | AtiLayer | ShapeLayer | BoundaryLayer | GeoserverLayer | KewLayer | ORValLayer | IMDLayer | KewPointLayer
+export interface WFSLayer extends BaseLayer {
+  type: "WFSLayer"
+  layer: string
+  propIdx: number
+  attribution: string
+  fill: fillType
+}
+
+export type Layer = OsmLayer | MapTileLayer | OverlayLayer | NevoLayer | CehLandCoverLayer | ModelOutputLayer | DatasetLayer | CropMapLayer | AtiLayer | ShapeLayer | BoundaryLayer | GeoserverLayer | KewLayer | ORValLayer | IMDLayer | KewPointLayer | WFSLayer
 
 export interface Project {
   name: string

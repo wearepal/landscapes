@@ -2,13 +2,60 @@ import * as React from 'react'
 import './sidebar.css'
 import { ReactSortable } from 'react-sortablejs'
 import { nevoLevelNames, nevoPropertyNames } from './nevo'
-import { AtiLayer, CropMapLayer, DatasetLayer, IMDLayer, KewLayer, KewPointLayer, Layer, ModelOutputLayer, NevoLayer, OverlayLayer, ShapeLayer, State } from './state'
+import { AtiLayer, CropMapLayer, DatasetLayer, IMDLayer, KewLayer, KewPointLayer, Layer, ModelOutputLayer, NevoLayer, OverlayLayer, ShapeLayer, State, WFSLayer } from './state'
 import { iconForLayerType } from "./util"
 import { getColorStops } from './reify_layer/model_output'
 import { tileGridStats } from './modelling/tile_grid'
 import { IMDProperties } from './reify_layer/imd'
 import { KewPointOptions } from './reify_layer/kew'
-import { seasonYearOptions } from './modelling/components/kew_samples_component'
+import { natmap_outputs } from './modelling/components/natmap_soil_component'
+
+const colMapList = <>
+  <optgroup label="Greyscale"></optgroup>
+  <option value="greyscale">Greyscale</option>
+  <optgroup label="Heatmap"></optgroup>
+  <option value="jet">Jet</option>
+  <option value="hsv">HSV</option>
+  <option value="hot">Hot</option>
+  <option value="cool">Cool</option>
+  <option value="spring">Spring</option>
+  <option value="summer">Summer</option>
+  <option value="autumn">Autumn</option>
+  <option value="winter">Winter</option>
+  <option value="copper">Copper</option>
+  <option value="YIGnBu">YIGnBu</option>
+  <option value="greens">Greens</option>
+  <option value="YIOrRd">YIOrRd</option>
+  <option value="bluered">Bluered</option>
+  <option value="RdBu">RdBu</option>
+  <option value="picnic">Picnic</option>
+  <option value="rainbow">Rainbow</option>
+  <option value="portland">Portland</option>
+  <option value="blackbody">Blackbody</option>
+  <option value="earth">Earth</option>
+  <option value="electric">Electric</option>
+  <option value="viridis">Viridis</option>
+  <option value="inferno">Inferno</option>
+  <option value="magma">Magma</option>
+  <option value="plasma">Plasma</option>
+  <option value="warm">Warm</option>
+  <option value="rainbow-soft">Rainbow-soft</option>
+  <option value="bathymetry">Bathymetry</option>
+  <option value="cdom">Cdom</option>
+  <option value="chlorophyll">Chlorophyll</option>
+  <option value="density">Density</option>
+  <option value="freesurface-blue">Freesurface-Blue</option>
+  <option value="freesurface-red">Freesurface-Red</option>
+  <option value="oxygen">Oxygen</option>
+  <option value="par">Par</option>
+  <option value="phase">Phase</option>
+  <option value="salinity">Salinity</option>
+  <option value="temperature">Temperature</option>
+  <option value="turbidity">Turbidity</option>
+  <option value="velocity-blue">Velocity-Blue</option>
+  <option value="velocity-green">Velocity-Green</option>
+  <option value="cubehelix">Cubehelix</option>
+</>
 
 interface OverlayLayerSettingsProps {
   layer: OverlayLayer
@@ -39,6 +86,32 @@ const OverlayLayerSettings = ({ layer, mutate }: OverlayLayerSettingsProps) => (
         value={layer.fillOpacity}
         onChange={e => mutate({ fillOpacity: Number(e.target.value) })}
       />
+    </div>
+  </>
+)
+
+interface WFSLayerSettingsProps {
+  layer: WFSLayer
+  mutate: (data: any) => void
+}
+
+const WFSLayerSettings = ({ layer, mutate }: WFSLayerSettingsProps) => (
+  <>
+    <div className="d-flex align-items-center mt-3">
+      Fill mode
+      <select className="custom-select ml-3" value={layer.fill} onChange={e => mutate({ fill: e.target.value })}>
+        {colMapList}
+      </select>
+    </div>
+      <div className="d-flex align-items-center mt-3">
+      Property
+      <select className="custom-select ml-3" value={layer.propIdx} onChange={e => mutate({ propIdx: e.target.value })}>
+        {
+          natmap_outputs.map((val, index) => {
+            return <option key={index} value={index}>{val.name}</option>
+          })
+        }
+      </select>
     </div>
   </>
 )
@@ -162,53 +235,6 @@ const CehLandCoverLayerSettings = () => (
     </details>
   </>
 )
-
-const colMapList = <>
-  <optgroup label="Greyscale"></optgroup>
-  <option value="greyscale">Greyscale</option>
-  <optgroup label="Heatmap"></optgroup>
-  <option value="jet">Jet</option>
-  <option value="hsv">HSV</option>
-  <option value="hot">Hot</option>
-  <option value="cool">Cool</option>
-  <option value="spring">Spring</option>
-  <option value="summer">Summer</option>
-  <option value="autumn">Autumn</option>
-  <option value="winter">Winter</option>
-  <option value="copper">Copper</option>
-  <option value="YIGnBu">YIGnBu</option>
-  <option value="greens">Greens</option>
-  <option value="YIOrRd">YIOrRd</option>
-  <option value="bluered">Bluered</option>
-  <option value="RdBu">RdBu</option>
-  <option value="picnic">Picnic</option>
-  <option value="rainbow">Rainbow</option>
-  <option value="portland">Portland</option>
-  <option value="blackbody">Blackbody</option>
-  <option value="earth">Earth</option>
-  <option value="electric">Electric</option>
-  <option value="viridis">Viridis</option>
-  <option value="inferno">Inferno</option>
-  <option value="magma">Magma</option>
-  <option value="plasma">Plasma</option>
-  <option value="warm">Warm</option>
-  <option value="rainbow-soft">Rainbow-soft</option>
-  <option value="bathymetry">Bathymetry</option>
-  <option value="cdom">Cdom</option>
-  <option value="chlorophyll">Chlorophyll</option>
-  <option value="density">Density</option>
-  <option value="freesurface-blue">Freesurface-Blue</option>
-  <option value="freesurface-red">Freesurface-Red</option>
-  <option value="oxygen">Oxygen</option>
-  <option value="par">Par</option>
-  <option value="phase">Phase</option>
-  <option value="salinity">Salinity</option>
-  <option value="temperature">Temperature</option>
-  <option value="turbidity">Turbidity</option>
-  <option value="velocity-blue">Velocity-Blue</option>
-  <option value="velocity-green">Velocity-Green</option>
-  <option value="cubehelix">Cubehelix</option>
-</>
 
 interface ModelOutputLayerSettingsProps {
   layer: ModelOutputLayer | DatasetLayer
@@ -811,7 +837,7 @@ export const Sidebar = ({ state, selectLayer, mutateLayer, deleteLayer, setLayer
       </ReactSortable>
     </div>
     {
-      (selectedLayer?.type == "ModelOutputLayer" || selectedLayer?.type == "DatasetLayer" || selectedLayer?.type == "IMDLayer" || selectedLayer?.type == "KewPointLayer") &&
+      (selectedLayer?.type == "ModelOutputLayer" || selectedLayer?.type == "DatasetLayer" || selectedLayer?.type == "IMDLayer" || selectedLayer?.type == "KewPointLayer" || selectedLayer?.type == "WFSLayer") &&
       (
         <div className="px-3 py-2 border-top border-bottom bg-light d-flex justify-content-between align-items-center">
           <span className="flex-grow-1">Layer legend</span>
@@ -850,6 +876,15 @@ export const Sidebar = ({ state, selectLayer, mutateLayer, deleteLayer, setLayer
       <GenericLegend
         min={`${selectedLayer.min ?? "Least"}`}
         max={`${selectedLayer.max ?? "Most"}`}
+        fill={selectedLayer.fill}
+        toggle={isLegCollapsed}
+      />
+    }
+    {
+      selectedLayer?.type == "WFSLayer" &&
+      <GenericLegend
+        min={natmap_outputs[selectedLayer.propIdx].min}
+        max={natmap_outputs[selectedLayer.propIdx].max}
         fill={selectedLayer.fill}
         toggle={isLegCollapsed}
       />
@@ -969,6 +1004,16 @@ export const Sidebar = ({ state, selectLayer, mutateLayer, deleteLayer, setLayer
                     mutateLayer(state.selectedLayer, data)
                 }
                />
+            }
+            {
+              selectedLayer?.type == "WFSLayer" &&
+              <WFSLayerSettings 
+                layer={selectedLayer}
+                mutate={
+                  data => state.selectedLayer !== undefined &&
+                    mutateLayer(state.selectedLayer, data)
+                }
+              />
             }
               </> :
               <em>No layer selected</em>
