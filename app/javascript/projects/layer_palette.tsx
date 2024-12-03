@@ -113,7 +113,7 @@ export const LayerPalette = ({ addLayer, hide, dbModels, getTeamDatasets, teamNa
                   prototype={{
                     type: "KewPointLayer",
                     name: "Wakehurst Soil",
-                    identifier: "kew:wakehurst_soil_rp3857",
+                    identifier: "kew:wakehurst_soil_rp3857_v2",
                     fill: "hsv",
                     metric: KewPointOptions.indexOf(KewPointOptions.find(option => option.value === "ph")!),
                     visible: true,

@@ -113,7 +113,7 @@ async function retrieveKewSamples(projectProps: ProjectProperties) : Promise<any
           {
             outputFormat: 'application/json',
             request: 'GetFeature',
-            typeName: 'kew:wakehurst_soil_rp3857',
+            typeName: 'kew:wakehurst_soil_rp3857_v2',
             srsName: 'EPSG:3857',
             bbox : bboxFromExtent(projectProps.extent),
           }
