@@ -67,8 +67,9 @@ export function createDefaultComponents(saveMapLayer: SaveMapLayer, saveModel: S
       new NumericConstantComponent(),
       new UkcehLandCoverComponent(projectProps),
       new LehLandCoverComponent(projectProps),
+      new SegmentComponent(projectProps),
       new IMDComponent(projectProps),
-      new MlTreeHedgeComponent(projectProps),
+      //new MlTreeHedgeComponent(projectProps), deprecated
       new BiodiversityComponent(projectProps),
       new NevoLayerComponent(projectProps),
       new ORValComponent(projectProps),
@@ -81,7 +82,6 @@ export function createDefaultComponents(saveMapLayer: SaveMapLayer, saveModel: S
       new ATIComponent(projectProps),
       new DesignationsComponent(projectProps),
       new SoilComponent(projectProps),
-      new SegmentComponent(projectProps),
 
       // Outputs
       new MapLayerComponent(saveMapLayer),

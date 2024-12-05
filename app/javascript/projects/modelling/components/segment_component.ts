@@ -29,7 +29,9 @@ async function retrieveSegmentationMasks(prompts: string, det_conf: string, clf_
     ))
 
     if(segs.status !== 200){
-        err(segs.statusText)
+        const segsJson = await segs.json()
+        const errMsg = segsJson.detail || segsJson.statusText || "Unknown error"
+        err(`${errMsg}. If issue persists, please raise an issue on the github repo or contact the developer directly (p.j.crossley@sussex.ac.uk).`)
         return []
     }
 
@@ -107,7 +109,7 @@ export class SegmentComponent extends BaseComponent {
     projectProps: ProjectProperties
 
     constructor(projectProps: ProjectProperties) {
-        super("Segmentation Model")
+        super("AI Model")
         this.category = "Inputs"
         this.projectProps = projectProps
         this.cache = new Map<string, any[]>()
@@ -120,7 +122,7 @@ export class SegmentComponent extends BaseComponent {
         +"and a confidence value. The prompt is the object you want to segment, detector confidence is the confidence "
         +"threshold for the detector (it is recommended that this is set low for high recall), classifier confidence is "
         +"the confidence threshold for the classifier (it is recommendeded that this is set higher for increased accuracy."
-        +" please note: setting this to 0 will disable this function), and the number of repeats is the number of times you want to repeat the segmentation process."
+        +" please note: setting this to 0 will disable this function), and the number of repeats is the number of times you want to repeat the segmentation process. (must be a value higher than 0)."
 
         if (!('det_conf' in node.data)) {
             node.data.det_conf = "5"
