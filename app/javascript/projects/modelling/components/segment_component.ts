@@ -129,7 +129,7 @@ export class SegmentComponent extends BaseComponent {
         }     
 
         if (!('cls_conf' in node.data)) {
-            node.data.cls_conf = "75"
+            node.data.cls_conf = "90"
         }
 
         if (!('n_repeats' in node.data)) {
