@@ -36,11 +36,11 @@ export class NodeComponent extends Node {
 
     return (
       <div className={`node ${selected}`} style={{
-        boxShadow: "0px 0px 8px rgba(0, 0, 0, 0.25)",
+        boxShadow:  "0px 0px 8px rgba(0, 0, 0, 0.25)",
         background: "rgba(0, 0, 0, 0.5)",
         color: "white",
         borderRadius: "4px",
-        border: "solid 3px transparent",
+        border:  node.meta.errorMessage ? "solid 2px rgba(210, 0, 0, .71)" : "solid 3px transparent",
         cursor: "pointer",
         minWidth: "250px",
         height: "auto",
