@@ -7,6 +7,8 @@ export const numericDataSocket = new Socket('Numeric dataset')
 
 export const categoricalDataSocket = new Socket('Categorical dataset')
 
+export const propertySocket = new Socket('Property')
+
 export const dataSocket = new Socket('Dataset')
 booleanDataSocket.combineWith(dataSocket)
 numericDataSocket.combineWith(dataSocket)

@@ -90,9 +90,10 @@ const ChartSelection = ({ SourceType, ChartTypeSelected, SetChartType }: ChartSe
 interface ChartLegendProps {
     chartData: ChartData | undefined
     sourceType: string
+    props: any
 }
 
-const ChartLegend = ({ chartData, sourceType }: ChartLegendProps) => {
+const ChartLegend = ({ chartData, sourceType, props }: ChartLegendProps) => {
     if (!chartData) {
         return null
     }
@@ -122,7 +123,7 @@ const ChartLegend = ({ chartData, sourceType }: ChartLegendProps) => {
                     <input
                         disabled
                         type="text"
-                        value={NumStats[key]}
+                        value={(key === "sum" && props.unit) ? `${NumStats[key]} ${props.unit}` : NumStats[key]}
                     />
                 </div>
             ))
@@ -283,6 +284,7 @@ export const AnalysisPanel = ({ selectedArea, setSelectedArea, setShowAP, select
                             <ChartLegend
                                 chartData={chartData}
                                 sourceType={dataSourceType}
+                                props={data instanceof NumericTileGrid ? data.properties : {}}
                             />
                         </div>
                     </>

@@ -5,6 +5,7 @@ import { getArea } from "ol/sphere"
 import { fromExtent } from "ol/geom/Polygon"
 import { getColorStops } from "../reify_layer/model_output"
 import { re, sum } from "mathjs"
+import { getMedianCellSize } from "../modelling/components/cell_area_component"
 
 type Color = [number, number, number, number]
 
@@ -33,6 +34,14 @@ export function findColor(value: number, colorArray: any[]): Color {
     index = Math.min(index, colorArray.length / 2 - 1)
     var alpha = colorArray[index * 2]
     return alpha
+}
+
+function unitsAdjustmentFactor(unit: string | undefined, grid: NumericTileGrid): number {
+    const area = getMedianCellSize(grid).area
+    if (unit === "m²") return area / 1
+    if (unit === "ha") return area / 10000
+    if (unit === "km²") return area / (1000 ** 2) 
+    return 1
 }
 
 function medianFromMap(arr: [number, number][], total: number): number | undefined {
@@ -219,7 +228,7 @@ export function extentToChartData(colors: Color[] | undefined, model: BooleanTil
         const range = max - min
         const step = range / bins
 
-        const _sum = sum(mapEntries.map((x) => x[1] * x[0]))
+        const _sum = sum(mapEntries.map((x) => x[1] * x[0])) * unitsAdjustmentFactor(model.properties.area, model)
         const total_entries = mapEntries.reduce((acc, cur) => acc + cur[1], 0)
 
         const _mean = _sum / total_entries
