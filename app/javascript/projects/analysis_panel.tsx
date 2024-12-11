@@ -1,7 +1,7 @@
 import { Extent } from 'ol/extent'
 import * as React from 'react'
 import { DatasetLayer, Layer, ModelOutputLayer } from './state'
-import { BooleanTileGrid, CategoricalTileGrid, NumericTileGrid } from './modelling/tile_grid'
+import { BooleanTileGrid, CategoricalTileGrid, NumericTileGrid, TileGridProps } from './modelling/tile_grid'
 import { ChartData, extentToChartDataCached } from './analysis_panel_tools/subsection'
 import { GenerateChart } from './analysis_panel_tools/charts'
 import './analysis_panel.css'
@@ -90,7 +90,7 @@ const ChartSelection = ({ SourceType, ChartTypeSelected, SetChartType }: ChartSe
 interface ChartLegendProps {
     chartData: ChartData | undefined
     sourceType: string
-    props: any
+    props: TileGridProps | undefined
 }
 
 const ChartLegend = ({ chartData, sourceType, props }: ChartLegendProps) => {
@@ -123,7 +123,7 @@ const ChartLegend = ({ chartData, sourceType, props }: ChartLegendProps) => {
                     <input
                         disabled
                         type="text"
-                        value={(key === "sum" && props.unit) ? `${NumStats[key]} ${props.unit}` : NumStats[key]}
+                        value={(key === "sum" && props && props.unit) ? `${NumStats[key]} ${props.unit}` : NumStats[key]}
                     />
                 </div>
             ))
@@ -284,7 +284,7 @@ export const AnalysisPanel = ({ selectedArea, setSelectedArea, setShowAP, select
                             <ChartLegend
                                 chartData={chartData}
                                 sourceType={dataSourceType}
-                                props={data instanceof NumericTileGrid ? data.properties : {}}
+                                props={data instanceof NumericTileGrid ? data.properties : undefined}
                             />
                         </div>
                     </>

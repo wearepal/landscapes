@@ -8,6 +8,11 @@ import { TileRange } from "ol"
 export const units = ["NA", "g", "kg", "t", "%", "pH"]
 export const areas = ["CELL", "ha", "m²", "km²"]
 
+export interface TileGridProps {
+    unit: string | undefined
+    area: string | undefined
+}
+
 function validateZoom(zoom: number) {
   if (!(
     Number.isInteger(zoom) && zoom >= 0
@@ -231,10 +236,7 @@ export class NumericTileGrid extends TileGrid {
   private data: Float32Array
   name: string | undefined
   private minMax: [number, number] | null
-  properties: { 
-    unit: string | undefined,
-    area: string | undefined,
-  }
+  properties: TileGridProps
 
   constructor(zoom: number, x: number, y: number, width: number, height: number, initialValue: number | Float32Array = NaN) {
     super(zoom, x, y, width, height)
