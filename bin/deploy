@@ -3,13 +3,7 @@ set -euo pipefail
 
 export VERSION=`git describe --tags | cut -c2-`
 
-if ! docker secret inspect landscapes_secret_key_base &>/dev/null
-then
-  docker run --rm wearepal/landscapes:$VERSION bin/rails secret | docker secret create landscapes_secret_key_base - &>/dev/null
-fi
-
-if ! docker config inspect landscapes_caddyfile &>/dev/null
-then
+if ! [ -f ".env" ]; then
   read -p "Enter your domain name, e.g. your-university.ac.uk [localhost]: " ADDRESS
   read -p "Enter your landscape modelling tool subdomain name, e.g. landscapes: " LMTSUBDOM
   read -p "Enter your annotation tool subdomain name, e.g. annotations: " ANNOSUBDOM
@@ -18,7 +12,12 @@ then
   export ANNOSUBDOM="${ANNOSUBDOM}"
   export LMTADDRESS="${LMTSUBDOM}.${ADDRESS}"
   export ANNOADDRESS="${ANNOSUBDOM}.${ADDRESS}"
-  envsubst < Caddyfile | docker config create landscapes_caddyfile - &>/dev/null
+  echo "ADDRESS=$ADDRESS" > .env
+  echo "LMTSUBDOM=$LMTSUBDOM" >> .env
+  echo "ANNOSUBDOM=$ANNOSUBDOM" >> .env
+  echo "LMTADDRESS=$LMTADDRESS" >> .env
+  echo "ANNOADDRESS=$ANNOADDRESS" >> .env
+  echo "VERSION=$VERSION" >> .env
 fi
 
-envsubst < "docker-compose.yml" | docker stack deploy "landscapes" -c -
+envsubst < "docker-compose.yml" | docker-compose -f - up -d
