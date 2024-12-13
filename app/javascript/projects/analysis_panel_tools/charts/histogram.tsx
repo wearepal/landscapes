@@ -1,11 +1,15 @@
 import * as React from "react"
 import * as d3 from 'd3'
 import { ChartData } from "../subsection"
+import { TileGridProps } from "../../modelling/tile_grid"
 
 interface HistogramProps {
     chartData: ChartData
+    props: TileGridProps | undefined
+    cellArea: number
 }
-export const GenerateHistogram = ({ chartData }: HistogramProps) => {
+
+export const GenerateHistogram = ({ chartData, props, cellArea }: HistogramProps) => {
 
 
     const axesRef = React.useRef(null)
@@ -62,7 +66,7 @@ export const GenerateHistogram = ({ chartData }: HistogramProps) => {
 
 
     return (
-        <svg id="hist" width={width} height={height}>
+        <svg id="hist" width={width} height={height} style={{marginBottom: 15, overflow: "auto"}}>
             <g
                 width={boundsWidth}
                 height={boundsHeight}
@@ -76,6 +80,25 @@ export const GenerateHistogram = ({ chartData }: HistogramProps) => {
                 ref={axesRef}
                 transform={`translate(${[MARGIN.left, MARGIN.top].join(",")})`}
             />
+            <text
+                x={width / 2}
+                y={height - 5} 
+                textAnchor="middle"
+                fontSize="14px"
+                fill="black"
+            >
+                {props?.area && props.unit ? `${props.unit}/${props.area}` : `value`}
+            </text>
+            <text
+                x={-height / 2} 
+                y={15}
+                transform="rotate(-90)" 
+                textAnchor="middle"
+                fontSize="14px"
+                fill="black"
+            >
+                km²
+            </text>
         </svg>
     );
 }

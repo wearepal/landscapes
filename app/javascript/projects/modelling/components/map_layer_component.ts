@@ -1,6 +1,6 @@
 import { Input, Node } from "rete"
 import { NodeData, WorkerInputs, WorkerOutputs } from "rete/types/core/data"
-import { dataSocket } from "../socket_types"
+import { dataSocket, propertySocket } from "../socket_types"
 import { BooleanTileGrid, CategoricalTileGrid, NumericTileGrid } from "../tile_grid"
 import { BaseComponent } from "./base_component"
 
@@ -18,6 +18,7 @@ export class MapLayerComponent extends BaseComponent {
   async builder(node: Node) {
     node.meta.toolTip = "Output a model to the map view."
     node.addInput(new Input("in", "Output", dataSocket))
+    node.addInput(new Input("props", "Properties (optional)", propertySocket, true))
   }
 
   async worker(node: NodeData, inputs: WorkerInputs, outputs: WorkerOutputs, ...args: unknown[]) {
@@ -32,7 +33,18 @@ export class MapLayerComponent extends BaseComponent {
 
       const name = editorNode.data.name as string
 
-      if (inputs["in"][0]) this.callback(node.id, name ? (name !== "" ? name.trim() : undefined) : undefined, inputs["in"][0] as BooleanTileGrid | NumericTileGrid | CategoricalTileGrid)
+      let out =  inputs["in"][0] as BooleanTileGrid | NumericTileGrid | CategoricalTileGrid
+      const props = inputs["props"]
+
+      out = (out instanceof NumericTileGrid && props.length > 0) ? out.clone() : out
+
+      props.forEach((prop: any) => {
+        if (out instanceof NumericTileGrid){
+          out.properties[(prop.type as string).toLowerCase()] = prop.unit
+        }
+      })
+
+      if (out) this.callback(node.id, name ? (name !== "" ? name.trim() : undefined) : undefined, out)
       else editorNode.meta.errorMessage = 'No input'
 
     }

@@ -5,6 +5,7 @@ import { getArea } from "ol/sphere"
 import { fromExtent } from "ol/geom/Polygon"
 import { getColorStops } from "../reify_layer/model_output"
 import { re, sum } from "mathjs"
+import { getMedianCellSize } from "../modelling/components/cell_area_component"
 
 type Color = [number, number, number, number]
 
@@ -33,6 +34,14 @@ export function findColor(value: number, colorArray: any[]): Color {
     index = Math.min(index, colorArray.length / 2 - 1)
     var alpha = colorArray[index * 2]
     return alpha
+}
+
+function unitsAdjustmentFactor(unit: string | undefined, grid: NumericTileGrid): number {
+    const area = getMedianCellSize(grid).area
+    if (unit === "m²") return area / 1
+    if (unit === "ha") return area / 10000
+    if (unit === "km²") return area / (1000 ** 2) 
+    return 1
 }
 
 function medianFromMap(arr: [number, number][], total: number): number | undefined {
@@ -162,17 +171,17 @@ export function extentToChartData(colors: Color[] | undefined, model: BooleanTil
     let counts = new Map<any, number>()
     let color = new Map<any, [number, number, number, number]>()
     let numeric_stats: NumericStats | undefined
+    const cellSize = getMedianCellSize(model).area / 1000000
 
     for (let x = outputTileRange.minX; x <= outputTileRange.maxX; x++) {
         for (let y = outputTileRange.minY; y <= outputTileRange.maxY; y++) {
 
             if (model instanceof CategoricalTileGrid) {
 
-                const area = getArea(fromExtent(tileGrid.getTileCoordExtent([model.zoom, x, y]))) / 1000000
 
                 const value = model.labels.get(model.get(x, y)) ? model.labels.get(model.get(x, y)) : "No Data"
                 const count = counts.get(value) || 0
-                counts.set(value, count + area)
+                counts.set(value, count + cellSize)
 
 
                 if (colors) {
@@ -182,12 +191,11 @@ export function extentToChartData(colors: Color[] | undefined, model: BooleanTil
 
             } else {
 
-                const area = model instanceof NumericTileGrid ? 1 : getArea(fromExtent(tileGrid.getTileCoordExtent([model.zoom, x, y]))) / 1000000
                 const value = model.get(x, y)
 
                 const count = counts.get(value) || 0
 
-                counts.set(value, count + area)
+                counts.set(value, count + cellSize)
 
                 if (colors && model instanceof BooleanTileGrid) {
                     const col_value = colors[value ? 1 : 0]
@@ -219,7 +227,7 @@ export function extentToChartData(colors: Color[] | undefined, model: BooleanTil
         const range = max - min
         const step = range / bins
 
-        const _sum = sum(mapEntries.map((x) => x[1] * x[0]))
+        const _sum = sum(mapEntries.map((x) => x[1] * x[0])) * unitsAdjustmentFactor(model.properties.area, model)
         const total_entries = mapEntries.reduce((acc, cur) => acc + cur[1], 0)
 
         const _mean = _sum / total_entries

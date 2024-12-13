@@ -41,6 +41,8 @@ import { SegmentComponent } from "./segment_component"
 import { KewSamplesComponent } from "./kew_samples_component"
 import { InterpolationComponent } from "./interpolation_component"
 import { NatmapSoilComponent } from "./natmap_soil_component"
+import { UnitComponent } from "./units_component"
+import { areas, units } from "../tile_grid"
 
 export interface ProjectProperties {
   extent: Extent
@@ -86,6 +88,10 @@ export function createDefaultComponents(saveMapLayer: SaveMapLayer, saveModel: S
       // Outputs
       new MapLayerComponent(saveMapLayer),
       new SaveModelOutputComponent(saveModel),
+
+      // Properties
+      new UnitComponent('Unit', projectProps, units.map((unit, idx) => ({ name: unit, id: idx }))), 
+      new UnitComponent('Area', projectProps, areas.map((unit, idx) => ({ name: unit, id: idx }))),
 
       // Conversions
       new NumberToNumericDatasetComponent(),

@@ -4,12 +4,15 @@ import { ChartType } from "../../analysis_panel"
 import { GeneratePieChart } from "./pie"
 import { GenerateHistogram } from "./histogram"
 import { GenerateBarChart } from "./bar"
+import { TileGridProps } from "../../modelling/tile_grid"
 
 interface ChartProps {
     chartData: ChartData
     chartType: ChartType
+    props: TileGridProps | undefined
+    cellArea: number
 }
-export const GenerateChart = ({ chartData, chartType }: ChartProps) => {
+export const GenerateChart = ({ chartData, chartType, props, cellArea }: ChartProps) => {
     switch (chartType) {
         case "pie":
             return <GeneratePieChart
@@ -19,6 +22,8 @@ export const GenerateChart = ({ chartData, chartType }: ChartProps) => {
         case "hist":
             return <GenerateHistogram
                 chartData={chartData}
+                props={props}
+                cellArea={cellArea}
             />
             break;
         case "bar":

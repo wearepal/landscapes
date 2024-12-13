@@ -36,6 +36,10 @@
       background: steelblue;
     }
 
+    .socket.property {
+      background: purple;
+    }
+
     .socket--number,
     .socket.number {
       background: #46b44c;
@@ -80,6 +84,12 @@
   .connection.socket-output-numeric-dataset {
     .main-path {
       stroke: #b44646;
+    }
+  }
+
+  .connection.socket-output-property {
+    .main-path {
+      stroke: purple;
     }
   }
 

@@ -5,6 +5,14 @@ import { registerSerializer } from "threads"
 import { getMedianCellSize } from "./components/cell_area_component"
 import { TileRange } from "ol"
 
+export const units = ["NA", "g", "kg", "t", "%", "pH"]
+export const areas = ["CELL", "ha", "m²", "km²"]
+
+export interface TileGridProps {
+    unit: string | undefined
+    area: string | undefined
+}
+
 function validateZoom(zoom: number) {
   if (!(
     Number.isInteger(zoom) && zoom >= 0
@@ -42,6 +50,7 @@ export interface tileGridStats {
   zoom: number
   area: number
   length: number
+  props?: TileGridProps
 }
 
 export interface TileGridJSON {
@@ -228,9 +237,15 @@ export class NumericTileGrid extends TileGrid {
   private data: Float32Array
   name: string | undefined
   private minMax: [number, number] | null
+  properties: TileGridProps
 
   constructor(zoom: number, x: number, y: number, width: number, height: number, initialValue: number | Float32Array = NaN) {
     super(zoom, x, y, width, height)
+    this.properties = {
+      unit: undefined,
+      area: undefined
+    }
+
     if (initialValue instanceof Float32Array) {
       this.data = initialValue
     }
@@ -242,6 +257,10 @@ export class NumericTileGrid extends TileGrid {
 
   getData(): Float32Array {
     return this.data
+  }
+
+  clone(): NumericTileGrid {
+    return new NumericTileGrid(this.zoom, this.x, this.y, this.width, this.height, this.data)
   }
 
   iterate(callback: (x: number, y: number, value: number) => void) {
@@ -327,7 +346,8 @@ export class NumericTileGrid extends TileGrid {
       type: "NumericTileGrid",
       zoom: this.zoom,
       area,
-      length
+      length,
+      props: this.properties
     }
   }
 
