@@ -171,17 +171,17 @@ export function extentToChartData(colors: Color[] | undefined, model: BooleanTil
     let counts = new Map<any, number>()
     let color = new Map<any, [number, number, number, number]>()
     let numeric_stats: NumericStats | undefined
+    const cellSize = getMedianCellSize(model).area / 1000000
 
     for (let x = outputTileRange.minX; x <= outputTileRange.maxX; x++) {
         for (let y = outputTileRange.minY; y <= outputTileRange.maxY; y++) {
 
             if (model instanceof CategoricalTileGrid) {
 
-                const area = getArea(fromExtent(tileGrid.getTileCoordExtent([model.zoom, x, y]))) / 1000000
 
                 const value = model.labels.get(model.get(x, y)) ? model.labels.get(model.get(x, y)) : "No Data"
                 const count = counts.get(value) || 0
-                counts.set(value, count + area)
+                counts.set(value, count + cellSize)
 
 
                 if (colors) {
@@ -191,12 +191,11 @@ export function extentToChartData(colors: Color[] | undefined, model: BooleanTil
 
             } else {
 
-                const area = model instanceof NumericTileGrid ? 1 : getArea(fromExtent(tileGrid.getTileCoordExtent([model.zoom, x, y]))) / 1000000
                 const value = model.get(x, y)
 
                 const count = counts.get(value) || 0
 
-                counts.set(value, count + area)
+                counts.set(value, count + cellSize)
 
                 if (colors && model instanceof BooleanTileGrid) {
                     const col_value = colors[value ? 1 : 0]

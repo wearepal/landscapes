@@ -5,7 +5,7 @@ import { nevoLevelNames, nevoPropertyNames } from './nevo'
 import { AtiLayer, CropMapLayer, DatasetLayer, IMDLayer, KewLayer, KewPointLayer, Layer, ModelOutputLayer, NevoLayer, OverlayLayer, ShapeLayer, State, WFSLayer } from './state'
 import { iconForLayerType } from "./util"
 import { getColorStops } from './reify_layer/model_output'
-import { tileGridStats } from './modelling/tile_grid'
+import { TileGridProps, tileGridStats } from './modelling/tile_grid'
 import { IMDProperties } from './reify_layer/imd'
 import { KewPointOptions } from './reify_layer/kew'
 import { natmap_outputs } from './modelling/components/natmap_soil_component'
@@ -395,13 +395,14 @@ const KewLayerSettings = ({ layer, mutate }: KewLayerSettingsProps) => {
   )
 }
 
-export function ZoomData({zoom, area, length}) {
+export function ZoomData({zoom, area, length, units}) {
   const unit = area < 1 ? "cm²" : (area > 1000000 ? "km²" : "m²")
   length = area < 1 ? length * 100 : (area > 1000000 ? length / 1000 : length)
   area = area < 1 ? area * 10000 : (area > 1000000 ? area / 1000000 : area)
   return (
     <>
       <div title={`Rounded to two decimal places. Unrounded values; Area: ${area}${unit}, Resolution: ${length}${unit.slice(0, -1)}`} className="pl-3 pb-2 pt-2">
+        {units ? "Units: " : ""} {units} <br />
         Zoom level: {zoom} <br />
         Area per cell: ~{area.toFixed(2)}{unit} <br />
         Resolution per cell: ~{length.toFixed(2)}{unit.slice(0, -1)}
@@ -418,7 +419,7 @@ interface ModelOutputLayerLegendProps {
   toggle: boolean
 }
 
-export function Legend({ colors, minValue, maxValue, type, labels, mutateColors, updateBounds, overrideBounds, bounds, zoom, area, length, toggleCollapse }) {
+export function Legend({ colors, minValue, maxValue, type, labels, mutateColors, updateBounds, overrideBounds, bounds, zoom, area, length, toggleCollapse, props }) {
 
   if(toggleCollapse)
   {
@@ -473,7 +474,7 @@ export function Legend({ colors, minValue, maxValue, type, labels, mutateColors,
             ))}
           </div>
         </div>
-        <ZoomData zoom={zoom} area={area} length={length} />
+        <ZoomData zoom={zoom} area={area} length={length} units={undefined} />
       </>
     )
 
@@ -554,7 +555,7 @@ export function Legend({ colors, minValue, maxValue, type, labels, mutateColors,
             ))}
           </div>
         </div>
-        <ZoomData zoom={zoom} area={area} length={length} />
+        <ZoomData zoom={zoom} area={area} length={length} units={undefined} />
         </>
       )
 
@@ -568,6 +569,7 @@ export function Legend({ colors, minValue, maxValue, type, labels, mutateColors,
     const min = overrideBounds ? bounds[0] : minValue
     const max = overrideBounds ? bounds[1] : maxValue
     const mean = min + (((max) - (min)) * .5)
+    const units = (props.unit && props.area) ? `${props.unit}/${props.area}` : 'unknown'
 
     const toggleBounds = () => {
 
@@ -684,7 +686,7 @@ export function Legend({ colors, minValue, maxValue, type, labels, mutateColors,
           </>
         )}
       </div>
-      <ZoomData zoom={zoom} area={area} length={length}/>
+      <ZoomData zoom={zoom} area={area} length={length} units={units}/>
       </>
     )
   }
@@ -712,7 +714,9 @@ function ModelOutputLayerLegend({ layer, getLayerData, mutateColors, updateBound
         zoom={stats.zoom} 
         area={stats.area} 
         length={stats.length} 
-        toggleCollapse={toggle}/>
+        toggleCollapse={toggle}
+        props={stats.props}
+      />
     </div>
   )
 }

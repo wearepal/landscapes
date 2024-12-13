@@ -8,22 +8,26 @@ import './analysis_panel.css'
 import { getArea } from 'ol/sphere'
 import { fromExtent } from 'ol/geom/Polygon'
 import { TeamExtentData } from './project_editor'
+import { getMedianCellSize } from './modelling/components/cell_area_component'
 
 export type ChartType = "pie" | "hist" | "bar" | "kde"
 
 interface ChartProps {
     chartType: ChartType | undefined
     chartData: ChartData | undefined
-
+    props: TileGridProps | undefined
+    cellArea: number
 }
 
-const Chart = ({ chartType, chartData }: ChartProps) => {
+const Chart = ({ chartType, chartData, props, cellArea }: ChartProps) => {
 
     if (!chartType || !chartData) return <></>
 
     return <GenerateChart
         chartData={chartData}
         chartType={chartType}
+        props={props}
+        cellArea={cellArea}
     />
 }
 
@@ -265,6 +269,8 @@ export const AnalysisPanel = ({ selectedArea, setSelectedArea, setShowAP, select
                             <Chart
                                 chartType={chartType}
                                 chartData={chartData}
+                                props={data instanceof NumericTileGrid ? data.properties : undefined}
+                                cellArea={data ? getMedianCellSize(data).area : 0}
                             />
                         </div>
                         <div style={{ textAlign: 'center' }}>

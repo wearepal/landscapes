@@ -50,6 +50,7 @@ export interface tileGridStats {
   zoom: number
   area: number
   length: number
+  props?: TileGridProps
 }
 
 export interface TileGridJSON {
@@ -345,7 +346,8 @@ export class NumericTileGrid extends TileGrid {
       type: "NumericTileGrid",
       zoom: this.zoom,
       area,
-      length
+      length,
+      props: this.properties
     }
   }
 
