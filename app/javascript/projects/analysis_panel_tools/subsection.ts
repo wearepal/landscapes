@@ -171,7 +171,7 @@ export function extentToChartData(colors: Color[] | undefined, model: BooleanTil
     let counts = new Map<any, number>()
     let color = new Map<any, [number, number, number, number]>()
     let numeric_stats: NumericStats | undefined
-    const cellSize = getMedianCellSize(model).area / 1000000
+    const cellSize = getMedianCellSize(model).area
 
     for (let x = outputTileRange.minX; x <= outputTileRange.maxX; x++) {
         for (let y = outputTileRange.minY; y <= outputTileRange.maxY; y++) {
@@ -195,7 +195,7 @@ export function extentToChartData(colors: Color[] | undefined, model: BooleanTil
 
                 const count = counts.get(value) || 0
 
-                counts.set(value, count + cellSize)
+                counts.set(value, count + 1)
 
                 if (colors && model instanceof BooleanTileGrid) {
                     const col_value = colors[value ? 1 : 0]
@@ -227,7 +227,7 @@ export function extentToChartData(colors: Color[] | undefined, model: BooleanTil
         const range = max - min
         const step = range / bins
 
-        const _sum = sum(mapEntries.map((x) => x[1] * x[0])) * unitsAdjustmentFactor(model.properties.area, model)
+        let _sum = sum(mapEntries.map((x) => x[1] * x[0]))
         const total_entries = mapEntries.reduce((acc, cur) => acc + cur[1], 0)
 
         const _mean = _sum / total_entries
@@ -236,6 +236,9 @@ export function extentToChartData(colors: Color[] | undefined, model: BooleanTil
         const mode = mapEntries.reduce((max, current) => {
             return current[1] > max[1] ? current : max
         }, mapEntries[0])[0]
+
+        // adjust the sum based on the area
+        _sum = _sum * unitsAdjustmentFactor(model.properties.area, model)
 
         counts = new Map()
         const fillMap = fillType ? getColorStops((fillType == "greyscale" ? "greys" : (fillType === "heatmap" ? "jet" : fillType)), 40).reverse() : undefined
@@ -258,6 +261,10 @@ export function extentToChartData(colors: Color[] | undefined, model: BooleanTil
                 if (k >= l && k <= h) counts.set(l, count as number + v)
             }
         }
+
+        counts.forEach((value, key) => {
+            counts.set(key, ((value as number) * cellSize) / (1000 ** 2)) // convert from n cells to km²
+        })
 
         numeric_stats = {
             sum: _sum,

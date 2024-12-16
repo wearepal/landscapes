@@ -127,7 +127,13 @@ const ChartLegend = ({ chartData, sourceType, props }: ChartLegendProps) => {
                     <input
                         disabled
                         type="text"
-                        value={(key === "sum" && props && props.unit) ? `${NumStats[key]} ${props.unit}` : NumStats[key]}
+                        value={NumStats[key]}
+                    />
+                    <input
+                        type='text'
+                        value={ key === "sum" ? (props?.unit ? props.unit : "No unit") : ((props?.unit && props?.area) ? `${props.unit}/${props.area}` : "No unit") }
+                        style={{ width: 70, textAlign: 'center' }}
+                        disabled
                     />
                 </div>
             ))
