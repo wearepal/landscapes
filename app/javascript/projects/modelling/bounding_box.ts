@@ -121,7 +121,7 @@ export async function maskFromExtentAndShape(extent: Extent, zoom: number, shape
 
                 for (let feature of features) {
                     const geom = feature.getGeometry()
-                    if (geom === undefined) { continue }
+                    if (geom === undefined || !geom) { continue }
             
                     const featureTileRange = tileGrid.getTileRangeForExtentAndZ(
                         geom.getExtent(),
