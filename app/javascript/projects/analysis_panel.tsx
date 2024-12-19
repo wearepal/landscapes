@@ -95,9 +95,10 @@ interface ChartLegendProps {
     chartData: ChartData | undefined
     sourceType: string
     props: TileGridProps | undefined
+    decimalPlaces: number
 }
 
-const ChartLegend = ({ chartData, sourceType, props }: ChartLegendProps) => {
+const ChartLegend = ({ chartData, sourceType, props, decimalPlaces }: ChartLegendProps) => {
     if (!chartData) {
         return null
     }
@@ -127,7 +128,7 @@ const ChartLegend = ({ chartData, sourceType, props }: ChartLegendProps) => {
                     <input
                         disabled
                         type="text"
-                        value={NumStats[key]}
+                        value={parseFloat(NumStats[key].toFixed(decimalPlaces)).toLocaleString()}
                     />
                     <input
                         type='text'
@@ -176,6 +177,7 @@ export const AnalysisPanel = ({ selectedArea, setSelectedArea, setShowAP, select
     const [chartData, setChartData] = React.useState<ChartData>()
     const [bins, setBins] = React.useState<number>(10) 
     const [colors, setColors] = React.useState<any>(null)
+    const [decimalPlaces, setDecimalPlaces] = React.useState<number>(2)
 
     let errorMsg: string = ""
     let showChart: boolean = false
@@ -284,8 +286,9 @@ export const AnalysisPanel = ({ selectedArea, setSelectedArea, setShowAP, select
                                 chartType == "hist"
                                 &&
                                 <>
-                                    <label style={{ width: 60 }}>Bars</label>
+                                    <label style={{ width: 40 }}>Bars</label>
                                     <input
+                                        style={{ width: 50 }}
                                         type="number"
                                         value={bins}
                                         onChange={(e) => setBins(+e.target.value)}
@@ -293,10 +296,25 @@ export const AnalysisPanel = ({ selectedArea, setSelectedArea, setShowAP, select
                                     />
                                 </>
                             }
+                            {
+                                data instanceof NumericTileGrid
+                                &&
+                                <>
+                                    <label style={{ width: 130 }}>Decimal Places</label>
+                                    <input
+                                        style={{ width: 50 }}
+                                        type="number"
+                                        value={decimalPlaces}
+                                        onChange={(e) => setDecimalPlaces(+e.target.value)}
+                                        min={0}
+                                    />
+                                </>
+                            }
                             <ChartLegend
                                 chartData={chartData}
                                 sourceType={dataSourceType}
                                 props={data instanceof NumericTileGrid ? data.properties : undefined}
+                                decimalPlaces={decimalPlaces}
                             />
                         </div>
                     </>
