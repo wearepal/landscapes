@@ -16,12 +16,19 @@ export const GenerateHistogram = ({ chartData, props, cellArea }: HistogramProps
     const MARGIN = { top: 60, right: 30, bottom: 40, left: 50 }
     const BIN_PADDING = 0
 
-    const data = chartData.count
+
+    const maxCount = Math.max(...Array.from(chartData.count.values()))
+    let units = "km²"
+    if (maxCount < 0.1) units = "m²"
     const cols = chartData.colors
     const { min, max, step } = chartData.numeric_stats ? chartData.numeric_stats : { min: 0, max: 0, step: 0 }
 
     const [width, height] = [400, 300]
     const [boundsWidth, boundsHeight] = [width - MARGIN.right - MARGIN.left, height - MARGIN.top - MARGIN.bottom]
+
+    //const cellCountArr = Array.from(chartData.count.values(), (value) => ((units === "m²" ? value : value * (1000 ** 2)) * cellArea))
+
+    const domMax = Math.max(...Array.from(chartData.count.values()))
 
     const xScale = d3
         .scaleLinear()
@@ -31,22 +38,27 @@ export const GenerateHistogram = ({ chartData, props, cellArea }: HistogramProps
     const yScale = d3
         .scaleLinear()
         .range([boundsHeight, 0])
-        .domain([0, Math.max(...Array.from(data.values())) * 1.1])
+        .domain([0, units == "km²" ? domMax : domMax * (1000 ** 2)])
 
-    const rects = Array.from(chartData.count).map((bin, i) => {
+    // const yRScale = d3
+    //     .scaleLinear()
+    //     .range([boundsHeight, 0])
+    //     .domain([0, Math.max(...cellCountArr)])
 
-        let color = cols?.get(bin[0])
+    const rects = Array.from(chartData.count, ([name, value]) => ({ name, value: units === "m²" ? value * (1000 ** 2) : value })).map((bin, i) => {
+
+        let color = cols?.get(bin.name)
         color = color ? color : [255, 255, 255, 1]
-        let bin_w = xScale(bin[0] + step) - xScale(bin[0]) - BIN_PADDING
+        let bin_w = xScale(bin.name + step) - xScale(bin.name) - BIN_PADDING
 
         return <rect
             key={i}
             fill={`rgb(${color[0]}, ${color[1]}, ${color[2]})`}
             stroke="lightgrey"
-            x={xScale(bin[0])}
+            x={xScale(bin.name)}
             width={bin_w}
-            y={yScale(bin[1])}
-            height={boundsHeight - yScale(bin[1])}
+            y={yScale(bin.value)}
+            height={boundsHeight - yScale(bin.value)}
         />
     })
 
@@ -60,8 +72,11 @@ export const GenerateHistogram = ({ chartData, props, cellArea }: HistogramProps
             .attr("transform", "translate(0," + boundsHeight + ")")
             .call(xAxisGenerator);
 
-        const yAxisGenerator = d3.axisLeft(yScale);
-        svgElement.append("g").call(yAxisGenerator);
+        const yAxisGenerator = d3.axisLeft(yScale).ticks(4)
+        //const yAxisRightGenerator = d3.axisRight(yRScale).ticks(4)
+        svgElement.append("g").call(yAxisGenerator)
+        //svgElement.append("g").attr("transform", `translate(${boundsWidth}, 0)`).call(yAxisRightGenerator)
+        
     }, [xScale, yScale, boundsHeight]);
 
 
@@ -97,7 +112,7 @@ export const GenerateHistogram = ({ chartData, props, cellArea }: HistogramProps
                 fontSize="14px"
                 fill="black"
             >
-                km²
+                {units}
             </text>
         </svg>
     );

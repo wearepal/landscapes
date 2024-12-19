@@ -11,7 +11,14 @@ export const GenerateBarChart = ({ chartData }: BarChartProps) => {
     const [h, w, m, bar_pad] = [300, 300, { top: 30, bottom: 30, left: 10, right: 10 }, 0.5]
     const [bounds_w, bounds_h] = [(w - m.right - m.left), (h - m.top - m.bottom)]
 
-    const data = Array.from(chartData.count, ([name, value]) => ({ name, value })).sort((a, b) => b.value - a.value).slice(0, 5)
+    let units = "km²"
+    const maxCount = Math.max(...Array.from(chartData.count.values()))
+
+    if (maxCount < 0.05){
+        units = "m²"
+    }
+
+    const data = Array.from(chartData.count, ([name, value]) => ({ name, value : units === "m²" ? value * (1000**2) : value })).sort((a, b) => b.value - a.value).slice(0, 5)
 
     const xScale = d3
         .scaleLinear()
@@ -69,7 +76,7 @@ export const GenerateBarChart = ({ chartData }: BarChartProps) => {
 
     return (
         <div>
-            <svg id="bar" width={w} height={h}>
+            <svg id="bar" width={w} height={h} style={{overflow: "unset"}}>
                 <g
                 width={bounds_h}
                 height={bounds_w}
@@ -84,7 +91,7 @@ export const GenerateBarChart = ({ chartData }: BarChartProps) => {
                         textAnchor="middle"
                         fill="black"
                     >
-                    Area (km²)
+                    Area ({units})
                     </text>
                 </g>
             </svg>
