@@ -181,7 +181,7 @@ export function extentToChartData(colors: Color[] | undefined, model: BooleanTil
 
                 const value = model.labels.get(model.get(x, y)) ? model.labels.get(model.get(x, y)) : "No Data"
                 const count = counts.get(value) || 0
-                counts.set(value, count + cellSize)
+                counts.set(value, count + (cellSize / (1000 ** 2)))
 
 
                 if (colors) {
@@ -195,7 +195,7 @@ export function extentToChartData(colors: Color[] | undefined, model: BooleanTil
 
                 const count = counts.get(value) || 0
 
-                counts.set(value, count + 1)
+                counts.set(value, count + (model instanceof BooleanTileGrid ? (cellSize / (1000 ** 2)) : 1))
 
                 if (colors && model instanceof BooleanTileGrid) {
                     const col_value = colors[value ? 1 : 0]
