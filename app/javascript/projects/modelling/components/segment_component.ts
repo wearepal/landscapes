@@ -8,8 +8,9 @@ import { BooleanTileGrid, NumericTileGrid } from "../tile_grid"
 import { createXYZ } from "ol/tilegrid"
 import { Point } from "ol/geom"
 import { Coordinate } from "ol/coordinate"
+import { maskFromExtentAndShape } from "../bounding_box"
 
-async function retrieveSegmentationMasks(prompts: string, det_conf: string, clf_conf: string, n_repeats: string, projectProps: ProjectProperties, err: (err: string) => void) : Promise<any[]>{
+async function retrieveSegmentationMasks(prompts: string, det_conf: string, clf_conf: string, n_repeats: string, projectProps: ProjectProperties, mask: BooleanTileGrid,  err: (err: string) => void) : Promise<any[]>{
 
     const tileGrid = createXYZ()
 
@@ -81,8 +82,9 @@ async function retrieveSegmentationMasks(prompts: string, det_conf: string, clf_
                 projectProps.zoom
             )
 
-            result.set(featureTileRange.maxX, featureTileRange.minY, true)
-            confBox.set(featureTileRange.maxX, featureTileRange.minY, pred.confidence)
+            const maskV = mask.get(featureTileRange.maxX, featureTileRange.minY)
+            result.set(featureTileRange.maxX, featureTileRange.minY, maskV)
+            confBox.set(featureTileRange.maxX, featureTileRange.minY, maskV ? pred.confidence : NaN)
         })
 
         const predBox = pred.box
@@ -160,6 +162,13 @@ export class SegmentComponent extends BaseComponent {
         const det_conf = node.data.det_conf as string
         const cls_conf = node.data.cls_conf as string
         const n_repeats = node.data.n_repeats as string
+        const mask = await maskFromExtentAndShape(
+            this.projectProps.extent, 
+            this.projectProps.zoom, 
+            this.projectProps.maskLayer, 
+            this.projectProps.maskCQL, 
+            this.projectProps.mask
+        )
 
         if (this.cache.has(`${prompts}_${cls_conf}%${det_conf}%${n_repeats}`)) {
             const result = this.cache.get(`${prompts}_${cls_conf}%${det_conf}%${n_repeats}`)!
@@ -168,7 +177,7 @@ export class SegmentComponent extends BaseComponent {
             outputs['conf'] = result[2]
         }else{
             let nodeErr = ""
-            const result = await retrieveSegmentationMasks(prompts, det_conf, cls_conf, n_repeats, this.projectProps, (err) => {
+            const result = await retrieveSegmentationMasks(prompts, det_conf, cls_conf, n_repeats, this.projectProps, mask, (err) => {
                 nodeErr = err
             })
             if (result.length === 0) {
