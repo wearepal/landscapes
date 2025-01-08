@@ -133,6 +133,20 @@ export class BooleanTileGrid extends TileGrid {
     }
   }
 
+  iterateOverTileRange(range: TileRange, callback: (x: number, y: number, value: boolean) => void) {
+    const { x, y, width, height } = this
+    const minX = Math.max(x, range.minX)
+    const maxX = Math.min(x + width, range.maxX)
+    const minY = Math.max(y, range.minY)
+    const maxY = Math.min(y + height, range.maxY)
+
+    for (let i = minX; i < maxX; i++) {
+      for (let j = minY; j < maxY; j++) {
+        callback(i, j, this.get(i, j))
+      }
+    }
+  }
+
   get(x: number, y: number, zoom = this.zoom): boolean {
     if (zoom < this.zoom) {
       const x1 = x * Math.pow(2, this.zoom - zoom)

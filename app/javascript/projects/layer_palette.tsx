@@ -106,7 +106,7 @@ export const LayerPalette = ({ addLayer, hide, dbModels, getTeamDatasets, teamNa
         </Section> */}
         {
           permissions.KewSamples &&
-          <Section title="Kew Samples">
+          <Section title="Kew">
             {
               <AddLayerButton
                   addLayer={addLayer}

@@ -138,7 +138,7 @@ export class KewSamplesComponent extends BaseComponent {
 
     constructor(projectProps : ProjectProperties) {
         super("Kew Samples")
-        this.category = "Inputs"
+        this.category = "Kew"
         this.projectProps = projectProps
         this.featuresCache = undefined
         this.gridCache = new Map()

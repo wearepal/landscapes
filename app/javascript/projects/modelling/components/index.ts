@@ -43,6 +43,8 @@ import { InterpolationComponent } from "./interpolation_component"
 import { NatmapSoilComponent } from "./natmap_soil_component"
 import { UnitComponent } from "./units_component"
 import { areas, units } from "../tile_grid"
+import { KewHabsComponent } from "./kew_habs_component"
+import { KewTreesComponent } from "./kew_trees_component"
 
 export interface ProjectProperties {
   extent: Extent
@@ -60,7 +62,11 @@ export function createDefaultComponents(saveMapLayer: SaveMapLayer, saveModel: S
 
     // Team permissions restrict some components. Add them here.
     if (permissions.DefraHedgerows) restrictedComponents.push(new HedgerowComponent(projectProps))
-    if (permissions.KewSamples) restrictedComponents.push(new KewSamplesComponent(projectProps))
+    if (permissions.KewSamples) {
+      restrictedComponents.push(new KewSamplesComponent(projectProps))
+      restrictedComponents.push(new KewHabsComponent(projectProps))
+      restrictedComponents.push(new KewTreesComponent(projectProps))
+    }
     if (permissions.NATMAPSoil) restrictedComponents.push(new NatmapSoilComponent(projectProps))
 
     // Freely available components here.
