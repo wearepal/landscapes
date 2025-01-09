@@ -1,5 +1,5 @@
 import BaseLayer from "ol/layer/Base"
-import { KewLayer, KewOption, KewPointLayer } from "../state"
+import { KewLayer, KewOption, KewPointLayer, KewShapeLayer } from "../state"
 import VectorLayer from "ol/layer/Vector"
 import { memoize } from "lodash"
 import VectorSource from "ol/source/Vector"
@@ -330,4 +330,22 @@ export function reifyKewPointLayer(layer: KewPointLayer, existingLayer: BaseLaye
 
     return v
 
+}
+
+export function reifyKewShapeLayer(layer: KewShapeLayer, existingLayer: BaseLayer | null, map: Map) {
+
+    const col = layer.color.fill
+
+    return new VectorLayer({
+        source: getSource(layer.identifier),
+        style: new Style({
+            stroke: new Stroke({
+                color: `rgba(0, 0, 0, 1)`,
+                width: 1
+            }),
+            fill: new Fill({
+                color: `rgba(${col[0]}, ${col[1]}, ${col[2]}, 1)`
+            })
+        })
+    })
 }

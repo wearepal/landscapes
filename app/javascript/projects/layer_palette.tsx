@@ -122,6 +122,32 @@ export const LayerPalette = ({ addLayer, hide, dbModels, getTeamDatasets, teamNa
                   }}
               />
             }
+            {
+              <AddLayerButton
+                  addLayer={addLayer}
+                  prototype={{
+                    type: "KewShapeLayer",
+                    name: "Wakehurst Tree Crowns (Deciduous)",
+                    identifier: "kew:bl_crown_3857",
+                    visible: true,
+                    opacity: 1,
+                    color: { stroke: [160,82,45, 1], fill: [160,82,45, 1] }
+                  }}
+              />
+            }
+            {
+              <AddLayerButton
+                  addLayer={addLayer}
+                  prototype={{
+                    type: "KewShapeLayer",
+                    name: "Wakehurst Tree Crowns (Coniferous)",
+                    identifier: "kew:conifer_crown_3857",
+                    visible: true,
+                    opacity: 1,
+                    color: { stroke: [34,139,34, 1], fill: [34,139,34, 1] }
+                  }}
+              />
+            }
           </Section>
         }
         <Section title="Ancient Tree Inventory">

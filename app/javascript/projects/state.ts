@@ -95,6 +95,12 @@ export interface KewPointLayer extends BaseLayer {
   seasonYear: SeasonYearOption
 }
 
+export interface KewShapeLayer extends BaseLayer {
+  type: "KewShapeLayer"
+  identifier: string
+  color: StrokeFill
+}
+
 export interface NevoLayer extends BaseLayer {
   type: "NevoLayer"
   level: NevoLevel
@@ -159,7 +165,7 @@ export interface WFSLayer extends BaseLayer {
   fill: fillType
 }
 
-export type Layer = OsmLayer | MapTileLayer | OverlayLayer | NevoLayer | CehLandCoverLayer | ModelOutputLayer | DatasetLayer | CropMapLayer | AtiLayer | ShapeLayer | BoundaryLayer | GeoserverLayer | KewLayer | ORValLayer | IMDLayer | KewPointLayer | WFSLayer
+export type Layer = OsmLayer | MapTileLayer | OverlayLayer | NevoLayer | CehLandCoverLayer | ModelOutputLayer | DatasetLayer | CropMapLayer | AtiLayer | ShapeLayer | BoundaryLayer | GeoserverLayer | KewLayer | ORValLayer | IMDLayer | KewPointLayer | WFSLayer | KewShapeLayer
 
 export interface Project {
   name: string
