@@ -25,6 +25,8 @@ export function iconForLayerType(type: Layer['type']) {
     case "KewLayer":
     case "KewPointLayer":
       return "fa-leaf"
+    case "KewShapeLayer":
+      return "fa-tree"
     default:
       return "fa-layer-group"
   }

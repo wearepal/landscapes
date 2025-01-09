@@ -39,6 +39,11 @@ export interface KewOption {
   socket?: Socket
 }
 
+export interface KewCrownOption {
+  name: string
+  label: string
+}
+
 type fillType = "greyscale" | "heatmap" | "jet" | "hsv" | "hot" | "cool" | "spring" | "summer" | "autumn" | "winter" | "copper" | "WIGnBu" | "greens" | "YIOrRd" | "bluered" | "RdBu" | "picnic" | "rainbow" | "portland" | "blackbody" | "earth" | "electric" | "viridis" | "inferno" | "magma" | "plasma" | "warm" | "cool" | "rainbow-soft" | "bathymetry" | "cdom" | "chlorophyll" | "density" | "freesurface-blue" | "freesurface-red" | "oxygen" | "par" | "phase" | "salinity" | "temperature" | "turbidity" | "velocity-blue" | "velocity-green" | "cubehelix"
 
 export interface OsmLayer extends BaseLayer {
@@ -93,6 +98,16 @@ export interface KewPointLayer extends BaseLayer {
   max?: number
   fill: fillType
   seasonYear: SeasonYearOption
+}
+
+export interface KewShapeLayer extends BaseLayer {
+  type: "KewShapeLayer"
+  identifier: string
+  color: StrokeFill
+  fill: fillType
+  metric: KewCrownOption
+  min?: number
+  max?: number
 }
 
 export interface NevoLayer extends BaseLayer {
@@ -159,7 +174,7 @@ export interface WFSLayer extends BaseLayer {
   fill: fillType
 }
 
-export type Layer = OsmLayer | MapTileLayer | OverlayLayer | NevoLayer | CehLandCoverLayer | ModelOutputLayer | DatasetLayer | CropMapLayer | AtiLayer | ShapeLayer | BoundaryLayer | GeoserverLayer | KewLayer | ORValLayer | IMDLayer | KewPointLayer | WFSLayer
+export type Layer = OsmLayer | MapTileLayer | OverlayLayer | NevoLayer | CehLandCoverLayer | ModelOutputLayer | DatasetLayer | CropMapLayer | AtiLayer | ShapeLayer | BoundaryLayer | GeoserverLayer | KewLayer | ORValLayer | IMDLayer | KewPointLayer | WFSLayer | KewShapeLayer
 
 export interface Project {
   name: string
