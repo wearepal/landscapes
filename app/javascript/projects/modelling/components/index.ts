@@ -64,7 +64,7 @@ export function createDefaultComponents(saveMapLayer: SaveMapLayer, saveModel: S
     if (permissions.DefraHedgerows) restrictedComponents.push(new HedgerowComponent(projectProps))
     if (permissions.KewSamples) {
       restrictedComponents.push(new KewSamplesComponent(projectProps))
-      restrictedComponents.push(new KewHabsComponent(projectProps))
+      //restrictedComponents.push(new KewHabsComponent(projectProps))
       restrictedComponents.push(new KewTreesComponent(projectProps))
     }
     if (permissions.NATMAPSoil) restrictedComponents.push(new NatmapSoilComponent(projectProps))

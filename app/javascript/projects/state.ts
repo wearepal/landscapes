@@ -39,6 +39,11 @@ export interface KewOption {
   socket?: Socket
 }
 
+export interface KewCrownOption {
+  name: string
+  label: string
+}
+
 type fillType = "greyscale" | "heatmap" | "jet" | "hsv" | "hot" | "cool" | "spring" | "summer" | "autumn" | "winter" | "copper" | "WIGnBu" | "greens" | "YIOrRd" | "bluered" | "RdBu" | "picnic" | "rainbow" | "portland" | "blackbody" | "earth" | "electric" | "viridis" | "inferno" | "magma" | "plasma" | "warm" | "cool" | "rainbow-soft" | "bathymetry" | "cdom" | "chlorophyll" | "density" | "freesurface-blue" | "freesurface-red" | "oxygen" | "par" | "phase" | "salinity" | "temperature" | "turbidity" | "velocity-blue" | "velocity-green" | "cubehelix"
 
 export interface OsmLayer extends BaseLayer {
@@ -99,6 +104,10 @@ export interface KewShapeLayer extends BaseLayer {
   type: "KewShapeLayer"
   identifier: string
   color: StrokeFill
+  fill: fillType
+  metric: KewCrownOption
+  min?: number
+  max?: number
 }
 
 export interface NevoLayer extends BaseLayer {

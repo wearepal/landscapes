@@ -1,7 +1,7 @@
 import BaseLayer from "ol/layer/Base"
 import { KewLayer, KewOption, KewPointLayer, KewShapeLayer } from "../state"
 import VectorLayer from "ol/layer/Vector"
-import { memoize } from "lodash"
+import { get, memoize } from "lodash"
 import VectorSource from "ol/source/Vector"
 import GeoJSON from "ol/format/GeoJSON"
 import { bbox } from "ol/loadingstrategy"
@@ -10,6 +10,41 @@ import { Map, Overlay } from "ol"
 import { getColorStops } from "./model_output"
 import { findColor } from "../analysis_panel_tools/subsection"
 import { numericDataSocket } from "../modelling/socket_types"
+
+export const KewTreeCrownOptions: any[] = [
+    {
+        name: "none",
+        label: "None"
+    },
+    {
+        name: "height",
+        label: "Height"
+    },
+    {
+        name: "npoints",
+        label: "N Points"
+    },
+    {
+        name: "canpy_d",
+        label: "Canopy Diameter"
+    },
+    {
+        name: "jckr_gb",
+        label: "AGB (Jucker)"
+    },
+    {
+        name: "wake_gb",
+        label: "AGB (Wakehurst)"
+    },
+    {
+        name: "p25",
+        label: "P 25"
+    },
+    {
+        name: "p75",
+        label: "P 75"
+    }
+]
 
 export const KewPointOptions: KewOption[] = [
     {
@@ -216,6 +251,22 @@ const getPointStyle = (map: Map, layer: KewPointLayer, min: number | null, max: 
     }
 )
 
+const getShapeStyle = (layer: KewShapeLayer, min: number, max: number, col: [r: number, g: number, b: number, a: number], colMap: any[]) => (
+    (feature) => {
+        const metric = layer.metric.name !== "none" ? feature.getProperties()[layer.metric.name] : -99999
+        const c = metric !== -99999 ? findColor((metric - min) / (max - min), colMap) : col
+
+        return new Style({
+            stroke: new Stroke({
+                color: `rgba(0, 0, 0, .6)`,
+                width: .2
+            }),
+            fill: new Fill({
+                color: `rgba(${c[0]}, ${c[1]}, ${c[2]}, 1)`
+            })
+        })
+    }
+)
 
 export function reifyKewLayer (layer: KewLayer, existingLayer: BaseLayer | null , map: Map) {
 
@@ -335,17 +386,16 @@ export function reifyKewPointLayer(layer: KewPointLayer, existingLayer: BaseLaye
 export function reifyKewShapeLayer(layer: KewShapeLayer, existingLayer: BaseLayer | null, map: Map) {
 
     const col = layer.color.fill
+    const colMap = getColorStops(layer.fill, 100).reverse()
+    const vectorSource = getSource(layer.identifier)
+    const { min, max } = layer.metric.name !== "none" ? getMinMaxMetric(vectorSource, layer.metric.name) : { min: 0, max: 100 }
+
+    // update sidebar
+    layer.min = min ?? 0
+    layer.max = max ?? 0
 
     return new VectorLayer({
-        source: getSource(layer.identifier),
-        style: new Style({
-            stroke: new Stroke({
-                color: `rgba(0, 0, 0, 1)`,
-                width: 1
-            }),
-            fill: new Fill({
-                color: `rgba(${col[0]}, ${col[1]}, ${col[2]}, 1)`
-            })
-        })
+        source: vectorSource,
+        style: getShapeStyle(layer, min!, max!, col, colMap)
     })
 }

@@ -2,12 +2,12 @@ import * as React from 'react'
 import './sidebar.css'
 import { ReactSortable } from 'react-sortablejs'
 import { nevoLevelNames, nevoPropertyNames } from './nevo'
-import { AtiLayer, CropMapLayer, DatasetLayer, IMDLayer, KewLayer, KewPointLayer, Layer, ModelOutputLayer, NevoLayer, OverlayLayer, ShapeLayer, State, WFSLayer } from './state'
+import { AtiLayer, CropMapLayer, DatasetLayer, IMDLayer, KewLayer, KewPointLayer, KewShapeLayer, Layer, ModelOutputLayer, NevoLayer, OverlayLayer, ShapeLayer, State, WFSLayer } from './state'
 import { iconForLayerType } from "./util"
 import { getColorStops } from './reify_layer/model_output'
 import { TileGridProps, tileGridStats } from './modelling/tile_grid'
 import { IMDProperties } from './reify_layer/imd'
-import { KewPointOptions } from './reify_layer/kew'
+import { KewPointOptions, KewTreeCrownOptions } from './reify_layer/kew'
 import { natmap_outputs } from './modelling/components/natmap_soil_component'
 
 const colMapList = <>
@@ -317,6 +317,11 @@ interface KewPointLayerSettingsProps {
   mutate: (data: any) => void
 }
 
+interface KewShapeLayerSettingsProps {  
+  layer: KewShapeLayer
+  mutate: (data: any) => void
+}
+
 const KewPointLayerSettings = ({ layer, mutate }: KewPointLayerSettingsProps) => {
 
   return (
@@ -393,6 +398,33 @@ const KewLayerSettings = ({ layer, mutate }: KewLayerSettingsProps) => {
         </ul>
     </div>
   )
+}
+
+const KewShapeLayerSettings = ({ layer, mutate }: KewShapeLayerSettingsProps) => {
+  return <>
+      <div className="d-flex align-items-center mt-3">
+        Property
+      <select className="custom-select ml-3" value={layer.metric.name} onChange={e => mutate({ metric: KewTreeCrownOptions.filter(f => f.name === e.target.value)[0] })}>
+          {
+            KewTreeCrownOptions.map(opt =>
+              <option key={opt.name} value={opt.name}>
+                {opt.label}
+              </option>
+            )
+
+          }
+        </select>
+      </div>
+        {
+          layer.metric.name != "none" &&
+          <div className="d-flex align-items-center mt-3">
+            Fill
+            <select className="custom-select ml-3" value={layer.fill} onChange={e => mutate({ fill: e.target.value })}>
+              {colMapList}
+            </select>
+          </div>
+        }
+  </>
 }
 
 export function ZoomData({zoom, area, length, units}) {
@@ -841,7 +873,7 @@ export const Sidebar = ({ state, selectLayer, mutateLayer, deleteLayer, setLayer
       </ReactSortable>
     </div>
     {
-      (selectedLayer?.type == "ModelOutputLayer" || selectedLayer?.type == "DatasetLayer" || selectedLayer?.type == "IMDLayer" || selectedLayer?.type == "KewPointLayer" || selectedLayer?.type == "WFSLayer") &&
+      (selectedLayer?.type == "ModelOutputLayer" || selectedLayer?.type == "DatasetLayer" || selectedLayer?.type == "IMDLayer" || selectedLayer?.type == "KewPointLayer" || selectedLayer?.type == "WFSLayer" || (selectedLayer?.type == "KewShapeLayer" && selectedLayer.metric.name !== "none")) &&
       (
         <div className="px-3 py-2 border-top border-bottom bg-light d-flex justify-content-between align-items-center">
           <span className="flex-grow-1">Layer legend</span>
@@ -889,6 +921,16 @@ export const Sidebar = ({ state, selectLayer, mutateLayer, deleteLayer, setLayer
       <GenericLegend
         min={natmap_outputs[selectedLayer.propIdx].min}
         max={natmap_outputs[selectedLayer.propIdx].max}
+        fill={selectedLayer.fill}
+        toggle={isLegCollapsed}
+      />
+    }
+    {
+      selectedLayer?.type == "KewShapeLayer" &&
+      selectedLayer.metric.name !== "none" &&
+      <GenericLegend
+        min={`${selectedLayer.min?.toFixed(4) ?? "Least"}`}
+        max={`${selectedLayer.max?.toFixed(4) ?? "Most"}`}
         fill={selectedLayer.fill}
         toggle={isLegCollapsed}
       />
@@ -986,6 +1028,16 @@ export const Sidebar = ({ state, selectLayer, mutateLayer, deleteLayer, setLayer
             {
               selectedLayer?.type == "KewPointLayer" &&
               <KewPointLayerSettings
+                layer={selectedLayer}
+                mutate={
+                  data => state.selectedLayer !== undefined &&
+                  mutateLayer(state.selectedLayer, data)
+                }
+              />
+            }
+            {
+              selectedLayer?.type == "KewShapeLayer" &&
+              <KewShapeLayerSettings
                 layer={selectedLayer}
                 mutate={
                   data => state.selectedLayer !== undefined &&

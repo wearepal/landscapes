@@ -7,7 +7,7 @@ import { CompiledDatasetRecord } from './saved_dataset'
 import { designations } from './modelling/designations'
 import { IMDProperties } from './reify_layer/imd'
 import { ProjectPermissions } from './project_editor'
-import { KewPointOptions } from './reify_layer/kew'
+import { KewPointOptions, KewTreeCrownOptions } from './reify_layer/kew'
 import { seasonYearOptions } from './modelling/components/kew_samples_component'
 import { natmap_outputs } from './modelling/components/natmap_soil_component'
 
@@ -131,7 +131,9 @@ export const LayerPalette = ({ addLayer, hide, dbModels, getTeamDatasets, teamNa
                     identifier: "kew:bl_crown_3857",
                     visible: true,
                     opacity: 1,
-                    color: { stroke: [160,82,45, 1], fill: [160,82,45, 1] }
+                    color: { stroke: [160,82,45, 1], fill: [160,82,45, 1] },
+                    fill: "jet",
+                    metric: KewTreeCrownOptions[0]
                   }}
               />
             }
@@ -144,7 +146,9 @@ export const LayerPalette = ({ addLayer, hide, dbModels, getTeamDatasets, teamNa
                     identifier: "kew:conifer_crown_3857",
                     visible: true,
                     opacity: 1,
-                    color: { stroke: [34,139,34, 1], fill: [34,139,34, 1] }
+                    color: { stroke: [34,139,34, 1], fill: [34,139,34, 1] },
+                    fill: "jet",
+                    metric: KewTreeCrownOptions[0]
                   }}
               />
             }
