@@ -27,7 +27,13 @@ async function retrieveSegmentationMasks(prompts: string, det_conf: string, clf_
             height: outputTileRange.getHeight().toString(),
             width: outputTileRange.getWidth().toString(),
         }
-    ))
+    )).catch((e) => {
+        err(e.message == "Failed to fetch" ? "Failed to connect to the server. Please check your internet connection." : e.message)
+    })
+
+    if(segs === undefined){
+        return []
+    }
 
     if(segs.status !== 200){
         const segsJson = await segs.json()
@@ -189,6 +195,7 @@ export class SegmentComponent extends BaseComponent {
                 outputs['mask'] = result[0]
                 outputs['box'] = result[1]
                 outputs['conf'] = result[2]
+                editorNode.update()
             }
         }
 
