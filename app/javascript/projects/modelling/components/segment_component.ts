@@ -132,16 +132,19 @@ export class SegmentComponent extends BaseComponent {
         +"the confidence threshold for the classifier (it is recommendeded that this is set higher for increased accuracy."
         +" please note: setting this to 0 will disable this function), and the number of repeats is the number of times you want to repeat the segmentation process. (must be a value higher than 0)."
 
+        // Retrieve default values from the server
+        const defaultData = await fetch ("https://landscapes.wearepal.ai/api/settings").then((res) => res.json())
+
         if (!('det_conf' in node.data)) {
-            node.data.det_conf = "5"
+            node.data.det_conf = defaultData.det_conf_default ?  defaultData.det_conf_default.toString() : "5.0"
         }     
 
         if (!('cls_conf' in node.data)) {
-            node.data.cls_conf = "0"
+            node.data.cls_conf = defaultData.clf_conf_default ?  defaultData.clf_conf_default.toString() : "0"
         }
 
         if (!('n_repeats' in node.data)) {
-            node.data.n_repeats = "1"
+            node.data.n_repeats = defaultData.n_repeats_default ?  defaultData.n_repeats_default.toString() : "1"
         }
 
         if (!('prompt' in node.data)) {
