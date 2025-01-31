@@ -133,7 +133,18 @@ export class SegmentComponent extends BaseComponent {
         +" please note: setting this to 0 will disable this function), and the number of repeats is the number of times you want to repeat the segmentation process. (must be a value higher than 0)."
 
         // Retrieve default values from the server
-        const defaultData = await fetch ("https://landscapes.wearepal.ai/api/settings").then((res) => res.json())
+        const defaultData = await fetch ("https://landscapes.wearepal.ai/api/settings").then((res) => res.json()).catch((e) => {
+            // If the server is down, use the default values
+
+            node.meta.errorMessage = "Failed to connect to the segmentation API. Component may be unavailable."
+            node.update()
+
+            return {
+                det_conf_default: 5.0,
+                clf_conf_default: 0,
+                n_repeats_default: 1
+            }
+        })
 
         if (!('det_conf' in node.data)) {
             node.data.det_conf = defaultData.det_conf_default ?  defaultData.det_conf_default.toString() : "5.0"
