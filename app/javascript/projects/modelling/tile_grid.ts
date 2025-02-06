@@ -124,6 +124,15 @@ export class BooleanTileGrid extends TileGrid {
     }
   }
 
+  merge(other: BooleanTileGrid) {
+    const { x, y, width, height } = this
+    for (let i = x; i < x + width; i++) {
+      for (let j = y; j < y + height; j++) {
+        this.set(i, j, this.get(i, j) || other.get(i, j))
+      }
+    }
+  }
+
   iterate(callback: (x: number, y: number, value: boolean) => void) {
     const { x, y, width, height } = this
     for (let i = x; i < x + width; i++) {

@@ -25,6 +25,9 @@
             </span>
           </div>
           <div>
+            <%= link_to dataset_path(dataset, team_id: @team.id), class: "px-3 py-2" do %>
+                <i class="fas fa-download"></i>
+            <% end %>
             <%= link_to edit_dataset_path(dataset), class: "px-3 py-2" do %>
                 <i class="fas fa-edit"></i>
             <% end %>
