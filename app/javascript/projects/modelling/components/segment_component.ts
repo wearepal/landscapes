@@ -18,7 +18,7 @@ async function retrieveSegmentationMasks(prompts: string, det_conf: string, clf_
 
     const segs = await fetch("https://landscapes.wearepal.ai/api/v1/segment?" + new URLSearchParams(
         {
-            labels: prompts,
+            label: prompts,
             det_conf,
             clf_conf,
             n_repeats,
