@@ -99,6 +99,12 @@ const kewTreeOptions : KewTreeOption[] = [
         name: "QSM - AGB_qsm - distributed",
         socket: numericDataSocket,
         fn: (broad_crowns, conif_crowns, QSM, projectProps, mask) => applyNumericData(broad_crowns, conif_crowns, QSM, projectProps, "agb_qsm", mask, true)
+    },
+    {
+        id: 14,
+        name: "QSM - AGB_qsm - distributed (exclude = false)",
+        socket: numericDataSocket,
+        fn: (broad_crowns, conif_crowns, QSM, projectProps, mask) => applyNumericData(broad_crowns, conif_crowns, QSM, projectProps, "agb_qsm", mask, true, true)
     }
 
     
@@ -160,7 +166,7 @@ function applyBooleanData(broad_crowns: any, conif_crowns: any, QSM: any, projec
     return grid
 }
 
-function applyNumericData(broad_crowns: any, conif_crowns: any, QSM: any, projectProps: ProjectProperties, type: "jckr_gb" | "wake_gb" | "height" | "canpy_d" | "p25" | "p75" | "agb_qsm", mask: BooleanTileGrid, distribute: boolean) {
+function applyNumericData(broad_crowns: any, conif_crowns: any, QSM: any, projectProps: ProjectProperties, type: "jckr_gb" | "wake_gb" | "height" | "canpy_d" | "p25" | "p75" | "agb_qsm", mask: BooleanTileGrid, distribute: boolean, excl: boolean = false) {
 
     const crowns = type === "agb_qsm" ? QSM : [...broad_crowns, ...conif_crowns]
 
@@ -175,6 +181,8 @@ function applyNumericData(broad_crowns: any, conif_crowns: any, QSM: any, projec
     const grid = new NumericTileGrid(projectProps.zoom, outputTileRange.minX, outputTileRange.minY, outputTileRange.getWidth(), outputTileRange.getHeight())
 
     crowns.forEach((feature) => {
+
+        if (excl && type === "agb_qsm" && feature.get("exclude") == true) return
 
         const geom = feature.getGeometry()
         const value = feature.get(type)
