@@ -9,6 +9,19 @@ import { TypedArray } from "d3"
 import { Extent } from "ol/extent"
 import { maskFromExtentAndShape } from "../bounding_box"
 import { ProjectProperties } from "."
+import { SelectControl } from "../controls/select"
+
+interface DatasetYear{
+  id: number
+  name: string
+  dataset: string
+}
+
+const datasetYears: DatasetYear[] = [
+  { id: 0, name: "2021", dataset: 'ukceh:gblcm10m2021' },
+  { id: 1, name: "2022", dataset: 'ukceh:gblcm2022_10m' },
+  { id: 2, name: "2023", dataset: 'ukceh:gblcm2023_10m' }
+]
 
 interface Habitat {
   agg: number
@@ -43,7 +56,7 @@ const habitats: Habitat[] = [
   { agg: 0, AC: "All", mode: 0, LC: "All" }
 ]
 
-async function renderCategoricalData(extent: Extent, zoom: number, maskMode: boolean, maskLayer: string, maskCQL: string) {
+async function renderCategoricalData(extent: Extent, zoom: number, maskMode: boolean, maskLayer: string, maskCQL: string, dataset_source: string) {
   // When testing locally, disable CORS in browser settings
 
   const mask = await maskFromExtentAndShape(extent, zoom, maskLayer, maskCQL, maskMode)
@@ -51,7 +64,8 @@ async function renderCategoricalData(extent: Extent, zoom: number, maskMode: boo
   const tileGrid = createXYZ()
   const outputTileRange = tileGrid.getTileRangeForExtentAndZ(extent, zoom)
 
-  const geotiff = await retrieveModelDataWCS(extent, 'ukceh:gblcm10m2021', outputTileRange)
+  //const geotiff = await retrieveModelDataWCS(extent, 'ukceh:gblcm10m2021', outputTileRange)
+  const geotiff = await retrieveModelDataWCS(extent, dataset_source, outputTileRange)
 
   const rasters = await geotiff.readRasters({ bbox: extent, width: outputTileRange.getWidth(), height: outputTileRange.getHeight() })
   const image = await geotiff.getImage()
@@ -86,7 +100,7 @@ async function renderCategoricalData(extent: Extent, zoom: number, maskMode: boo
 }
 
 export class UkcehLandCoverComponent extends BaseComponent {
-  categoricalData: CategoricalTileGrid | null
+  categoricalData: Map<string, CategoricalTileGrid>
   outputCache: Map<number, BooleanTileGrid>
   projectExtent: Extent
   zoom: number
@@ -97,7 +111,7 @@ export class UkcehLandCoverComponent extends BaseComponent {
   constructor(projectProps: ProjectProperties) {
     super("UKCEH Land Cover")
     this.category = "Inputs"
-    this.categoricalData = null
+    this.categoricalData = new Map()
     this.outputCache = new Map()
     this.projectExtent = projectProps.extent
     this.zoom = projectProps.zoom
@@ -112,27 +126,42 @@ export class UkcehLandCoverComponent extends BaseComponent {
 
     node.meta.toolTipLink = "https://www.ceh.ac.uk/data/ukceh-land-cover-maps"
 
+    if (!("dataset" in node.data)) {
+      // set to most recent version of UKCEH
+      node.data["dataset"] = datasetYears.length - 1
+    }
+
+    node.addControl(
+      new SelectControl(this.editor, "dataset", () => datasetYears, () => {}, "Dataset Year")
+    )
+
     habitats.forEach(hab =>
       hab.AC === "All" ? node.addOutput(new Output(hab["mode"].toString(), hab["LC"], categoricalDataSocket)) : node.addOutput(new Output(hab["mode"].toString(), hab["LC"], booleanDataSocket))
     )
   }
 
   async worker(node: NodeData, inputs: WorkerInputs, outputs: WorkerOutputs, ...args: unknown[]) {
-    if (this.categoricalData === null) {
-      this.categoricalData = await renderCategoricalData(this.projectExtent, this.zoom, this.maskMode, this.maskLayer, this.maskCQL)
+
+    const dataset_source = datasetYears[node.data.dataset as number].dataset
+
+    if (!this.categoricalData.has(dataset_source)) {
+      this.categoricalData.set(dataset_source, await renderCategoricalData(this.projectExtent, this.zoom, this.maskMode, this.maskLayer, this.maskCQL, dataset_source))
     }
-    const categoricalData = this.categoricalData!
+    const categoricalData = this.categoricalData.get(dataset_source)!
 
     habitats.filter(
       habitat => node.outputs[habitat.mode].connections.length > 0
     ).forEach(habitat => {
+
+      const x = (node.data.dataset as number) * habitats.length + habitat.mode
+
       if (habitat.mode === 0) {
 
-        outputs[habitat.mode] = this.categoricalData
+        outputs[habitat.mode] = this.categoricalData.get(dataset_source)
 
       } else {
-        if (this.outputCache.has(habitat.mode)) {
-          outputs[habitat.mode] = this.outputCache.get(habitat.mode)
+        if (this.outputCache.has(x)) {
+          outputs[x] = this.outputCache.get(x)
         }
         else {
           const out = outputs[habitat.mode] = new BooleanTileGrid(categoricalData.zoom, categoricalData.x, categoricalData.y, categoricalData.width, categoricalData.height)
@@ -140,7 +169,7 @@ export class UkcehLandCoverComponent extends BaseComponent {
 
           categoricalData.iterate((x, y, value) => out.set(x, y, value === habitat.mode))
 
-          this.outputCache.set(habitat.mode, out)
+          this.outputCache.set(x, out)
         }
       }
     })
