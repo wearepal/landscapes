@@ -9,25 +9,33 @@ import { createXYZ } from "ol/tilegrid"
 import { Point } from "ol/geom"
 import { Coordinate } from "ol/coordinate"
 import { maskFromExtentAndShape } from "../bounding_box"
+import { UploadControl } from "../controls/upload"
 
-async function retrieveSegmentationMasks(prompts: string, det_conf: string, clf_conf: string, n_repeats: string, projectProps: ProjectProperties, mask: BooleanTileGrid,  err: (err: string) => void) : Promise<any[]>{
+async function retrieveSegmentationMasks(prompts: string, det_conf: string, clf_conf: string, n_repeats: string, projectProps: ProjectProperties, mask: BooleanTileGrid, ref_img: File | undefined, err: (err: string) => void) : Promise<any[]>{
 
     const tileGrid = createXYZ()
 
     const outputTileRange = tileGrid.getTileRangeForExtentAndZ(projectProps.extent, projectProps.zoom)
 
-    const segs = await fetch("https://landscapes.wearepal.ai/api/v1/segment?" + new URLSearchParams(
-        {
-            label: prompts,
-            det_conf,
-            clf_conf,
-            n_repeats,
-            bbox: projectProps.extent.join(","),
-            layer: "rgb:full_mosaic_3857",
-            height: outputTileRange.getHeight().toString(),
-            width: outputTileRange.getWidth().toString(),
-        }
-    )).catch((e) => {
+    const formData = new FormData()
+
+    formData.append("label", prompts)
+    formData.append("det_conf", det_conf)
+    formData.append("clf_conf", clf_conf)
+    formData.append("n_repeats", n_repeats)
+    formData.append("bbox", projectProps.extent.join(","))
+    formData.append("layer", "rgb:full_mosaic_3857")
+    formData.append("height", outputTileRange.getHeight().toString())
+    formData.append("width", outputTileRange.getWidth().toString())
+
+    if (ref_img) {
+        formData.append("reference", ref_img)
+    }
+
+    const segs = await fetch("https://landscapes.wearepal.ai/api/v1/segment", {
+        method: "POST",
+        body: formData
+    }).catch((e) => {
         err(e.message == "Failed to fetch" ? "Failed to connect to the server. Please check your internet connection." : e.message)
     })
 
@@ -167,6 +175,7 @@ export class SegmentComponent extends BaseComponent {
         node.addOutput(new Output('box', 'Detection Box', booleanDataSocket))
 
         node.addControl(new TextControl(this.editor, 'prompt', 'Prompt', '500px'))
+        node.addControl(new UploadControl('ref_img', 'Reference Image (optional)', ['.png', '.jpg', '.jpeg', '.tiff', '.bmp']))
         node.addControl(new TextControl(this.editor, 'det_conf', 'Detector Confidence (%)', '100px'))
         node.addControl(new TextControl(this.editor, 'cls_conf', 'Classifier Confidence (%)', '100px'))
         node.addControl(new TextControl(this.editor, 'n_repeats', 'Repeats', '100px'))
@@ -182,6 +191,8 @@ export class SegmentComponent extends BaseComponent {
         const det_conf = node.data.det_conf as string
         const cls_conf = node.data.cls_conf as string
         const n_repeats = node.data.n_repeats as string
+        const ref_img = node.data.ref_img as File
+
         const mask = await maskFromExtentAndShape(
             this.projectProps.extent, 
             this.projectProps.zoom, 
@@ -197,7 +208,7 @@ export class SegmentComponent extends BaseComponent {
             outputs['conf'] = result[2]
         }else{
             let nodeErr = ""
-            const result = await retrieveSegmentationMasks(prompts, det_conf, cls_conf, n_repeats, this.projectProps, mask, (err) => {
+            const result = await retrieveSegmentationMasks(prompts, det_conf, cls_conf, n_repeats, this.projectProps, mask, ref_img, (err) => {
                 nodeErr = err
             })
             if (result.length === 0) {
