@@ -93,12 +93,8 @@ class DatasetsController < ApplicationController
     end
 
     def show
-      begin
-        redirect_to Dataset.find(params[:id]).file
-      rescue ActiveRecord::RecordNotFound => e
-        Rails.logger.error "Dataset not found: #{e.message}"
-        redirect_to root_url, alert: 'Dataset not found'
-      end
+      dataset = Dataset.find_by(id: params[:id])
+      send_data dataset.file.download, filename: dataset.name+".json", type: dataset.file.content_type
     end
 
     private
