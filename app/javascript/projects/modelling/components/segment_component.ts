@@ -150,7 +150,8 @@ export class SegmentComponent extends BaseComponent {
             return {
                 det_conf_default: 5.0,
                 clf_conf_default: 0,
-                n_repeats_default: 1
+                n_repeats_default: 1,
+                ref_image_enabled: null
             }
         })
 
@@ -175,7 +176,9 @@ export class SegmentComponent extends BaseComponent {
         node.addOutput(new Output('box', 'Detection Box', booleanDataSocket))
 
         node.addControl(new TextControl(this.editor, 'prompt', 'Prompt', '500px'))
-        node.addControl(new UploadControl('ref_img', 'Reference Image (optional)', ['.png', '.jpg', '.jpeg', '.tiff', '.bmp']))
+
+        if(defaultData.ref_image_enabled) node.addControl(new UploadControl('ref_img', 'Reference Image (optional)', ['.png', '.jpg', '.jpeg', '.tiff', '.bmp']))
+        
         node.addControl(new TextControl(this.editor, 'det_conf', 'Detector Confidence (%)', '100px'))
         node.addControl(new TextControl(this.editor, 'cls_conf', 'Classifier Confidence (%)', '100px'))
         node.addControl(new TextControl(this.editor, 'n_repeats', 'Repeats', '100px'))
