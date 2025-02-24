@@ -197,8 +197,8 @@ function applyNumericData(broad_crowns: any, conif_crowns: any, QSM: any, projec
         if (distribute){
             let n = 0
             // count number of tiles intersected
-            grid.iterateOverTileRange(featureTileRange, (x, y) => {
-                if(geom.intersectsCoordinate(tileGrid.getTileCoordCenter([projectProps.zoom, x, y])) && mask.get(x, y) && (subMask === undefined || subMask.get(x, y))) n++
+            grid.iterateOverTileRange(featureTileRange, (x, y) => {                
+                if(((projectProps.zoom < 22) || geom.intersectsCoordinate(tileGrid.getTileCoordCenter([projectProps.zoom, x, y]))) && mask.get(x, y) && (subMask === undefined || subMask.get(x, y))) n++
             })
             // distribute value over tiles
             val = n > 0 ? value / n : NaN
@@ -207,7 +207,7 @@ function applyNumericData(broad_crowns: any, conif_crowns: any, QSM: any, projec
         }
 
         grid.iterateOverTileRange(featureTileRange, (x, y) => {
-            if (geom.intersectsCoordinate(tileGrid.getTileCoordCenter([projectProps.zoom, x, y])) && mask.get(x, y) && (subMask === undefined || subMask.get(x, y))){
+            if (((projectProps.zoom < 22) || geom.intersectsCoordinate(tileGrid.getTileCoordCenter([projectProps.zoom, x, y]))) && mask.get(x, y) && (subMask === undefined || subMask.get(x, y))){
 
                 const v = grid.get(x, y)
                 grid.set(x, y, v ? v + val : val)
