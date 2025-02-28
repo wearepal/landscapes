@@ -32,92 +32,110 @@ async function retrieveSegmentationMasks(prompts: string, det_conf: string, clf_
         formData.append("reference", ref_img)
     }
 
-    const segs = await fetch("https://landscapes.wearepal.ai/api/v1/segment", {
+    const task = await fetch("https://landscapes.wearepal.ai/api/v1/segment", {
         method: "POST",
         body: formData
     }).catch((e) => {
         err(e.message == "Failed to fetch" ? "Failed to connect to the server. Please check your internet connection." : e.message)
     })
 
-    if(segs === undefined){
+    const segs = undefined
+
+    const jsn = await task?.json()
+    const jobId = jsn.jobId
+
+    if (!jobId){
+        err("Failed to retrieve job ID. Please check the server logs.")
         return []
     }
 
-    if(segs.status !== 200){
-        const segsJson = await segs.json()
-        const errMsg = segsJson.detail || segsJson.statusText || "Unknown error"
-        err(`${errMsg}. If issue persists, please raise an issue on the github repo or contact the developer directly (p.j.crossley@sussex.ac.uk).`)
-        return []
-    }
+    return new Promise((resolve, reject) => {
+        const socket = new WebSocket(`wss://landscapes.wearepal.ai/api/v1/ws/${jobId}`)
 
-    const segsJson = await segs.json()
+        socket.onmessage = async (ev) => {
+            const data = JSON.parse(ev.data)
+            //console.log("WS: ", data)
 
-    const preds = segsJson.predictions
-
-    if(preds === null){
-        err("No predictions found")
-        return []
-    }
-
-    const result  = new BooleanTileGrid(
-        projectProps.zoom,
-        outputTileRange.minX,
-        outputTileRange.minY,
-        outputTileRange.getWidth(),
-        outputTileRange.getHeight()
-    )
-
-    const box = new BooleanTileGrid(
-        projectProps.zoom,
-        outputTileRange.minX,
-        outputTileRange.minY,
-        outputTileRange.getWidth(),
-        outputTileRange.getHeight()
-    )
-
-    const confBox = new NumericTileGrid(
-        projectProps.zoom,
-        outputTileRange.minX,
-        outputTileRange.minY,
-        outputTileRange.getWidth(),
-        outputTileRange.getHeight()
-    )
-
-    preds.forEach((pred: any) => {
-
-        const predMask = pred.mask
-
-        predMask.forEach((coord : Coordinate) => {
-
-            const p = new Point(coord)
-
-            const featureTileRange = tileGrid.getTileRangeForExtentAndZ(
-                p.getExtent(),
-                projectProps.zoom
-            )
-
-            const maskV = mask.get(featureTileRange.maxX, featureTileRange.minY)
-            result.set(featureTileRange.maxX, featureTileRange.minY, maskV)
-            confBox.set(featureTileRange.maxX, featureTileRange.minY, maskV ? pred.confidence : NaN)
-        })
-
-        const predBox = pred.box
-        const predExtent = [predBox.xmin, predBox.ymin, predBox.xmax, predBox.ymax]
-
-        const featureTileRange = tileGrid.getTileRangeForExtentAndZ(
-            predExtent,
-            projectProps.zoom
-        )
-
-        box.iterate((x, y) => {
-            if (featureTileRange.containsXY(x, y)) {
-                box.set(x, y, true)
+            if(data.status === "failed"){
+                err("Failed to segment image. Please check the server logs.")
+                reject(data)
+                socket.close()
             }
-        })
 
+            if(data.status === "completed"){
+                socket.close()
+
+                if(!data.result){
+                    err("No predictions found")
+                    reject([])
+                    return
+                }
+
+                const preds = data.result
+
+                const result  = new BooleanTileGrid(
+                    projectProps.zoom,
+                    outputTileRange.minX,
+                    outputTileRange.minY,
+                    outputTileRange.getWidth(),
+                    outputTileRange.getHeight()
+                )
+            
+                const box = new BooleanTileGrid(
+                    projectProps.zoom,
+                    outputTileRange.minX,
+                    outputTileRange.minY,
+                    outputTileRange.getWidth(),
+                    outputTileRange.getHeight()
+                )
+            
+                const confBox = new NumericTileGrid(
+                    projectProps.zoom,
+                    outputTileRange.minX,
+                    outputTileRange.minY,
+                    outputTileRange.getWidth(),
+                    outputTileRange.getHeight()
+                )
+            
+                preds.forEach((pred: any) => {
+            
+                    const predMask = pred.mask
+            
+                    predMask.forEach((coord : Coordinate) => {
+            
+                        const p = new Point(coord)
+            
+                        const featureTileRange = tileGrid.getTileRangeForExtentAndZ(
+                            p.getExtent(),
+                            projectProps.zoom
+                        )
+            
+                        const maskV = mask.get(featureTileRange.maxX, featureTileRange.minY)
+                        result.set(featureTileRange.maxX, featureTileRange.minY, maskV)
+                        confBox.set(featureTileRange.maxX, featureTileRange.minY, maskV ? pred.confidence : NaN)
+                    })
+            
+                    const predBox = pred.box
+                    const predExtent = [predBox.xmin, predBox.ymin, predBox.xmax, predBox.ymax]
+            
+                    const featureTileRange = tileGrid.getTileRangeForExtentAndZ(
+                        predExtent,
+                        projectProps.zoom
+                    )
+            
+                    box.iterate((x, y) => {
+                        if (featureTileRange.containsXY(x, y)) {
+                            box.set(x, y, true)
+                        }
+                    })
+
+            
+                })
+
+                resolve([result, box, confBox])
+            }
+        }
     })
-
-    return [result, box, confBox]
 }
 
 export class SegmentComponent extends BaseComponent {
