@@ -46,6 +46,7 @@ import { areas, units } from "../tile_grid"
 import { KewHabsComponent } from "./kew_habs_component"
 import { KewTreesComponent } from "./kew_trees_component"
 import { RasterComponent } from "./raster_component"
+import { SlopeComponent } from "./twi_component"
 
 export interface ProjectProperties {
   extent: Extent
@@ -130,6 +131,7 @@ export function createDefaultComponents(saveMapLayer: SaveMapLayer, saveModel: S
       // Arithmetic
       new MaskNumericDataComponent(),
       new ExpressionComponent(projectProps, getCustomExpressions),
+      new SlopeComponent(projectProps),
       new BinaryOpComponent('Min', '', numericNumberDataSocket, numericNumberDataSocket, 'Arithmetic', projectProps),
       new BinaryOpComponent('Max', '', numericNumberDataSocket, numericNumberDataSocket, 'Arithmetic', projectProps),
       new VariadicOpComponent('Sum', '∑', numericDataSocket, numericDataSocket, 'Arithmetic', 'Sum all inputs'),

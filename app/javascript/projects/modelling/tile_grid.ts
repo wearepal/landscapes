@@ -13,6 +13,18 @@ export interface TileGridProps {
     area: string | undefined
 }
 
+export interface NeighbourGrid {
+  Z1?: [number, number], // top-left
+  Z2?: [number, number], // top
+  Z3?: [number, number], // top-right
+  Z4?: [number, number], // left
+  Z5: [number, number] // center (should never be undefined)
+  Z6?: [number, number], // right
+  Z7?: [number, number], // bottom-left
+  Z8?: [number, number], // bottom
+  Z9?: [number, number]  // bottom-right
+}
+
 function validateZoom(zoom: number) {
   if (!(
     Number.isInteger(zoom) && zoom >= 0
@@ -87,7 +99,6 @@ export function fromJSON(json: TileGridJSON): NumericTileGrid | BooleanTileGrid 
   }
 }
 
-
 abstract class TileGrid {
   readonly zoom: number
   readonly x: number
@@ -107,6 +118,20 @@ abstract class TileGrid {
     this.y = y
     this.width = width
     this.height = height
+  }
+
+  getNeighborCoordinates(x: number, y: number): NeighbourGrid {
+    return {
+      Z1: [x-1, y-1] as [number, number],
+      Z2: [x, y-1] as [number, number],
+      Z3: [x+1, y-1] as [number, number],
+      Z4: [x-1, y] as [number, number],
+      Z5: [x, y],
+      Z6: [x+1, y] as [number, number],
+      Z7: [x-1, y+1] as [number, number],
+      Z8: [x, y+1] as [number, number],
+      Z9: [x+1, y+1] as [number, number]
+    }
   }
 }
 
