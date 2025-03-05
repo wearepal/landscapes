@@ -41,6 +41,18 @@ const kewTreeOptions : KewTreeOption[] = [
         fn: (broad_crowns, conif_crowns, QSM, projectProps, mask) => applyNumericData(broad_crowns, conif_crowns, QSM, projectProps, "wake_gb", mask, true)
     },
     {
+        id: 15, 
+        name: 'Wakehurst AGB - distributed (filtered: Deciduous)',
+        socket: numericDataSocket,
+        fn: (broad_crowns, conif_crowns, QSM, projectProps, mask) => applyNumericData(broad_crowns, conif_crowns, QSM, projectProps, "wake_gb-d", mask, true)
+    },
+    {
+        id: 16, 
+        name: 'Wakehurst AGB - distributed (filtered: Coniferous)',
+        socket: numericDataSocket,
+        fn: (broad_crowns, conif_crowns, QSM, projectProps, mask) => applyNumericData(broad_crowns, conif_crowns, QSM, projectProps, "wake_gb-c", mask, true)
+    },
+    {
         id: 4,
         name: 'Jucker AGB',
         socket: numericDataSocket,
@@ -166,9 +178,26 @@ function applyBooleanData(broad_crowns: any, conif_crowns: any, QSM: any, projec
     return grid
 }
 
-function applyNumericData(broad_crowns: any, conif_crowns: any, QSM: any, projectProps: ProjectProperties, type: "jckr_gb" | "wake_gb" | "height" | "canpy_d" | "p25" | "p75" | "agb_qsm", mask: BooleanTileGrid, distribute: boolean, excl: boolean = false) {
+function applyNumericData(broad_crowns: any, conif_crowns: any, QSM: any, projectProps: ProjectProperties, type: "jckr_gb" | "wake_gb" | "height" | "canpy_d" | "p25" | "p75" | "agb_qsm" | "wake_gb-d" | "wake_gb-c", mask: BooleanTileGrid, distribute: boolean, excl: boolean = false) {
 
-    const crowns = type === "agb_qsm" ? QSM : [...broad_crowns, ...conif_crowns]
+    //const crowns = type === "agb_qsm" ? QSM : [...broad_crowns, ...conif_crowns]
+    let crowns: any = undefined
+    switch (type) {
+        case "agb_qsm":
+            crowns = QSM
+            break;
+        case "wake_gb-d":
+            crowns = broad_crowns
+            type = "wake_gb"
+            break;
+        case "wake_gb-c":
+            crowns = conif_crowns
+            type = "wake_gb"
+            break;
+        default:
+            crowns = [...broad_crowns, ...conif_crowns]
+            break;
+    }
 
     let subMask: undefined | BooleanTileGrid = undefined
     
