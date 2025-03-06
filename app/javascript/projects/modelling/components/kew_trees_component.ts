@@ -77,6 +77,18 @@ const kewTreeOptions : KewTreeOption[] = [
         fn: (broad_crowns, conif_crowns, QSM, projectProps, mask) => applyNumericData(broad_crowns, conif_crowns, QSM, projectProps, "height", mask, false)
     },
     {
+        id: 17,
+        name: "Height (filtered: Deciduous)",
+        socket: numericDataSocket,
+        fn: (broad_crowns, conif_crowns, QSM, projectProps, mask) => applyNumericData(broad_crowns, conif_crowns, QSM, projectProps, "height_d", mask, false)  
+    },
+    {
+        id: 18,
+        name: "Height (filtered: Coniferous)",
+        socket: numericDataSocket,
+        fn: (broad_crowns, conif_crowns, QSM, projectProps, mask) => applyNumericData(broad_crowns, conif_crowns, QSM, projectProps, "height_c", mask, false)  
+    },
+    {
         id: 8,
         name: "p25",
         socket: numericDataSocket,
@@ -178,9 +190,8 @@ function applyBooleanData(broad_crowns: any, conif_crowns: any, QSM: any, projec
     return grid
 }
 
-function applyNumericData(broad_crowns: any, conif_crowns: any, QSM: any, projectProps: ProjectProperties, type: "jckr_gb" | "wake_gb" | "height" | "canpy_d" | "p25" | "p75" | "agb_qsm" | "wake_gb-d" | "wake_gb-c", mask: BooleanTileGrid, distribute: boolean, excl: boolean = false) {
+function applyNumericData(broad_crowns: any, conif_crowns: any, QSM: any, projectProps: ProjectProperties, type: "jckr_gb" | "wake_gb" | "height" | "canpy_d" | "p25" | "p75" | "agb_qsm" | "wake_gb-d" | "wake_gb-c" | "height_d" | "height_c", mask: BooleanTileGrid, distribute: boolean, excl: boolean = false) {
 
-    //const crowns = type === "agb_qsm" ? QSM : [...broad_crowns, ...conif_crowns]
     let crowns: any = undefined
     switch (type) {
         case "agb_qsm":
@@ -193,6 +204,14 @@ function applyNumericData(broad_crowns: any, conif_crowns: any, QSM: any, projec
         case "wake_gb-c":
             crowns = conif_crowns
             type = "wake_gb"
+            break;
+        case "height_c":
+            crowns = conif_crowns
+            type = "height"
+            break;
+        case "height_d":
+            crowns = broad_crowns
+            type = "height"
             break;
         default:
             crowns = [...broad_crowns, ...conif_crowns]
