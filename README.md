@@ -12,7 +12,7 @@ You will need a server with:
 * At least 2GB of RAM
 * A domain name that resolves to the server's IPv4 and/or IPv6 address
 * TCP ports 80 and 443 open
-* Some funtionalities (such as AI capability) may require (Landscapes-services)[https://github.com/wearepal/landscapes-services]
+* Some funtionalities (such as AI capability) may require [Landscapes-services](https://github.com/wearepal/landscapes-services) that is running on the server.
 
 ### Instructions
 
