@@ -3,7 +3,7 @@ import { generateDistanceMap } from '../modelling/worker/generateDistanceMap'
 import { performOperation } from '../modelling/worker/performOperation'
 import { rasteriseOverlay } from '../modelling/worker/rasteriseOverlay'
 import { interpolateGrid } from '../modelling/worker/interpolation'
-import { calculateSlope, calculateTWI } from '../modelling/worker/twi'
+import { calculateContour, calculateSlope, calculateSlopeDirection, calculateTWI } from '../modelling/worker/slopeOperations'
 
 expose({
   generateDistanceMap,
@@ -11,5 +11,7 @@ expose({
   rasteriseOverlay,
   interpolateGrid,
   calculateTWI,
-  calculateSlope
+  calculateSlope,
+  calculateContour,
+  calculateSlopeDirection
 })

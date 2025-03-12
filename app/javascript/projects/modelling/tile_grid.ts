@@ -13,16 +13,21 @@ export interface TileGridProps {
     area: string | undefined
 }
 
+export interface Neighbour {
+  value: number
+  coords: [x: number, y: number]
+}
+
 export interface NeighbourGrid {
-  Z1?: [number, number], // top-left
-  Z2?: [number, number], // top
-  Z3?: [number, number], // top-right
-  Z4?: [number, number], // left
-  Z5: [number, number] // center (should never be undefined)
-  Z6?: [number, number], // right
-  Z7?: [number, number], // bottom-left
-  Z8?: [number, number], // bottom
-  Z9?: [number, number]  // bottom-right
+  Z1: Neighbour, // top-left
+  Z2: Neighbour, // top
+  Z3: Neighbour, // top-right
+  Z4: Neighbour, // left
+  Z5: Neighbour // center (should never be undefined)
+  Z6: Neighbour, // right
+  Z7: Neighbour, // bottom-left
+  Z8: Neighbour, // bottom
+  Z9: Neighbour  // bottom-right
 }
 
 function validateZoom(zoom: number) {
@@ -107,6 +112,7 @@ abstract class TileGrid {
   readonly height: number
 
   abstract toJSON(): TileGridJSON
+  abstract get(x: number, y: number, zoom?: number): number | boolean
 
   constructor(zoom: number, x: number, y: number, width: number, height: number) {
     validateZoom(zoom)
@@ -120,17 +126,20 @@ abstract class TileGrid {
     this.height = height
   }
 
-  getNeighborCoordinates(x: number, y: number): NeighbourGrid {
+  getNeighborCoordinates(x: number, y: number, closestTile: number = 1): NeighbourGrid {
+
+    const numericGrid = this as unknown as NumericTileGrid
+
     return {
-      Z1: [x-1, y-1] as [number, number],
-      Z2: [x, y-1] as [number, number],
-      Z3: [x+1, y-1] as [number, number],
-      Z4: [x-1, y] as [number, number],
-      Z5: [x, y],
-      Z6: [x+1, y] as [number, number],
-      Z7: [x-1, y+1] as [number, number],
-      Z8: [x, y+1] as [number, number],
-      Z9: [x+1, y+1] as [number, number]
+      Z1: { coords: [x-closestTile, y-closestTile] as [number, number], value: numericGrid.get(x-closestTile, y-closestTile) },
+      Z2: { coords: [x, y-closestTile] as [number, number], value: numericGrid.get(x, y-closestTile) },
+      Z3: { coords: [x+closestTile, y-closestTile] as [number, number], value: numericGrid.get(x+closestTile, y-closestTile) },
+      Z4: { coords: [x-closestTile, y] as [number, number], value: numericGrid.get(x-closestTile, y) },
+      Z5: { coords: [x, y] as [number, number], value: numericGrid.get(x, y) },
+      Z6: { coords: [x+closestTile, y] as [number, number], value: numericGrid.get(x+closestTile, y) },
+      Z7: { coords: [x-closestTile, y+closestTile] as [number, number], value: numericGrid.get(x-closestTile, y+closestTile) },
+      Z8: { coords: [x, y+closestTile] as [number, number], value: numericGrid.get(x, y+closestTile) },
+      Z9: { coords: [x+closestTile, y+closestTile] as [number, number], value: numericGrid.get(x+closestTile, y+closestTile) }
     }
   }
 }
