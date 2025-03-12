@@ -30,8 +30,8 @@ export function interpolateGrid(input : NumericTileGrid, mask : BooleanTileGrid,
 
     const tile_length = getMedianCellSize(input).length
 
-    result.iterate((x, y) => {
-        if(!mask.get(x, y)) return
+    result.iterate((x, y, val) => {
+        if(!mask.get(x, y) || input.get(x, y)) return
         switch (type) {
             case "NearestNeighbour":        
                 const [n, d] = tree.nearest({x, y}, 1)[0]

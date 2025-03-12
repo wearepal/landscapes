@@ -55,7 +55,7 @@ export class InterpolationComponent extends BaseComponent {
         node.addControl(new SelectControl(this.editor, 'methodId', () => InterpolationMethods, () => {}, 'Method'))
 
         node.addInput(new Input('input', 'Input', numericDataSocket))
-        node.addInput(new Input('maxdist', `Max Distance (default: ${this.maxdist})`, numberSocket))
+        node.addInput(new Input('maxdist', `Max Distance (default: ${this.maxdist}m)`, numberSocket))
         node.addInput(new Input('p', `Power (default: ${this.p})`, numberSocket))
         node.addInput(new Input('closest_points', `Closest Points (default: ${this.closest_points})`, numberSocket))
 
