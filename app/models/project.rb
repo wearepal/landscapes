@@ -43,8 +43,23 @@ class Project < ApplicationRecord
     end
   end
 
+  def find_next_duplicate_number
+    base_name = name.sub(/\s*\(\d+\)\s*$/, '')
+    base_name_with_copy = "#{base_name} (copy)"
+    existing_names = team.projects
+      .select { |p| p.name.match?(/^#{Regexp.escape(base_name_with_copy)}\s*\(\d+\)\s*$/) }
+      .map { |p| p.name.match(/\((\d+)\)/)[1].to_i }
+    
+    return 1 if existing_names.empty?
+    existing_names.max + 1
+  end
+
   def duplicate    
-    dup
+    dup.tap do |project|
+      project.source = source.deep_dup
+      base_name = name.sub(/\s*\(\d+\)\s*$/, '').sub(/\s*\(copy\)\s*$/, '')
+      project.name = "#{base_name} (copy) (#{find_next_duplicate_number})"
+    end
   end
 
   def defra_hedgerow_permission
