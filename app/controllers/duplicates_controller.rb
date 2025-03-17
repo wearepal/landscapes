@@ -3,7 +3,6 @@ class DuplicatesController < ApplicationController
     begin
       authorize_for! model.team
       duplicate = model.duplicate
-      duplicate.name = "#{duplicate.name} (copy)"
       duplicate.save!
 
       unless model_name == "Project"
