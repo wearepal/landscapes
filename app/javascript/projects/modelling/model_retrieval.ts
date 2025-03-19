@@ -65,11 +65,11 @@ export async function retrieveModelData(extent: Extent, source: string, tileRang
 }
 
 // Returns a GeoTIFF object from a WCS server. Useful for continuous data but may be slower.
-export async function retrieveModelDataWCS(extent: Extent, source: string, tileRange: any) {
+export async function retrieveModelDataWCS(extent: Extent, source: string, tileRange: any, externalLink?: string) {
 
     // Uses WCS server: Returns raw data
 
-    const geoserver = "https://landscapes.wearepal.ai/geoserver/"
+    const geoserver = externalLink ?? "https://landscapes.wearepal.ai/geoserver/" 
     const [width, height] = [tileRange.getWidth(), tileRange.getHeight()]
 
     const response = await fetch(
