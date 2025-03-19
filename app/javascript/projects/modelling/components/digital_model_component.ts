@@ -18,6 +18,7 @@ interface DigitalModel {
     source: string
     toolTip?: string
     toolTipURL?: string
+    externalLink?: string
 }
 
 //TODO: hardcoded scale factors, find an effective way of retrieving them from the geoserver?
@@ -50,6 +51,20 @@ const ModelList: Array<DigitalModel> = [
         source: 'eth:sd',
         toolTip: '(Standard Deviation) Global canopy top height map for the year 2020, visualized in Equal-Earth projection. The underlying data product, estimated from Sentinel-2 imagery, has 10 m ground sampling distance.',
         toolTipURL: 'https://langnico.github.io/globalcanopyheight/'
+    },
+    {
+        id: 5,
+        name: "Digital Surface Model (National LIDAR Service 1m)",
+        source: '9ba4d5ac-d596-445a-9056-dae3ddec0178:Lidar_Composite_Elevation_LZ_DSM_1m',
+        externalLink: 'https://environment.data.gov.uk/spatialdata/lidar-composite-digital-surface-model-last-return-dsm-1m/',
+        toolTipURL: "https://environment.data.gov.uk/dataset/9ba4d5ac-d596-445a-9056-dae3ddec0178"
+    },
+    {
+        id: 6,
+        name: "Digital Terrain Model (National LIDAR Service 1m)",
+        source: '13787b9a-26a4-4775-8523-806d13af58fc:Lidar_Composite_Elevation_DTM_1m',
+        externalLink: 'https://environment.data.gov.uk/spatialdata/lidar-composite-digital-terrain-model-dtm-1m/',
+        toolTipURL: "https://environment.data.gov.uk/dataset/13787b9a-26a4-4775-8523-806d13af58fc"
     }
 ]
 
@@ -120,7 +135,7 @@ export class DigitalModelComponent extends BaseComponent {
             } else {
                 const tileGrid = createXYZ()
                 const outputTileRange = tileGrid.getTileRangeForExtentAndZ(this.projectExtent, this.projectZoom)
-                const geotiff = await retrieveModelDataWCS(this.projectExtent, digitalModel.source, outputTileRange)
+                const geotiff = await retrieveModelDataWCS(this.projectExtent, digitalModel.source, outputTileRange, digitalModel.externalLink)
 
                 const image = await geotiff.getImage()
                 const rasters = await geotiff.readRasters({ bbox: this.projectExtent, width: outputTileRange.getWidth(), height: outputTileRange.getHeight() })
