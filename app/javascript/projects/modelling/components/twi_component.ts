@@ -47,6 +47,8 @@ export class SlopeComponent extends BaseComponent {
         node.addOutput(new Output("horn_aspect", "Aspect (Horn)", numericDataSocket))
         node.addOutput(new Output("zt_aspect", "Aspect (Zevenbergen Thorne)", numericDataSocket))
 
+        node.addOutput(new Output("flow_direction", "Flow direction", numericDataSocket))
+
         node.addOutput(new Output("horn_contour", "Contour (Horn)", numericDataSocket))
         node.addOutput(new Output("zt_contour", "Contour (Zevenbergen Thorne)", numericDataSocket))
         
@@ -111,7 +113,7 @@ export class SlopeComponent extends BaseComponent {
             const hornKey = this.getCacheKey(elevation, "horn_aspect", scale)
             if (!this.cache.has(hornKey)) {
                 await workerPool.queue(async worker =>
-                    this.cache.set(hornKey, worker.calculateContour(elevation, "Horn", scale))
+                    this.cache.set(hornKey, worker.calculateAspect(elevation, "Horn", scale))
                 )
             }
             outputs['horn_aspect'] = this.cache.get(hornKey)
@@ -121,10 +123,20 @@ export class SlopeComponent extends BaseComponent {
             const hornKey = this.getCacheKey(elevation, "zt_aspect", scale)
             if (!this.cache.has(hornKey)) {
                 await workerPool.queue(async worker =>
-                    this.cache.set(hornKey, worker.calculateContour(elevation, "ZevenbergenThorne", scale))
+                    this.cache.set(hornKey, worker.calculateAspect(elevation, "ZevenbergenThorne", scale))
                 )
             }
             outputs['zt_aspect'] = this.cache.get(hornKey)
+        }
+
+        if(node.outputs['flow_direction'].connections.length > 0) {
+            const hornKey = this.getCacheKey(elevation, "flow_direction", scale)
+            if (!this.cache.has(hornKey)) {
+                await workerPool.queue(async worker =>
+                    this.cache.set(hornKey, worker.calculateFlowDirection(elevation, scale))
+                )
+            }
+            outputs['flow_direction'] = this.cache.get(hornKey)
         }
 
         if(node.outputs['horn_contour'].connections.length > 0) {
@@ -150,9 +162,9 @@ export class SlopeComponent extends BaseComponent {
         if(node.outputs['twi'].connections.length > 0) {
             const twiKey = this.getCacheKey(elevation, "twi")
             if (!this.cache.has(twiKey)) {
-                await workerPool.queue(async worker =>
-                    this.cache.set(twiKey, worker.calculateTWI(elevation, "ZevenbergenThorne", scale))
-                )
+                await workerPool.queue(async worker => {
+                    this.cache.set(twiKey, worker.calculateD8FlowDirection(elevation))
+                })
             }
             outputs['twi'] = this.cache.get(twiKey)
         }

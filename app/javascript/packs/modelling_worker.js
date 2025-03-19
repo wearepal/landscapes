@@ -3,7 +3,7 @@ import { generateDistanceMap } from '../modelling/worker/generateDistanceMap'
 import { performOperation } from '../modelling/worker/performOperation'
 import { rasteriseOverlay } from '../modelling/worker/rasteriseOverlay'
 import { interpolateGrid } from '../modelling/worker/interpolation'
-import { calculateContour, calculateSlope, calculateSlopeDirection, calculateTWI } from '../modelling/worker/slopeOperations'
+import { calculateAspect, calculateContour, calculateSlope, calculateTWI, calculateContourLengthPerCell, calculateFlowAccumulation, calculateD8FlowDirection } from '../modelling/worker/slopeOperations'
 
 expose({
   generateDistanceMap,
@@ -13,5 +13,8 @@ expose({
   calculateTWI,
   calculateSlope,
   calculateContour,
-  calculateSlopeDirection
+  calculateAspect,
+  calculateContourLengthPerCell,
+  calculateFlowAccumulation,
+  calculateD8FlowDirection
 })
