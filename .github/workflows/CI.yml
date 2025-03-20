@@ -51,7 +51,7 @@ jobs:
         run: SECRET_KEY_BASE="0" bin/rails assets:precompile
       - name: Rails tests
         run: bin/rails test
-      - name: System tests (Chrome)
-        run: SYSTEM_TEST_BROWSER=headless_chrome bin/rails test:system
+      # - name: System tests (Chrome)
+      #   run: SYSTEM_TEST_BROWSER=headless_chrome bin/rails test:system
       - name: System tests (Firefox)
         run: SYSTEM_TEST_BROWSER=headless_firefox bin/rails test:system
