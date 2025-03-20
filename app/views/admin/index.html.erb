@@ -25,6 +25,7 @@
             <th>Kew Samples</th>
             <th>DEFRA Hedgerow</th>
             <th>NATMAP</th>
+            <th>Kew LiDAR</th>
          </tr>
       </thead>
       <tbody>
@@ -52,6 +53,12 @@
                 <td>
                     <%= button_to team.permission('natmap_soil') ? "✅" : "❌", 
                     toggle_permission_team_path(team, permission_key: 'natmap_soil'), 
+                    method: :patch, 
+                    class: "btn btn-sm btn-light" %>
+                </td>
+                <td>
+                    <%= button_to team.permission('kew_lidar') ? "✅" : "❌", 
+                    toggle_permission_team_path(team, permission_key: 'kew_lidar'), 
                     method: :patch, 
                     class: "btn btn-sm btn-light" %>
                 </td>

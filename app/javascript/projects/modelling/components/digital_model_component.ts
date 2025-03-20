@@ -11,6 +11,7 @@ import { retrieveModelDataWCS } from "../model_retrieval"
 import { Extent } from "ol/extent"
 import { maskFromExtentAndShape } from "../bounding_box"
 import { ProjectProperties } from "."
+import { ProjectPermissions } from "../../project_editor"
 
 interface DigitalModel {
     id: number
@@ -19,6 +20,7 @@ interface DigitalModel {
     toolTip?: string
     toolTipURL?: string
     externalLink?: string
+    permission?: string
 }
 
 //TODO: hardcoded scale factors, find an effective way of retrieving them from the geoserver?
@@ -26,17 +28,20 @@ const ModelList: Array<DigitalModel> = [
     {
         id: 0,
         name: 'Digital Surface Model',
-        source: 'lidar:DSM_2m'
+        source: 'lidar:DSM_2m',
+        permission: 'KewLidar'
     },
     {
         id: 1,
         name: 'Digital Terrian Model',
-        source: 'lidar:DTM_5m'
+        source: 'lidar:DTM_5m',
+        permission: 'KewLidar'
     },
     {
         id: 2,
         name: 'Feature Height',
-        source: 'lidar:Depth'
+        source: 'lidar:Depth',
+        permission: 'KewLidar'
     },
     {
         id: 3,
@@ -75,8 +80,8 @@ export class DigitalModelComponent extends BaseComponent {
     maskMode: boolean
     maskLayer: string
     maskCQL: string
-
-    constructor(projectProps: ProjectProperties) {
+    permissions: ProjectPermissions
+    constructor(projectProps: ProjectProperties, permissions: ProjectPermissions) {
         super("Digital Model")
         this.category = "Inputs"
         this.outputCache = new Map()
@@ -85,9 +90,12 @@ export class DigitalModelComponent extends BaseComponent {
         this.maskMode = projectProps.mask
         this.maskLayer = projectProps.maskLayer
         this.maskCQL = projectProps.maskCQL
+        this.permissions = permissions
     }
 
     async builder(node: Node) {
+
+        console.log(this.permissions)
 
         const dft = 'Digital models are generated via LIDAR or satellite data. They can be used to calculate canopy height, feature height, and more.'
 
@@ -98,7 +106,7 @@ export class DigitalModelComponent extends BaseComponent {
             new SelectControl(
                 this.editor,
                 'sourceId',
-                () => ModelList,
+                () => ModelList.filter(a => this.permissions[a.permission as keyof ProjectPermissions] || !a.permission),
                 () => {
                     node.meta.toolTip = ModelList.find(a => a.id == node.data.sourceId)?.toolTip || dft
                     node.meta.toolTipLink = ModelList.find(a => a.id == node.data.sourceId)?.toolTipURL || ''
