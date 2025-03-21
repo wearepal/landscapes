@@ -59,18 +59,74 @@ const ModelList: Array<DigitalModel> = [
     },
     {
         id: 5,
-        name: "Digital Surface Model (National LIDAR Service 1m)",
+        name: "Digital Surface Model Elevation (National LIDAR Service 1m)",
         source: '9ba4d5ac-d596-445a-9056-dae3ddec0178:Lidar_Composite_Elevation_LZ_DSM_1m',
         externalLink: 'https://environment.data.gov.uk/spatialdata/lidar-composite-digital-surface-model-last-return-dsm-1m/',
         toolTipURL: "https://environment.data.gov.uk/dataset/9ba4d5ac-d596-445a-9056-dae3ddec0178"
     },
     {
+        id: 7,
+        name: "Digital Surface Model Hillshade (National LIDAR Service 1m)",
+        source: '9ba4d5ac-d596-445a-9056-dae3ddec0178:Lidar_Composite_Hillshade_LZ_DSM_1m',
+        externalLink: 'https://environment.data.gov.uk/spatialdata/lidar-composite-digital-surface-model-last-return-dsm-1m/',
+        toolTipURL: "https://environment.data.gov.uk/dataset/9ba4d5ac-d596-445a-9056-dae3ddec0178"
+    },
+    {
         id: 6,
-        name: "Digital Terrain Model (National LIDAR Service 1m)",
+        name: "Digital Terrain Model Elevation (National LIDAR Service 1m)",
         source: '13787b9a-26a4-4775-8523-806d13af58fc:Lidar_Composite_Elevation_DTM_1m',
         externalLink: 'https://environment.data.gov.uk/spatialdata/lidar-composite-digital-terrain-model-dtm-1m/',
         toolTipURL: "https://environment.data.gov.uk/dataset/13787b9a-26a4-4775-8523-806d13af58fc"
+    },
+    {
+        id: 8,
+        name: "Digital Terrain Model Hillshade (National LIDAR Service 1m)",
+        source: '13787b9a-26a4-4775-8523-806d13af58fc:Lidar_Composite_Hillshade_DTM_1m',
+        externalLink: 'https://environment.data.gov.uk/spatialdata/lidar-composite-digital-terrain-model-dtm-1m/',
+        toolTipURL: "https://environment.data.gov.uk/dataset/13787b9a-26a4-4775-8523-806d13af58fc"
+    },
+    {
+        id: 9,
+        name: "Digital Surface Model Elevation (National LIDAR Service 2m)",
+        source: 'f083c5dc-504f-4428-9811-a1b2519fa279:Lidar_Composite_Elevation_LZ_DSM_2m',
+        externalLink: 'https://environment.data.gov.uk/spatialdata/lidar-composite-digital-surface-model-last-return-dsm-2m/',
+        toolTipURL: "https://environment.data.gov.uk/dataset/f083c5dc-504f-4428-9811-a1b2519fa279"
+    },
+    {
+        id: 10,
+        name: "Digital Surface Model Hillshade (National LIDAR Service 2m)",
+        source: 'f083c5dc-504f-4428-9811-a1b2519fa279:Lidar_Composite_Hillshade_LZ_DSM_2m',
+        externalLink: 'https://environment.data.gov.uk/spatialdata/lidar-composite-digital-surface-model-last-return-dsm-2m/',
+    },
+    {
+        id: 11,
+        name: "Digital Terrain Model Elevation (National LIDAR Service 2m)",
+        source: '09ea3b37-df3a-4e8b-ac69-fb0842227b04:Lidar_Composite_Elevation_DTM_2m',
+        externalLink: 'https://environment.data.gov.uk/spatialdata/lidar-composite-digital-terrain-model-dtm-2m/',
+        toolTipURL: "https://environment.data.gov.uk/dataset/09ea3b37-df3a-4e8b-ac69-fb0842227b04"
+    },
+    {
+        id: 12,
+        name: "Digital Terrain Model Hillshade (National LIDAR Service 2m)",
+        source: '09ea3b37-df3a-4e8b-ac69-fb0842227b04:Lidar_Composite_Hillshade_DTM_2m',
+        externalLink: 'https://environment.data.gov.uk/spatialdata/lidar-composite-digital-terrain-model-dtm-2m/',
+        toolTipURL: "https://environment.data.gov.uk/dataset/09ea3b37-df3a-4e8b-ac69-fb0842227b04"
+    },
+    {
+        id: 13,
+        name: "Digital Surface Model First Return Elevation (National LIDAR Service 2m)",
+        source: '54167602-36c8-4b2b-80ec-ebb6267b6b1e:Lidar_Composite_Elevation_FZ_DSM_2m',
+        externalLink: 'https://environment.data.gov.uk/spatialdata/lidar-composite-digital-surface-model-first-return-dsm-2m/',
+        toolTipURL: "https://environment.data.gov.uk/dataset/54167602-36c8-4b2b-80ec-ebb6267b6b1e"
+    },
+    {
+        id: 14,
+        name: "Digital Surface Model First Return Hillshade (National LIDAR Service 2m)",
+        source: '54167602-36c8-4b2b-80ec-ebb6267b6b1e:Lidar_Composite_Hillshade_FZ_DSM_2m',
+        externalLink: 'https://environment.data.gov.uk/spatialdata/lidar-composite-digital-surface-model-first-return-dsm-2m/',
+        toolTipURL: "https://environment.data.gov.uk/dataset/54167602-36c8-4b2b-80ec-ebb6267b6b1e"
     }
+    
 ]
 
 export class DigitalModelComponent extends BaseComponent {
