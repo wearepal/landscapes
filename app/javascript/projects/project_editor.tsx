@@ -26,6 +26,7 @@ export interface ProjectPermissions {
   KewRgb25cm: boolean
   KewSamples: boolean
   NATMAPSoil: boolean
+  KewLidar: boolean
 }
 
 export interface TeamExtentData {

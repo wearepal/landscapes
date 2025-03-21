@@ -90,7 +90,7 @@ export function createDefaultComponents(saveMapLayer: SaveMapLayer, saveModel: S
       new NevoLayerComponent(projectProps),
       new ORValComponent(projectProps),
       new OSMLandUseComponent(projectProps),
-      new DigitalModelComponent(projectProps),
+      new DigitalModelComponent(projectProps, permissions),
       new PrecompiledModelComponent(getDatasets, projectProps),
       new CensusComponent(projectProps),
       new OSGreenSpacesComponent(projectProps),

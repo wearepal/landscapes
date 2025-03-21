@@ -1,4 +1,4 @@
-import { Controller } from "stimulus"
+import { Controller } from "@hotwired/stimulus"
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 import { ProjectEditor, TeamExtentData } from '../projects/project_editor'
@@ -15,6 +15,7 @@ export default class extends Controller {
     projectKewRgb25cmPermission: Boolean,
     projectKewSamplesPermission: Boolean,
     projectNatmapSoilPermission: Boolean,
+    projectKewLidarPermission: Boolean,
     projectExtents: Array,
     backButtonPath: String,
     dbModels: Object
@@ -28,6 +29,7 @@ export default class extends Controller {
   declare readonly projectKewRgb25cmPermissionValue: boolean
   declare readonly projectKewSamplesPermissionValue: boolean
   declare readonly projectNatmapSoilPermissionValue: boolean
+  declare readonly projectKewLidarPermissionValue: boolean
   declare readonly projectExtentsValue: Array<any>
   declare readonly backButtonPathValue: string
   declare readonly dbModelsValue: DBModels
@@ -46,7 +48,8 @@ export default class extends Controller {
             DefraHedgerows: this.projectDefraHedgerowPermissionValue,
             KewRgb25cm: this.projectKewRgb25cmPermissionValue,
             KewSamples: this.projectKewSamplesPermissionValue,
-            NATMAPSoil: this.projectNatmapSoilPermissionValue
+            NATMAPSoil: this.projectNatmapSoilPermissionValue,
+            KewLidar: this.projectKewLidarPermissionValue
           }
         }
         teamExtents={this.projectExtentsValue as TeamExtentData[]}

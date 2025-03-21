@@ -66,5 +66,11 @@ Rails.application.routes.draw do
 
   get '/users/autocomplete', to: 'users#autocomplete'
 
-
+  namespace :admin do
+    resources :teams, only: [] do
+      member do
+        patch :update_default_team
+      end
+    end
+  end
 end

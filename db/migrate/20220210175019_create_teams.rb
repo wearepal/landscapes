@@ -11,10 +11,14 @@ class CreateTeams < ActiveRecord::Migration[6.1]
     add_reference :models, :team, foreign_key: true
 
     up_only do
-      default_team = Team.create! name: "Default team"
+      default_team = Team.new(name: "Default team")
+      default_team.skip_permission_callback = true
+      default_team.save!
 
       Region.find_each do |region|
-        team = Team.create!(name: region.name)
+        team = Team.new(name: region.name)
+        team.skip_permission_callback = true
+        team.save!
         region.update! team_id: team.id
       end
 

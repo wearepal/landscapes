@@ -12,6 +12,9 @@
                                     <%= link_to team_projects_path(team.id), class: "list-group-item list-group-item-action border-0" do %>
                                         <div class="d-flex align-items-center justify-content-between">
                                             <div>
+                                                <% if team.memberships.where(user: current_user).first.guest %>
+                                                    <span class="badge badge-info" title="Guest access has a couple of restrictions on removing shared data">Guest</span>
+                                                <% end %>
                                                 <%= team.name %> 
                                                 <br>
                                                 <span class="small text-secondary">
@@ -24,8 +27,12 @@
                             <% end %>
                         </ul>
                     <% else %>
-                        <p>No teams found. Please contact an <a href="mailto:N.Quadrianto@sussex.ac.uk?subject=LMT:Requesting team access">contact an administrator</a> for assistance.</p>
+                        <p>No teams found. Please <a href="mailto:N.Quadrianto@sussex.ac.uk?subject=LMT:Requesting team access">contact an administrator</a> for assistance.</p>
                     <% end %>
+                </div>
+
+                <div class="text-right mt-3">
+                    <%= link_to "Create Team", new_team_path, class: "btn btn-primary" %>
                 </div>
             </div>
         </div>

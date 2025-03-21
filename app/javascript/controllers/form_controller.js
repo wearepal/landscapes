@@ -1,4 +1,4 @@
-import { Controller } from "stimulus"
+import { Controller } from "@hotwired/stimulus"
 import { isSymbolNode, parse, isFunctionNode } from "mathjs"
 import { customFns, definedFnsCnsts } from "../projects/modelling/components/expression_component"
 import * as d3 from "d3"
@@ -21,30 +21,34 @@ export default class extends Controller {
     "result"
   ]
 
+  connect() {
+    if (this.expressionTarget) {
+      this.updateInputs()
+    }
+  }
+
   updateInputs() {
     const expression = this.expressionTarget.value
 
     let uniqueSymbols
 
     try {
-
       let fns = parse(expression).filter(isFunctionNode).map(n => n.name)
 
-      uniqueSymbols = new Set<String>(
+      uniqueSymbols = new Set(
         parse(expression)
             .filter(isSymbolNode)
             .filter(n => !fns.includes(n.name))
             .filter(n => !definedFnsCnsts.includes(n.name))
             .map(n => n.name)
       )
-
     } catch (error) {
+      //console.error("Error parsing expression:", error)
     }
 
     if(uniqueSymbols) {
       this.populateInputs(uniqueSymbols)
     }
-
   }
 
   calculateResult() {

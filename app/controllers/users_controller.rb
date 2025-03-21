@@ -19,6 +19,11 @@ class UsersController < ApplicationController
     @user = User.new(params.require(:user).permit(:name, :email, :password))
 
     if @user.save
+      # Add user to default team as guest if one exists
+      if default_team = Setting.first&.default_team
+        default_team.memberships.create!(user: @user, guest: true)
+      end
+      
       cookies.permanent[:token] = @user.token
       redirect_to root_url
     else

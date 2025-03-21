@@ -30,6 +30,8 @@ document.addEventListener("turbolinks:load", () => $("[title]").tooltip())
 import ImageStatic from "ol/source/ImageStatic"
 delete ImageStatic.prototype.handleImageChange
 
+// Load Stimulus controllers
+import "controllers"
 
 // Uncomment to copy all static images under ../images to the output folder and reference
 // them with the image_pack_tag helper in views (e.g <%= image_pack_tag 'rails.png' %>)
@@ -39,4 +41,3 @@ delete ImageStatic.prototype.handleImageChange
 // const imagePath = (name) => images(name, true)
 
 import "../stylesheets/application"
-import "controllers"
