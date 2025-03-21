@@ -1,4 +1,4 @@
-import { Controller } from 'stimulus'
+import { Controller } from '@hotwired/stimulus'
 import React, { useEffect, useReducer } from 'react'
 import ReactDOM from 'react-dom'
 import { last } from 'lodash'
