@@ -15,9 +15,11 @@ class Team < ApplicationRecord
   has_many :permissions, through: :team_permissions
   has_many :expressions, dependent: :destroy
 
-  after_create :assign_permissions
+  after_create :assign_permissions, unless: :skip_permission_callback
 
   validates :name, presence: true
+
+  attr_accessor :skip_permission_callback
 
   def permission(name)
     @p = Permission.find_by(name: name)

@@ -21,16 +21,24 @@ export default class extends Controller {
     "result"
   ]
 
+  connect() {
+    console.log("Form controller connected")
+    if (this.expressionTarget) {
+      console.log("Expression target found:", this.expressionTarget.value)
+      this.updateInputs()
+    }
+  }
+
   updateInputs() {
     const expression = this.expressionTarget.value
+    console.log("updateInputs called with:", expression)
 
     let uniqueSymbols
 
     try {
-
       let fns = parse(expression).filter(isFunctionNode).map(n => n.name)
 
-      uniqueSymbols = new Set<String>(
+      uniqueSymbols = new Set(
         parse(expression)
             .filter(isSymbolNode)
             .filter(n => !fns.includes(n.name))
@@ -38,13 +46,14 @@ export default class extends Controller {
             .map(n => n.name)
       )
 
+      console.log("Found symbols:", uniqueSymbols)
     } catch (error) {
+      console.error("Error parsing expression:", error)
     }
 
     if(uniqueSymbols) {
       this.populateInputs(uniqueSymbols)
     }
-
   }
 
   calculateResult() {

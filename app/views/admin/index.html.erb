@@ -21,6 +21,7 @@
       <thead>
          <tr>
             <th>Name</th>
+            <th>Default?</th>
             <th>Kew RGB 25cm</th>
             <th>Kew Samples</th>
             <th>DEFRA Hedgerow</th>
@@ -32,6 +33,16 @@
          <% @teams.each do |team| %>
             <tr>
                 <td><%=  team.name  %></td>
+                <td>
+                    <%= radio_button_tag 'default_team', team.id, 
+                        Setting.first&.default_team_id == team.id,
+                        data: { 
+                          controller: "default-team",
+                          action: "change->default-team#update",
+                          url: update_default_team_admin_team_path(team),
+                          csrf: form_authenticity_token
+                        } %>
+                </td>
                 <td>
                     <%= button_to team.permission('kew_rgb25cm') ? "✅" : "❌", 
                     toggle_permission_team_path(team, permission_key: 'kew_rgb25cm'), 
