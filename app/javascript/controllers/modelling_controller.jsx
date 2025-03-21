@@ -4,7 +4,7 @@ import ContextMenuPlugin from 'rete-context-menu-plugin'
 import HistoryPlugin from 'rete-history-plugin'
 import MinimapPlugin from 'rete-minimap-plugin'
 import VueRenderPlugin from 'rete-vue-render-plugin'
-import { Controller } from 'stimulus'
+import { Controller } from '@hotwired/stimulus'
 import _ from 'lodash'
 
 import { createDefaultComponents } from '../modelling/components'
