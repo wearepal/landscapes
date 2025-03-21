@@ -17,13 +17,19 @@
             <% if membership.user == current_user %>
               <div class="badge badge-secondary">You</div>
             <% end %>
+            <% if membership.guest? %>
+              <div class="badge badge-info">Guest</div>
+            <% end %>
             <br>
             <%= membership.user.email %>
           </div>
-          <% if membership.user != current_user %>
-            <div class="btn-group btn-group-sm">
-              <%= link_to "Remove from team", membership, method: :delete, data: { confirm: "Are you sure you want to remove '#{membership.user.name}' from team '#{@team.name}'?" }, class: "btn btn-outline-danger" %>
-            </div>
+
+          <% unless @team.memberships.find_by(user: current_user)&.guest? %>
+            <% if membership.user != current_user %>
+              <div class="btn-group btn-group-sm">
+                <%= link_to "Remove from team", membership, method: :delete, data: { confirm: "Are you sure you want to remove '#{membership.user.name}' from team '#{@team.name}'?" }, class: "btn btn-outline-danger" %>
+              </div>
+            <% end %>
           <% end %>
         </div>
       </div>

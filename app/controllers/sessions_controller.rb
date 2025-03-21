@@ -16,6 +16,12 @@ class SessionsController < ApplicationController
     
     if user.try(:authenticate, params[:password])
       cookies.permanent[:token] = user.token
+
+      # If the user is redirected to the login page, redirect to the root page
+      if params[:return_to] == "/session/new"
+        params[:return_to] = root_url
+      end
+
       redirect_to validate_url(params[:return_to]) || root_url
     else
       head :unprocessable_entity

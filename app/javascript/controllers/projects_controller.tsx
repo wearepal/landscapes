@@ -1,4 +1,4 @@
-import { Controller } from "stimulus"
+import { Controller } from "@hotwired/stimulus"
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 import { ProjectEditor, TeamExtentData } from '../projects/project_editor'

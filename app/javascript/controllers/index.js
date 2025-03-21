@@ -2,7 +2,7 @@
 // Controller files must be named *_controller.js.
 
 import { Application } from "@hotwired/stimulus"
-import DefaultTeamController from "./default_team_controller"
+import { definitionsFromContext } from "@hotwired/stimulus-webpack-helpers"
 import * as Sentry from "@sentry/browser"
 
 const application = Application.start()
@@ -15,5 +15,7 @@ if (process.env.NODE_ENV === "production") {
   }
 }
 
-// Register controllers manually
-application.register("default-team", DefaultTeamController)
+const context = require.context("controllers", true, /_controller\.[jt]sx?$/)
+application.load(definitionsFromContext(context))
+
+export { application }

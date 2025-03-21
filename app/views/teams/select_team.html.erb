@@ -27,8 +27,12 @@
                             <% end %>
                         </ul>
                     <% else %>
-                        <p>No teams found. Please contact an <a href="mailto:N.Quadrianto@sussex.ac.uk?subject=LMT:Requesting team access">contact an administrator</a> for assistance.</p>
+                        <p>No teams found. Please <a href="mailto:N.Quadrianto@sussex.ac.uk?subject=LMT:Requesting team access">contact an administrator</a> for assistance.</p>
                     <% end %>
+                </div>
+
+                <div class="text-right mt-3">
+                    <%= link_to "Create Team", new_team_path, class: "btn btn-primary" %>
                 </div>
             </div>
         </div>

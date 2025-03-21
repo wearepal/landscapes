@@ -36,7 +36,6 @@
           <i class="fas fa-superscript fa-fw"></i>
           Expressions
         </div>
-        <span class="badge badge-primary">New!</span>
       </div>
     <% end %>
     <%= render "sidebar_link", path: [@team, :datasets] do %>
@@ -63,9 +62,11 @@
       <i class="fas fa-users fa-fw"></i>
       People
     <% end %>
-    <%= render "sidebar_link", path: edit_team_path(@team) do %>
-      <i class="fas fa-sliders-h fa-fw"></i>
-      Settings
+    <% unless @team.memberships.find_by(user: current_user)&.guest? %>
+      <%= render "sidebar_link", path: edit_team_path(@team) do %>
+        <i class="fas fa-sliders-h fa-fw"></i>
+        Settings
+      <% end %>
     <% end %>
   <% end %>
 

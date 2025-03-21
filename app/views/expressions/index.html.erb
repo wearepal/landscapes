@@ -17,11 +17,14 @@
             <div class="d-flex align-items-center">
                 <%= expression.name %>
             </div>
-            <div class="ms-auto">
-                <%= link_to expression_path(expression.id), method: :delete, data: { confirm: "Are you sure you want to delete '#{expression.name}'?" }, class: "px-3 py-2 text-danger" do %>
-                    <i class="fas fa-trash-alt"></i>
-                <% end %>
-            </div>
+
+            <% unless @team.memberships.find_by(user: current_user)&.guest? %>
+                <div class="ms-auto">
+                    <%= link_to expression_path(expression.id), method: :delete, data: { confirm: "Are you sure you want to delete '#{expression.name}'?" }, class: "px-3 py-2 text-danger" do %>
+                        <i class="fas fa-trash-alt"></i>
+                    <% end %>
+                </div>
+            <% end %>
         </div>
     <% end %>
 
