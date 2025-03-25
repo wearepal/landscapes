@@ -58,16 +58,22 @@
         </div>
       <% end %>
     <% end %>    
-    <%= render "sidebar_link", path: [@team, :memberships] do %>
-      <i class="fas fa-users fa-fw"></i>
-      People
+
+
+    <% unless @team.memberships.find_by(user: current_user)&.guest? %>
+      <%= render "sidebar_link", path: [@team, :memberships] do %>
+        <i class="fas fa-users fa-fw"></i>
+        People
+      <% end %>
     <% end %>
+
     <% unless @team.memberships.find_by(user: current_user)&.guest? %>
       <%= render "sidebar_link", path: edit_team_path(@team) do %>
         <i class="fas fa-sliders-h fa-fw"></i>
         Settings
       <% end %>
     <% end %>
+    
   <% end %>
 
   <%= yield %>

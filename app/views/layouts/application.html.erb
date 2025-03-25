@@ -48,6 +48,7 @@
                   <%= link_to "🔒 Admin panel", admin_index_path, class: "dropdown-item text-warning" %>
                   <div class="dropdown-divider"></div>
                 <% end %>
+                <%= link_to "Change Password", change_password_user_path, class: "dropdown-item" %>
                 <a class="dropdown-item" href="https://forms.gle/1zJnyaCbFExwPzJW8">Leave feedback</a>
                 <%= link_to "Sign Out", session_path, method: :delete, class: "dropdown-item" %>
               </div>

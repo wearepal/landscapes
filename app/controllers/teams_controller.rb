@@ -11,7 +11,7 @@ class TeamsController < ApplicationController
       @team.save!
       @team.memberships.create! user: current_user
     end
-    redirect_to team_regions_url(@team)
+    redirect_to team_projects_url(@team)
   rescue ActiveRecord::RecordInvalid => e
     Rails.logger.error "Error creating team: #{e.message}"
     render json: @team.errors, status: :unprocessable_entity

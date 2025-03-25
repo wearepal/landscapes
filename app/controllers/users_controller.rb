@@ -33,4 +33,24 @@ class UsersController < ApplicationController
     Rails.logger.error "Required parameter missing: #{e.message}"
     render json: { error: 'Required parameter missing' }, status: :bad_request
   end
+
+  def change_password
+    authorize!
+    @user = current_user
+  end
+
+  def update_password
+    authorize!
+    @user = current_user
+
+    if @user.authenticate(params[:current_password])
+      if @user.update(password: params[:password], password_confirmation: params[:password_confirmation])
+        redirect_to root_url, notice: 'Password was successfully updated.'
+      else
+        render json: @user.errors, status: :unprocessable_entity
+      end
+    else
+      render json: { current_password: ['is incorrect'] }, status: :unprocessable_entity
+    end
+  end
 end

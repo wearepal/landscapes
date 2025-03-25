@@ -49,7 +49,10 @@ Rails.application.routes.draw do
     end
   end
 
-  resource :user
+  resource :user do
+    get :change_password
+    patch :update_password
+  end
 
   resource :session
   
