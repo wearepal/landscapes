@@ -21,6 +21,8 @@ Rails.application.routes.draw do
 
     resources :projects do 
       resources :duplicates, model_name: "Project"
+      get :select_team_for_clone, on: :member
+      post :clone_to_team, on: :member
     end
 
     resources :regions do

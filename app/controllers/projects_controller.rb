@@ -92,4 +92,23 @@ class ProjectsController < ApplicationController
       redirect_to root_url, alert: 'Project not found'
     end
   end
+
+  def clone_to_team
+    @source_project = Project.find(params[:id])
+    @target_team = Team.find(params[:team_id])
+    
+    authorize_for! @source_project.team
+    authorize_for! @target_team
+
+    new_project = @target_team.projects.new
+    new_project.source = @source_project.source.deep_dup
+    base_name = @source_project.name.sub(/\s*\(\d+\)\s*$/, '').sub(/\s*\(copy\)\s*$/, '')
+    new_project.name = "#{base_name} (Copied from #{@source_project.team.name})"
+
+    if new_project.save
+      redirect_to team_projects_url(@target_team)
+    else
+      redirect_to team_projects_url(@source_project.team)
+    end
+  end
 end
