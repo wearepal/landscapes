@@ -1,8 +1,11 @@
 <div class="card">
     <div class="card-header d-flex align-items-center justify-content-between">
-        Extents    
-        <%= link_to [@team, :extent, action: :new], class: "btn btn-sm btn-outline-primary", title: "Create extent" do %>
-            <i class="fas fa-plus"></i>
+        Extents   
+        
+        <% unless @team.memberships.find_by(user: current_user)&.guest? %> 
+            <%= link_to [@team, :extent, action: :new], class: "btn btn-sm btn-outline-primary", title: "Create extent" do %>
+                <i class="fas fa-plus"></i>
+            <% end %>
         <% end %>
     </div>    
 

@@ -22,8 +22,9 @@ interface ToolbarProps {
   showAP: boolean
   setShowExtent: (boolean) => void
   zoomLevel: number
+  isUserGuest: boolean
 }
-export const Toolbar = ({ backButtonPath, projectName, hasUnsavedChanges, currentTab, isProcessing, isLoading, loadingQueue, datasetOutputCache, setProjectName, saveProject, setCurrentTab, autoProcessing, setAutoProcessing, manualProcessing, setShowAP, showAP, setShowExtent, zoomLevel }: ToolbarProps) => (
+export const Toolbar = ({ backButtonPath, projectName, hasUnsavedChanges, currentTab, isProcessing, isLoading, loadingQueue, datasetOutputCache, setProjectName, saveProject, setCurrentTab, autoProcessing, setAutoProcessing, manualProcessing, setShowAP, showAP, setShowExtent, zoomLevel, isUserGuest }: ToolbarProps) => (
   <div className="btn-toolbar p-2 bg-light border-top">
     <div className="btn-group mr-2">
       <a className="btn btn-sm btn-outline-primary" href={backButtonPath}>
@@ -32,13 +33,16 @@ export const Toolbar = ({ backButtonPath, projectName, hasUnsavedChanges, curren
       </a>
     </div>
     <div className="input-group mr-2">
-      <input type="text" className="form-control form-control-sm" value={projectName} onChange={e => setProjectName(e.target.value)} />
+      <input type="text" className="form-control form-control-sm" value={projectName} disabled={isUserGuest} onChange={e => setProjectName(e.target.value)} />
     </div>
-    <div className="btn-group mr-2">
-      <button className="btn btn-sm btn-outline-primary" disabled={!hasUnsavedChanges} onClick={saveProject}>
-        <i className="fas fa-save" /> Save
-      </button>
-    </div>    
+    {
+      !isUserGuest &&
+      <div className="btn-group mr-2">
+        <button className="btn btn-sm btn-outline-primary" disabled={!hasUnsavedChanges} onClick={saveProject}>
+          <i className="fas fa-save" /> Save
+        </button>
+      </div>    
+    }
     {
       <div className="btn-group mr-2">
       {
@@ -53,9 +57,12 @@ export const Toolbar = ({ backButtonPath, projectName, hasUnsavedChanges, curren
             }
           }
         >
-          <button className={`btn btn-sm btn-outline-primary`}>
-            <i className="fas fa-square" /> Extent
-          </button>
+          {
+            !isUserGuest &&
+            <button className={`btn btn-sm btn-outline-primary`}>
+              <i className="fas fa-square" /> Extent
+            </button>
+          }
         </a>
       }
         <div onMouseEnter={() => setShowExtent(true)} onMouseLeave={() => setShowExtent(false)} title={`Zoom level = ${zoomLevel}`} className="p-1 " style={{backgroundColor: zoomLevel > 20 ? "green" : (zoomLevel < 20 ? "orange" : "yellow"), fontSize: ".9em"}}>

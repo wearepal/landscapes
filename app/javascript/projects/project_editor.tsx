@@ -27,6 +27,7 @@ export interface ProjectPermissions {
   KewSamples: boolean
   NATMAPSoil: boolean
   KewLidar: boolean
+  isUserGuest: boolean
 }
 
 export interface TeamExtentData {
@@ -154,6 +155,7 @@ export function ProjectEditor({ projectId, projectSource, backButtonPath, dbMode
         showAP={showAP}
         setShowExtent={setShowExtent}
         zoomLevel={projectZoom}
+        isUserGuest={permissions.isUserGuest}
       />
       <div className="flex-grow-1 d-flex">
         {currentTab == Tab.MapView && <>

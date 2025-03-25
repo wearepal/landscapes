@@ -16,6 +16,7 @@ export default class extends Controller {
     projectKewSamplesPermission: Boolean,
     projectNatmapSoilPermission: Boolean,
     projectKewLidarPermission: Boolean,
+    userGuestStatus: Boolean,
     projectExtents: Array,
     backButtonPath: String,
     dbModels: Object
@@ -30,11 +31,13 @@ export default class extends Controller {
   declare readonly projectKewSamplesPermissionValue: boolean
   declare readonly projectNatmapSoilPermissionValue: boolean
   declare readonly projectKewLidarPermissionValue: boolean
+  declare readonly userGuestStatusValue: boolean
   declare readonly projectExtentsValue: Array<any>
   declare readonly backButtonPathValue: string
   declare readonly dbModelsValue: DBModels
 
   connect() {
+    console.log(this.userGuestStatusValue)
     ReactDOM.render(
       <ProjectEditor
         projectId={this.projectIdValue}
@@ -49,7 +52,8 @@ export default class extends Controller {
             KewRgb25cm: this.projectKewRgb25cmPermissionValue,
             KewSamples: this.projectKewSamplesPermissionValue,
             NATMAPSoil: this.projectNatmapSoilPermissionValue,
-            KewLidar: this.projectKewLidarPermissionValue
+            KewLidar: this.projectKewLidarPermissionValue,
+            isUserGuest: this.userGuestStatusValue
           }
         }
         teamExtents={this.projectExtentsValue as TeamExtentData[]}
