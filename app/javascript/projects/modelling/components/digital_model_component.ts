@@ -125,6 +125,18 @@ const ModelList: Array<DigitalModel> = [
         source: '54167602-36c8-4b2b-80ec-ebb6267b6b1e:Lidar_Composite_Hillshade_FZ_DSM_2m',
         externalLink: 'https://environment.data.gov.uk/spatialdata/lidar-composite-digital-surface-model-first-return-dsm-2m/',
         toolTipURL: "https://environment.data.gov.uk/dataset/54167602-36c8-4b2b-80ec-ebb6267b6b1e"
+    },
+    {
+        id: 15,
+        name: 'Digital Surface Model (25cm)',
+        source: 'lidar:DSM_25cm',
+        permission: 'KewLidar'
+    },
+    {
+        id: 16,
+        name: 'Digital Terrain Model (25cm)',
+        source: 'lidar:DTM_25cm',
+        permission: 'KewLidar'
     }
     
 ]
