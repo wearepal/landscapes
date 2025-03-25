@@ -102,6 +102,11 @@ class Project < ApplicationRecord
     tp = team.team_permissions.find_by(permission: p)
     tp ? tp.enabled : false
   end
+
+  def guest_status(user)
+    membership = team.memberships.find_by(user: user)
+    membership.guest?
+  end
   
   def extents
     team_extents = Extent.where(team_id: team.id).to_json

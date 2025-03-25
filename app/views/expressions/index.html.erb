@@ -1,8 +1,10 @@
 <div class="card">
   <div class="card-header d-flex align-items-center justify-content-between">
     Expressions
-    <%= link_to [@team, :expression, action: :new], class: "btn btn-sm btn-outline-primary", title: "Create new expression" do %>
-      <i class="fas fa-plus"></i>
+    <% unless @team.memberships.find_by(user: current_user)&.guest? %>
+      <%= link_to [@team, :expression, action: :new], class: "btn btn-sm btn-outline-primary", title: "Create new expression" do %>
+        <i class="fas fa-plus"></i>
+      <% end %>
     <% end %>
   </div>
 
