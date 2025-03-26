@@ -17,6 +17,12 @@
                                                 <% end %>
                                                 <%= team.name %> 
                                                 <br>
+                                                <% if team.description.present? %>
+                                                    <span class="small text-secondary">
+                                                        <%= team.description %>
+                                                    </span>
+                                                    <br>
+                                                <% end %>
                                                 <span class="small text-secondary">
                                                     <%= team.projects.length %> project(s)
                                                 </span>
