@@ -146,7 +146,7 @@ export function createDefaultComponents(saveMapLayer: SaveMapLayer, saveModel: S
       new UnaryOpComponent('Reciprocal', '⁻¹', 'postfix', numericDataSocket, numericDataSocket, 'Arithmetic', projectProps),
       new BinaryOpComponent('Less', '<', numericNumberDataSocket, booleanDataSocket, 'Arithmetic', projectProps),
       new BinaryOpComponent('Greater', '>', numericNumberDataSocket, booleanDataSocket, 'Arithmetic', projectProps),
-      new ReplaceNaNComponent(),
+      new ReplaceNaNComponent(projectProps),
 
       // DEBUG TOOLS
       new CellAreaComponent(),
