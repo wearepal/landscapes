@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2025_03_20_215239) do
+ActiveRecord::Schema.define(version: 2025_03_26_070154) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -41,6 +41,16 @@ ActiveRecord::Schema.define(version: 2025_03_20_215239) do
     t.bigint "blob_id", null: false
     t.string "variation_digest", null: false
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
+
+  create_table "dataset_shares", force: :cascade do |t|
+    t.bigint "dataset_id", null: false
+    t.bigint "team_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["dataset_id", "team_id"], name: "index_dataset_shares_on_dataset_id_and_team_id", unique: true
+    t.index ["dataset_id"], name: "index_dataset_shares_on_dataset_id"
+    t.index ["team_id"], name: "index_dataset_shares_on_team_id"
   end
 
   create_table "datasets", force: :cascade do |t|
@@ -269,6 +279,7 @@ ActiveRecord::Schema.define(version: 2025_03_20_215239) do
     t.string "name"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.text "description"
   end
 
   create_table "training_data_downloads", force: :cascade do |t|
@@ -294,6 +305,8 @@ ActiveRecord::Schema.define(version: 2025_03_20_215239) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "dataset_shares", "datasets"
+  add_foreign_key "dataset_shares", "teams"
   add_foreign_key "datasets", "teams"
   add_foreign_key "expressions", "teams"
   add_foreign_key "extents", "teams"

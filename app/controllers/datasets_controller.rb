@@ -97,6 +97,39 @@ class DatasetsController < ApplicationController
       send_data dataset.file.download, filename: dataset.name+".json", type: dataset.file.content_type
     end
 
+    def share
+      @dataset = Dataset.find(params[:id])
+      @target_team = Team.find(params[:team_id])
+      @team = @dataset.team
+      authorize_for! @team
+
+      begin
+        if params[:share_action] == 'share'
+          if @dataset.shared_with?(@target_team)
+            redirect_to team_datasets_url(@team), alert: "Dataset is already shared with #{@target_team.name}"
+            return
+          end
+          @dataset.share_with(@target_team)
+          message = "Dataset shared with #{@target_team.name}"
+        else
+          unless @dataset.shared_with?(@target_team)
+            redirect_to team_datasets_url(@team), alert: "Dataset is not shared with #{@target_team.name}"
+            return
+          end
+          @dataset.unshare_with(@target_team)
+          message = "Dataset unshared from #{@target_team.name}"
+        end
+
+        redirect_to team_datasets_url(@team), notice: message
+      rescue ActiveRecord::RecordInvalid => e
+        Rails.logger.error "Validation failed: #{e.message}"
+        redirect_to team_datasets_url(@team), alert: "Unable to share dataset: #{e.message}"
+      end
+    rescue ActiveRecord::RecordNotFound => e
+      Rails.logger.error "Record not found: #{e.message}"
+      redirect_to team_datasets_url(@team), alert: 'Team not found'
+    end
+
     private
 
     def generate_unique_name(name)

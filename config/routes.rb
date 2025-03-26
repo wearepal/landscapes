@@ -6,7 +6,11 @@ Rails.application.routes.draw do
     resources :memberships
     resources :overlays, only: [:index]
 
-    resources :datasets, only: [:index, :edit, :create, :show, :destroy, :update]
+    resources :datasets, only: [:index, :edit, :create, :show, :destroy, :update] do
+      member do
+        post :share
+      end
+    end
     resources :extents, only: [:index, :create, :new, :edit, :destroy]
     resources :expressions, only: [:index, :create, :new, :edit, :destroy, :update]
 
