@@ -5,12 +5,16 @@ import { numericDataSocket, numericNumberDataSocket } from "../socket_types"
 import { NumericTileGrid } from "../tile_grid"
 import { NumericConstant } from "../numeric_constant"
 import { isEqual } from "lodash"
+import { ProjectProperties } from "."
+import { maskFromExtentAndShape } from "../bounding_box"
 
 export class ReplaceNaNComponent extends BaseComponent {
+    projectProps: ProjectProperties
 
-    constructor() {
+    constructor(projectProps: ProjectProperties) {
         super("Fill")
         this.category = "Arithmetic"
+        this.projectProps = projectProps
     }
     
     async builder(node: Node) {
@@ -28,6 +32,14 @@ export class ReplaceNaNComponent extends BaseComponent {
 
         const input = inputs['in'][0] as unknown as NumericTileGrid
         const replace = inputs['replace'][0] as unknown as NumericConstant
+        const mask = await maskFromExtentAndShape(
+            this.projectProps.extent, 
+            this.projectProps.zoom, 
+            this.projectProps.maskLayer, 
+            this.projectProps.maskCQL, 
+            this.projectProps.mask
+        )
+
 
         if(isEqual([input, replace], editorNode.meta.previousInputs)) {
             outputs['out'] = editorNode.meta.output
@@ -40,7 +52,7 @@ export class ReplaceNaNComponent extends BaseComponent {
                 input.height
             )
     
-            input.iterate((x, y, value) => output.set(x, y, isNaN(value) ? replace.value : value))
+            input.iterate((x, y, value) => output.set(x, y, (isNaN(value) && mask.get(x, y)) ? replace.value : value))
             editorNode.meta.previousInputs = [input, replace]
             editorNode.meta.output = output
         }
