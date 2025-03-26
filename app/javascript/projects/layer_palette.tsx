@@ -44,6 +44,7 @@ interface LayerPaletteProps {
   hide: () => void
   dbModels: DBModels
   getTeamDatasets: () => Promise<Array<CompiledDatasetRecord>>
+  //getSharedDatasets: () => Promise<Array<CompiledDatasetRecord>>
   teamName: string
   permissions: ProjectPermissions
 }
@@ -51,7 +52,7 @@ interface LayerPaletteProps {
 export const LayerPalette = ({ addLayer, hide, dbModels, getTeamDatasets, teamName, permissions }: LayerPaletteProps) => {
 
   const [teamDatasets, setTeamDatasets] = React.useState<CompiledDatasetRecord[]>([])
-
+  const [sharedDatasets, setSharedDatasets] = React.useState<CompiledDatasetRecord[]>([])
   React.useEffect(() => {
     getTeamDatasets()
       .then((datasets) => {
@@ -91,6 +92,9 @@ export const LayerPalette = ({ addLayer, hide, dbModels, getTeamDatasets, teamNa
               />
             ))}
           </Section>
+        }
+        {
+          
         }
         {/* <Section title="Machine Learning Output">
           <AddLayerButton

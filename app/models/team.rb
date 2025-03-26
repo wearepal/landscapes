@@ -7,6 +7,8 @@ class Team < ApplicationRecord
   has_many :projects, dependent: :destroy
   has_many :datasets, dependent: :destroy
   has_many :extents, dependent: :destroy
+  has_many :dataset_shares, dependent: :destroy
+  has_many :shared_datasets, through: :dataset_shares, source: :dataset
 
   has_many :map_tile_layers, through: :regions
   has_many :overlays, through: :regions
@@ -31,6 +33,10 @@ class Team < ApplicationRecord
     @p = Permission.find_or_create_by(name: name)
     tp = TeamPermission.find_or_create_by(team: self, permission: @p)
     tp.update(enabled: tp.enabled ? false : true)
+  end
+
+  def shared_datasets_accessible_by?(team)
+    shared_datasets.accessible_by?(team)
   end
 
   private

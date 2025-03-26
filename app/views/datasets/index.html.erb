@@ -24,7 +24,35 @@
             (<%= dataset.created_at.strftime("%d/%m/%Y")  %>)
             </span>
           </div>
-          <div>
+          <div class="d-flex align-items-center">
+            <% unless @team.memberships.find_by(user: current_user)&.guest? %>
+              <div class="me-3">
+                <div class="dropdown">
+                  <button class="btn btn-link px-3 py-2" type="button" data-toggle="dropdown">
+                    <i class="fas fa-share-alt"></i>
+                  </button>
+                  <div class="dropdown-menu dropdown-menu-right">
+                    <% current_user.teams.where.not(id: @team.id).order(:name).each do |team| %>
+                      <% unless team.memberships.find_by(user: current_user)&.guest? %>
+                        <% if dataset.shared_with?(team) %>
+                          <%= link_to share_dataset_path(dataset, team_id: team.id, share_action: 'unshare'), 
+                              method: :post, 
+                              class: "dropdown-item" do %>
+                            <i class="fas fa-times"></i> Unshare with <%= team.name %>
+                          <% end %>
+                        <% else %>
+                          <%= link_to share_dataset_path(dataset, team_id: team.id, share_action: 'share'), 
+                              method: :post, 
+                              class: "dropdown-item" do %>
+                            <i class="fas fa-share-alt"></i> Share with <%= team.name %>
+                          <% end %>
+                        <% end %>
+                      <% end %>
+                    <% end %>
+                  </div>
+                </div>
+              </div>
+            <% end %>
             <%= link_to dataset_path(dataset, team_id: @team.id), class: "px-3 py-2" do %>
                 <i class="fas fa-download"></i>
             <% end %>
@@ -38,6 +66,33 @@
             <% end %>
           </div>
         </div>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<div class="card mt-3">
+  <div class="card-header">
+    Shared with <%= @team.name %>
+  </div>
+
+  <div class="list-group list-group-flush">
+    <% @team.shared_datasets.each do |dataset| %>
+      <div class="list-group-item list-group-item-action">
+      <div>
+      
+        <% if dataset.gridtype == 'BooleanTileGrid' %>
+            <span class="badge badge-primary">Boolean</span>
+        <% elsif dataset.gridtype == 'NumericTileGrid' %>
+            <span class="badge badge-danger">Numeric</span>
+        <% else %>
+            <span class="badge badge-warning">Categorical</span>
+        <% end %>
+        <span class="badge badge-info"> <%= dataset.team.name %></span>
+        <%= dataset.name %>
+        <span class="text-muted fs-5">
+          (<%= dataset.created_at.strftime("%d/%m/%Y")  %>)
+        </span>
       </div>
     <% end %>
   </div>
