@@ -11,9 +11,8 @@ interface ChartProps {
     chartType: ChartType
     props: TileGridProps | undefined
     cellArea: number
-    showStdDev?: boolean
 }
-export const GenerateChart = ({ chartData, chartType, props, cellArea, showStdDev }: ChartProps) => {
+export const GenerateChart = ({ chartData, chartType, props, cellArea }: ChartProps) => {
     switch (chartType) {
         case "pie":
             return <GeneratePieChart
@@ -25,7 +24,6 @@ export const GenerateChart = ({ chartData, chartType, props, cellArea, showStdDe
                 chartData={chartData}
                 props={props}
                 cellArea={cellArea}
-                showStdDev={showStdDev}
             />
             break;
         case "bar":

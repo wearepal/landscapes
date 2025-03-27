@@ -29,7 +29,6 @@ const Chart = ({ chartType, chartData, props, cellArea, showStdDev }: ChartProps
         chartType={chartType}
         props={props}
         cellArea={cellArea}
-        showStdDev={showStdDev}
     />
 }
 

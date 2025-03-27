@@ -138,7 +138,8 @@ function modifyChartDataColours(colors: Color[] | undefined, fillType: string | 
     
         const newColorMap = new Map<any, Color>()
         const fillMap = getColorStops((fillType == "greyscale" ? "greys" : (fillType === "heatmap" ? "jet" : fillType)), 40).reverse()
-        const [ds_min, ds_max] = [model.getStats().min, model.getStats().max]
+        const hasCustomBounds = !isNaN(customBounds[0]) && !isNaN(customBounds[1]) && customBounds[0] < customBounds[1]
+        const [ds_min, ds_max] = hasCustomBounds ? customBounds : [model.getStats().min, model.getStats().max]
     
         chartData.count.forEach((value, key) => {
             let val = key + (chartData.numeric_stats?.step! / 2)
@@ -146,11 +147,12 @@ function modifyChartDataColours(colors: Color[] | undefined, fillType: string | 
             newColorMap.set(key, findColor(val, fillMap))
         })
     
-        chartData.colors = newColorMap
-        chartData.inputFillType = fillType
-
-        return chartData
-
+        // Create a new chartData object instead of modifying the existing one
+        return {
+            ...chartData,
+            colors: newColorMap,
+            inputFillType: fillType
+        };
     }
 
     if(colors !== chartData.inputColors && colors && !(model instanceof NumericTileGrid)){
@@ -167,12 +169,12 @@ function modifyChartDataColours(colors: Color[] | undefined, fillType: string | 
             }
         })
 
-        chartData.colors = newColorMap
-
-        chartData.inputColors = colors
-
-        return chartData
-
+        // Create a new chartData object instead of modifying the existing one
+        return {
+            ...chartData,
+            colors: newColorMap,
+            inputColors: colors
+        };
     }
 
     return chartData
