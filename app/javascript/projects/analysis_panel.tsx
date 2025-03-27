@@ -138,7 +138,7 @@ const ChartLegend = ({ chartData, sourceType, props, decimalPlaces, data, showSt
             LegendItems = (
                 <>
                     {Object.keys(NumStats).map(key => (
-                        <div key={`stat-${key}`} hidden={key === "step"}>
+                        <div key={`stat-${key}`} hidden={key === "step" || key === "stdDevSum" || key === "stdDevMean"}>
                             <label style={{ width: 60 }}>{
                                 key[0].toUpperCase() + key.slice(1)
                             }</label>
@@ -156,7 +156,7 @@ const ChartLegend = ({ chartData, sourceType, props, decimalPlaces, data, showSt
                         </div>
                     ))}
                     
-                    <div className="mt-3 d-flex align-items-center justify-content-center">
+                    <div className="mt-3 d-flex align-items-center justify-content-center mb-3">
                         <input 
                             type="checkbox" 
                             id="showStdDevCheckbox"
@@ -168,6 +168,39 @@ const ChartLegend = ({ chartData, sourceType, props, decimalPlaces, data, showSt
                             Show Standard Deviation
                         </label>
                     </div>
+
+                    {showStdDev && (
+                        <>
+                            <div key={`stat-stdDevSum`}>
+                                <label style={{ width: 60 }}>Sum</label>
+                                <input
+                                    disabled
+                                    type="text"
+                                    value={parseFloat(NumStats["stdDevSum"].toFixed(decimalPlaces)).toLocaleString()}
+                                />
+                                <input
+                                    type='text'
+                                    value={ (props?.unit ? props.unit : "No unit") }
+                                    style={{ width: 70, textAlign: 'center' }}
+                                    disabled
+                                />
+                            </div>
+                            <div key={`stat-stdDevMean`}>
+                                <label style={{ width: 60 }}>Mean</label>
+                                <input
+                                    disabled
+                                    type="text"
+                                    value={parseFloat(NumStats["stdDevMean"].toFixed(decimalPlaces)).toLocaleString()}
+                                />
+                                <input
+                                    type='text'
+                                    value={ (props?.unit ? `${props.unit}/${props.area}`  : "No unit") }
+                                    style={{ width: 70, textAlign: 'center' }}
+                                    disabled
+                                />
+                            </div>
+                        </>
+                    )}
                 </>
             )
         } else {

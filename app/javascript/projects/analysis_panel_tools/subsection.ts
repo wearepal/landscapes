@@ -17,7 +17,9 @@ export interface NumericStats {
     mean: number,
     mode: number,
     step: number,
-    median: number
+    median: number,
+    stdDevSum: number,
+    stdDevMean: number
 }
 
 export interface ChartData {
@@ -182,12 +184,17 @@ export function extentToChartData(colors: Color[] | undefined, model: BooleanTil
     const tileGrid = createXYZ()
     const outputTileRange = tileGrid.getTileRangeForExtentAndZ(extent, model.zoom)
 
+    let stdDevSum = 0
+    let stdDevMean = 0
+    let n = 0
+
     let counts = new Map<any, number>()
     let color = new Map<any, [number, number, number, number]>()
     let numeric_stats: NumericStats | undefined
     let full_numeric_stats: NumericStats | undefined
     const cellSize = getMedianCellSize(model).area
-
+    const af = model instanceof NumericTileGrid ? unitsAdjustmentFactor(model.properties.area, model) : 1
+    
     for (let x = outputTileRange.minX; x <= outputTileRange.maxX; x++) {
         for (let y = outputTileRange.minY; y <= outputTileRange.maxY; y++) {
 
@@ -207,6 +214,11 @@ export function extentToChartData(colors: Color[] | undefined, model: BooleanTil
             } else {
 
                 const value = model.get(x, y)
+
+                if (model instanceof NumericTileGrid && typeof value === "number" && isFinite(value)) {
+                    stdDevSum += (value * af) ** 2
+                    n++
+                }
 
                 const count = counts.get(value) || 0
 
@@ -266,7 +278,9 @@ export function extentToChartData(colors: Color[] | undefined, model: BooleanTil
             range: calculatedRange,
             mean: fullDataMean,
             mode: fullDataMode,
-            step: calculatedStep
+            step: calculatedStep,
+            stdDevSum: Math.sqrt(stdDevSum),
+            stdDevMean: n > 0 ? Math.sqrt(stdDevSum) / Math.sqrt(n) : 0
         }
 
         // Check for valid custom bounds
@@ -343,7 +357,9 @@ export function extentToChartData(colors: Color[] | undefined, model: BooleanTil
             range,
             mean: _mean,
             mode,
-            step
+            step,
+            stdDevSum: Math.sqrt(stdDevSum),
+            stdDevMean: Math.sqrt(stdDevSum) / Math.sqrt(n)
         }
     }
 
