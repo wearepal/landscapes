@@ -2,7 +2,6 @@ import * as React from "react"
 import * as d3 from 'd3'
 import { ChartData } from "../subsection"
 import { TileGridProps } from "../../modelling/tile_grid"
-import { isEqual } from "lodash"
 
 interface HistogramProps {
     chartData: ChartData
