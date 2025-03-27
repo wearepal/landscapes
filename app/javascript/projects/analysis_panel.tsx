@@ -17,9 +17,10 @@ interface ChartProps {
     chartData: ChartData | undefined
     props: TileGridProps | undefined
     cellArea: number
+    showStdDev?: boolean
 }
 
-const Chart = ({ chartType, chartData, props, cellArea }: ChartProps) => {
+const Chart = ({ chartType, chartData, props, cellArea, showStdDev }: ChartProps) => {
 
     if (!chartType || !chartData) return <></>
 
@@ -28,6 +29,7 @@ const Chart = ({ chartType, chartData, props, cellArea }: ChartProps) => {
         chartType={chartType}
         props={props}
         cellArea={cellArea}
+        showStdDev={showStdDev}
     />
 }
 
@@ -80,7 +82,16 @@ const ChartSelection = ({ SourceType, ChartTypeSelected, SetChartType }: ChartSe
         <div className="d-flex align-items-center mt-3 ml-3 mr-3">
             <div className="btn-group mr-2">
                 {options.map(option => (
-                    <button disabled={option.disabled} title={option.label} type="button" onClick={() => SetChartType(option.value as ChartType)} className={`btn ${ChartTypeSelected == option.value ? "btn-primary" : "btn-outline-primary"}`}><i className={`fas ${option.icon}`} /></button>
+                    <button 
+                        key={`chart-option-${option.value}`}
+                        disabled={option.disabled} 
+                        title={option.label} 
+                        type="button" 
+                        onClick={() => SetChartType(option.value as ChartType)} 
+                        className={`btn ${ChartTypeSelected == option.value ? "btn-primary" : "btn-outline-primary"}`}
+                    >
+                        <i className={`fas ${option.icon}`} />
+                    </button>
                 ))}
             </div>
 
@@ -96,9 +107,12 @@ interface ChartLegendProps {
     sourceType: string
     props: TileGridProps | undefined
     decimalPlaces: number
+    data?: BooleanTileGrid | NumericTileGrid | CategoricalTileGrid | null
+    showStdDev: boolean
+    setShowStdDev: (show: boolean) => void
 }
 
-const ChartLegend = ({ chartData, sourceType, props, decimalPlaces }: ChartLegendProps) => {
+const ChartLegend = ({ chartData, sourceType, props, decimalPlaces, data, showStdDev, setShowStdDev }: ChartLegendProps) => {
     if (!chartData) {
         return null
     }
@@ -109,7 +123,7 @@ const ChartLegend = ({ chartData, sourceType, props, decimalPlaces }: ChartLegen
         const totalCount = Array.from(chartData.count.values()).reduce((acc, count) => acc + count, 0)
         const sortedLegendItems = Array.from(chartData.count.entries()).sort((a, b) => b[1] - a[1])
         LegendItems = sortedLegendItems.map(([label, count], index) => (
-            <div style={{ display: "flex", alignItems: "center", fontSize: ".8em" }}>
+            <div key={`legend-item-${index}`} style={{ display: "flex", alignItems: "center", fontSize: ".8em" }}>
                 <div
                     style={{ backgroundColor: `rgb(${chartData.colors?.get(label)?.slice(0, 3)?.join(",")})` }}
                     className="chart-legend-color"
@@ -118,26 +132,44 @@ const ChartLegend = ({ chartData, sourceType, props, decimalPlaces }: ChartLegen
             </div>
         ))
     } else {
-        if (chartData.numeric_stats) {
-            const NumStats = chartData.numeric_stats
-            LegendItems = Object.keys(NumStats).map(key => (
-                <div hidden={key === "step"}>
-                    <label style={{ width: 60 }}>{
-                        key[0].toUpperCase() + key.slice(1)
-                    }</label>
-                    <input
-                        disabled
-                        type="text"
-                        value={parseFloat(NumStats[key].toFixed(decimalPlaces)).toLocaleString()}
-                    />
-                    <input
-                        type='text'
-                        value={ key === "sum" ? (props?.unit ? props.unit : "No unit") : ((props?.unit && props?.area) ? `${props.unit}/${props.area}` : "No unit") }
-                        style={{ width: 70, textAlign: 'center' }}
-                        disabled
-                    />
-                </div>
-            ))
+        if (chartData.full_numeric_stats) {
+            const NumStats = chartData.full_numeric_stats
+            
+            LegendItems = (
+                <>
+                    {Object.keys(NumStats).map(key => (
+                        <div key={`stat-${key}`} hidden={key === "step"}>
+                            <label style={{ width: 60 }}>{
+                                key[0].toUpperCase() + key.slice(1)
+                            }</label>
+                            <input
+                                disabled
+                                type="text"
+                                value={parseFloat(NumStats[key].toFixed(decimalPlaces)).toLocaleString()}
+                            />
+                            <input
+                                type='text'
+                                value={ key === "sum" ? (props?.unit ? props.unit : "No unit") : ((props?.unit && props?.area) ? `${props.unit}/${props.area}` : "No unit") }
+                                style={{ width: 70, textAlign: 'center' }}
+                                disabled
+                            />
+                        </div>
+                    ))}
+                    
+                    <div className="mt-3 d-flex align-items-center justify-content-center">
+                        <input 
+                            type="checkbox" 
+                            id="showStdDevCheckbox"
+                            checked={showStdDev}
+                            onChange={(e) => setShowStdDev(e.target.checked)}
+                            style={{ marginRight: "8px" }}
+                        />
+                        <label htmlFor="showStdDevCheckbox" style={{ margin: 0, cursor: "pointer" }}>
+                            Show Standard Deviation
+                        </label>
+                    </div>
+                </>
+            )
         } else {
             LegendItems = ""
         }
@@ -178,6 +210,8 @@ export const AnalysisPanel = ({ selectedArea, setSelectedArea, setShowAP, select
     const [bins, setBins] = React.useState<number>(10) 
     const [colors, setColors] = React.useState<any>(null)
     const [decimalPlaces, setDecimalPlaces] = React.useState<number>(2)
+    const [customBounds, setCustomBounds] = React.useState<[number, number]>([NaN, NaN])
+    const [showStdDev, setShowStdDev] = React.useState<boolean>(false)
 
     let errorMsg: string = ""
     let showChart: boolean = false
@@ -194,7 +228,7 @@ export const AnalysisPanel = ({ selectedArea, setSelectedArea, setShowAP, select
 
         if (data !== null && selectedArea && (selectedLayer?.type == "ModelOutputLayer" || selectedLayer?.type == "DatasetLayer")) {
 
-            setChartData(extentToChartDataCached(selectedLayer.colors, data, selectedArea, selectedLayer.fill, bins))
+            setChartData(extentToChartDataCached(selectedLayer.colors, data, selectedArea, selectedLayer.fill, bins, customBounds))
 
             let dataType: string | undefined = undefined
 
@@ -202,9 +236,14 @@ export const AnalysisPanel = ({ selectedArea, setSelectedArea, setShowAP, select
                 dataType = "BooleanTileGrid"
             } else if (data instanceof NumericTileGrid) {
                 dataType = "NumericTileGrid"
+                const newBounds: [number, number] = selectedLayer.overrideBounds && selectedLayer.bounds ? selectedLayer.bounds as [number, number] : [NaN, NaN]
+                if ((JSON.stringify(newBounds) !== JSON.stringify(customBounds) && (newBounds[0] < newBounds[1] || isNaN(newBounds[0])))) {
+                    setCustomBounds(newBounds)
+                }
             } else if (data instanceof CategoricalTileGrid) {
                 dataType = "CategoricalTileGrid"
             }
+            
             if (dataType !== undefined) {
                 if (dataSourceType !== dataType || chartType === undefined) {
                     dataSourceType = dataType
@@ -216,7 +255,7 @@ export const AnalysisPanel = ({ selectedArea, setSelectedArea, setShowAP, select
             setChartData(undefined)
         }
 
-    }, [selectedArea, selectedLayer, data, currentTab, bins, colors])
+    }, [selectedArea, selectedLayer, data, currentTab, bins, colors, customBounds])
 
 
     if (selectedArea === null) {
@@ -279,6 +318,7 @@ export const AnalysisPanel = ({ selectedArea, setSelectedArea, setShowAP, select
                                 chartData={chartData}
                                 props={data instanceof NumericTileGrid ? data.properties : undefined}
                                 cellArea={data ? getMedianCellSize(data).area : 0}
+                                showStdDev={showStdDev}
                             />
                         </div>
                         <div style={{ textAlign: 'center' }}>
@@ -315,6 +355,9 @@ export const AnalysisPanel = ({ selectedArea, setSelectedArea, setShowAP, select
                                 sourceType={dataSourceType}
                                 props={data instanceof NumericTileGrid ? data.properties : undefined}
                                 decimalPlaces={decimalPlaces}
+                                data={data}
+                                showStdDev={showStdDev}
+                                setShowStdDev={setShowStdDev}
                             />
                         </div>
                     </>

@@ -616,7 +616,7 @@ export function Legend({ colors, minValue, maxValue, type, labels, mutateColors,
       updateBounds(!overrideBounds, bounds)
     }
 
-    const handleMinChange = (e) => {
+    const handleMinChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const val = +(e.target.value as string)
       document.getElementById("minOverrideInput")?.classList.remove("text-danger")
       document.getElementById("maxOverrideInput")?.classList.remove("text-danger")
@@ -630,7 +630,7 @@ export function Legend({ colors, minValue, maxValue, type, labels, mutateColors,
       updateBounds(overrideBounds, [val, bounds[1]])
     }
 
-    const handleMaxChange = (e) => {
+    const handleMaxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const val = +(e.target.value as string)
       document.getElementById("minOverrideInput")?.classList.remove("text-danger")
       document.getElementById("maxOverrideInput")?.classList.remove("text-danger")
