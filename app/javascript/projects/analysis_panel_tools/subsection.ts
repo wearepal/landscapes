@@ -24,9 +24,11 @@ export interface ChartData {
     count: Map<any, number>
     colors: Map<any, Color>
     numeric_stats?: NumericStats | undefined
+    full_numeric_stats?: NumericStats | undefined
     inputColors: Color[] | undefined
     inputFillType: string | undefined
     inputHistogramBins: number
+    customBounds?: [number, number]
 }
 
 export function findColor(value: number, colorArray: any[]): Color {
@@ -74,48 +76,60 @@ function medianFromMap(arr: [number, number][], total: number): number | undefin
 let currentExtent: Extent = [0, 0, 0, 0]
 const chartDataCache = new Map<BooleanTileGrid | NumericTileGrid | CategoricalTileGrid, ChartData>()
 
-export function extentToChartDataCached(colors: Color[] | undefined, model: BooleanTileGrid | NumericTileGrid | CategoricalTileGrid, extent: Extent, fillType: string | undefined, histogram_bins: number): ChartData {
+export function extentToChartDataCached(colors: Color[] | undefined, model: BooleanTileGrid | NumericTileGrid | CategoricalTileGrid, extent: Extent, fillType: string | undefined, histogram_bins: number, customBounds: [number, number]): ChartData {
 
+    // Force recalculation if custom bounds have changed
     if(extent !== currentExtent) {
         // if the extent has changed, clear the cache
-        chartDataCache.clear()
-        currentExtent = extent
+        chartDataCache.clear();
+        currentExtent = extent;
     }
 
     if(chartDataCache.has(model)) {
-        const chartData = chartDataCache.get(model) as ChartData
+        const chartData = chartDataCache.get(model) as ChartData;
 
-        if(chartData.inputHistogramBins !== histogram_bins && model instanceof NumericTileGrid) {
+        // Check if custom bounds have changed
+        const storedBounds = chartData.customBounds || [NaN, NaN];
+        const boundsChanged = JSON.stringify(storedBounds) !== JSON.stringify(customBounds);
+        
+        if((chartData.inputHistogramBins !== histogram_bins && model instanceof NumericTileGrid) || 
+           (model instanceof NumericTileGrid && boundsChanged)) {
 
-            // if the histogram bins have changed, recalculate the chart data to reflect the new bins
+            const newChartData = extentToChartData(colors, model, extent, fillType, histogram_bins, customBounds);
+            // Store the custom bounds for future comparison
+            newChartData.customBounds = customBounds;
+            chartDataCache.set(model, newChartData);
 
-            const newChartData = extentToChartData(colors, model, extent, fillType, histogram_bins)
-            chartDataCache.set(model, newChartData)
-
-            return newChartData
+            return newChartData;
 
         }else if(chartData.inputColors !== colors || chartData.inputFillType !== fillType ){
 
             // if the colors or fill type have changed, update the color map
 
-            const newChartData = modifyChartDataColours(colors, fillType, histogram_bins, chartData, model)
-            chartDataCache.set(model, newChartData)
+            const newChartData = modifyChartDataColours(colors, fillType, histogram_bins, chartData, model, customBounds);
+            // Store the custom bounds for future comparison
+            newChartData.customBounds = customBounds;
+            chartDataCache.set(model, newChartData);
 
-            return newChartData
+            return newChartData;
 
         }else{
-
-            return chartData
-
+            // Even if nothing changes, update stored bounds
+            if (model instanceof NumericTileGrid) {
+                chartData.customBounds = customBounds;
+            }
+            return chartData;
         }
     }else{
-        const chartData = extentToChartData(colors, model, extent, fillType, histogram_bins)
-        chartDataCache.set(model, chartData)
-        return chartData
+        const chartData = extentToChartData(colors, model, extent, fillType, histogram_bins, customBounds);
+        // Store the custom bounds for future comparison
+        chartData.customBounds = customBounds;
+        chartDataCache.set(model, chartData);
+        return chartData;
     }
 }
 
-function modifyChartDataColours(colors: Color[] | undefined, fillType: string | undefined, histogram_bins: number, chartData: ChartData, model: BooleanTileGrid | NumericTileGrid | CategoricalTileGrid): ChartData {
+function modifyChartDataColours(colors: Color[] | undefined, fillType: string | undefined, histogram_bins: number, chartData: ChartData, model: BooleanTileGrid | NumericTileGrid | CategoricalTileGrid, customBounds: [number, number]): ChartData {
 
 
     if(fillType !== chartData.inputFillType && model instanceof NumericTileGrid && fillType){
@@ -163,7 +177,7 @@ function modifyChartDataColours(colors: Color[] | undefined, fillType: string | 
 
 }
 
-export function extentToChartData(colors: Color[] | undefined, model: BooleanTileGrid | NumericTileGrid | CategoricalTileGrid, extent: Extent, fillType: string | undefined, histogram_bins: number): ChartData {
+export function extentToChartData(colors: Color[] | undefined, model: BooleanTileGrid | NumericTileGrid | CategoricalTileGrid, extent: Extent, fillType: string | undefined, histogram_bins: number, customBounds: [number, number]): ChartData {
 
     const tileGrid = createXYZ()
     const outputTileRange = tileGrid.getTileRangeForExtentAndZ(extent, model.zoom)
@@ -171,6 +185,7 @@ export function extentToChartData(colors: Color[] | undefined, model: BooleanTil
     let counts = new Map<any, number>()
     let color = new Map<any, [number, number, number, number]>()
     let numeric_stats: NumericStats | undefined
+    let full_numeric_stats: NumericStats | undefined
     const cellSize = getMedianCellSize(model).area
 
     for (let x = outputTileRange.minX; x <= outputTileRange.maxX; x++) {
@@ -212,7 +227,8 @@ export function extentToChartData(colors: Color[] | undefined, model: BooleanTil
         if(mapEntries.length === 0) return {
             count: new Map(), 
             colors: new Map(), 
-            numeric_stats: undefined, 
+            numeric_stats: undefined,
+            full_numeric_stats: undefined,
             inputColors: colors, 
             inputFillType: fillType, 
             inputHistogramBins: histogram_bins
@@ -221,28 +237,81 @@ export function extentToChartData(colors: Color[] | undefined, model: BooleanTil
         mapEntries = mapEntries.sort((a, b) => a[0] - b[0])
 
         const bins = histogram_bins
+        
+        // Calculate statistics for the full dataset before applying custom bounds
+        const calculatedMin = mapEntries[0][0]
+        const calculatedMax = mapEntries[mapEntries.length - 1][0]
+        const calculatedRange = calculatedMax - calculatedMin
+        const calculatedStep = calculatedRange / bins
+        
+        let fullDataSum = sum(mapEntries.map((x) => x[1] * x[0]))
+        const fullDataEntries = mapEntries.reduce((acc, cur) => acc + cur[1], 0)
+        
+        const fullDataMean = fullDataSum / fullDataEntries
+        const fullDataMedian = medianFromMap(mapEntries, fullDataEntries)
+        
+        const fullDataMode = mapEntries.reduce((max, current) => {
+            return current[1] > max[1] ? current : max
+        }, mapEntries[0])[0]
+        
+        // Adjust sum based on area for full dataset
+        const adjustedFullDataSum = fullDataSum * unitsAdjustmentFactor(model.properties.area, model)
+        
+        // Store full dataset statistics
+        full_numeric_stats = {
+            sum: adjustedFullDataSum,
+            min: calculatedMin,
+            max: calculatedMax,
+            median: fullDataMedian || 0,
+            range: calculatedRange,
+            mean: fullDataMean,
+            mode: fullDataMode,
+            step: calculatedStep
+        }
 
-        const min = mapEntries[0][0]
-        const max = mapEntries[mapEntries.length - 1][0]
+        // Check for valid custom bounds
+        const hasCustomBounds = !isNaN(customBounds[0]) && !isNaN(customBounds[1]) && customBounds[0] < customBounds[1]
+        
+        // Use custom bounds if provided, otherwise use calculated values
+        const min = hasCustomBounds ? customBounds[0] : calculatedMin
+        const max = hasCustomBounds ? customBounds[1] : calculatedMax
+        
+        // Filter data to only include values within the custom bounds if they are provided
+        let filteredMapEntries = mapEntries;
+        if (hasCustomBounds) {
+            filteredMapEntries = mapEntries.filter(([key, _]) => key >= min && key <= max)
+            
+            // Return empty data if all values were filtered out
+            if(filteredMapEntries.length === 0) return {
+                count: new Map(), 
+                colors: new Map(), 
+                numeric_stats: undefined,
+                full_numeric_stats: full_numeric_stats,
+                inputColors: colors, 
+                inputFillType: fillType, 
+                inputHistogramBins: histogram_bins
+            }
+        }
+        
         const range = max - min
         const step = range / bins
 
-        let _sum = sum(mapEntries.map((x) => x[1] * x[0]))
-        const total_entries = mapEntries.reduce((acc, cur) => acc + cur[1], 0)
+        let _sum = sum(filteredMapEntries.map((x) => x[1] * x[0]))
+        const total_entries = filteredMapEntries.reduce((acc, cur) => acc + cur[1], 0)
 
         const _mean = _sum / total_entries
-        const _median = medianFromMap(mapEntries, total_entries)
+        const _median = medianFromMap(filteredMapEntries, total_entries)
 
-        const mode = mapEntries.reduce((max, current) => {
+        const mode = filteredMapEntries.reduce((max, current) => {
             return current[1] > max[1] ? current : max
-        }, mapEntries[0])[0]
+        }, filteredMapEntries[0])[0]
 
         // adjust the sum based on the area
         _sum = _sum * unitsAdjustmentFactor(model.properties.area, model)
 
         counts = new Map()
         const fillMap = fillType ? getColorStops((fillType == "greyscale" ? "greys" : (fillType === "heatmap" ? "jet" : fillType)), 40).reverse() : undefined
-        const [ds_min, ds_max] = [model.getStats().min, model.getStats().max]
+        const [ds_min, ds_max] = hasCustomBounds ? [min, max] : [model.getStats().min, model.getStats().max]
 
         for (let i = 0; i < bins; i++) {
 
@@ -255,8 +324,8 @@ export function extentToChartData(colors: Color[] | undefined, model: BooleanTil
                 color.set(l, findColor(val, fillMap))
             }
 
-            for (let x = 0; x < mapEntries.length; x++) {
-                const [k, v] = mapEntries[x]
+            for (let x = 0; x < filteredMapEntries.length; x++) {
+                const [k, v] = filteredMapEntries[x]
                 const count = counts.get(l) ? counts.get(l) : 0
                 if (k >= l && k <= h) counts.set(l, count as number + v)
             }
@@ -275,17 +344,23 @@ export function extentToChartData(colors: Color[] | undefined, model: BooleanTil
             mean: _mean,
             mode,
             step
-
         }
-
     }
 
-    return { 
+    // Prepare the return value with proper conditional logic
+    const returnValue: ChartData = {
         count: counts, 
         colors: color, 
         numeric_stats, 
         inputColors: colors, 
         inputFillType: fillType, 
         inputHistogramBins: histogram_bins
+    };
+
+    // Only add full_numeric_stats if we're dealing with a NumericTileGrid
+    if (model instanceof NumericTileGrid && full_numeric_stats) {
+        returnValue.full_numeric_stats = full_numeric_stats;
     }
+
+    return returnValue;
 } 
