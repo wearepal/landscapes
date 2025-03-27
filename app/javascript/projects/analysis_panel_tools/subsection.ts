@@ -280,7 +280,7 @@ export function extentToChartData(colors: Color[] | undefined, model: BooleanTil
             mode: fullDataMode,
             step: calculatedStep,
             stdDevSum: Math.sqrt(stdDevSum),
-            stdDevMean: Math.sqrt(stdDevSum) / Math.sqrt(n)
+            stdDevMean: n > 0 ? Math.sqrt(stdDevSum) / Math.sqrt(n) : 0
         }
 
         // Check for valid custom bounds
