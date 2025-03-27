@@ -2,12 +2,12 @@ import * as React from "react"
 import * as d3 from 'd3'
 import { ChartData } from "../subsection"
 import { TileGridProps } from "../../modelling/tile_grid"
+import { isEqual } from "lodash"
 
 interface HistogramProps {
     chartData: ChartData
     props: TileGridProps | undefined
     cellArea: number
-    showStdDev?: boolean
 }
 
 // Helper function to create stable fingerprint for chart data
@@ -38,7 +38,7 @@ const createDataFingerprint = (chartData: ChartData): string => {
 };
 
 export const GenerateHistogram = React.memo((props: HistogramProps) => {
-    const { chartData, props: tileProps, cellArea, showStdDev } = props;
+    const { chartData, props: tileProps, cellArea } = props;
     const svgRef = React.useRef(null);
     const axesRef = React.useRef(null);
     
@@ -180,7 +180,6 @@ export const GenerateHistogram = React.memo((props: HistogramProps) => {
     // Custom comparison function for React.memo
     // Only re-render if these specific props change
     return (
-        createDataFingerprint(prevProps.chartData) === createDataFingerprint(nextProps.chartData) &&
-        prevProps.showStdDev === nextProps.showStdDev
+        createDataFingerprint(prevProps.chartData) === createDataFingerprint(nextProps.chartData)
     );
 });
