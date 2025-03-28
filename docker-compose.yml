@@ -45,6 +45,9 @@ services:
     command: redis-server --appendonly yes
     volumes:
       - redis_queue:/data
+    networks:
+      - default
+      - landscapes_services
 
   migration:
     image: "wearepal/landscapes:${VERSION}"
