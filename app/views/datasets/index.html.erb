@@ -25,17 +25,29 @@
             </span>
           </div>
           <div>
-            <%= link_to dataset_path(dataset, team_id: @team.id), class: "px-3 py-2" do %>
-                <i class="fas fa-download"></i>
-            <% end %>
-            <% unless @team.memberships.find_by(user: current_user)&.guest? %>
-              <%= link_to edit_dataset_path(dataset), class: "px-3 py-2" do %>
-                  <i class="fas fa-edit"></i>
+            <div class="d-flex align-items-center">
+              <div class="dropdown">
+                <button class="btn btn-link px-3 py-2" type="button" data-toggle="dropdown">
+                  <i class="fas fa-download"></i>
+                </button>
+                <div class="dropdown-menu dropdown-menu-right">
+                  <%= link_to dataset_path(dataset, team_id: @team.id), class: "dropdown-item" do %>
+                    <i class="fas fa-file-code"></i> TileGridJSON
+                  <% end %>
+                  <%= link_to dataset_path(dataset, team_id: @team.id, format: :tiff), class: "dropdown-item", data: { turbo: false } do %>
+                    <i class="fas fa-file-image"></i> GeoTIFF
+                  <% end %>
+                </div>
+              </div>
+              <% unless @team.memberships.find_by(user: current_user)&.guest? %>
+                <%= link_to edit_dataset_path(dataset), class: "px-3 py-2" do %>
+                    <i class="fas fa-edit"></i>
+                <% end %>
+                <%= link_to dataset_path(dataset), method: :delete, data: { confirm: "Are you sure you want to delete '#{dataset.name}'? \n \nIf this is currently used on a project, it will become unavailable." }, class: "px-3 py-2 text-danger" do %>
+                    <i class="fas fa-trash-alt"></i>
+                <% end %>
               <% end %>
-              <%= link_to dataset_path(dataset), method: :delete, data: { confirm: "Are you sure you want to delete '#{dataset.name}'? \n \nIf this is currently used on a project, it will become unavailable." }, class: "px-3 py-2 text-danger" do %>
-                  <i class="fas fa-trash-alt"></i>
-              <% end %>
-            <% end %>
+            </div>
           </div>
         </div>
       </div>

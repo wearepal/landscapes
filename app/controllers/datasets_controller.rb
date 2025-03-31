@@ -93,8 +93,68 @@ class DatasetsController < ApplicationController
     end
 
     def show
-      dataset = Dataset.find_by(id: params[:id])
-      send_data dataset.file.download, filename: dataset.name+".json", type: dataset.file.content_type
+      format = params[:format]
+      if format == "tiff"
+        dataset = Dataset.find_by(id: params[:id])
+        require 'net/http'
+        require 'uri'
+        require 'tempfile'
+
+        uri = URI('https://landscapes.wearepal.ai/api/v2/geotiff')
+        http = Net::HTTP.new(uri.host, uri.port)
+        http.use_ssl = true
+
+        request = Net::HTTP::Post.new(uri)
+        
+        # Create a temporary file to store the dataset content
+        temp_file = Tempfile.new(['dataset', '.json'])
+        begin
+          temp_file.binmode
+          temp_file.write(dataset.file.download)
+          temp_file.rewind
+          
+          # Create the multipart form data
+          boundary = "----RubyMultipartPost-#{rand(1000000)}"
+          request["Content-Type"] = "multipart/form-data; boundary=#{boundary}"
+          
+          body = []
+          body << "--#{boundary}"
+          body << "Content-Disposition: form-data; name=\"dataset\"; filename=\"#{dataset.name}.json\""
+          body << "Content-Type: application/json"
+          body << ""
+          body << temp_file.read
+          body << "--#{boundary}--"
+          
+          request.body = body.join("\r\n")
+          response = http.request(request)
+          
+          if response.is_a?(Net::HTTPSuccess)
+            send_data response.body, 
+                      type: 'image/tiff',
+                      disposition: 'inline',
+                      filename: "#{dataset.name}.tif"
+          else
+            Rails.logger.error "TIFF conversion failed with status #{response.code}: #{response.body}"
+            render json: { 
+              error: 'Failed to convert to TIFF',
+              details: response.body,
+              status: response.code
+            }, status: :unprocessable_entity
+          end
+        rescue StandardError => e
+          Rails.logger.error "Error during TIFF conversion: #{e.message}\n#{e.backtrace.join("\n")}"
+          render json: { 
+            error: 'Error during TIFF conversion',
+            details: e.message
+          }, status: :internal_server_error
+        ensure
+          temp_file.close
+          temp_file.unlink
+        end
+      else
+        dataset = Dataset.find_by(id: params[:id])
+        send_data dataset.file.download, filename: dataset.name+".json", type: dataset.file.content_type
+      end
     end
 
     private
