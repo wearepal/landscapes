@@ -133,7 +133,7 @@ export const SoilGridOptions : SoilGridOptions[] = [
 ]
 
 const soilParameters = [
-  { map: 'ocd', factor: 10, unit: 'kg³', area: 'm³' },
+  { map: 'ocd', factor: 10, unit: 'kg', area: 'm³' },
   { map: 'soc', factor: 10, unit: 'g/kg', area: 'na' },
   { map: 'bdod', factor: 100, unit: 'kg', area: 'dm³' },
   { map: 'cec', factor: 10, unit: 'cmol(c)/kg', area: 'na' },

@@ -97,7 +97,7 @@ export class NodeComponent extends Node {
           </div>
           <div>
             {outputs.map((output) => {
-              const [name, units] = output.name.split(/(?=\[\[)/)
+              const [name, units] = output.name.split(/(?=\[\[)/).map((s: string)  => s.trim())
               return (
                 <div className="output" key={output.key}>
                   <div className="output-title">
