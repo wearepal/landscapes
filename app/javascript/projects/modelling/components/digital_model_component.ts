@@ -187,7 +187,7 @@ export class DigitalModelComponent extends BaseComponent {
             node.meta.output as any || new NumericTileGrid(0, 0, 0, 1, 1)
         ))
 
-        node.addOutput(new Output('dm', 'Output', numericDataSocket))
+        node.addOutput(new Output('dm', 'Output [[m]]', numericDataSocket))
 
 
     }
@@ -227,6 +227,8 @@ export class DigitalModelComponent extends BaseComponent {
                     out.set(x, y, mask.get(x, y) === true ? ((rasters[0][i]) === -32767 || ((rasters[0][i]) === 255) && (digitalModel.source === 'eth:ch' || digitalModel.source === 'eth:sd'))  ? NaN : (rasters[0][i]) : NaN)
 
                 }
+
+                out.properties['unit'] = 'm'
 
                 this.outputCache.set(digitalModel.source, out)
 

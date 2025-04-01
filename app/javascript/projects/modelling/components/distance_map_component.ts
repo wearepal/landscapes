@@ -63,6 +63,8 @@ export class DistanceMapComponent extends BaseComponent {
                         worker.generateDistanceMap(input, mask)
                     )
                 }
+                
+                (editorNode.meta.output as NumericTileGrid).properties['unit'] = 'm'
                 this.cache.set(inputs['in'][0] as BooleanTileGrid, editorNode.meta.output as NumericTileGrid)
             }
 

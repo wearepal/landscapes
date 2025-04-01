@@ -22,7 +22,7 @@ interface NatmapSoilOptions extends SelectControlOptions {
 export const natmap_outputs : NatmapSoilOptions[] = [
     {
         id: 0,
-        name: 'Min Carbon stock 0-10cm (kg/m²)',
+        name: 'Min Carbon stock 0-10cm [[kg/m²]]',
         key: 'MIN_STK_10',
         socket: numericDataSocket,
         unit: 'kg/m^2',
@@ -31,7 +31,7 @@ export const natmap_outputs : NatmapSoilOptions[] = [
     },
     {
         id: 1,
-        name: 'Max Carbon stock 0-10cm (kg/m²)',
+        name: 'Max Carbon stock 0-10cm [[kg/m²]]',
         key: 'MAX_STK_10',
         socket: numericDataSocket,
         unit: 'kg/m^2',
@@ -40,7 +40,7 @@ export const natmap_outputs : NatmapSoilOptions[] = [
     },
     {
         id: 2,
-        name: 'Min Carbon stock 0-15cm (kg/m²)',
+        name: 'Min Carbon stock 0-15cm [[kg/m²]]',
         key: 'MIN_STK_15',
         socket: numericDataSocket,
         unit: 'kg/m^2',
@@ -49,7 +49,7 @@ export const natmap_outputs : NatmapSoilOptions[] = [
     },
     {
         id: 3,
-        name: 'Max Carbon stock 0-15cm (kg/m²)',
+        name: 'Max Carbon stock 0-15cm [[kg/m²]]',
         key: 'MAX_STK_15',
         socket: numericDataSocket,
         unit: 'kg/m^2',
@@ -58,7 +58,7 @@ export const natmap_outputs : NatmapSoilOptions[] = [
     },
     {
         id: 4,
-        name: 'Min Carbon stock 0-30cm (kg/m²)',
+        name: 'Min Carbon stock 0-30cm [[kg/m²]]',
         key: 'MIN_STK_30',
         socket: numericDataSocket,
         unit: 'kg/m^2',
@@ -67,7 +67,7 @@ export const natmap_outputs : NatmapSoilOptions[] = [
     },
     {
         id: 5,
-        name: 'Max Carbon stock 0-30cm (kg/m²)',
+        name: 'Max Carbon stock 0-30cm [[kg/m²]]',
         key: 'MAX_STK_30',
         socket: numericDataSocket,
         unit: 'kg/m^2',
@@ -76,7 +76,7 @@ export const natmap_outputs : NatmapSoilOptions[] = [
     },
     {
         id: 6,
-        name: 'Average Carbon stock 0-30cm (kg/m²)',
+        name: 'Average Carbon stock 0-30cm [[kg/m²]]',
         key: 'AV_STK_30',
         socket: numericDataSocket,
         unit: 'kg/m^2',
@@ -85,7 +85,7 @@ export const natmap_outputs : NatmapSoilOptions[] = [
     },
     {
         id: 7,
-        name: 'Average Carbon stock 30-100cm (kg/m²)',
+        name: 'Average Carbon stock 30-100cm [[kg/m²]]',
         key: 'AV_STK_100',
         socket: numericDataSocket,
         unit: 'kg/m^2',
@@ -94,7 +94,7 @@ export const natmap_outputs : NatmapSoilOptions[] = [
     },
     {
         id: 8,
-        name: 'Average Carbon stock 100-150cm (kg/m²)',
+        name: 'Average Carbon stock 100-150cm [[kg/m²]]',
         key: 'AV_STK_150',
         socket: numericDataSocket,
         unit: 'kg/m^2',
@@ -103,7 +103,7 @@ export const natmap_outputs : NatmapSoilOptions[] = [
     },
     {
         id: 9,
-        name: 'Average Organic Carbon 0-30cm (%)',
+        name: 'Average Organic Carbon 0-30cm [[%]]',
         key: 'AV_OC_30',
         socket: numericDataSocket,
         unit: '%',
@@ -112,7 +112,7 @@ export const natmap_outputs : NatmapSoilOptions[] = [
     },
     {
         id: 10,
-        name: 'Min Organic Carbon 0-30cm (%)',
+        name: 'Min Organic Carbon 0-30cm [[%]]',
         key: 'MIN_OC_30',
         socket: numericDataSocket,
         unit: '%',
@@ -121,7 +121,7 @@ export const natmap_outputs : NatmapSoilOptions[] = [
     },
     {
         id: 11,
-        name: 'Max Organic Carbon 0-30cm (%)',
+        name: 'Max Organic Carbon 0-30cm [[%]]',
         key: 'MAX_OC_30',
         socket: numericDataSocket,
         unit: '%',
@@ -130,7 +130,7 @@ export const natmap_outputs : NatmapSoilOptions[] = [
     },
     {
         id: 12,
-        name: 'Average Organic Carbon 30-100cm (%)',
+        name: 'Average Organic Carbon 30-100cm [[%]]',
         key: 'AV_OC_100',
         socket: numericDataSocket,
         unit: '%',
@@ -139,7 +139,7 @@ export const natmap_outputs : NatmapSoilOptions[] = [
     },
     {
         id: 13,
-        name: 'Min Organic Carbon 30-100cm (%)',
+        name: 'Min Organic Carbon 30-100cm [[%]]',
         key: 'MIN_OC_100',
         socket: numericDataSocket,
         unit: '%',
@@ -148,7 +148,7 @@ export const natmap_outputs : NatmapSoilOptions[] = [
     },
     {
         id: 14,
-        name: 'Max Organic Carbon 30-100cm (%)',
+        name: 'Max Organic Carbon 30-100cm [[%]]',
         key: 'MAX_OC_100',
         socket: numericDataSocket,
         unit: '%',
@@ -157,7 +157,7 @@ export const natmap_outputs : NatmapSoilOptions[] = [
     },
     {
         id: 15,
-        name: 'Average Organic Carbon 100-150cm (%)',
+        name: 'Average Organic Carbon 100-150cm [[%]]',
         key: 'AV_OC_150',
         socket: numericDataSocket,
         unit: '%',
@@ -166,7 +166,7 @@ export const natmap_outputs : NatmapSoilOptions[] = [
     },
     {
         id: 16,
-        name: 'Min Organic Carbon 100-150cm (%)',
+        name: 'Min Organic Carbon 100-150cm [[%]]',
         key: 'MIN_OC_150',
         socket: numericDataSocket,
         unit: '%',
@@ -175,7 +175,7 @@ export const natmap_outputs : NatmapSoilOptions[] = [
     },
     {
         id: 17,
-        name: 'Max Organic Carbon 100-150cm (%)',
+        name: 'Max Organic Carbon 100-150cm [[%]]',
         key: 'MAX_OC_150',
         socket: numericDataSocket,
         unit: '%',
@@ -251,6 +251,13 @@ export class NatmapSoilComponent extends BaseComponent {
         natmap_outputs.filter(opt => node.outputs[opt.key].connections.length > 0).forEach(opt => {
             const res = this.cachedOutputs.has(opt.key) ? this.cachedOutputs.get(opt.key) : applyFeaturesToGrid(this.cachedFeatures, this.projectProps, opt.key, mask)
             this.cachedOutputs.set(opt.key, res as NumericTileGrid)
+            if (res instanceof NumericTileGrid && opt.unit) {
+                const unitParts = opt.unit.split('/')
+                const unit = unitParts[0]
+                const area = unitParts[1]?.replace(/\^2/g, '²').trim() ?? 'cell'
+                res.properties.unit = unit
+                res.properties.area = area
+            }
             outputs[opt.key] = res
         })
 

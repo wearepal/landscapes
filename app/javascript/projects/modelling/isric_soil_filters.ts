@@ -10,6 +10,8 @@ interface SoilGridOptions {
     coverageId: string
     outputSocket: Socket
     factor?: number
+    unit?: string
+    area?: string
 }
 
 // Soil types from the World Reference Base for Soil Resources, used for labelling cat data
@@ -81,7 +83,9 @@ export const SoilGridOptions : SoilGridOptions[] = [
         map: 'ocs',
         coverageId: 'ocs_0-30cm_mean',
         outputSocket: numericDataSocket,
-        factor: 10
+        factor: 10,
+        unit: 'kg',
+        area: 'm²'
     },
     {
         SCOId: 2,
@@ -89,7 +93,9 @@ export const SoilGridOptions : SoilGridOptions[] = [
         map: 'ocs',
         coverageId: 'ocs_0-30cm_Q0.05',
         outputSocket: numericDataSocket,
-        factor: 10
+        factor: 10,
+        unit: 'kg',
+        area: 'm²'
     },
     {
         SCOId: 2,
@@ -97,7 +103,9 @@ export const SoilGridOptions : SoilGridOptions[] = [
         map: 'ocs',
         coverageId: 'ocs_0-30cm_Q0.5',
         outputSocket: numericDataSocket,
-        factor: 10
+        factor: 10,
+        unit: 'kg',
+        area: 'm²'
     
     },
     {
@@ -106,7 +114,9 @@ export const SoilGridOptions : SoilGridOptions[] = [
         map: 'ocs',
         coverageId: 'ocs_0-30cm_Q0.95',
         outputSocket: numericDataSocket,
-        factor: 10
+        factor: 10,
+        unit: 'kg',
+        area: 'm²'
     
     },
     {
@@ -115,14 +125,36 @@ export const SoilGridOptions : SoilGridOptions[] = [
         map: 'ocs',
         coverageId: 'ocs_0-30cm_uncertainty',
         outputSocket: numericDataSocket,
-        factor: 10
+        factor: 10,
+        unit: 'kg',
+        area: 'm²'
     }
 
 ]
 
+const soilParameters = [
+  { map: 'ocd', factor: 10, unit: 'kg', area: 'm³' },
+  { map: 'soc', factor: 10, unit: 'g/kg', area: 'na' },
+  { map: 'bdod', factor: 100, unit: 'kg', area: 'dm³' },
+  { map: 'cec', factor: 10, unit: 'cmol(c)/kg', area: 'na' },
+  { map: 'cfvo', factor: 10, unit: '%', area: 'na' },
+  { map: 'clay', factor: 10, unit: '%', area: 'na' },
+  { map: 'nitrogen', factor: 100, unit: 'g/kg', area: 'na' },
+  { map: 'phh2o', factor: 10, unit: 'pH', area: 'na' },
+  { map: 'sand', factor: 10, unit: '%', area: 'na' },
+  { map: 'silt', factor: 10, unit: '%', area: 'na' },
+  { map: 'wv1500', factor: 1, unit: 'cm³/100cm³', area: 'na' },
+  { map: 'wv0033', factor: 1, unit: 'cm³/100cm³', area: 'na' },
+  { map: 'wv0010', factor: 1, unit: 'cm³/100cm³', area: 'na' }
+]
+
+// For backward compatibility, we can still export the arrays if needed
+const maps = soilParameters.map(param => param.map)
+const factors = soilParameters.map(param => param.factor)
+const units = soilParameters.map(param => param.unit)
+const areas = soilParameters.map(param => param.area)
+
 const ranges = [0, 5, 15, 30, 60, 100, 200]
-const maps = ['ocd', 'soc', 'bdod', 'cec', 'cfvo', 'clay', 'nitrogen', 'phh2o', 'sand', 'silt', 'wv1500', 'wv0033', 'wv0010']
-const factors = [10, 10, 100, 10, 10, 10, 100, 10, 10, 10, 10, 10, 10]
 
 for(let i = 0; i < ranges.length - 1; i++) {
     const range = `${ranges[i]}-${ranges[i+1]}cm`
@@ -133,7 +165,9 @@ for(let i = 0; i < ranges.length - 1; i++) {
             map,
             coverageId: `${map}_${range}_mean`,
             outputSocket: numericDataSocket,
-            factor: factors[x]
+            factor: factors[x],
+            unit: units[x],
+            area: areas[x]
         })
         SoilGridOptions.push({
             SCOId: 3+x,
@@ -141,7 +175,9 @@ for(let i = 0; i < ranges.length - 1; i++) {
             map,
             coverageId: `${map}_${range}_Q0.05`,
             outputSocket: numericDataSocket,
-            factor: factors[x]
+            factor: factors[x],
+            unit: units[x],
+            area: areas[x]
         })
         SoilGridOptions.push({
             SCOId: 3+x,
@@ -149,7 +185,9 @@ for(let i = 0; i < ranges.length - 1; i++) {
             map,
             coverageId: `${map}_${range}_Q0.5`,
             outputSocket: numericDataSocket,
-            factor: factors[x]
+            factor: factors[x],
+            unit: units[x],
+            area: areas[x]
         })
         SoilGridOptions.push({
             SCOId: 3+x,
@@ -157,7 +195,9 @@ for(let i = 0; i < ranges.length - 1; i++) {
             map,
             coverageId: `${map}_${range}_Q0.95`,
             outputSocket: numericDataSocket,
-            factor: factors[x]
+            factor: factors[x],
+            unit: units[x],
+            area: areas[x]
         })
         SoilGridOptions.push({
             SCOId: 3+x,
@@ -165,7 +205,9 @@ for(let i = 0; i < ranges.length - 1; i++) {
             map,
             coverageId: `${map}_${range}_uncertainty`,
             outputSocket: numericDataSocket,
-            factor: factors[x]
+            factor: factors[x],
+            unit: units[x],
+            area: areas[x]
         })
     })
 }
@@ -186,7 +228,7 @@ ERBSoilTypes.forEach((soilType, index) => {
         map: 'wrb',
         coverageId: soilType,
         outputSocket: numericDataSocket,
-        factor: 1
-    
+        factor: 1,
+        unit: '%'
     })
 })

@@ -1,4 +1,4 @@
-import { mean, mode } from "mathjs"
+import { map, mean, mode } from "mathjs"
 import { Extent } from "ol/extent"
 import { createXYZ } from "ol/tilegrid"
 import { registerSerializer } from "threads"
@@ -62,6 +62,8 @@ export interface TileGridJSON {
   height: number
   data: Uint8Array | Float32Array
   labels?: object
+  unitProp?: string
+  areaProp?: string
 }
 
 export function fromJSON(json: TileGridJSON): NumericTileGrid | BooleanTileGrid | CategoricalTileGrid | null {
@@ -72,8 +74,15 @@ export function fromJSON(json: TileGridJSON): NumericTileGrid | BooleanTileGrid 
     case "BooleanTileGrid":
       return new BooleanTileGrid(json.zoom, json.x, json.y, json.width, json.height, Uint8Array.from(arraydata, value => value))
     case "NumericTileGrid":
-      // NaN are stored as null in JSON, return these back to NaN
-      return new NumericTileGrid(json.zoom, json.x, json.y, json.width, json.height, Float32Array.from(arraydata.map(e => e === null ? NaN : e), value => value))
+      const unit = json.unitProp
+      const area = json.areaProp
+      const props = {
+        unit,
+        area
+      }
+      const grid = new NumericTileGrid(json.zoom, json.x, json.y, json.width, json.height, Float32Array.from(arraydata.map(e => e === null ? NaN : e), value => value))
+      grid.properties = props
+      return grid
     case "CategoricalTileGrid":
       const labels = json.labels || {}
       const map = new Map<number, string>()
@@ -386,7 +395,9 @@ export class NumericTileGrid extends TileGrid {
       y: this.y,
       width: this.width,
       height: this.height,
-      data: this.data
+      data: this.data,
+      unitProp: this.properties.unit,
+      areaProp: this.properties.area
     }
   }
 }

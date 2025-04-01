@@ -8,7 +8,6 @@ import { isEqual } from 'lodash'
 import { NumericConstant } from '../numeric_constant'
 import { numericNumberDataSocket } from '../socket_types'
 import { ProjectProperties } from '.'
-import { maskFromExtentAndShape } from '../bounding_box'
 
 export class BinaryOpComponent extends BaseComponent {
   operator: string

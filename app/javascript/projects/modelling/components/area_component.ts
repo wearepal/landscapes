@@ -8,7 +8,6 @@ import { BooleanTileGrid } from '../tile_grid'
 import { getArea } from 'ol/sphere'
 import { fromExtent } from 'ol/geom/Polygon'
 import { NumericConstant } from '../numeric_constant'
-import { string } from 'prop-types'
 
 export class AreaComponent extends BaseComponent {
 
@@ -21,7 +20,7 @@ export class AreaComponent extends BaseComponent {
         node.data.summary = '0 km²'
 
         node.addInput(new Input('in', 'Set', booleanDataSocket))
-        node.addOutput(new Output('out', 'Area', numberSocket))
+        node.addOutput(new Output('out', 'Area [[km²]]', numberSocket))
 
         node.addControl(new LabelControl('summary'))
     }
