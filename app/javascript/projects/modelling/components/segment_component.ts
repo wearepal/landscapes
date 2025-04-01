@@ -190,7 +190,7 @@ export class SegmentComponent extends BaseComponent {
         }
 
         node.addOutput(new Output('mask', 'Segmentation Mask', booleanDataSocket))
-        node.addOutput(new Output('conf', 'Confidence', numericDataSocket))
+        node.addOutput(new Output('conf', 'Confidence [[%]]', numericDataSocket))
         node.addOutput(new Output('box', 'Detection Box', booleanDataSocket))
 
         node.addControl(new TextControl(this.editor, 'prompt', 'Prompt', '500px'))
@@ -240,7 +240,10 @@ export class SegmentComponent extends BaseComponent {
                 this.cache.set(`${prompts}_${cls_conf}%${det_conf}%${n_repeats}`, result)
                 outputs['mask'] = result[0]
                 outputs['box'] = result[1]
+
                 outputs['conf'] = result[2]
+                (outputs['conf'] as NumericTileGrid).properties.unit = "%"
+                
                 editorNode.update()
             }
         }

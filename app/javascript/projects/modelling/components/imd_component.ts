@@ -15,143 +15,171 @@ interface OutputFormat {
     name: string
     typeName: string
     socket: Socket
+    unit: string
 }
 
 const outputFormats: OutputFormat[] = [
     {
         name: "IMD Rank",
         typeName: "IMD_Rank",
-        socket: numericDataSocket
+        socket: numericDataSocket,
+        unit: ''
     },
     {
         name: "IMD Decile",
         typeName: "IMD_Decile",
-        socket: numericDataSocket
+        socket: numericDataSocket,
+        unit: ''
     },
     {
         name: "Income Rank",
         typeName: "IncRank",
-        socket: numericDataSocket
+        socket: numericDataSocket,
+        unit: ''
     },
     {
         name: "Income Decile",
         typeName: "IncDec",
-        socket: numericDataSocket
+        socket: numericDataSocket,
+        unit: ''
     },
     {
         name: "Income Score",
         typeName: "IncScore",
-        socket: numericDataSocket
+        socket: numericDataSocket,
+        unit: ''
     },
     {
         name: "Employment Rank",
         typeName: "EmpRank",
-        socket: numericDataSocket
+        socket: numericDataSocket,
+        unit: ''
     },
     {
         name: "Employment Decile",
         typeName: "EmpDec",
-        socket: numericDataSocket
+        socket: numericDataSocket,
+        unit: ''
     },
     {
         name: "Employment Score",
         typeName: "EmpScore",
-        socket: numericDataSocket
+        socket: numericDataSocket,
+        unit: ''
     },
     {
         name: "Education, Skills and Training Rank",
         typeName: "EduRank",
-        socket: numericDataSocket
+        socket: numericDataSocket,
+        unit: ''
     },
     {
         name: "Education, Skills and Training Decile",
         typeName: "EduDec",
-        socket: numericDataSocket
+        socket: numericDataSocket,
+        unit: ''
     },
     {
         name: "Education, Skills and Training Score",
         typeName: "EduScore",
-        socket: numericDataSocket
+        socket: numericDataSocket,
+        unit: ''
     },
     {
         name: "Heath Deprevation and Disability Rank",
         typeName: "HDDRank",
-        socket: numericDataSocket
+        socket: numericDataSocket,
+        unit: ''
     },
     {
         name: "Heath Deprevation and Disability Decile",
         typeName: "HDDDec",
-        socket: numericDataSocket
+        socket: numericDataSocket,
+        unit: ''
     },
     {
         name: "Heath Deprevation and Disability Score",
         typeName: "HDDScore",
-        socket: numericDataSocket
+        socket: numericDataSocket,
+        unit: ''
     },
     {
         name: "Crime Rank",
         typeName: "CriRank",
-        socket: numericDataSocket
+        socket: numericDataSocket,
+        unit: ''
     },
     {
         name: "Crime Decile",
         typeName: "CriDec",
-        socket: numericDataSocket
+        socket: numericDataSocket,
+        unit: ''
     },
     {
         name: "Crime Score",
         typeName: "CriScore",
-        socket: numericDataSocket
+        socket: numericDataSocket,
+        unit: ''
     },
     {
         name: "Barriers to Housing and Services Rank",
         typeName: "BHSRank",
-        socket: numericDataSocket
+        socket: numericDataSocket,
+        unit: ''
     },
     {
         name: "Barriers to Housing and Services Decile",
         typeName: "BHSDec",
-        socket: numericDataSocket
+        socket: numericDataSocket,
+        unit: ''
     },
     {
         name: "Barriers to Housing and Services Score",
         typeName: "BHSScore",
-        socket: numericDataSocket
+        socket: numericDataSocket,
+        unit: ''
     },
     {
         name: "Living Environment Rank",
         typeName: "EnvRank",
-        socket: numericDataSocket
+        socket: numericDataSocket,
+        unit: ''
     },
     {
         name: "Living Environment Decile",
         typeName: "EnvDec",
-        socket: numericDataSocket
+        socket: numericDataSocket,
+        unit: ''
     },
     {
         name: "Living Environment Score",
         typeName: "EnvScore",
-        socket: numericDataSocket
+        socket: numericDataSocket,
+        unit: ''
     },
     {
         name: "Population (Total)",
         typeName: "TotPop",
-        socket: numericDataSocket
+        socket: numericDataSocket,
+        unit: ''
     },
     {
         name: "Population (16-59)",
         typeName: "Pop16_59",
-        socket: numericDataSocket
+        socket: numericDataSocket,
+        unit: ''
     },
     {
         name: "Population (60+)",
         typeName: "Pop60+",
-        socket: numericDataSocket
+        socket: numericDataSocket,
+        unit: ''
     },
     {
         name: "Population (Working)",
         typeName: "WorkPop",
-        socket: numericDataSocket
+        socket: numericDataSocket,
+        unit: ''
     }
 ]
 

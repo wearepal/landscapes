@@ -32,7 +32,7 @@ export class CellAreaComponent extends BaseComponent {
 
     async builder(node: Node) {
         node.addInput(new Input('in', 'Input', dataSocket))
-        node.addOutput(new Output('out', 'Output', numberSocket))
+        node.addOutput(new Output('out', 'Output [[m²]]', numberSocket))
         node.addControl(new LabelControl('summary'))
         this.cache = new Map()
     }

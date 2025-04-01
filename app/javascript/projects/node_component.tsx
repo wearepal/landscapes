@@ -96,12 +96,18 @@ export class NodeComponent extends Node {
             ))}
           </div>
           <div>
-            {outputs.map((output) => (
-              <div className="output" key={output.key}>
-                <div className="output-title">{output.name}</div>
-                <Socket type="output" socket={output.socket} io={output} innerRef={bindSocket} />
-              </div>
-            ))}
+            {outputs.map((output) => {
+              const [name, units] = output.name.split(/(?=\[\[)/)
+              return (
+                <div className="output" key={output.key}>
+                  <div className="output-title">
+                    {name}
+                    {units && <span className="badge badge-info bg-dark text-secondary" style={{ fontSize: '.7rem', fontWeight: 'normal'}}>{units.replace(/[\[\]]/g, '')}</span>}
+                  </div>
+                  <Socket type="output" socket={output.socket} io={output} innerRef={bindSocket} />
+                </div>
+              )
+            })}
           </div>
         </div>
         {non_select_controls.map(control => (

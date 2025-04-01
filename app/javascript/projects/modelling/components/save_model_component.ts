@@ -1,6 +1,6 @@
 import { Input, Node } from "rete"
 import { NodeData, WorkerInputs, WorkerOutputs } from "rete/types/core/data"
-import { dataSocket } from "../socket_types"
+import { dataSocket, propertySocket } from "../socket_types"
 import { BooleanTileGrid, CategoricalTileGrid, NumericTileGrid, TileGridJSON } from "../tile_grid"
 import { BaseComponent } from "./base_component"
 import { NumericConstant } from "../numeric_constant"
@@ -22,6 +22,7 @@ export class SaveModelOutputComponent extends BaseComponent {
         node.meta.toolTip = "Save models as a dataset. Dataets can be used as inputs to other models, or as layers from the map view."
 
         node.addInput(new Input("in", "Output", dataSocket))
+        node.addInput(new Input("props", "Properties (optional)", propertySocket, true))
         node.addControl(new LabelControl('summary'))
     }
 
@@ -39,8 +40,16 @@ export class SaveModelOutputComponent extends BaseComponent {
                 delete editorNode.meta.errorMessage
 
                 const name = (editorNode.data.name as string !== undefined && editorNode.data.name as string !== "") ? editorNode.data.name as string : `Untitled Dataset`
+                const input = inputs['in'][0] as BooleanTileGrid | NumericTileGrid | CategoricalTileGrid
+                
+                if(input instanceof NumericTileGrid && inputs['props'].length > 0) {
+                    const props = inputs['props']
+                    props.forEach((prop: any) => {
+                        input.properties[(prop.type as string).toLowerCase()] = prop.unit
+                    })
+                }
 
-                this.callback(name, (inputs['in'][0] as BooleanTileGrid | NumericTileGrid | CategoricalTileGrid).toJSON(), (status: number) => {
+                this.callback(name, input.toJSON(), (status: number) => {
                     node.data.summary = (status === 200 || status === 201) ? "✅ Saved!" : "❌ Failed to save!"
                     summaryControl.update()
                 })

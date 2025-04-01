@@ -813,7 +813,7 @@ export class CensusComponent extends BaseComponent {
         const options = censusDatasets[datasetIndex].options
 
         for (let i = 0; i < options.length; i++) {
-            node.addOutput(new Output(options[i].name, options[i].name, numericDataSocket))
+            node.addOutput(new Output(options[i].name, options[i].name + ' [[%]]', numericDataSocket))
         }
 
         node.update()
@@ -883,6 +883,8 @@ export class CensusComponent extends BaseComponent {
                     }
 
                 }
+                result.properties['unit'] = '%'
+                result.properties['area'] = 'cell'
 
                 this.cachedOutput.set(code, result)
 

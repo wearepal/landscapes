@@ -69,10 +69,10 @@ export function createDefaultComponents(saveMapLayer: SaveMapLayer, saveModel: S
       //restrictedComponents.push(new KewHabsComponent(projectProps))
       restrictedComponents.push(new KewTreesComponent(projectProps))
       restrictedComponents.push(new RasterComponent(projectProps, 'Wakehurst Soil Carbon', 'Kew', [
-        { name: 'Carbon 0-15cm (t/ha)' , source: 'kew:predicted_carbon_015' },
-        { name: 'Carbon 0-30cm (t/ha)' , source: 'kew:predicted_carbon_030' },
-        { name: 'Carbon 15-30cm (t/ha)' , source: 'kew:predicted_carbon_1530' },
-        { name: 'Carbon 30-45cm (t/ha)' , source: 'kew:predicted_carbon_3045' },
+        { name: 'Carbon 0-15cm' , source: 'kew:predicted_carbon_015', area: 'ha', unit: 't' },
+        { name: 'Carbon 0-30cm' , source: 'kew:predicted_carbon_030', area: 'ha', unit: 't' },
+        { name: 'Carbon 15-30cm' , source: 'kew:predicted_carbon_1530', area: 'ha', unit: 't' },
+        { name: 'Carbon 30-45cm' , source: 'kew:predicted_carbon_3045', area: 'ha', unit: 't' },
       ]))
     }
     if (permissions.NATMAPSoil) restrictedComponents.push(new NatmapSoilComponent(projectProps))

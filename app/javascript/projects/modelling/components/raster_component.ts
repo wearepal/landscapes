@@ -15,6 +15,8 @@ import { TypedArray } from "d3"
 interface RasterComponentOption {
     name: string
     source: string
+    area?: string
+    unit?: string
 }
 
 export class RasterComponent extends BaseComponent {
@@ -32,7 +34,7 @@ export class RasterComponent extends BaseComponent {
 
     async builder(node: Node) {
         this.options.forEach((option) => {
-            node.addOutput(new Output(option.name, option.name, numericDataSocket))
+            node.addOutput(new Output(option.name, `${option.name} [[${option.unit ?? ''}/${option.area ?? ''}]]`, numericDataSocket))
         })
     }
 
@@ -75,6 +77,9 @@ export class RasterComponent extends BaseComponent {
                     
                         out.set(x, y, mask.get(x, y) === true ? (rasters[0][i]) : NaN)
                     }
+
+                    out.properties.unit = opt.unit
+                    out.properties.area = opt.area
 
                     outputs[opt.name] = out
                     this.cache.set(opt.name, out)

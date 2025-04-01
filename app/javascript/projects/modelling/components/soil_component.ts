@@ -115,7 +115,7 @@ export class SoilComponent extends BaseComponent {
         const soilgridId = node.data.soilgridId || 0
         const soilGridOpts = SoilGridOptions.filter(opt => opt.SCOId == soilgridId)
         soilGridOpts.forEach(
-            opt => node.addOutput(new Output(`${opt.name}-${opt.map}`, opt.name, opt.outputSocket))
+            opt => node.addOutput(new Output(`${opt.name}-${opt.map}`, `${opt.name} ${opt.unit ? `[[${opt.unit}${opt.area && opt.area !== 'na' ? `/${opt.area}` : ''}]]` : ''}`, opt.outputSocket))
         )
         node.update()
 
@@ -167,9 +167,12 @@ export class SoilComponent extends BaseComponent {
                 }
                 
             }else{
-
-                outputs[`${opt.name}-${opt.map}`] = await renderNumericData(this.projectExtent, this.projectZoom, this.maskMode, this.maskLayer, this.maskCQL, opt.map, opt.coverageId, opt.factor)
-
+                const res = await renderNumericData(this.projectExtent, this.projectZoom, this.maskMode, this.maskLayer, this.maskCQL, opt.map, opt.coverageId, opt.factor)
+                res.properties = {
+                    unit: opt.unit,
+                    area: opt.area
+                }
+                outputs[`${opt.name}-${opt.map}`] = res
             }
         })
 

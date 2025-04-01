@@ -102,6 +102,8 @@ export class InterpolationComponent extends BaseComponent {
             const out = await workerPool.queue(async worker =>
                 worker.interpolateGrid(input, mask, method.value, maxDist, p, closest_points)
             )
+            out.properties['unit'] = input.properties['unit']
+            out.properties['area'] = input.properties['area']
             this.cachedOutputs.set(`${cacheIdx}_${method.value}_${maxDist}_${p}_${closest_points}`, out)
             outputs['output'] = out
         }
