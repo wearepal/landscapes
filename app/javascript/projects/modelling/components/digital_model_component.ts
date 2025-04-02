@@ -128,15 +128,11 @@ const ModelList: Array<DigitalModel> = [
     },
     {
         id: 15,
-        name: 'Digital Surface Model (25cm)',
-        source: 'lidar:DSM_25cm',
-        permission: 'KewLidar'
-    },
-    {
-        id: 16,
-        name: 'Digital Terrain Model (25cm)',
-        source: 'lidar:DTM_25cm',
-        permission: 'KewLidar'
+        name: 'LIDAR Vegetation Object Model Elevation',
+        source: 'ecae3bef-1e1d-4051-887b-9dc613c928ec:Vegetation_Object_Model_Elevation_2022',
+        permission: 'KewLidar',
+        externalLink: 'https://environment.data.gov.uk/spatialdata/vegetation-object-model/',
+        toolTipURL: 'https://www.data.gov.uk/dataset/227ab487-e8f2-4cbb-b26a-9e6d3b662265/lidar-vegetation-object-model-vom#licence-info'
     }
     
 ]
