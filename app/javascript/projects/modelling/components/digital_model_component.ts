@@ -159,8 +159,6 @@ export class DigitalModelComponent extends BaseComponent {
 
     async builder(node: Node) {
 
-        console.log(this.permissions)
-
         const dft = 'Digital models are generated via LIDAR or satellite data. They can be used to calculate canopy height, feature height, and more.'
 
         node.meta.toolTip = ModelList.find(a => a.id == node.data.sourceId)?.toolTip || dft

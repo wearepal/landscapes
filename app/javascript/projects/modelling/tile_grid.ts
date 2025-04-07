@@ -404,6 +404,7 @@ export class NumericTileGrid extends TileGrid {
 
 export class CategoricalTileGrid extends TileGrid {
   private data: Uint8Array
+  name: string | undefined
   private minMax: [number, number] | null
   labels: Map<number, string>
 
@@ -417,6 +418,20 @@ export class CategoricalTileGrid extends TileGrid {
     const { x, y, width, height } = this
     for (let i = x; i < x + width; i++) {
       for (let j = y; j < y + height; j++) {
+        callback(i, j, this.get(i, j))
+      }
+    }
+  }
+
+  iterateOverTileRange(range: TileRange, callback: (x: number, y: number, value: number) => void) {
+    const { x, y, width, height } = this
+    const minX = Math.max(x, range.minX)
+    const maxX = Math.min(x + width, range.maxX)
+    const minY = Math.max(y, range.minY)
+    const maxY = Math.min(y + height, range.maxY)
+
+    for (let i = minX; i < maxX; i++) {
+      for (let j = minY; j < maxY; j++) {
         callback(i, j, this.get(i, j))
       }
     }
