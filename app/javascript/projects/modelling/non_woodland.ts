@@ -1,18 +1,18 @@
 import { VectorLayerData } from "./components/vector_component"
 
-const noneWoodlandTreesSource = ['nateng:FR_TOW_V1_South_East', 'nateng:FR_TOW_V1_South_West', 'nateng:FR_TOW_V1_Yorkshire_and_Humber', 'nateng:FR_TOW_V1_North_East', 'nateng:FR_TOW_V1_North_West', 'nateng:FR_TOW_V1_West_Midlands', 'nateng:FR_TOW_V1_East_Midlands', 'nateng:FR_TOW_V1_London', 'nateng:FR_TOW_V1_Eastern']
+const nonWoodlandTreesSource = ['nateng:FR_TOW_V1_South_East', 'nateng:FR_TOW_V1_South_West', 'nateng:FR_TOW_V1_Yorkshire_and_Humber', 'nateng:FR_TOW_V1_North_East', 'nateng:FR_TOW_V1_North_West', 'nateng:FR_TOW_V1_West_Midlands', 'nateng:FR_TOW_V1_East_Midlands', 'nateng:FR_TOW_V1_London', 'nateng:FR_TOW_V1_Eastern']
 
 export const noneWoodlandTreesLayer: VectorLayerData[] = [
   {
     name: 'Non-woodland trees (all)',
-    source: noneWoodlandTreesSource,
+    source: nonWoodlandTreesSource,
     key: 'Woodland_Type',
     output: 'BooleanTileGrid',
     distributed: false
   },
   {
     name: 'Max height [[m]]',
-    source: noneWoodlandTreesSource,
+    source: nonWoodlandTreesSource,
     key: 'MAXHT',
     output: 'NumericTileGrid',
     properties: {
@@ -23,7 +23,7 @@ export const noneWoodlandTreesLayer: VectorLayerData[] = [
   },
   {
     name: 'Min height [[m]]',
-    source: noneWoodlandTreesSource,
+    source: nonWoodlandTreesSource,
     key: 'MINHT',
     output: 'NumericTileGrid',
     properties: {
@@ -34,7 +34,7 @@ export const noneWoodlandTreesLayer: VectorLayerData[] = [
   },
   {
     name: 'Mean height [[m]]',
-    source: noneWoodlandTreesSource,
+    source: nonWoodlandTreesSource,
     key: 'MEANHT',
     output: 'NumericTileGrid',
     properties: {
@@ -45,7 +45,7 @@ export const noneWoodlandTreesLayer: VectorLayerData[] = [
   },
   {
     name: 'Standard deviation height [[m]]',
-    source: noneWoodlandTreesSource,
+    source: nonWoodlandTreesSource,
     key: 'STDVHT',
     output: 'NumericTileGrid',
     properties: {
@@ -56,7 +56,7 @@ export const noneWoodlandTreesLayer: VectorLayerData[] = [
   },
   {
     name: 'Lone trees',
-    source: noneWoodlandTreesSource,
+    source: nonWoodlandTreesSource,
     key: 'Woodland_Type',
     value: ['Lone Tree'],
     output: 'BooleanTileGrid',
@@ -64,7 +64,7 @@ export const noneWoodlandTreesLayer: VectorLayerData[] = [
   },
   {
     name: 'Group of Trees',
-    source: noneWoodlandTreesSource,
+    source: nonWoodlandTreesSource,
     key: 'Woodland_Type',
     value: ['Group of Trees'],
     output: 'BooleanTileGrid',
@@ -72,7 +72,7 @@ export const noneWoodlandTreesLayer: VectorLayerData[] = [
   },
   {
     name: 'Small Woodland',
-    source: noneWoodlandTreesSource,
+    source: nonWoodlandTreesSource,
     key: 'Woodland_Type',
     value: ['Small Woodland'],
     output: 'BooleanTileGrid',
@@ -80,7 +80,7 @@ export const noneWoodlandTreesLayer: VectorLayerData[] = [
   },
   {
     name: 'NFI OHC',
-    source: noneWoodlandTreesSource,
+    source: nonWoodlandTreesSource,
     key: 'Woodland_Type',
     value: ['NFI OHC'],
     output: 'BooleanTileGrid',
@@ -88,7 +88,7 @@ export const noneWoodlandTreesLayer: VectorLayerData[] = [
   },
   {
     name: 'Woodland Type',
-    source: noneWoodlandTreesSource,
+    source: nonWoodlandTreesSource,
     key: 'Woodland_Type',
     value: ['NFI OHC', 'Small Woodland', 'Group of Trees', 'Lone Tree'],
     output: 'CategoricalTileGrid',

@@ -44,7 +44,6 @@ async function buildVectorTileGrid(layer: VectorLayerData, projectProps: Project
         case 'CategoricalTileGrid':
             result = new CategoricalTileGrid(zoom, outputTileRange.minX, outputTileRange.minY, outputTileRange.getWidth(), outputTileRange.getHeight())
             result.setLabels(new Map(layer.value?.map((v, i) => [i+1, v])))
-            console.log(result.labels)
             break
         case 'NumericTileGrid':
             result = new NumericTileGrid(zoom, outputTileRange.minX, outputTileRange.minY, outputTileRange.getWidth(), outputTileRange.getHeight())
