@@ -25,10 +25,10 @@ const featuresCache: Map<string, Feature<Geometry>[]> = new Map()
 async function buildVectorTileGrid(layer: VectorLayerData, projectProps: ProjectProperties) : Promise<BooleanTileGrid | CategoricalTileGrid | NumericTileGrid> {
 
     // TODO: Add support for multiple sources
-    const features = featuresCache.get(layer.source.join(',')) ?? await retrieveWFSData(layer.source.join(','), projectProps)
+    const cacheKey = layer.source.join(',')
+    const features = featuresCache.get(cacheKey) ?? await retrieveWFSData(cacheKey, projectProps)
 
-    featuresCache.set(layer.source[0], features)
-
+    featuresCache.set(cacheKey, features)
     const tileGrid = createXYZ()
 
     const [projectExtent, zoom, maskMode, maskLayer, maskCQL] = [projectProps.extent, projectProps.zoom, projectProps.mask, projectProps.maskLayer, projectProps.maskCQL]
