@@ -47,6 +47,8 @@ import { KewHabsComponent } from "./kew_habs_component"
 import { KewTreesComponent } from "./kew_trees_component"
 import { RasterComponent } from "./raster_component"
 import { LogComponent } from "./log_component"
+import { VectorComponent } from "./vector_component"
+import { noneWoodlandTreesLayer } from "../non_woodland"
 
 export interface ProjectProperties {
   extent: Extent
@@ -83,6 +85,7 @@ export function createDefaultComponents(saveMapLayer: SaveMapLayer, saveModel: S
       new NumericConstantComponent(),
       new UkcehLandCoverComponent(projectProps),
       new LehLandCoverComponent(projectProps),
+      new VectorComponent('Non-woodland trees', noneWoodlandTreesLayer, projectProps),
       new SegmentComponent(projectProps),
       new IMDComponent(projectProps),
       //new MlTreeHedgeComponent(projectProps), deprecated
