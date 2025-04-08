@@ -136,7 +136,7 @@ const ChartLegend = ({ chartData, sourceType, props, decimalPlaces, data, showSt
             
             LegendItems = (
                 <>
-                    {Object.keys(NumStats).map(key => (
+                    {!showStdDev && Object.keys(NumStats).map(key => (
                         <div key={`stat-${key}`} hidden={key === "step" || key === "stdDevSum" || key === "stdDevMean"}>
                             <label style={{ width: 60 }}>{
                                 key[0].toUpperCase() + key.slice(1)
@@ -154,19 +154,6 @@ const ChartLegend = ({ chartData, sourceType, props, decimalPlaces, data, showSt
                             />
                         </div>
                     ))}
-                    
-                    <div className="mt-3 d-flex align-items-center justify-content-center mb-3">
-                        <input 
-                            type="checkbox" 
-                            id="showStdDevCheckbox"
-                            checked={showStdDev}
-                            onChange={(e) => setShowStdDev(e.target.checked)}
-                            style={{ marginRight: "8px" }}
-                        />
-                        <label htmlFor="showStdDevCheckbox" style={{ margin: 0, cursor: "pointer" }}>
-                            Show Standard Deviation
-                        </label>
-                    </div>
 
                     {showStdDev && (
                         <>
@@ -255,6 +242,12 @@ export const AnalysisPanel = ({ selectedArea, setSelectedArea, setShowAP, select
             setColors(data instanceof NumericTileGrid ? datasetLayer.fill : datasetLayer.colors)
         }
     }, [selectedLayer])
+
+    React.useEffect(() => {
+        if (data instanceof NumericTileGrid) {
+            setShowStdDev(data.properties?.type === "Standard Deviation")
+        }
+    }, [data, selectedLayer])
 
     React.useEffect(() => {
 

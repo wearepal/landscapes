@@ -11,6 +11,7 @@ export const areas = ["CELL", "ha", "m²", "km²"]
 export interface TileGridProps {
     unit: string | undefined
     area: string | undefined
+    type: string | undefined
 }
 
 function validateZoom(zoom: number) {
@@ -64,6 +65,7 @@ export interface TileGridJSON {
   labels?: object
   unitProp?: string
   areaProp?: string
+  typeProp?: string
 }
 
 export function fromJSON(json: TileGridJSON): NumericTileGrid | BooleanTileGrid | CategoricalTileGrid | null {
@@ -76,9 +78,11 @@ export function fromJSON(json: TileGridJSON): NumericTileGrid | BooleanTileGrid 
     case "NumericTileGrid":
       const unit = json.unitProp
       const area = json.areaProp
+      const type = json.typeProp
       const props = {
         unit,
-        area
+        area,
+        type
       }
       const grid = new NumericTileGrid(json.zoom, json.x, json.y, json.width, json.height, Float32Array.from(arraydata.map(e => e === null ? NaN : e), value => value))
       grid.properties = props
@@ -275,7 +279,8 @@ export class NumericTileGrid extends TileGrid {
     super(zoom, x, y, width, height)
     this.properties = {
       unit: undefined,
-      area: undefined
+      area: undefined,
+      type: undefined
     }
 
     if (initialValue instanceof Float32Array) {

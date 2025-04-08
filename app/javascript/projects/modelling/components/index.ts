@@ -98,7 +98,6 @@ export function createDefaultComponents(saveMapLayer: SaveMapLayer, saveModel: S
       new CensusComponent(projectProps),
       new OSGreenSpacesComponent(projectProps),
       new CROMEComponent(projectProps),
-      new ATIComponent(projectProps),
       new DesignationsComponent(projectProps),
       new SoilComponent(projectProps),
 
@@ -109,6 +108,7 @@ export function createDefaultComponents(saveMapLayer: SaveMapLayer, saveModel: S
       // Properties
       new UnitComponent('Unit', projectProps, units.map((unit, idx) => ({ name: unit, id: idx }))), 
       new UnitComponent('Area', projectProps, areas.map((unit, idx) => ({ name: unit, id: idx }))),
+      new UnitComponent('Type', projectProps, ["Standard Deviation", "Normal"].map((unit, idx) => ({ name: unit, id: idx }))),
 
       // Conversions
       new NumberToNumericDatasetComponent(),
