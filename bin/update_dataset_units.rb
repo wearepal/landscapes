@@ -1,5 +1,4 @@
 #!/usr/bin/env ruby
-require_relative '../config/environment'
 
 # This script updates datasets with unit and area properties retrospectively
 # based on patterns in their names or gridtype
