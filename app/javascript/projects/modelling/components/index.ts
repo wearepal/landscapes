@@ -109,6 +109,7 @@ export function createDefaultComponents(saveMapLayer: SaveMapLayer, saveModel: S
       // Properties
       new UnitComponent('Unit', projectProps, units.map((unit, idx) => ({ name: unit, id: idx }))), 
       new UnitComponent('Area', projectProps, areas.map((unit, idx) => ({ name: unit, id: idx }))),
+      new UnitComponent('Type', projectProps, ["Standard Deviation", "Normal"].map((unit, idx) => ({ name: unit, id: idx }))),
 
       // Conversions
       new NumberToNumericDatasetComponent(),
