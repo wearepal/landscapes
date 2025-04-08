@@ -98,6 +98,7 @@ export function createDefaultComponents(saveMapLayer: SaveMapLayer, saveModel: S
       new CensusComponent(projectProps),
       new OSGreenSpacesComponent(projectProps),
       new CROMEComponent(projectProps),
+      new ATIComponent(projectProps),
       new DesignationsComponent(projectProps),
       new SoilComponent(projectProps),
 
