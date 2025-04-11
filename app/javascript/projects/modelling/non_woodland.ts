@@ -9,7 +9,8 @@ export const noneWoodlandTreesLayer: VectorLayerData[] = [
     key: 'Woodland_Type',
     output: 'BooleanTileGrid',
     distributed: false,
-    wms: true
+    wms: true,
+    wmsTriggerZoom: 20
   },
   {
     name: 'Max height [[m]]',
