@@ -8,7 +8,8 @@ export const noneWoodlandTreesLayer: VectorLayerData[] = [
     source: nonWoodlandTreesSource,
     key: 'Woodland_Type',
     output: 'BooleanTileGrid',
-    distributed: false
+    distributed: false,
+    wms: true
   },
   {
     name: 'Max height [[m]]',
@@ -17,9 +18,11 @@ export const noneWoodlandTreesLayer: VectorLayerData[] = [
     output: 'NumericTileGrid',
     properties: {
       unit: 'm',
-      area: undefined
+      area: undefined,
+      type: undefined
     },
-    distributed: false
+    distributed: false,
+    wms: false
   },
   {
     name: 'Min height [[m]]',
@@ -28,9 +31,11 @@ export const noneWoodlandTreesLayer: VectorLayerData[] = [
     output: 'NumericTileGrid',
     properties: {
       unit: 'm',
-      area: undefined
+      area: undefined,
+      type: undefined
     },
-    distributed: false
+    distributed: false,
+    wms: false
   },
   {
     name: 'Mean height [[m]]',
@@ -39,9 +44,11 @@ export const noneWoodlandTreesLayer: VectorLayerData[] = [
     output: 'NumericTileGrid',
     properties: {
       unit: 'm',
-      area: undefined
+      area: undefined,
+      type: undefined
     },
-    distributed: false
+    distributed: false,
+    wms: false
   },
   {
     name: 'Standard deviation height [[m]]',
@@ -50,9 +57,11 @@ export const noneWoodlandTreesLayer: VectorLayerData[] = [
     output: 'NumericTileGrid',
     properties: {
       unit: 'm',
-      area: undefined
+      area: undefined,
+      type: undefined
     },
-    distributed: false
+    distributed: false,
+    wms: false
   },
   {
     name: 'Lone trees',
@@ -60,7 +69,8 @@ export const noneWoodlandTreesLayer: VectorLayerData[] = [
     key: 'Woodland_Type',
     value: ['Lone Tree'],
     output: 'BooleanTileGrid',
-    distributed: false
+    distributed: false,
+    wms: false
   },
   {
     name: 'Group of Trees',
@@ -68,7 +78,8 @@ export const noneWoodlandTreesLayer: VectorLayerData[] = [
     key: 'Woodland_Type',
     value: ['Group of Trees'],
     output: 'BooleanTileGrid',
-    distributed: false
+    distributed: false,
+    wms: false
   },
   {
     name: 'Small Woodland',
@@ -76,7 +87,8 @@ export const noneWoodlandTreesLayer: VectorLayerData[] = [
     key: 'Woodland_Type',
     value: ['Small Woodland'],
     output: 'BooleanTileGrid',
-    distributed: false
+    distributed: false,
+    wms: false
   },
   {
     name: 'NFI OHC',
@@ -84,7 +96,8 @@ export const noneWoodlandTreesLayer: VectorLayerData[] = [
     key: 'Woodland_Type',
     value: ['NFI OHC'],
     output: 'BooleanTileGrid',
-    distributed: false
+    distributed: false,
+    wms: false
   },
   {
     name: 'Woodland Type',
@@ -92,7 +105,8 @@ export const noneWoodlandTreesLayer: VectorLayerData[] = [
     key: 'Woodland_Type',
     value: ['NFI OHC', 'Small Woodland', 'Group of Trees', 'Lone Tree'],
     output: 'CategoricalTileGrid',
-    distributed: false
+    distributed: false,
+    wms: false
   }
 
 
