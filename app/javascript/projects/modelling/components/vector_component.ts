@@ -20,6 +20,7 @@ export interface VectorLayerData {
     properties?: TileGridProps
     distributed: boolean
     wms: boolean
+    wmsTriggerZoom?: number
 }
 
 const featuresCache: Map<string, Feature<Geometry>[]> = new Map()
@@ -162,7 +163,7 @@ export class VectorComponent extends BaseComponent {
 
         const p = this.layers.map(async (layer, i) => {
             if(node.outputs[i.toString()].connections.length > 0) {
-                const tileGrid = this.tileGridsCache.get(i) ?? (layer.wms ? await buildVectorTileGridFromWMS(layer, this.projectProps) : await buildVectorTileGrid(layer, this.projectProps))
+                const tileGrid = this.tileGridsCache.get(i) ?? (layer.wms && this.projectProps.zoom <= (layer.wmsTriggerZoom ?? 0) ? await buildVectorTileGridFromWMS(layer, this.projectProps) : await buildVectorTileGrid(layer, this.projectProps))
                 this.tileGridsCache.set(i, tileGrid)
                 outputs[i.toString()] = tileGrid
             }
