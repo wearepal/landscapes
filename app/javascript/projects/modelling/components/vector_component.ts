@@ -34,7 +34,6 @@ async function buildVectorTileGridFromWMS(layer: VectorLayerData, projectProps: 
     const tileGrid = createXYZ()
     const outputTileRange = tileGrid.getTileRangeForExtentAndZ(projectExtent, zoom)
 
-
     const cacheKey = layer.source.join(',')
     const geotiff = await retrieveModelData(projectExtent, cacheKey, outputTileRange)
 
@@ -115,7 +114,6 @@ async function buildVectorTileGrid(layer: VectorLayerData, projectProps: Project
                             (result as BooleanTileGrid).set(x, y, v)
                             break
                         case 'CategoricalTileGrid':
-                            // TODO: Add support for categorical data
                             value = feature.get(layer.key) as string
                             let index = layer.value ? layer.value.indexOf(value)+1 : 0;
                             (result as CategoricalTileGrid).set(x, y, index)
