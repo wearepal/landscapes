@@ -5,6 +5,10 @@ const NFI_Source = ['nateng:National_Forest_Inventory_GB_2023']
 
 const NFI_Categories = ['Non woodland', 'Woodland']
 const NFT_IFT_IOA = ['Conifer', 'Broadleaved', 'Mixed mainly conifer', 'Mixed mainly broadleaved', 'Coppice', 'Coppice with standards', 'Shrub', 'Young trees', 'Felled', 'Ground prep', 'Cloud \ shadow', 'Uncertain', 'Low density', 'Assumed woodland', 'Failed', 'Windblow', 'Open water', 'Grassland', 'Agricultural land', 'Urban', 'Road', 'River', 'Powerline', 'Quarry', 'Bare area', 'Windfarm', 'Other vegetation']
+
+const ALC_Source = ['nateng:ALC_Grade']
+const ALC_Categories = ['Grade 1', 'Grade 2', 'Grade 3', 'Grade 4', 'Grade 5', 'Urban', 'Non Agricultural', 'Exclusion']
+
 export const nationalForestInventoryLayer: VectorLayerData[] = [
   {
     name: 'All',
@@ -170,3 +174,23 @@ export const noneWoodlandTreesLayer: VectorLayerData[] = [
 
 
 ]
+
+export const ALC_Layer: VectorLayerData[] = ALC_Categories.map(category => ({
+  name: category,
+  source: ALC_Source,
+  key: 'ALC_GRADE',
+  value: [category],
+  output: 'BooleanTileGrid',
+  distributed: false,
+  wms: false
+}))
+
+ALC_Layer.push({
+  name: 'ALC Grade',
+  source: ALC_Source,
+  key: 'ALC_GRADE',
+  value: ALC_Categories,
+  output: 'CategoricalTileGrid',
+  distributed: false,
+  wms: false
+})

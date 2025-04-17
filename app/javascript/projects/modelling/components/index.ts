@@ -48,7 +48,7 @@ import { KewTreesComponent } from "./kew_trees_component"
 import { RasterComponent } from "./raster_component"
 import { LogComponent } from "./log_component"
 import { VectorComponent } from "./vector_component"
-import { nationalForestInventoryLayer, noneWoodlandTreesLayer } from "../non_woodland"
+import { ALC_Layer, nationalForestInventoryLayer, noneWoodlandTreesLayer } from "../non_woodland"
 
 export interface ProjectProperties {
   extent: Extent
@@ -87,6 +87,7 @@ export function createDefaultComponents(saveMapLayer: SaveMapLayer, saveModel: S
       new LehLandCoverComponent(projectProps),
       new VectorComponent('Non-woodland trees', noneWoodlandTreesLayer, projectProps),
       new VectorComponent('National Forest Inventory', nationalForestInventoryLayer, projectProps),
+      new VectorComponent('ALC Grade', ALC_Layer, projectProps),
       new SegmentComponent(projectProps),
       new IMDComponent(projectProps),
       //new MlTreeHedgeComponent(projectProps), deprecated
