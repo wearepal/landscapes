@@ -1,5 +1,3 @@
-
-
 import * as GeoTIFF from 'geotiff/dist-browser/geotiff'
 import { Extent } from 'ol/extent'
 import { bboxFromExtent } from './bounding_box'
@@ -7,6 +5,18 @@ import { ProjectProperties } from './components'
 import { GeoJSON } from "ol/format"
 import { Geometry } from 'ol/geom'
 import { Feature } from 'ol'
+import { simplify } from 'topojson-simplify'
+import { presimplify } from 'topojson-simplify'
+import { topology } from 'topojson-server'
+import { feature } from 'topojson-client'
+import { Topology, Objects } from 'topojson-specification'
+
+async function simplifyFeatures(features: GeoJSON.FeatureCollection) {
+    const topo = topology({ layer: features }) as Topology<Objects<{}>>;
+    const presimp = presimplify(topo);
+    const simp = simplify(presimp, 0.00001);
+    return simp;
+}  
 
 export async function retrieveWFSData(source: string, projectProps: ProjectProperties) : Promise<Feature<Geometry>[]> {
     
@@ -24,8 +34,18 @@ export async function retrieveWFSData(source: string, projectProps: ProjectPrope
     )
 
     const features = new GeoJSON().readFeatures(await response.json())
+    
+    // Convert OpenLayers features to GeoJSON format
+    const geoJsonFormat = new GeoJSON();
+    const geoJsonObject = JSON.parse(geoJsonFormat.writeFeatures(features));
+    
+    const simp = await simplifyFeatures(geoJsonObject)
+    
+    // Convert TopoJSON back to GeoJSON
+    const geoJson = feature(simp, simp.objects.layer);
+    const simplifiedFeatures = new GeoJSON().readFeatures(geoJson)
 
-    return features
+    return simplifiedFeatures
 }
 
 // Returns a GeoTIFF object from a WMS server. Useful for some categorical/boolean data but may be susceptible to data loss. Fatest option usually
